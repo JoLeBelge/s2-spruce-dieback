@@ -46,15 +46,6 @@ catalogue::catalogue(std::string aJsonFile){
 
         // récapitulatif;
         summary();
-      /*  if (0){
-            mVProduts.at(1).download();
-            mVProduts.at(1).nettoyeArchive();
-
-        }
-        //mVProduts.at(1).decompresse();
-        mVProduts.at(1).readXML();
-        mVProduts.at(1).catQual();
-        */
 
         std::for_each(
             std::execution::par_unseq,
@@ -62,12 +53,17 @@ catalogue::catalogue(std::string aJsonFile){
             mVProduts.end(),
             [](tuileS2& t)
             {
+            //check si le produit existe déjà décompressé avant de le télécharger
+            if (!t.pretraitementDone()){
             t.download();
             t.nettoyeArchive();
             t.decompresse();
+            t.removeArchive();
+            } else {
+               std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
+            }
             t.readXML();
             t.catQual();
-
             });
 
         //mVProduts.at(1).wrap();
@@ -96,7 +92,9 @@ void tuileS2::download(){
     sstream << in.rdbuf();
     const std::string token(sstream.str());
     in.close();
-    std::string get_product = "curl  -o "+mProd+".zip -k -H 'Authorization: Bearer "+token+"' https://theia.cnes.fr/atdistrib/resto2/collections/SENTINEL2/"+mFeature_id+"/download/?issuerId=theia";
+
+    archiveName=wd+mProd+".zip";
+    std::string get_product = "curl  -o "+archiveName+" -k -H 'Authorization: Bearer "+token+"' https://theia.cnes.fr/atdistrib/resto2/collections/SENTINEL2/"+mFeature_id+"/download/?issuerId=theia";
     std::cout << get_product << std::endl;
     system(get_product.c_str());
 }
@@ -105,7 +103,6 @@ void tuileS2::nettoyeArchive(){
 
     // nicolas semble dire qu'il y a 10 bandes+6 masques+1 MTD (tkpn) fichiers à garder, détection sur base de leurs noms
 
-    archiveName=wd+mProd+".zip";
     if ( boost::filesystem::exists(archiveName ) ){
         ZipArchive zf(archiveName);
         zf.open(ZipArchive::WRITE);
@@ -148,10 +145,8 @@ void tuileS2::decompresse(){
     
 }
 
-//https://www.setnode.com/blog/quick-notes-on-how-to-use-rapidxml/
-
-void tuileS2::readXML(){
-    std::cout << " read XML " << std::endl;
+bool tuileS2::pretraitementDone(){
+    bool aRes(0);
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
     for(auto & p : boost::filesystem::recursive_directory_iterator(wd)){
         std::string dir= p.path().parent_path().filename().string();
@@ -159,9 +154,31 @@ void tuileS2::readXML(){
         if (found!=std::string::npos){
         //std::cout << "trouvé " <<  dir << std::endl;
         decompressDirName=dir;
+        aRes=1;
         break;
         }
     }
+    return aRes;
+}
+
+void tuileS2::removeArchive(){
+  boost::filesystem::remove(archiveName);
+}
+
+
+void tuileS2::readXML(){
+    std::cout << " read XML " << std::endl;
+    // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
+    // déjà fait précédemment
+    /*for(auto & p : boost::filesystem::recursive_directory_iterator(wd)){
+        std::string dir= p.path().parent_path().filename().string();
+        std::size_t found = dir.find(mProd);
+        if (found!=std::string::npos){
+        //std::cout << "trouvé " <<  dir << std::endl;
+        decompressDirName=dir;
+        break;
+        }
+    }*/
 
     xml_document<> doc;
     xml_node<> * root_node;
@@ -175,7 +192,6 @@ void tuileS2::readXML(){
         doc.parse<0>(&buffer[0]);
         // Find our root node
         root_node = doc.first_node("Muscate_Metadata_Document");
-
         xml_node<>* cur_node = root_node->first_node("Quality_Informations")->first_node("Current_Product")->first_node("Product_Quality_List")->first_node("Product_Quality")->first_node("Global_Index_List");
         for (xml_node<> * node = cur_node->first_node("QUALITY_INDEX"); node; node = node->next_sibling())
         {
@@ -222,11 +238,10 @@ year_month_day ymdFromString(std::string date){
     int d=std::stoi(date.substr(0,2));
     int m=std::stoi(date.substr(3,4));
     int y=std::stoi(date.substr(6,9));
-
     //std::cout << "y " << y << " m " << m << " d " << d << std::endl;
     year_month_day ymd(year{y},month{m},day{d});
     return ymd;
 }
 
-//Un masque de no_data, à résolution 10m (EDG_R1.tif) et 20m (EDG_R2.tif)
+// Un masque de no_data, à résolution 10m (EDG_R1.tif) et 20m (EDG_R2.tif)
 // un masque cloud cover mais beaucoup plus nuancé :

@@ -50,8 +50,10 @@ public:
 
     void download();
     void nettoyeArchive();
-   void readXML();
+    void readXML();
     void decompresse();
+    bool pretraitementDone();
+    void removeArchive();
     void wrap();
     void masque();
     void resample();
