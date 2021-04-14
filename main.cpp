@@ -14,8 +14,8 @@ int main()
     if (s=="lisein"){
 
     } else {
-       wd="/home/gef/Documents/test";
-       buildDir="/home/gef/Documents/build-s2_ts";
+       wd="/home/gef/Documents/test/";
+       buildDir="/home/gef/Documents/build-s2_ts/";
        inputJson="/home/gef/Documents/s2/theia_d/search.json";
     }
 
