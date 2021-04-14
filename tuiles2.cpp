@@ -48,28 +48,31 @@ catalogue::catalogue(std::string aJsonFile){
         summary();
 
         std::for_each(
-            std::execution::par_unseq,
-            mVProduts.begin(),
-            mVProduts.end(),
-            [](tuileS2& t)
-            {
-            //check si le produit existe déjà décompressé avant de le télécharger
-            if (!t.pretraitementDone()){
-            t.download();
-            t.nettoyeArchive();
-            t.decompresse();
-            t.removeArchive();
-            } else {
-               std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
+                    std::execution::par_unseq,
+                    mVProduts.begin(),
+                    mVProduts.end(),
+                    [](tuileS2& t)
+        {
+
+            // check que cloudcover est en dessous de notre seuil
+            if (t.mCloudCover<globSeuilCC){
+                //check si le produit existe déjà décompressé avant de le télécharger
+                if (!t.pretraitementDone()){
+                    t.download();
+                    t.nettoyeArchive();
+                    t.decompresse();
+                    t.removeArchive();
+                } else {
+                    std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
+                }
+                t.readXML();
+                t.catQual();
             }
-            t.readXML();
-            t.catQual();
-            });
+        });
 
         //mVProduts.at(1).wrap();
         //mVProduts.at(1).masque();
         //mVProduts.at(1).resample();
-
     }
 }
 
@@ -137,9 +140,9 @@ void tuileS2::decompresse(){
         std::string dir= p.path().parent_path().filename().string();
         std::size_t found = dir.find(mProd);
         if (found!=std::string::npos){
-        //std::cout << "trouvé " <<  dir << std::endl;
-        decompressDirName=dir;
-        break;
+            //std::cout << "trouvé " <<  dir << std::endl;
+            decompressDirName=dir;
+            break;
         }
     }
     
@@ -152,17 +155,17 @@ bool tuileS2::pretraitementDone(){
         std::string dir= p.path().parent_path().filename().string();
         std::size_t found = dir.find(mProd);
         if (found!=std::string::npos){
-        //std::cout << "trouvé " <<  dir << std::endl;
-        decompressDirName=dir;
-        aRes=1;
-        break;
+            //std::cout << "trouvé " <<  dir << std::endl;
+            decompressDirName=dir;
+            aRes=1;
+            break;
         }
     }
     return aRes;
 }
 
 void tuileS2::removeArchive(){
-  boost::filesystem::remove(archiveName);
+    boost::filesystem::remove(archiveName);
 }
 
 
