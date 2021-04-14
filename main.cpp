@@ -10,13 +10,13 @@ int main()
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
 
-     std::string inputJson("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_download/search.json");
+     std::string inputJson("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/search.json");
     if (s=="lisein"){
 
     } else {
-       wd="toto";
-       buildDir="toto";
-       inputJson="/home/lisein/Documents/Scolyte/S2/s2_ts/theia_download/search.json";
+       wd="/home/gef/Documents/test";
+       buildDir="/home/gef/Documents/build-s2_ts";
+       inputJson="/home/gef/Documents/s2/theia_d/search.json";
     }
 
     // création du wd si nécessaire

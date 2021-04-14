@@ -1,0 +1,5 @@
+Portage de l'appli sur pc traitement SentinelleJo;
+
+sudo apt install git qt5-default qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev python
+
+plus compilation de libzip-1.7.3

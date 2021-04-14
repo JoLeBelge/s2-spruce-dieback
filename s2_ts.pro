@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 TARGET = s2_timeSerie
 
+QMAKE_CXXFLAGS = -Wno-c++11-narrowing
+
 SOURCES += main.cpp \
     tuiles2.cpp \
     libzippp/src/libzippp.cpp \
