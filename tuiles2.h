@@ -35,7 +35,7 @@ public:
     std::string archiveName, decompressDirName;
     void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << std::endl; }
     void catQual(){std::cout << "mCloudCover " << mCloudCover << " , HotSpotDetected " << HotSpotDetected << ", RainDetected "<< RainDetected << ", SunGlintDetected " << SunGlintDetected << ", SnowPercent " << SnowPercent<< std::endl;
-                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< std::endl;}
+                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mULX << ", ULY " << mULY <<  std::endl;}
 
     // quality index
     bool HotSpotDetected,RainDetected,SunGlintDetected;
@@ -47,6 +47,7 @@ public:
 
     year_month_day  mDate;
 
+    int mULX, mULY; // upper left X and Y
 
     void download();
     void nettoyeArchive();

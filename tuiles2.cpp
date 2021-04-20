@@ -8,7 +8,7 @@ std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
                                 "_MTD_ALL",//metedata xml
                                 "_CLM_R1",//cloud and shodow mask 10m
                                 "_MG2_R1",//geophysic mask with snow 10m
-                                "_EDG_R1",//nodata mask 10m
+                                "_EDG_R1",//nodata mask 10m, edge mask
                                 "_CLM_R2",//cloud and shodow mask 20m
                                 "_MG2_R2",//geophysic mask with snow 20m
                                 "_EDG_R2"//nodata mask 20m
@@ -131,12 +131,12 @@ void tuileS2::nettoyeArchive(){
 }
 
 void tuileS2::decompresse(){
-
-    std::string aCommand= std::string("unzip -a "+ archiveName);
+    // il faut décompresser dans le directory
+    std::string aCommand= std::string("unzip -a "+ archiveName + " -d "+wd+"raw/");
     //std::cout << aCommand << "\n";
     system(aCommand.c_str());
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
-    for(auto & p : boost::filesystem::recursive_directory_iterator(wd)){
+    for(auto & p : boost::filesystem::recursive_directory_iterator(wd+"raw/")){
         std::string dir= p.path().parent_path().filename().string();
         std::size_t found = dir.find(mProd);
         if (found!=std::string::npos){
@@ -151,7 +151,7 @@ void tuileS2::decompresse(){
 bool tuileS2::pretraitementDone(){
     bool aRes(0);
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
-    for(auto & p : boost::filesystem::recursive_directory_iterator(wd)){
+    for(auto & p : boost::filesystem::recursive_directory_iterator(wd+"raw/")){
         std::string dir= p.path().parent_path().filename().string();
         std::size_t found = dir.find(mProd);
         if (found!=std::string::npos){
@@ -225,6 +225,10 @@ void tuileS2::readXML(){
         mSat=cur_node->value();
         cur_node = root_node->first_node("Product_Characteristics")->first_node("ACQUISITION_DATE");;
         mAcqDate=cur_node->value();
+        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULX")  ;
+        mULX=std::stoi(cur_node->value());
+        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULY")  ;
+        mULY=std::stoi(cur_node->value());
 
     } else {
         std::cout << " pas trouvé fichier " << xmlFile << std::endl;
