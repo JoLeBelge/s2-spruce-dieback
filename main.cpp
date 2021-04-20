@@ -17,6 +17,8 @@ int main()
        wd="/home/gef/Documents/test/";
        buildDir="/home/gef/Documents/build-s2_ts/";
        inputJson="/home/gef/Documents/s2/theia_d/search.json";
+       path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
+       EP_mask_path="/home/gef/Documents/input/";
     }
 
     // création du wd si nécessaire

@@ -3,6 +3,9 @@ int globSeuilCC(35);
 
 std::string wd("/home/lisein/Documents/Scolyte/S2/test/");
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
+std::string path_otb("/home/lisein/OTB/OTB-7.2.0-Linux64/bin/");
+std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
+std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9&gdal:co:NUM_THREADS=ALL_CPUS";
 
 std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
                                 "_MTD_ALL",//metedata xml
@@ -13,6 +16,7 @@ std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
                                 "_MG2_R2",//geophysic mask with snow 20m
                                 "_EDG_R2"//nodata mask 20m
                                };
+
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
     if ( !boost::filesystem::exists( aJsonFile ) )
@@ -227,20 +231,53 @@ void tuileS2::readXML(){
         mSat=cur_node->value();
         cur_node = root_node->first_node("Product_Characteristics")->first_node("ACQUISITION_DATE");;
         mAcqDate=cur_node->value();
-        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULX")  ;
-        mULX=std::stoi(cur_node->value());
-        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULY")  ;
-        mULY=std::stoi(cur_node->value());
+        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Global_Geopositioning") ;
+        //mULX=std::stoi(cur_node->value());
+        //cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULY")  ;
+        //mULY=std::stoi(cur_node->value());
+        for (xml_node<> * node = cur_node->first_node("Point"); node; node = node->next_sibling())
+        {
+            std::string n(node->first_attribute("name")->value());
+            std::cout << "n = " << n << std::endl;
+            if (n=="upperLeft"){
+                xml_node<> * nodeP=node->first_node("X");
+                mXmin=std::stod(nodeP->value()) ;
+                nodeP=node->first_node("Y");
+                 mYmax=std::stod(nodeP->value()) ;
+            } else if (n=="lowerRight"){
+                xml_node<> * nodeP=node->first_node("X");
+                mXmax=std::stod(nodeP->value()) ;
+                nodeP=node->first_node("Y");
+                mYmin=std::stod(nodeP->value()) ;
+            }
+        }
 
     } else {
         std::cout << " pas trouvé fichier " << xmlFile << std::endl;
     }
+    interDirName(wd +"intermediate/"+decompressDirName +"/");
+    boost::filesystem::path dir(interDirName);
+    boost::filesystem::create_directory(dir);
+    outputDirName(wd +"output/");
+    boost::filesystem::path dir2(outputDirName);
+    boost::filesystem::create_directory(dir2);
     std::cout << " done " << std::endl;
 }
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
+//==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
 void tuileS2::masque(){
 
+    //im 1 = masque EP
+    //im 2 = masque edge
+    //im 3 masque cloud
+    std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R1.tif");
+    std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R1.tif");
+    std::string exp("im2b1==0 and im3b1 ==0 ? 0 : im2b1 == 1 ? 2 : 1");
+    std::string out(interDirName+"mask_R1.tif");
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R1.tif "+edg+ " " + clm + " -out "+ compr_otb+" uint8 -exp "+exp);
+    std::cout << aCommand << std::endl;
+    //system(aCommand.c_str());
 
 }
 

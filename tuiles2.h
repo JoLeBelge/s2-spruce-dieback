@@ -29,13 +29,13 @@ year_month_day ymdFromString(std::string date);
 class tuileS2
 {
 public:
-    tuileS2():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100){}
+    tuileS2():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0){}
     std::string mProd,mFeature_id,mAcqDate,mProdDate,mPubDate;
     int mCloudCover;
-    std::string archiveName, decompressDirName;
+    std::string archiveName, decompressDirName, outputDirName,interDirName;
     void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << std::endl; }
     void catQual(){std::cout << "mCloudCover " << mCloudCover << " , HotSpotDetected " << HotSpotDetected << ", RainDetected "<< RainDetected << ", SunGlintDetected " << SunGlintDetected << ", SnowPercent " << SnowPercent<< std::endl;
-                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mULX << ", ULY " << mULY <<  std::endl;
+                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mXmin << ", ULY " << mYmin <<  std::endl;
                   if (EPSG!=32631){
                     std::cout << "\n attention, epsg code different de 32631 \n" <<std::endl;
 
@@ -52,7 +52,7 @@ public:
 
     year_month_day  mDate;
 
-    int mULX, mULY; // upper left X and Y
+    double mXmin, mYmin, mXmax,mYmax; // upper left X and Y
 
     void download();
     void nettoyeArchive();
