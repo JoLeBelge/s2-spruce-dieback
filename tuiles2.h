@@ -35,7 +35,12 @@ public:
     std::string archiveName, decompressDirName;
     void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << std::endl; }
     void catQual(){std::cout << "mCloudCover " << mCloudCover << " , HotSpotDetected " << HotSpotDetected << ", RainDetected "<< RainDetected << ", SunGlintDetected " << SunGlintDetected << ", SnowPercent " << SnowPercent<< std::endl;
-                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mULX << ", ULY " << mULY <<  std::endl;}
+                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mULX << ", ULY " << mULY <<  std::endl;
+                  if (EPSG!=32631){
+                    std::cout << "\n attention, epsg code different de 32631 \n" <<std::endl;
+
+                  }
+                  }
 
     // quality index
     bool HotSpotDetected,RainDetected,SunGlintDetected;

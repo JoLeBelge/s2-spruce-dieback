@@ -66,7 +66,9 @@ catalogue::catalogue(std::string aJsonFile){
                     std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
                 }
                 t.readXML();
+                //t.calcul
                 t.catQual();
+                t.masque();
             }
         });
 
@@ -138,7 +140,7 @@ void tuileS2::decompresse(){
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
     for(auto & p : boost::filesystem::recursive_directory_iterator(wd+"raw/")){
         std::string dir= p.path().parent_path().filename().string();
-        std::size_t found = dir.find(mProd);
+        std::size_t found = dir.find(mProd.substr(0,mProd.size()-1));
         if (found!=std::string::npos){
             //std::cout << "trouvé " <<  dir << std::endl;
             decompressDirName=dir;
@@ -153,7 +155,7 @@ bool tuileS2::pretraitementDone(){
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
     for(auto & p : boost::filesystem::recursive_directory_iterator(wd+"raw/")){
         std::string dir= p.path().parent_path().filename().string();
-        std::size_t found = dir.find(mProd);
+        std::size_t found = dir.find(mProd.substr(0,mProd.size()-1));
         if (found!=std::string::npos){
             //std::cout << "trouvé " <<  dir << std::endl;
             decompressDirName=dir;
@@ -234,6 +236,12 @@ void tuileS2::readXML(){
         std::cout << " pas trouvé fichier " << xmlFile << std::endl;
     }
     std::cout << " done " << std::endl;
+}
+
+// applique le masque EP et le masque nuage et le masque edge (no data)
+void tuileS2::masque(){
+
+
 }
 
 void tuileS2::wrap(){
