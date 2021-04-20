@@ -4,6 +4,8 @@ using namespace std;
 
 extern std::string wd;
 extern std::string buildDir;
+extern std::string path_otb;
+extern std::string EP_mask_path;
 int main()
 {
     char userName[20];

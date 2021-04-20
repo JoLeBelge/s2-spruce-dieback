@@ -255,10 +255,10 @@ void tuileS2::readXML(){
     } else {
         std::cout << " pas trouvé fichier " << xmlFile << std::endl;
     }
-    interDirName(wd +"intermediate/"+decompressDirName +"/");
+    interDirName=wd +"intermediate/"+decompressDirName +"/";
     boost::filesystem::path dir(interDirName);
     boost::filesystem::create_directory(dir);
-    outputDirName(wd +"output/");
+    outputDirName=wd +"output/";
     boost::filesystem::path dir2(outputDirName);
     boost::filesystem::create_directory(dir2);
     std::cout << " done " << std::endl;
