@@ -186,7 +186,7 @@ void tuileS2::readXML(){
     xml_document<> doc;
     xml_node<> * root_node;
     // Read the xml file into a vector
-    std::string xmlFile(wd +decompressDirName +"/"+decompressDirName+"_MTD_ALL.xml");
+    std::string xmlFile(wd +"raw/"+decompressDirName +"/"+decompressDirName+"_MTD_ALL.xml");
     if ( boost::filesystem::exists(xmlFile ) ){
         std::ifstream theFile (xmlFile);
         std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
