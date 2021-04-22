@@ -9,3 +9,6 @@ sudo apt install python3-numpy pour otb
 télécharger otb puis
 chmod +x OTB-7.2.0-Linux64.run
 ./OTB-7.2.0-Linux64.run
+
+# pour la visu des résultats
+sudo apt install gdal-bin qgis
