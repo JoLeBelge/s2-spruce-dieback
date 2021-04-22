@@ -5,7 +5,11 @@ std::string wd("/home/lisein/Documents/Scolyte/S2/test/");
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.2.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
-std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9&gdal:co:NUM_THREADS=ALL_CPUS";
+std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
+//std::string compr_otb="?&gdal:co:COMPRESS=DEFLATE";
+//std::string compr_otb="";
+bool overw(0);
+std::vector<std::string> vBR2{"8A", "11", "12"};
 
 std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
                                 "_MTD_ALL",//metedata xml
@@ -16,6 +20,10 @@ std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
                                 "_MG2_R2",//geophysic mask with snow 20m
                                 "_EDG_R2"//nodata mask 20m
                                };
+// les longeurs d'onde, utilisé pour calcul des droites dans CRSWIR
+double lNIRa(865);
+double lSWIR1(1610);
+double lSWIR2(2190);
 
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
@@ -42,6 +50,7 @@ catalogue::catalogue(std::string aJsonFile){
                 t.mFeature_id = f[i]["id"].GetString();
                 if (f[i]["properties"]["cloudCover"].IsInt()){t.mCloudCover = f[i]["properties"]["cloudCover"].GetInt();}
                 t.mAcqDate =f[i]["properties"]["startDate"].GetString();
+                t.mDate=ymdFromString(t.mAcqDate);
                 t.mProdDate =f[i]["properties"]["productionDate"].GetString();
                 t.mPubDate =f[i]["properties"]["published"].GetString();
                 mVProduts.push_back(t);
@@ -70,15 +79,26 @@ catalogue::catalogue(std::string aJsonFile){
                     std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
                 }
                 t.readXML();
-                //t.calcul
-                t.catQual();
-                t.masque();
+                //t.catQual();
+
+            }
+        });
+        // boucle sans multithread pour pour les traitements d'image
+        std::for_each(
+                    std::execution::seq,
+                    mVProduts.begin(),
+                    mVProduts.end(),
+                    [](tuileS2& t)
+        {
+            // check que cloudcover est en dessous de notre seuil
+            if (t.mCloudCover<globSeuilCC){
+            t.masque();
+            t.resample();
+            t.computeCR();
             }
         });
 
-        //mVProduts.at(1).wrap();
-        //mVProduts.at(1).masque();
-        //mVProduts.at(1).resample();
+
     }
 }
 
@@ -238,7 +258,7 @@ void tuileS2::readXML(){
         for (xml_node<> * node = cur_node->first_node("Point"); node; node = node->next_sibling())
         {
             std::string n(node->first_attribute("name")->value());
-            std::cout << "n = " << n << std::endl;
+            //std::cout << "n = " << n << std::endl;
             if (n=="upperLeft"){
                 xml_node<> * nodeP=node->first_node("X");
                 mXmin=std::stod(nodeP->value()) ;
@@ -267,24 +287,87 @@ void tuileS2::readXML(){
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
 void tuileS2::masque(){
-
+     std::cout << "masque \n" << std::endl;
+    for (int i(1) ; i<3 ; i++){
+    std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
     //im 1 = masque EP
     //im 2 = masque edge
     //im 3 masque cloud
-    std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R1.tif");
-    std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R1.tif");
-    std::string exp("im2b1==0 and im3b1 ==0 ? 0 : im2b1 == 1 ? 2 : 1");
-    std::string out(interDirName+"mask_R1.tif");
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R1.tif "+edg+ " " + clm + " -out "+ compr_otb+" uint8 -exp "+exp);
+    std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
+    std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
+    std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+    // semble beaucoup plus lent avec les options de compression gdal
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+    //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+    //std::cout << aCommand << std::endl;
+    system(aCommand.c_str());
+    }
+    }
+}
+
+// resample des bandes 8A, 11 et 12 après leur avoir appliqué le masque
+void tuileS2::resample(){
+    std::cout << "resample \n" << std::endl;
+  for (std::string b : vBR2){
+    std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
+    std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
+    std::string in=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+b+".tif";
+    std::string inMask=interDirName+"mask_R2.tif";
+    std::string exp("im2b1==1 ? im1b1 : 0");
+    // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" "+inMask+ " -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
+    std::cout << aCommand << std::endl;
+    system(aCommand.c_str());
+    aCommand="gdalwarp -tr 10 10 -r bilinear -overwrite -srcnodata 0 -co 'COMPRESS=DEFLATE' "+ out+ " " + out10m;
+    std::cout << aCommand << std::endl;
+    system(aCommand.c_str());
+    }
+    }
+}
+
+void tuileS2::computeCR(){
+  std::cout << "computeCR \n" << std::endl;
+
+    std::string out=outputDirName+getRasterCRName();
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
+        /* B2 bleu
+         * B3 vert
+         * B4 rouge
+         * B8a NIRa
+         * B11 SWIR1
+         * B12 SWIR2
+         *
+         * CRSWIR = SWIR1 / ( NIRa + (lSWIR1-lNIRa)* ((SWIR2 - NIRa) / (lSWIR2-lNIRa)  )   )
+         *
+         * modéliation de 2 ligne droite et ratio des segment qui passent de l'absisse à la longeur d'onde SWIR 1 vers chacunes de ces 2 droites
+         *
+         */
+
+    std::string NIRa=interDirName+"band_R2_B8a_mask_10m.tif";
+    std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
+    std::string SWIR2=interDirName+"band_R2_B12_mask_10m.tif";
+
+    std::string exp("im2b1!=0 ? im2b1/(imb1+(1610-865)* ((im3b1-im1b1)/(im3b1-im1b1))) : 0");
+
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 5000 -progress 0");
     std::cout << aCommand << std::endl;
     //system(aCommand.c_str());
-
+    }
 }
 
 void tuileS2::wrap(){
-    
     // check EPSG
 }
+
+std::string tuileS2::getRasterCRName(){
+    return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_CRSWIR.tif";
+}
+
 
 year_month_day ymdFromString(std::string date){
     int d=std::stoi(date.substr(0,2));
@@ -294,6 +377,3 @@ year_month_day ymdFromString(std::string date){
     year_month_day ymd(year{y},month{m},day{d});
     return ymd;
 }
-
-// Un masque de no_data, à résolution 10m (EDG_R1.tif) et 20m (EDG_R2.tif)
-// un masque cloud cover mais beaucoup plus nuancé :

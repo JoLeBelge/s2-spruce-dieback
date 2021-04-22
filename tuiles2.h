@@ -62,7 +62,12 @@ public:
     void removeArchive();
     void wrap();
     void masque();
+
+    // bandes à 20 m, 8A, 11 et 12
     void resample();
+    void computeCR();
+
+    std::string getRasterCRName();
 private:
 };
 

@@ -26,6 +26,10 @@ int main()
     // création du wd si nécessaire
     boost::filesystem::path dir(wd);
     boost::filesystem::create_directory(dir);
+    boost::filesystem::path dir2(wd+"raw/");
+    boost::filesystem::create_directory(dir2);
+    boost::filesystem::path dir3(wd+"intermediate/");
+    boost::filesystem::create_directory(dir3);
 
     catalogue cata(inputJson);
     return 0;
