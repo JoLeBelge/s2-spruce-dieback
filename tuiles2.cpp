@@ -92,9 +92,10 @@ catalogue::catalogue(std::string aJsonFile){
         {
             // check que cloudcover est en dessous de notre seuil
             if (t.mCloudCover<globSeuilCC){
-            t.masque();
-            t.resample();
-            t.computeCR();
+                t.masque();
+                t.resample();
+                t.computeCR();
+                t.masqueSpecifique();
             }
         });
 
@@ -171,7 +172,7 @@ void tuileS2::decompresse(){
             break;
         }
     }
-    
+
 }
 
 bool tuileS2::pretraitementDone(){
@@ -263,7 +264,7 @@ void tuileS2::readXML(){
                 xml_node<> * nodeP=node->first_node("X");
                 mXmin=std::stod(nodeP->value()) ;
                 nodeP=node->first_node("Y");
-                 mYmax=std::stod(nodeP->value()) ;
+                mYmax=std::stod(nodeP->value()) ;
             } else if (n=="lowerRight"){
                 xml_node<> * nodeP=node->first_node("X");
                 mXmax=std::stod(nodeP->value()) ;
@@ -287,50 +288,50 @@ void tuileS2::readXML(){
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
 void tuileS2::masque(){
-     std::cout << "masque \n" << std::endl;
+    std::cout << "masque \n" << std::endl;
     for (int i(1) ; i<3 ; i++){
-    std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
-    // check que le fichier n'existe pas
-    if (!boost::filesystem::exists(out) | overw){
-    //im 1 = masque EP
-    //im 2 = masque edge
-    //im 3 masque cloud
-    std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
-    std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
-    std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
-    // semble beaucoup plus lent avec les options de compression gdal
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-    //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-    //std::cout << aCommand << std::endl;
-    system(aCommand.c_str());
-    }
+        std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
+        // check que le fichier n'existe pas
+        if (!boost::filesystem::exists(out) | overw){
+            //im 1 = masque EP
+            //im 2 = masque edge
+            //im 3 masque cloud
+            std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
+            std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
+            std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+            // semble beaucoup plus lent avec les options de compression gdal
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+            //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+            //std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
     }
 }
 
 // resample des bandes 8A, 11 et 12 après leur avoir appliqué le masque
 void tuileS2::resample(){
     std::cout << "resample \n" << std::endl;
-  for (std::string b : vBR2){
-    std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
-    std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
-    // check que le fichier n'existe pas
-    if (!boost::filesystem::exists(out) | overw){
-    std::string in=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+b+".tif";
-    std::string inMask=interDirName+"mask_R2.tif";
-    std::string exp("im2b1==1 ? im1b1 : 0");
-    // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" "+inMask+ " -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
-    std::cout << aCommand << std::endl;
-    system(aCommand.c_str());
-    aCommand="gdalwarp -tr 10 10 -r bilinear -overwrite -srcnodata 0 -co 'COMPRESS=DEFLATE' "+ out+ " " + out10m;
-    std::cout << aCommand << std::endl;
-    system(aCommand.c_str());
-    }
+    for (std::string b : vBR2){
+        std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
+        std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
+        // check que le fichier n'existe pas
+        if (!boost::filesystem::exists(out) | overw){
+            std::string in=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+b+".tif";
+            std::string inMask=interDirName+"mask_R2.tif";
+            std::string exp("im2b1==1 ? im1b1 : 0");
+            // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" "+inMask+ " -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+            aCommand="gdalwarp -tr 10 10 -r bilinear -overwrite -srcnodata 0 -co 'COMPRESS=DEFLATE' "+ out+ " " + out10m;
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
     }
 }
 
 void tuileS2::computeCR(){
-  std::cout << "computeCR \n" << std::endl;
+    std::cout << "computeCR \n" << std::endl;
 
     std::string out=outputDirName+getRasterCRName();
     // check que le fichier n'existe pas
@@ -348,15 +349,15 @@ void tuileS2::computeCR(){
          *
          */
 
-    std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
-    std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
-    std::string SWIR2=interDirName+"band_R2_B12_mask_10m.tif";
-    // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
-    // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
-    std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
-    //std::cout << aCommand << std::endl;
-    system(aCommand.c_str());
+        std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
+        std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
+        std::string SWIR2=interDirName+"band_R2_B12_mask_10m.tif";
+        // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
+        // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
+        std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+        std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
+        //std::cout << aCommand << std::endl;
+        system(aCommand.c_str());
     }
 }
 
@@ -372,66 +373,65 @@ std::string tuileS2::getRasterMasqSecName(){
     return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_masque.tif";
 }
 std::string tuileS2::getRasterMasqGenName(int resol=1){
-     return wd + interDirName + "mask_R"+std::to_string(resol)+".tif";
+    return interDirName + "mask_R"+std::to_string(resol)+".tif";
 }
 
 //https://gis.stackexchange.com/questions/233874/what-is-the-range-of-values-of-sentinel-2-level-2a-images
 // surface _reflectance = DN/ 10 000
 // varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
 void tuileS2::masqueSpecifique(){
+    std::cout << "detection sol nu \n" << std::endl;
     /* voir slide de Raphael D.
     1) détection sol nu
-    swir1>12.5% et r+v >8%
+    swir1>12.5% et r+v >8% ça aurait pu être OU mais alors ça marche pas bien. attention, R+V>8 pct c'est plutot 16 pct car on additionne la réflectance
     2) nuage
     NG= G/(NIRa+Red+Green) > 0.15
     B>4%
     ainsi que tout les pixels à moins de 30 m (3 pixes donc)
     */
-   // std::string out=interDirName+getRasterMasqSecName();
+    // std::string out=interDirName+getRasterMasqSecName();
     std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if (!boost::filesystem::exists(out) | overw){
-    //im 1 = masque général
-    //im 2 = swir1
-    //im 3 = r
-    //im 4 = v
-    std::string m=getRasterMasqGenName();
-    std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
-    std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
-    std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
-    std::string exp("im1b1==1 and im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.8 ? 1 : im2b1/10000>0.125 ? 2 : ((im3b1+im4b1)/10000)>0.8 ? 3 : 0");
+        //im 1 = masque général
+        //im 2 = swir1
+        //im 3 = r
+        //im 4 = v
+        std::string m=getRasterMasqGenName();
+        std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
+        std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
+        std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
+        std::string exp("im1b1!=1 ? 0 : im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.08 ? 1 : im1b1==1 and im2b1/10000.0>0.125 ? 2 : im1b1==1 and ((im3b1+im4b1)/10000.0)>0.08 ? 3 : 0");
 
-    // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-    std::cout << aCommand << std::endl;
-    //system(aCommand.c_str());
+        // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
+        std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+        //std::cout << aCommand << std::endl;
+        system(aCommand.c_str());
     }
 
-    // nuage
+    if (0){
+    // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
+    // Nicolas me dis que les masques nuages de théia sont pas parfait, sourtout pour les anciennes dates.
     out=interDirName+"mask_R1_cloudINRAE.tif";
     // check que le fichier n'existe pas
     if (!boost::filesystem::exists(out) | overw){
-    //im 1 = masque solnul
-    //im 2 = green
-    //im 3 = nira
-    //im 4 = red
-    //im5 = bleu
-    std::string m=interDirName+"mask_R1_solnu.tif";
-    std::string b=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B2.tif";
-    std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
-    std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
-    std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
-   std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 or im5b1/10000>0.4 ? 1) : 0");
-    //std::string exp("im1b1==1 and (im2b1/(im3b1+im4b1+im2b1)) < 0.15 and im5b1/10000 <0.4 ? 0 : (im2b1/(im3b1+im4b1+im2b1)) > 0.15 or im5b1/10000>0.4 ? 1 : 0");
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-    std::cout << aCommand << std::endl;
-    //system(aCommand.c_str());
+        //im 1 = masque solnul
+        //im 2 = green
+        //im 3 = nira
+        //im 4 = red
+        //im5 = bleu
+        std::string m=interDirName+"mask_R1_solnu.tif";
+        std::string b=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B2.tif";
+        std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
+        std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
+        std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
+        std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 and im5b1/10000.0>0.04) ? 1 : 0");
+        std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+        std::cout << aCommand << std::endl;
+        //system(aCommand.c_str());
+        //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
     }
-
-     // valeur 1 : ok - 2 : sol nu - 3 nuage detection NG - 4 nuage detection B.
-
-
-    //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
+    }
 
 }
 
