@@ -368,6 +368,73 @@ std::string tuileS2::getRasterCRName(){
     return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_CRSWIR.tif";
 }
 
+std::string tuileS2::getRasterMasqSecName(){
+    return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_masque.tif";
+}
+std::string tuileS2::getRasterMasqGenName(int resol=1){
+     return wd + interDirName + "mask_R"+std::to_string(resol)+".tif";
+}
+
+//https://gis.stackexchange.com/questions/233874/what-is-the-range-of-values-of-sentinel-2-level-2a-images
+// surface _reflectance = DN/ 10 000
+// varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
+void tuileS2::masqueSpecifique(){
+    /* voir slide de Raphael D.
+    1) détection sol nu
+    swir1>12.5% et r+v >8%
+    2) nuage
+    NG= G/(NIRa+Red+Green) > 0.15
+    B>4%
+    ainsi que tout les pixels à moins de 30 m (3 pixes donc)
+    */
+   // std::string out=interDirName+getRasterMasqSecName();
+    std::string out=interDirName+"mask_R1_solnu.tif";
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
+    //im 1 = masque général
+    //im 2 = swir1
+    //im 3 = r
+    //im 4 = v
+    std::string m=getRasterMasqGenName();
+    std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
+    std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
+    std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
+    std::string exp("im1b1==1 and im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.8 ? 1 : im2b1/10000>0.125 ? 2 : ((im3b1+im4b1)/10000)>0.8 ? 3 : 0");
+
+    // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+    std::cout << aCommand << std::endl;
+    //system(aCommand.c_str());
+    }
+
+    // nuage
+    out=interDirName+"mask_R1_cloudINRAE.tif";
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
+    //im 1 = masque solnul
+    //im 2 = green
+    //im 3 = nira
+    //im 4 = red
+    //im5 = bleu
+    std::string m=interDirName+"mask_R1_solnu.tif";
+    std::string b=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B2.tif";
+    std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
+    std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
+    std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
+   std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 or im5b1/10000>0.4 ? 1) : 0");
+    //std::string exp("im1b1==1 and (im2b1/(im3b1+im4b1+im2b1)) < 0.15 and im5b1/10000 <0.4 ? 0 : (im2b1/(im3b1+im4b1+im2b1)) > 0.15 or im5b1/10000>0.4 ? 1 : 0");
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+    std::cout << aCommand << std::endl;
+    //system(aCommand.c_str());
+    }
+
+     // valeur 1 : ok - 2 : sol nu - 3 nuage detection NG - 4 nuage detection B.
+
+
+    //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
+
+}
+
 
 year_month_day ymdFromString(std::string date){
     int d=std::stoi(date.substr(0,2));

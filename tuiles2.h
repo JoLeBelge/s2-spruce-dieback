@@ -61,11 +61,16 @@ public:
     bool pretraitementDone();
     void removeArchive();
     void wrap();
+    // masque généraux, nuages et no data (edge)
     void masque();
 
     // bandes à 20 m, 8A, 11 et 12
     void resample();
     void computeCR();
+
+    void masqueSpecifique();
+    std::string getRasterMasqSecName();
+    std::string getRasterMasqGenName(int resol);
 
     std::string getRasterCRName();
 private:
