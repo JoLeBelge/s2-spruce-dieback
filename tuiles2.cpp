@@ -348,15 +348,15 @@ void tuileS2::computeCR(){
          *
          */
 
-    std::string NIRa=interDirName+"band_R2_B8a_mask_10m.tif";
+    std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
     std::string SWIR1=interDirName+"band_R2_B11_mask_10m.tif";
     std::string SWIR2=interDirName+"band_R2_B12_mask_10m.tif";
-
-    std::string exp("im2b1!=0 ? im2b1/(imb1+(1610-865)* ((im3b1-im1b1)/(im3b1-im1b1))) : 0");
-
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 5000 -progress 0");
-    std::cout << aCommand << std::endl;
-    //system(aCommand.c_str());
+    // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
+    // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
+    std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+    std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
+    //std::cout << aCommand << std::endl;
+    system(aCommand.c_str());
     }
 }
 
@@ -365,7 +365,7 @@ void tuileS2::wrap(){
 }
 
 std::string tuileS2::getRasterCRName(){
-    return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_CRSWIR.tif";
+    return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
 }
 
 
