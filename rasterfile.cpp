@@ -24,7 +24,7 @@ int rasterFiles::getValue(double x, double y){
         int col = int((x - xOrigin) / pixelWidth);
         int row = int((yOrigin - y ) / pixelHeight);
 
-        if (col<mBand->GetXSize() && row < mBand->GetYSize()){
+        if (col<mBand->GetXSize() && col>=0  && row < mBand->GetYSize() && row>=0){
             float *scanPix;
             scanPix = (float *) CPLMalloc( sizeof( float ) * 1 );
             // lecture du pixel
@@ -60,7 +60,7 @@ double rasterFiles::getValueDouble(double x, double y){
         int col = int((x - xOrigin) / pixelWidth);
         int row = int((yOrigin - y ) / pixelHeight);
 
-        if (col<mBand->GetXSize() && row < mBand->GetYSize()){
+        if (col<mBand->GetXSize() && col>=0  && row < mBand->GetYSize() && row>=0){
             float *scanPix;
             scanPix = (float *) CPLMalloc( sizeof( float ) * 1 );
             // lecture du pixel

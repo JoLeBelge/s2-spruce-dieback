@@ -503,14 +503,14 @@ year_month_day ymdFromString(std::string date){
 std::vector<pts> readPtsFile(std::string aFilePath){
     std::cout << " readPtsFile" << std::endl;
     std::vector<pts> aRes;
-    std::vector<std::vector<std::string>> aVV = parseCSV2V(aFilePath, ';');
+    std::vector<std::vector<std::string>> aVV = parseCSV2V(aFilePath, ',');
 
     bool firstL(1);// dégager les headers
     for (std::vector<std::string> l : aVV){
         if (!firstL){
         //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
-        double aX=std::stod(l.at(2));
-        double aY=std::stod(l.at(3));
+        double aX=std::stod(l.at(4));
+        double aY=std::stod(l.at(5));
         aRes.push_back(pts(aX,aY));
         } else { firstL=0;}
     }
