@@ -7,6 +7,7 @@ TARGET = s2_timeSerie
 QMAKE_CXXFLAGS = -Wno-c++11-narrowing
 
 SOURCES += main.cpp \
+    rasterfile.cpp \
     tuiles2.cpp \
     libzippp/src/libzippp.cpp \
 
@@ -49,6 +50,7 @@ HEADERS += \
     rapidjson/writer.h \
     rapidxml/rapidxml.hpp \
     rapidxml/rapidxml_iterators.hpp \
+    rasterfile.h \
     tuiles2.h\
     libzippp/src/libzippp.h \
     date.h\

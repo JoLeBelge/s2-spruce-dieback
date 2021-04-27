@@ -5,6 +5,7 @@ std::string wd("/home/lisein/Documents/Scolyte/S2/test/");
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.2.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
+std::string iprfwFile("");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
 //std::string compr_otb="?&gdal:co:COMPRESS=DEFLATE";
 //std::string compr_otb="";
@@ -53,7 +54,7 @@ catalogue::catalogue(std::string aJsonFile){
                 t.mDate=ymdFromString(t.mAcqDate);
                 t.mProdDate =f[i]["properties"]["productionDate"].GetString();
                 t.mPubDate =f[i]["properties"]["published"].GetString();
-                mVProduts.push_back(t);
+                mVProduts.push_back(&t);
             }
         }
 
@@ -64,21 +65,21 @@ catalogue::catalogue(std::string aJsonFile){
                     std::execution::par_unseq,
                     mVProduts.begin(),
                     mVProduts.end(),
-                    [](tuileS2& t)
+                    [](tuileS2 * t)
         {
 
             // check que cloudcover est en dessous de notre seuil
-            if (t.mCloudCover<globSeuilCC){
+            if (t->mCloudCover<globSeuilCC){
                 //check si le produit existe déjà décompressé avant de le télécharger
-                if (!t.pretraitementDone()){
-                    t.download();
-                    t.nettoyeArchive();
-                    t.decompresse();
-                    t.removeArchive();
+                if (!t->pretraitementDone()){
+                    t->download();
+                    t->nettoyeArchive();
+                    t->decompresse();
+                    t->removeArchive();
                 } else {
-                    std::cout << t.mProd << " a déjà été téléchargé précédemment" << std::endl;
+                    std::cout << t->mProd << " a déjà été téléchargé précédemment" << std::endl;
                 }
-                t.readXML();
+                t->readXML();
                 //t.catQual();
 
             }
@@ -88,17 +89,19 @@ catalogue::catalogue(std::string aJsonFile){
                     std::execution::seq,
                     mVProduts.begin(),
                     mVProduts.end(),
-                    [](tuileS2& t)
+                    [](tuileS2* t)
         {
             // check que cloudcover est en dessous de notre seuil
-            if (t.mCloudCover<globSeuilCC){
-                t.masque();
-                t.resample();
-                t.computeCR();
-                t.masqueSpecifique();
+            if (t->mCloudCover<globSeuilCC){
+                t->masque();
+                t->resample();
+                t->computeCR();
+                t->masqueSpecifique();
             }
         });
 
+        std::vector<pts> aVPts=readPtsFile(iprfwFile);
+        extractRatioForPts(& aVPts);
 
     }
 }
@@ -106,10 +109,32 @@ catalogue::catalogue(std::string aJsonFile){
 // comptage des produits avec cloudcover ok
 int catalogue::countValid(){
     int aRes(0);
-    for (tuileS2 t : mVProduts){
-        if (t.mCloudCover<globSeuilCC){aRes++;}
+    for (tuileS2 * t : mVProduts){
+        if (t->mCloudCover<globSeuilCC){aRes++;}
     }
     return aRes;
+}
+
+void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
+    std::cout << " extractRatioForPts : " << aVpts->size() << " pts " << std::endl;
+
+    std::for_each(
+                std::execution::par_unseq,
+                mVProduts.begin(),
+                mVProduts.end(),
+                [&](tuileS2* t)
+    {
+        // check que cloudcover est en dessous de notre seuil
+        if (t->mCloudCover<globSeuilCC){
+            for (pts & pt : *aVpts){
+                pt.mCRVals.emplace(std::make_pair(t->getDate(),t->getCRSWIR(pt)));
+                pt.mVMasqVals.emplace(std::make_pair(t->getDate(),t->getMaskSolNu(pt)));
+            }
+        }
+    });
+
+    // j'exporte les résulats
+
 }
 
 void tuileS2::download(){
@@ -359,6 +384,7 @@ void tuileS2::computeCR(){
         //std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
+    r_crswir = std::make_unique<rasterFiles>(out);
 }
 
 void tuileS2::wrap(){
@@ -367,6 +393,10 @@ void tuileS2::wrap(){
 
 std::string tuileS2::getRasterCRName(){
     return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
+}
+
+std::string tuileS2::getDate(){
+    return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2);
 }
 
 std::string tuileS2::getRasterMasqSecName(){
@@ -408,31 +438,39 @@ void tuileS2::masqueSpecifique(){
         //std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
+    r_solnu = std::make_unique<rasterFiles>(out);
 
     if (0){
-    // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
-    // Nicolas me dis que les masques nuages de théia sont pas parfait, sourtout pour les anciennes dates.
-    out=interDirName+"mask_R1_cloudINRAE.tif";
-    // check que le fichier n'existe pas
-    if (!boost::filesystem::exists(out) | overw){
-        //im 1 = masque solnul
-        //im 2 = green
-        //im 3 = nira
-        //im 4 = red
-        //im5 = bleu
-        std::string m=interDirName+"mask_R1_solnu.tif";
-        std::string b=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B2.tif";
-        std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
-        std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
-        std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
-        std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 and im5b1/10000.0>0.04) ? 1 : 0");
-        std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
-        //system(aCommand.c_str());
-        //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
-    }
+        // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
+        // Nicolas me dis que les masques nuages de théia sont pas parfait, sourtout pour les anciennes dates.
+        out=interDirName+"mask_R1_cloudINRAE.tif";
+        // check que le fichier n'existe pas
+        if (!boost::filesystem::exists(out) | overw){
+            //im 1 = masque solnul
+            //im 2 = green
+            //im 3 = nira
+            //im 4 = red
+            //im5 = bleu
+            std::string m=interDirName+"mask_R1_solnu.tif";
+            std::string b=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B2.tif";
+            std::string v=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B3.tif";
+            std::string r=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B4.tif";
+            std::string NIRa=interDirName+"band_R2_B8A_mask_10m.tif";
+            std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 and im5b1/10000.0>0.04) ? 1 : 0");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+            std::cout << aCommand << std::endl;
+            //system(aCommand.c_str());
+            //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
+        }
     }
 
+}
+
+double tuileS2::getCRSWIR(pts & pt){
+    return r_crswir->getValueDouble(pt.X(),pt.Y());
+}
+int tuileS2::getMaskSolNu(pts & pt){
+    return r_solnu->getValue(pt.X(),pt.Y());
 }
 
 
@@ -444,3 +482,55 @@ year_month_day ymdFromString(std::string date){
     year_month_day ymd(year{y},month{m},day{d});
     return ymd;
 }
+
+
+std::vector<pts> readPtsFile(std::string aFilePath){
+    std::cout << " readPtsFile" << std::endl;
+    std::vector<pts> aRes;
+    std::vector<std::vector<std::string>> aVV = parseCSV2V(aFilePath, ';');
+
+    bool firstL(1);// dégager les headers
+    for (std::vector<std::string> l : aVV){
+        if (!firstL){
+        //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
+        double aX=std::stod(l.at(2));
+        double aY=std::stod(l.at(3));
+        aRes.push_back(pts(aX,aY));
+        } else { firstL=0;}
+    }
+    return aRes;
+}
+
+
+std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDelim){
+    qi::rule<std::string::const_iterator, std::string()> quoted_string = '"' >> *(qi::char_ - '"') >> '"';
+    qi::rule<std::string::const_iterator, std::string()> valid_characters = qi::char_ - '"' - aDelim;
+    qi::rule<std::string::const_iterator, std::string()> item = *(quoted_string | valid_characters );
+    qi::rule<std::string::const_iterator, std::vector<std::string>()> csv_parser = item % aDelim;
+
+    std::vector<std::vector<std::string>> aOut;
+    std::ifstream aFichier(aFileIn.c_str());
+    if(aFichier)
+    {
+        std::string aLine;
+        while(!aFichier.eof())
+        {
+            getline(aFichier,aLine,'\n');
+            if(aLine.size() != 0)
+            {
+                std::string::const_iterator s_begin = aLine.begin();
+                std::string::const_iterator s_end = aLine.end();
+                std::vector<std::string> result;
+                bool r = boost::spirit::qi::parse(s_begin, s_end, csv_parser, result);
+                assert(r == true);
+                assert(s_begin == s_end);
+                // ajout d'un element au vecteur de vecteur
+                aOut.push_back(result);
+            }
+        }
+        aFichier.close();
+    } else {
+        std::cout << "file " << aFileIn << " not found " <<std::endl;
+    }
+    return aOut;
+};

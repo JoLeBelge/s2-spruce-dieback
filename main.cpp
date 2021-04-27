@@ -6,22 +6,24 @@ extern std::string wd;
 extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
+extern std::string iprfwFile;
 int main()
 {
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
 
-     std::string inputJson("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/search.json");
+    std::string inputJson("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/search.json");
     if (s=="lisein"){
 
     } else {
-       wd="/home/gef/Documents/test/";
-       buildDir="/home/gef/Documents/build-s2_ts/";
-       inputJson="/home/gef/Documents/s2/theia_d/search.json";
-       path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
-       EP_mask_path="/home/gef/Documents/input/";
+        wd="/home/gef/Documents/test/";
+        buildDir="/home/gef/Documents/build-s2_ts/";
+        inputJson="/home/gef/Documents/s2/theia_d/search.json";
+        path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
+        EP_mask_path="/home/gef/Documents/input/";
     }
+    iprfwFile=EP_mask_path+"ptsIPRFW.csv";
 
     // création du wd si nécessaire
     boost::filesystem::path dir(wd);
