@@ -135,9 +135,21 @@ void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     });
 
     // j'exporte les résulats
-    for (pts & pt : *aVpts){
 
+    std::ofstream aOut(iprfwFile.substr(0,iprfwFile.size()-4)+"_s2_ts.csv");
+    aOut.precision(3);
+
+
+    bool testFirstL(1);
+    for (pts & pt : *aVpts){
+        if (testFirstL){
+        // header : les dates
+        aOut << pt.catHeader() << "\n";
+        testFirstL=0;
+        }
+     aOut << pt.catVal() << "\n";
     }
+    aOut.close();
 
 }
 

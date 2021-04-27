@@ -48,6 +48,10 @@ public:    pts(double aX, double aY):mX(aX),mY(aY){}
     std::map<std::string,int> mVMasqVals;
     // clé; date, val, valeur du cr
     std::map<std::string,double> mCRVals;
+
+    std::string catHeader();
+    std::string catVal();
+
 private:
     double mX, mY;
 };
