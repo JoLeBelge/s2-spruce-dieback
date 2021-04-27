@@ -11,6 +11,7 @@ int rasterFiles::getValue(double x, double y){
     {
         std::cout << "je n'ai pas lu l'image " << getPathTif() << std::endl;
     } else {
+       // std::cout << "j'ai lu l'image " << getPathTif() << "\n\n\n\n"<< std::endl;
         GDALRasterBand * mBand = mGDALDat->GetRasterBand( 1 );
 
         double transform[6];
@@ -30,9 +31,10 @@ int rasterFiles::getValue(double x, double y){
             mBand->RasterIO( GF_Read, col, row, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
             aRes=scanPix[0];
             CPLFree(scanPix);
-            GDALClose( mGDALDat );
             mBand=NULL;
         }
+
+     GDALClose( mGDALDat );
     }
     return aRes;
 }
@@ -65,9 +67,10 @@ double rasterFiles::getValueDouble(double x, double y){
             mBand->RasterIO( GF_Read, col, row, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
             aRes=scanPix[0];
             CPLFree(scanPix);
-            GDALClose( mGDALDat );
+
             mBand=NULL;
         }
+         GDALClose( mGDALDat );
     }
     return aRes;
 }

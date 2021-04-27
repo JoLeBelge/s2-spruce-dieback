@@ -33,6 +33,8 @@ int main()
     boost::filesystem::path dir3(wd+"intermediate/");
     boost::filesystem::create_directory(dir3);
 
+    GDALAllRegister();
+
     catalogue cata(inputJson);
     return 0;
 }

@@ -46,15 +46,15 @@ catalogue::catalogue(std::string aJsonFile){
         if (f.IsArray()){
             for (SizeType i = 0; i < document["features"].Size(); i++){
                 // je récupère les infos qui m'intéressent sur le produits
-                tuileS2 t;
-                t.mProd =f[i]["properties"]["productIdentifier"].GetString();
-                t.mFeature_id = f[i]["id"].GetString();
-                if (f[i]["properties"]["cloudCover"].IsInt()){t.mCloudCover = f[i]["properties"]["cloudCover"].GetInt();}
-                t.mAcqDate =f[i]["properties"]["startDate"].GetString();
-                t.mDate=ymdFromString(t.mAcqDate);
-                t.mProdDate =f[i]["properties"]["productionDate"].GetString();
-                t.mPubDate =f[i]["properties"]["published"].GetString();
-                mVProduts.push_back(&t);
+                tuileS2 * t=new tuileS2();
+                t->mProd =f[i]["properties"]["productIdentifier"].GetString();
+                t->mFeature_id = f[i]["id"].GetString();
+                if (f[i]["properties"]["cloudCover"].IsInt()){t->mCloudCover = f[i]["properties"]["cloudCover"].GetInt();}
+                t->mAcqDate =f[i]["properties"]["startDate"].GetString();
+                t->mDate=ymdFromString(t->mAcqDate);
+                t->mProdDate =f[i]["properties"]["productionDate"].GetString();
+                t->mPubDate =f[i]["properties"]["published"].GetString();
+                mVProduts.push_back(t);
             }
         }
 
@@ -119,13 +119,14 @@ void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     std::cout << " extractRatioForPts : " << aVpts->size() << " pts " << std::endl;
 
     std::for_each(
-                std::execution::par_unseq,
+                std::execution::seq,
                 mVProduts.begin(),
                 mVProduts.end(),
                 [&](tuileS2* t)
     {
         // check que cloudcover est en dessous de notre seuil
         if (t->mCloudCover<globSeuilCC){
+            std::cout << " extraction valeurs pour " << t->getDate() << std::endl;
             for (pts & pt : *aVpts){
                 pt.mCRVals.emplace(std::make_pair(t->getDate(),t->getCRSWIR(pt)));
                 pt.mVMasqVals.emplace(std::make_pair(t->getDate(),t->getMaskSolNu(pt)));
@@ -134,6 +135,9 @@ void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     });
 
     // j'exporte les résulats
+    for (pts & pt : *aVpts){
+
+    }
 
 }
 

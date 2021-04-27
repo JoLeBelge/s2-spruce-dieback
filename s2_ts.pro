@@ -15,8 +15,8 @@ LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboos
 
 LIBS += -L$$PWD/../../../usr/include/ -lsqlite3
 LIBS += -L$$PWD/usr/include/gdal/ -lgdal
-INCLUDEPATH += $$PWD/../../../../../../usr/include/gdal/
-DEPENDPATH += $$PWD/../../../../../../usr/include/gdal/
+INCLUDEPATH += /usr/include/gdal/
+DEPENDPATH += /usr/include/gdal/
 
 INCLUDEPATH += $$PWD/libzipp/src/
 DEPENDPATH += $$PWD/libzipp/src/
