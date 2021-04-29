@@ -37,6 +37,8 @@ std::vector<pts> readPtsFile(std::string aFilePath);
 
 std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDelim);
 
+double getCRtheorique(year_month_day ymd);
+
 // sert pour le téléchargement d'une tuile
 class tuileS2
 {
@@ -89,6 +91,10 @@ public:
     void resample();
     void computeCR();
 
+    //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
+    void normaliseCR();
+    std::string getRasterCRnormName();
+
     void masqueSpecifique();
     std::string getRasterMasqSecName();
     std::string getRasterMasqGenName(int resol);
@@ -99,6 +105,8 @@ public:
     int getMaskSolNu(pts & pt);
 
     std::string getDate();
+
+    double getCRth(){return getCRtheorique(mDate);}
 
 private:
 

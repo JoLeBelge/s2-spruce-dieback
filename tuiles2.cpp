@@ -26,6 +26,13 @@ double lNIRa(865);
 double lSWIR1(1610);
 double lSWIR2(2190);
 
+double a1(0.551512);
+double b1(0.062849);
+double b2 (-0.120683);
+double b3 (0.005509);
+double b4 (-0.044525);
+double cst(2.0*M_PI/365.25);
+
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
     if ( !boost::filesystem::exists( aJsonFile ) )
@@ -84,7 +91,7 @@ catalogue::catalogue(std::string aJsonFile){
 
             }
         });
-        // boucle sans multithread pour pour les traitements d'image
+        // boucle sans multithread pour les traitements d'image
         std::for_each(
                     std::execution::seq,
                     mVProduts.begin(),
@@ -97,11 +104,15 @@ catalogue::catalogue(std::string aJsonFile){
                 t->resample();
                 t->computeCR();
                 t->masqueSpecifique();
+                t->normaliseCR();
             }
         });
 
+        // points pour visu de la série tempo et pour vérifier la fct harmonique
         std::vector<pts> aVPts=readPtsFile(iprfwFile);
         extractRatioForPts(& aVPts);
+
+        //
 
     }
 }
@@ -374,7 +385,7 @@ void tuileS2::resample(){
 void tuileS2::computeCR(){
     std::cout << "computeCR \n" << std::endl;
 
-    std::string out=outputDirName+getRasterCRName();
+    std::string out=getRasterCRName();
     // check que le fichier n'existe pas
     if (!boost::filesystem::exists(out) | overw){
         /* B2 bleu
@@ -408,7 +419,11 @@ void tuileS2::wrap(){
 }
 
 std::string tuileS2::getRasterCRName(){
-    return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
+    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
+}
+
+std::string tuileS2::getRasterCRnormName(){
+    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
 }
 
 std::string tuileS2::getDate(){
@@ -485,6 +500,7 @@ void tuileS2::masqueSpecifique(){
 double tuileS2::getCRSWIR(pts & pt){
     return r_crswir->getValueDouble(pt.X(),pt.Y());
 }
+
 int tuileS2::getMaskSolNu(pts & pt){
     return r_solnu->getValue(pt.X(),pt.Y());
 }
@@ -550,3 +566,35 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
     }
     return aOut;
 };
+
+
+//crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
+void tuileS2::normaliseCR(){
+    std::cout << "normalize CR \n" << std::endl;
+
+    std::string out=getRasterCRnormName();
+    // check que le fichier n'existe pas
+    if (!boost::filesystem::exists(out) | overw){
+
+        // CRSWIRnorm = CRSWIR/theoreticalCR(t)
+
+        std::string in=getRasterCRName();
+        double cr = getCRth();
+
+        // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
+        std::string exp("im1b1!=0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
+        std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+        std::cout << aCommand << std::endl;
+        //system(aCommand.c_str());
+    }
+
+
+}
+
+double getCRtheorique(year_month_day ymd){
+    year_month_day startOfYear(year{ymd.year()},month{1},day{1});
+    //daysSinceStartOfYear
+    days daysSinceStartOfYear = date::sys_days(ymd) - date::sys_days(startOfYear);
+    int x=daysSinceStartOfYear.count()+1;
+    return a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x);
+}
