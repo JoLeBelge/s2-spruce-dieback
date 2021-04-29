@@ -109,8 +109,9 @@ catalogue::catalogue(std::string aJsonFile){
         });
 
         // points pour visu de la série tempo et pour vérifier la fct harmonique
-        std::vector<pts> aVPts=readPtsFile(iprfwFile);
-        extractRatioForPts(& aVPts);
+        // attention, ce code n'a jamais été utilisé, finalement j'ai récupéré la fct harmonique de dutrieux
+        //std::vector<pts> aVPts=readPtsFile(iprfwFile);
+        //extractRatioForPts(& aVPts);
 
         //
 
@@ -325,6 +326,7 @@ void tuileS2::readXML(){
             }
         }
 
+
     } else {
         std::cout << " pas trouvé fichier " << xmlFile << std::endl;
     }
@@ -334,6 +336,12 @@ void tuileS2::readXML(){
     outputDirName=wd +"output/";
     boost::filesystem::path dir2(outputDirName);
     boost::filesystem::create_directory(dir2);
+
+    // je copie  le xml dans intermediate de facon à pouvoir prendre les dossiers intermediate et output du cp traitements vers mon ordi et continuer les dvlpm sur ma machine
+    std::string xmlFileCopy(interDirName +"MTD.xml");
+    if ( boost::filesystem::exists(xmlFile) && !boost::filesystem::exists(xmlFileCopy)  ){
+        boost::filesystem::copy(xmlFile,xmlFileCopy);
+    }
     std::cout << " done " << std::endl;
 }
 
@@ -423,7 +431,7 @@ std::string tuileS2::getRasterCRName(){
 }
 
 std::string tuileS2::getRasterCRnormName(){
-    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
+    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm.tif";
 }
 
 std::string tuileS2::getDate(){
@@ -584,8 +592,8 @@ void tuileS2::normaliseCR(){
         // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
         std::string exp("im1b1!=0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
         std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
-        //system(aCommand.c_str());
+        //std::cout << aCommand << std::endl;
+        system(aCommand.c_str());
     }
 
 
