@@ -17,6 +17,9 @@
 #include <execution>
 #include "rasterfile.h"
 
+#include "boost/program_options.hpp"
+
+namespace po = boost::program_options;
 namespace qi = boost::spirit::qi;
 
 using namespace libzippp;
@@ -39,11 +42,23 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
 
 double getCRtheorique(year_month_day ymd);
 
+//bool comparePtrToTuileS2(tuileS2* a, tuileS2* b);
+
+inline bool operator< (const tuileS2 & t1, const tuileS2 & t2);
+
+struct PointerCompare {
+      bool operator()(const tuileS2* l, const tuileS2* r) {
+        return !(*l < *r);
+      }
+    };
+
 // sert pour le téléchargement d'une tuile
 class tuileS2
 {
 public:
-    tuileS2():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0){}
+    tuileS2():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0){
+        //std::cout << "creation tuileS2" << std::endl;
+    }
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
     tuileS2(const  tuileS2&) = delete;
@@ -51,8 +66,8 @@ public:
     // move
     tuileS2(tuileS2 &&) = default;
 
-    std::string mProd,mFeature_id,mAcqDate,mProdDate,mPubDate;
-
+    std::string mProd,mFeature_id,mAcqDate,mProdDate;//,mPubDate;
+    // attention, feature_id est uniquement utilisé par et pour la requete de téléchargement.
 
     int mCloudCover;
     std::string archiveName, decompressDirName, outputDirName,interDirName;
@@ -72,6 +87,11 @@ public:
     // autre du xml
     std::string mTile, mSat;
     int mOrbitN, mEPSG;
+    // pour la résolution R1
+    int mXSize,mYSize;
+
+    int getXSize(){return mXSize;}
+    int getYSize(){return mYSize;}
 
     year_month_day  mDate;
 
@@ -80,6 +100,7 @@ public:
     void download();
     void nettoyeArchive();
     void readXML();
+    void readXML(std::string aXMLfile);
     void decompresse();
     bool pretraitementDone();
     void removeArchive();
@@ -108,19 +129,59 @@ public:
 
     double getCRth(){return getCRtheorique(mDate);}
 
-private:
+    bool openDS();
+    void closeDS();
+    int getMasqVal(int aCol, int aRow);
+    double getCRnormVal(int aCol, int aRow);
 
+
+    bool operator < (const tuileS2& t) const {
+        days diff=date::sys_days(getymd())-date::sys_days(t.getymd());
+        if (diff.count()>0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    year_month_day getymd() const {
+        return mDate;
+    }
+
+private:
+        // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
     std::unique_ptr<rasterFiles> r_crswir;
     std::unique_ptr<rasterFiles> r_solnu;
+
+    GDALDataset  * mDScrnom;
+    GDALDataset  * mDSsolnu;
+
+    float * scanPix;
 };
 
 // au départ d'une requête au serveur theia
 class catalogue
 {
 public:
+    // soit je crée un catalogue depuis un fichier json résultant d'une requete theia, principalement pour le téléchargement, soit je crée le catalogue depuis le dossier qui contient les produits intermédiaire
     catalogue(std::string aJsonFile);
+    // je fait ça car j'effectue le téléchargement des données et les prétraitement sur une machine de traitement puis je prends les cartes de CRSWIR sur une autre machine, sans copier les données de base (trop lourd)
+    catalogue();
 private:
+
+    void traitement();
+
+    void analyseTS();
+    // ouvre tout les raster dataset
+    bool openDS();
+    void closeDS();
+
+    // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
     std::vector<tuileS2 *> mVProduts;
+    // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
+    std::vector<tuileS2 *>  mVProdutsOK;
+
+
     void summary(){
         for (tuileS2 * t : mVProduts){t->cat();}
         std::cout << " Nombre de produits ok ; " << countValid() << std::endl;

@@ -7,8 +7,7 @@ std::string path_otb("/home/lisein/OTB/OTB-7.2.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
 std::string iprfwFile("");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
-//std::string compr_otb="?&gdal:co:COMPRESS=DEFLATE";
-//std::string compr_otb="";
+
 bool overw(0);
 std::vector<std::string> vBR2{"8A", "11", "12"};
 
@@ -60,13 +59,10 @@ catalogue::catalogue(std::string aJsonFile){
                 t->mAcqDate =f[i]["properties"]["startDate"].GetString();
                 t->mDate=ymdFromString(t->mAcqDate);
                 t->mProdDate =f[i]["properties"]["productionDate"].GetString();
-                t->mPubDate =f[i]["properties"]["published"].GetString();
+                //t->mPubDate =f[i]["properties"]["published"].GetString();
                 mVProduts.push_back(t);
             }
         }
-
-        // récapitulatif;
-        summary();
 
         std::for_each(
                     std::execution::par_unseq,
@@ -91,31 +87,56 @@ catalogue::catalogue(std::string aJsonFile){
 
             }
         });
-        // boucle sans multithread pour les traitements d'image
-        std::for_each(
-                    std::execution::seq,
-                    mVProduts.begin(),
-                    mVProduts.end(),
-                    [](tuileS2* t)
-        {
-            // check que cloudcover est en dessous de notre seuil
-            if (t->mCloudCover<globSeuilCC){
-                t->masque();
-                t->resample();
-                t->computeCR();
-                t->masqueSpecifique();
-                t->normaliseCR();
-            }
-        });
 
-        // points pour visu de la série tempo et pour vérifier la fct harmonique
-        // attention, ce code n'a jamais été utilisé, finalement j'ai récupéré la fct harmonique de dutrieux
-        //std::vector<pts> aVPts=readPtsFile(iprfwFile);
-        //extractRatioForPts(& aVPts);
-
-        //
+        traitement();
 
     }
+}
+
+catalogue::catalogue(){
+    // listing des dossiers dans intermediate puis lecture des métadonnées XML
+    std::cout << "création de la collection depuis les dossiers présent dans le répertoire " << wd << "intermediate/ " << std::endl;
+    for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
+        std::string aDecompressDirName= p.path().filename().string();
+        // création d'une tuile
+        tuileS2 * t=new tuileS2();
+        t->decompressDirName =aDecompressDirName;
+        t->readXML();
+        mVProduts.push_back(t);
+    }
+    std::cout << " done .." << std::endl;
+
+    traitement();
+}
+
+void catalogue::traitement(){
+    // récapitulatif;
+    summary();
+
+    // boucle sans multithread pour les traitements d'image
+    std::for_each(
+                std::execution::seq,
+                mVProduts.begin(),
+                mVProduts.end(),
+                [](tuileS2* t)
+    {
+        // check que cloudcover est en dessous de notre seuil
+        if (t->mCloudCover<globSeuilCC){
+            t->masque();
+            t->resample();
+            t->computeCR();
+            t->masqueSpecifique();
+            t->normaliseCR();
+            std::cout << std::endl ;
+        }
+    });
+
+    // points pour visu de la série tempo et pour vérifier la fct harmonique
+    // attention, ce code n'a jamais été utilisé, finalement j'ai récupéré la fct harmonique de dutrieux
+    //std::vector<pts> aVPts=readPtsFile(iprfwFile);
+    //extractRatioForPts(& aVPts);
+
+    analyseTS();
 }
 
 // comptage des produits avec cloudcover ok
@@ -155,13 +176,63 @@ void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     bool testFirstL(1);
     for (pts & pt : *aVpts){
         if (testFirstL){
-        // header : les dates
-        aOut << pt.catHeader() << "\n";
-        testFirstL=0;
+            // header : les dates
+            aOut << pt.catHeader() << "\n";
+            testFirstL=0;
         }
-     aOut << pt.catVal() << "\n";
+        aOut << pt.catVal() << "\n";
     }
     aOut.close();
+
+}
+
+// les choses sérieuses commencent ici
+void catalogue::analyseTS(){
+    // je commence par initialiser un vecteur de tuile avec uniquement les produits ok, cad sans trop de nuage
+    for (tuileS2 * t : mVProduts){
+        if (t->mCloudCover<globSeuilCC){
+            mVProdutsOK.push_back(t);
+        }
+    }
+
+    //std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), comparePtrToTuileS2());
+
+    std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+
+    /*for (tuileS2 * t : mVProdutsOK){
+           std::cout <<  " date " << t->getDate() << std::endl;
+    }*/
+
+    if (openDS()){
+
+        int x=mVProdutsOK.at(0)->getXSize();
+        int y=mVProdutsOK.at(0)->getYSize();
+        // boucle pixel par pixel - en prenant le masque sol nu comme raster de base
+        bool test(0);
+
+        for ( int row = 0; row < y; row++ )
+        {
+            for (int col = 0; col < x; col++)
+            {
+                // check carte 1 pour voir si no data ou pas
+                int m =mVProdutsOK.at(0)->getMasqVal(col,row);
+                if (m>0){
+                    for (tuileS2 * t : mVProdutsOK){
+
+                         std::cout << t->getDate() << ";" << t->getCRnormVal(col,row) << std::endl;
+                    }
+                   test=1;
+                   break;
+                }
+                if (test){break;}
+            }
+            if (test){break;}
+        }
+
+        closeDS();
+    }
+
+
 
 }
 
@@ -250,86 +321,7 @@ void tuileS2::removeArchive(){
 
 
 void tuileS2::readXML(){
-    std::cout << " read XML " << std::endl;
-    // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
-    // déjà fait précédemment
-    /*for(auto & p : boost::filesystem::recursive_directory_iterator(wd)){
-        std::string dir= p.path().parent_path().filename().string();
-        std::size_t found = dir.find(mProd);
-        if (found!=std::string::npos){
-        //std::cout << "trouvé " <<  dir << std::endl;
-        decompressDirName=dir;
-        break;
-        }
-    }*/
-
-    xml_document<> doc;
-    xml_node<> * root_node;
-    // Read the xml file into a vector
-    std::string xmlFile(wd +"raw/"+decompressDirName +"/"+decompressDirName+"_MTD_ALL.xml");
-    if ( boost::filesystem::exists(xmlFile ) ){
-        std::ifstream theFile (xmlFile);
-        std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
-        buffer.push_back('\0');
-        // Parse the buffer using the xml file parsing library into doc
-        doc.parse<0>(&buffer[0]);
-        // Find our root node
-        root_node = doc.first_node("Muscate_Metadata_Document");
-        xml_node<>* cur_node = root_node->first_node("Quality_Informations")->first_node("Current_Product")->first_node("Product_Quality_List")->first_node("Product_Quality")->first_node("Global_Index_List");
-        for (xml_node<> * node = cur_node->first_node("QUALITY_INDEX"); node; node = node->next_sibling())
-        {
-            std::string n(node->first_attribute("name")->value());
-            //std::cout << "n = " << n << std::endl;
-            bool cast(1);
-            std::string val(node->value());
-            if (val=="false"){cast=0;}
-            if (n=="CloudPercent"){
-                mCloudCover=std::stoi(node->value()) ;
-            } else if (n=="HotSpotDetected"){
-                HotSpotDetected= cast ;
-            } else if (n=="RainDetected"){
-                RainDetected= cast ;
-            } else if (n=="SnowPercent"){
-                SnowPercent=std::stoi(node->value()) ;
-            } else if (n=="SunGlintDetected"){
-                SunGlintDetected= cast ;
-            }
-        }
-        cur_node = root_node->first_node("Dataset_Identification")->first_node("GEOGRAPHICAL_ZONE");
-        mTile=cur_node->value();
-        cur_node = root_node->first_node("Product_Characteristics")->first_node("ORBIT_NUMBER");
-        mOrbitN=std::stoi(cur_node->value());
-        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Coordinate_Reference_System")->first_node("Horizontal_Coordinate_System")->first_node("HORIZONTAL_CS_CODE");
-        mEPSG=std::stoi(cur_node->value());
-        cur_node = root_node->first_node("Product_Characteristics")->first_node("PLATFORM");;
-        mSat=cur_node->value();
-        cur_node = root_node->first_node("Product_Characteristics")->first_node("ACQUISITION_DATE");;
-        mAcqDate=cur_node->value();
-        cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Global_Geopositioning") ;
-        //mULX=std::stoi(cur_node->value());
-        //cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("ULY")  ;
-        //mULY=std::stoi(cur_node->value());
-        for (xml_node<> * node = cur_node->first_node("Point"); node; node = node->next_sibling())
-        {
-            std::string n(node->first_attribute("name")->value());
-            //std::cout << "n = " << n << std::endl;
-            if (n=="upperLeft"){
-                xml_node<> * nodeP=node->first_node("X");
-                mXmin=std::stod(nodeP->value()) ;
-                nodeP=node->first_node("Y");
-                mYmax=std::stod(nodeP->value()) ;
-            } else if (n=="lowerRight"){
-                xml_node<> * nodeP=node->first_node("X");
-                mXmax=std::stod(nodeP->value()) ;
-                nodeP=node->first_node("Y");
-                mYmin=std::stod(nodeP->value()) ;
-            }
-        }
-
-
-    } else {
-        std::cout << " pas trouvé fichier " << xmlFile << std::endl;
-    }
+    //std::cout << " read XML .." ;
     interDirName=wd +"intermediate/"+decompressDirName +"/";
     boost::filesystem::path dir(interDirName);
     boost::filesystem::create_directory(dir);
@@ -337,18 +329,100 @@ void tuileS2::readXML(){
     boost::filesystem::path dir2(outputDirName);
     boost::filesystem::create_directory(dir2);
 
-    // je copie  le xml dans intermediate de facon à pouvoir prendre les dossiers intermediate et output du cp traitements vers mon ordi et continuer les dvlpm sur ma machine
     std::string xmlFileCopy(interDirName +"MTD.xml");
-    if ( boost::filesystem::exists(xmlFile) && !boost::filesystem::exists(xmlFileCopy)  ){
-        boost::filesystem::copy(xmlFile,xmlFileCopy);
+    std::string xmlFile(wd +"raw/"+decompressDirName +"/"+decompressDirName+"_MTD_ALL.xml");
+
+    if ( boost::filesystem::exists(xmlFileCopy ) ){
+        readXML(xmlFileCopy);
+    } else {
+
+        if ( boost::filesystem::exists(xmlFile ) ){
+            readXML(xmlFile);
+            // je copie  le xml dans intermediate de facon à pouvoir prendre les dossiers intermediate et output du cp traitements vers mon ordi et continuer les dvlpm sur ma machine
+            boost::filesystem::copy(xmlFile,xmlFileCopy);
+        }
     }
-    std::cout << " done " << std::endl;
+}
+
+void tuileS2::readXML(std::string aXMLfile){
+
+    // Read the xml file into a vector
+    xml_document<> doc;
+    xml_node<> * root_node;
+    std::ifstream theFile (aXMLfile);
+    std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    // Parse the buffer using the xml file parsing library into doc
+    doc.parse<0>(&buffer[0]);
+    // Find our root node
+    root_node = doc.first_node("Muscate_Metadata_Document");
+    xml_node<>* cur_node = root_node->first_node("Quality_Informations")->first_node("Current_Product")->first_node("Product_Quality_List")->first_node("Product_Quality")->first_node("Global_Index_List");
+    for (xml_node<> * node = cur_node->first_node("QUALITY_INDEX"); node; node = node->next_sibling())
+    {
+        std::string n(node->first_attribute("name")->value());
+        //std::cout << "n = " << n << std::endl;
+        bool cast(1);
+        std::string val(node->value());
+        if (val=="false"){cast=0;}
+        if (n=="CloudPercent"){
+            mCloudCover=std::stoi(node->value()) ;
+        } else if (n=="HotSpotDetected"){
+            HotSpotDetected= cast ;
+        } else if (n=="RainDetected"){
+            RainDetected= cast ;
+        } else if (n=="SnowPercent"){
+            SnowPercent=std::stoi(node->value()) ;
+        } else if (n=="SunGlintDetected"){
+            SunGlintDetected= cast ;
+        }
+    }
+    cur_node = root_node->first_node("Dataset_Identification")->first_node("GEOGRAPHICAL_ZONE");
+    mTile=cur_node->value();
+    cur_node = root_node->first_node("Dataset_Identification")->first_node("IDENTIFIER");
+    mProd=cur_node->value();
+    cur_node = root_node->first_node("Product_Characteristics")->first_node("ORBIT_NUMBER");
+    mOrbitN=std::stoi(cur_node->value());
+    cur_node = root_node->first_node("Product_Characteristics")->first_node("PRODUCTION_DATE");
+    mProdDate=std::stoi(cur_node->value());
+    cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("NROWS");
+    mXSize= std::stoi(cur_node->value());
+    cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Group_Geopositioning_List")->first_node("Group_Geopositioning")->first_node("NCOLS");
+    mYSize= std::stoi(cur_node->value());
+
+    cur_node = root_node->first_node("Geoposition_Informations")->first_node("Coordinate_Reference_System")->first_node("Horizontal_Coordinate_System")->first_node("HORIZONTAL_CS_CODE");
+    mEPSG=std::stoi(cur_node->value());
+    cur_node = root_node->first_node("Product_Characteristics")->first_node("PLATFORM");;
+    mSat=cur_node->value();
+    cur_node = root_node->first_node("Product_Characteristics")->first_node("ACQUISITION_DATE");;
+    mAcqDate=cur_node->value();
+    mDate=ymdFromString(mAcqDate);
+
+    cur_node = root_node->first_node("Geoposition_Informations")->first_node("Geopositioning")->first_node("Global_Geopositioning") ;
+
+    for (xml_node<> * node = cur_node->first_node("Point"); node; node = node->next_sibling())
+    {
+        std::string n(node->first_attribute("name")->value());
+        //std::cout << "n = " << n << std::endl;
+        if (n=="upperLeft"){
+            xml_node<> * nodeP=node->first_node("X");
+            mXmin=std::stod(nodeP->value()) ;
+            nodeP=node->first_node("Y");
+            mYmax=std::stod(nodeP->value()) ;
+        } else if (n=="lowerRight"){
+            xml_node<> * nodeP=node->first_node("X");
+            mXmax=std::stod(nodeP->value()) ;
+            nodeP=node->first_node("Y");
+            mYmin=std::stod(nodeP->value()) ;
+        }
+    }
+
+    //std::cout << " done " << std::endl;
 }
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
 void tuileS2::masque(){
-    std::cout << "masque \n" << std::endl;
+    std::cout << "masque .." ;
     for (int i(1) ; i<3 ; i++){
         std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
         // check que le fichier n'existe pas
@@ -370,7 +444,7 @@ void tuileS2::masque(){
 
 // resample des bandes 8A, 11 et 12 après leur avoir appliqué le masque
 void tuileS2::resample(){
-    std::cout << "resample \n" << std::endl;
+    std::cout << "resample ..";
     for (std::string b : vBR2){
         std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
         std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
@@ -391,7 +465,7 @@ void tuileS2::resample(){
 }
 
 void tuileS2::computeCR(){
-    std::cout << "computeCR \n" << std::endl;
+    std::cout << "computeCR .." ;
 
     std::string out=getRasterCRName();
     // check que le fichier n'existe pas
@@ -439,7 +513,7 @@ std::string tuileS2::getDate(){
 }
 
 std::string tuileS2::getRasterMasqSecName(){
-    return mAcqDate.substr(6,9)+mAcqDate.substr(3,4)+mAcqDate.substr(0,2)+ "_masque.tif";
+    return interDirName + "mask_R1_solnu.tif";
 }
 std::string tuileS2::getRasterMasqGenName(int resol=1){
     return interDirName + "mask_R"+std::to_string(resol)+".tif";
@@ -449,7 +523,7 @@ std::string tuileS2::getRasterMasqGenName(int resol=1){
 // surface _reflectance = DN/ 10 000
 // varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
 void tuileS2::masqueSpecifique(){
-    std::cout << "detection sol nu \n" << std::endl;
+    std::cout << "detection sol nu .." ;
     /* voir slide de Raphael D.
     1) détection sol nu
     swir1>12.5% et r+v >8% ça aurait pu être OU mais alors ça marche pas bien. attention, R+V>8 pct c'est plutot 16 pct car on additionne la réflectance
@@ -458,8 +532,8 @@ void tuileS2::masqueSpecifique(){
     B>4%
     ainsi que tout les pixels à moins de 30 m (3 pixes donc)
     */
-    // std::string out=interDirName+getRasterMasqSecName();
-    std::string out=interDirName+"mask_R1_solnu.tif";
+    std::string out=interDirName+getRasterMasqSecName();
+    //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if (!boost::filesystem::exists(out) | overw){
         //im 1 = masque général
@@ -515,10 +589,15 @@ int tuileS2::getMaskSolNu(pts & pt){
 
 
 year_month_day ymdFromString(std::string date){
+    /*
     int d=std::stoi(date.substr(0,2));
     int m=std::stoi(date.substr(3,4));
-    int y=std::stoi(date.substr(6,9));
-    //std::cout << "y " << y << " m " << m << " d " << d << std::endl;
+    int y=std::stoi(date.substr(6,9));*/
+    int d=std::stoi(date.substr(8,2));
+    int m=std::stoi(date.substr(5,2));
+    int y=std::stoi(date.substr(0,4));
+
+    //std::cout << date <<  " ; y " << y << " m " << m << " d " << d << std::endl;
     year_month_day ymd(year{y},month{m},day{d});
     return ymd;
 }
@@ -532,10 +611,10 @@ std::vector<pts> readPtsFile(std::string aFilePath){
     bool firstL(1);// dégager les headers
     for (std::vector<std::string> l : aVV){
         if (!firstL){
-        //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
-        double aX=std::stod(l.at(4));
-        double aY=std::stod(l.at(5));
-        aRes.push_back(pts(aX,aY));
+            //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
+            double aX=std::stod(l.at(4));
+            double aY=std::stod(l.at(5));
+            aRes.push_back(pts(aX,aY));
         } else { firstL=0;}
     }
     return aRes;
@@ -578,7 +657,7 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
 
 //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
 void tuileS2::normaliseCR(){
-    std::cout << "normalize CR \n" << std::endl;
+    std::cout << "normalize CR " ;
 
     std::string out=getRasterCRnormName();
     // check que le fichier n'existe pas
@@ -592,11 +671,84 @@ void tuileS2::normaliseCR(){
         // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
         std::string exp("im1b1!=0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
         std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        //std::cout << aCommand << std::endl;
+        std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
 
 
+}
+
+
+bool tuileS2::openDS(){
+    //std::cout << "ouverture dataset pour " << mProd << std::endl;
+    //std::cout << "ouverture dataset pour " << getRasterCRnormName() << std::endl;
+    bool aRes(0);
+    if (exists(getRasterCRnormName()) && exists(getRasterMasqSecName())){
+        //std::cout << "open " << getRasterCRnormName() << " \n" << " et " << getRasterMasqSecName() << std::endl;
+        mDScrnom= (GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
+        mDSsolnu= (GDALDataset *) GDALOpen( getRasterMasqSecName().c_str(), GA_ReadOnly );
+
+        if( mDSsolnu == NULL |  mDScrnom == NULL)
+        {
+            std::cout << "dataset pas ouvert correctement pour tuile " << mProd << std::endl;
+            closeDS();
+        } else {
+            aRes=1; 
+            scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+        }
+    }
+    return aRes;
+}
+void tuileS2::closeDS(){
+    GDALClose( mDScrnom );
+    GDALClose( mDSsolnu );
+
+    if (scanPix!=NULL){ CPLFree(scanPix);}
+}
+
+int tuileS2::getMasqVal(int aCol,int aRow){
+    int aRes=0;
+    if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetXSize() > aCol && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+        mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
+        aRes=scanPix[0];
+    }
+    return aRes;
+}
+double tuileS2::getCRnormVal(int aCol, int aRow){
+    double aRes=0.0;
+    if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetXSize() > aCol && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+        mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
+        // applique le gain
+        aRes=scanPix[0]*1.0/127.0;
+    }
+    return aRes;
+}
+
+bool catalogue::openDS(){
+    std::cout << "ouverture de tout les raster de la TS" << std::endl;
+    bool aRes(1);
+    int c(0);
+    for (tuileS2 * t : mVProdutsOK){
+        // si une seule tuile pose un problème lors du chargement des dataset, on annule tout les traitement
+        if (!t->openDS()){
+            // fermer tout les datasets des tuiles déjà passée en revue
+            for (int i(0);i<c+1;i++){
+                mVProdutsOK.at(i)->closeDS();
+            }
+
+            aRes=0;
+            break;
+        }
+        c++;
+    }
+    return aRes;
+}
+
+void catalogue::closeDS(){
+    std::cout << "fermeture de tout les raster de la TS" << std::endl;
+    for (tuileS2 * t : mVProdutsOK){
+    t->closeDS();
+    }
 }
 
 double getCRtheorique(year_month_day ymd){
@@ -606,3 +758,18 @@ double getCRtheorique(year_month_day ymd){
     int x=daysSinceStartOfYear.count()+1;
     return a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x);
 }
+
+//bool comparePtrToTuileS2(tuileS2* a, tuileS2* b){ return (*a < *b); }
+
+inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
+{
+
+    days diff=date::sys_days(t1.getymd())-date::sys_days(t2.getymd());
+    if (diff.count()>0){
+        return 1;
+    } else {
+        return 0;
+    }
+    //return  s1.getId() < s2.getId();
+}
+

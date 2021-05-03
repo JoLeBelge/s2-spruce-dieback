@@ -7,7 +7,7 @@ extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string iprfwFile;
-int main()
+int main(int argc, char *argv[])
 {
     char userName[20];
     getlogin_r(userName,sizeof(userName));
@@ -34,7 +34,38 @@ int main()
     boost::filesystem::create_directory(dir3);
 
     GDALAllRegister();
+    // Declare the supported options.
+    po::options_description desc("Allowed options");
+    desc.add_options()
+            ("help", "produce help message")
+            ("catalogue", po::value<int>(), "création d'un catalogue d'image Sentinel 2 sur base de ; option (1) fichier json résultant d'une requête theia. option (2) dossiers déjà présent dans dossier intermediate/")
+            ;
 
-    catalogue cata(inputJson);
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+        cout << desc << "\n";
+        return 1;
+    }
+
+    if (vm.count("catalogue")) {
+
+        int mode(vm["catalogue"].as<int>());
+        switch (mode) {
+        case 1:{
+            catalogue cata(inputJson);
+            break;
+        }
+        case 2:{
+
+            // ne pas mettre de parenthèse !.
+            catalogue cata;
+            break;
+        }
+        }
+    }
+
     return 0;
 }

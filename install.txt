@@ -12,3 +12,15 @@ chmod +x OTB-7.2.0-Linux64.run
 
 # pour la visu des résultats
 sudo apt install gdal-bin qgis
+
+sous ma machine ; ajout des bin et lib de OTB dans mes var envi;
+
+
+
+export PATH=$PATH:/home/lisein/OTB/OTB-7.2.0-Linux64/bin
+export LD_LIBRARY_PATH=/home/lisein/OTB/OTB-7.2.0-Linux64/lib:$LD_LIBRARY_PATH
+dans ~/.bashrc 
+
+bof je recommence l'install car j'ai des souci avec otb
+
+https://www.orfeo-toolbox.org/CookBook/CompilingOTBFromSource.html
