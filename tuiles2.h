@@ -31,6 +31,7 @@ using namespace date;
 class rasterFiles;
 class pts;
 
+class pDateEtat; // sert à manipuler une date accompagnée d'un code état, à savoir sol nu, pessière saine ou pessière stressée, no data
 class tuileS2;
 class catalogue;
 
@@ -47,10 +48,48 @@ double getCRtheorique(year_month_day ymd);
 inline bool operator< (const tuileS2 & t1, const tuileS2 & t2);
 
 struct PointerCompare {
-      bool operator()(const tuileS2* l, const tuileS2* r) {
+    bool operator()(const tuileS2* l, const tuileS2* r) {
         return !(*l < *r);
-      }
-    };
+    }
+};
+
+std::string getNameMasqueEP(int i=1);
+
+class TSunePosition;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
+
+class TSunePosition{
+    public:
+
+    private:
+
+    // données de base
+    std::vector<year_month_day> mVDates;
+    std::vector<int> mVEtat;
+    // analyse temporelle ; vecteur de mm dimension
+    std::vector<int> mVEtat;
+    // résultat par année ; un vecteur par an
+    std::map<int,int> mVRes;
+};
+
+class pDateEtat{
+public:
+
+    pDateEtat(year_month_day ymd,int code):mDate(ymd),mEtat(code){}
+    int getYear() const{
+        int y= mDate.year().y_;
+        return y;
+    }
+
+    int getEtat() const { return mEtat;}
+
+    void cat() const {std::cout << mDate << " : " << mEtat << std::endl;}
+
+private:
+    year_month_day  mDate;
+    int mEtat;
+
+};
+
 
 // sert pour le téléchargement d'une tuile
 class tuileS2
@@ -73,11 +112,11 @@ public:
     std::string archiveName, decompressDirName, outputDirName,interDirName;
     void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << std::endl; }
     void catQual(){std::cout << "mCloudCover " << mCloudCover << " , HotSpotDetected " << HotSpotDetected << ", RainDetected "<< RainDetected << ", SunGlintDetected " << SunGlintDetected << ", SnowPercent " << SnowPercent<< std::endl;
-                  std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mXmin << ", ULY " << mYmin <<  std::endl;
-                  if (mEPSG!=32631){
-                    std::cout << "\n attention, epsg code different de 32631 \n" <<std::endl;
+                   std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mXmin << ", ULY " << mYmin <<  std::endl;
+                              if (mEPSG!=32631){
+                                  std::cout << "\n attention, epsg code different de 32631 \n" <<std::endl;
 
-                  }
+                              }
                   }
 
     // quality index
@@ -149,7 +188,7 @@ public:
     }
 
 private:
-        // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
+    // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
     std::unique_ptr<rasterFiles> r_crswir;
     std::unique_ptr<rasterFiles> r_solnu;
 
@@ -172,6 +211,7 @@ private:
     void traitement();
 
     void analyseTS();
+    void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // ouvre tout les raster dataset
     bool openDS();
     void closeDS();
@@ -191,6 +231,14 @@ private:
 
     // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique
     void extractRatioForPts(std::vector<pts> * aVpts);
+
+    int getMasqEPVal(int aCol, int aRow);
+
+    // masque pessière R1
+    GDALDataset  * mDSmaskEP;
+    // une map de dataset gdal contenant les résultats, une carte raster pour chaque année.
+    // clé ; année. val ; dataset ptr
+    std::map<int,GDALDataset *> mMapZScolTS;
 
 };
 

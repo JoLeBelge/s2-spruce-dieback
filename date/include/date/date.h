@@ -395,9 +395,10 @@ operator<<(std::basic_ostream<CharT, Traits>& os, const month& m);
 
 class year
 {
-    short y_;
+
 
 public:
+    short y_;
     year() = default;
     explicit CONSTCD11 year(int y) NOEXCEPT;
 

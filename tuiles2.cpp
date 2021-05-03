@@ -195,8 +195,6 @@ void catalogue::analyseTS(){
         }
     }
 
-    //std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), comparePtrToTuileS2());
-
     std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
 
     /*for (tuileS2 * t : mVProdutsOK){
@@ -207,7 +205,7 @@ void catalogue::analyseTS(){
 
         int x=mVProdutsOK.at(0)->getXSize();
         int y=mVProdutsOK.at(0)->getYSize();
-        // boucle pixel par pixel - en prenant le masque sol nu comme raster de base
+        // boucle pixel par pixel - en prenant le masque sol nu comme raster de base - pas bonne idée, je devrais ouvrir la carte ou j'ai le masque forestier car dans masque sol nu sont déjà intégré les no data nuage et edge
         bool test(0);
 
         for ( int row = 0; row < y; row++ )
@@ -215,14 +213,37 @@ void catalogue::analyseTS(){
             for (int col = 0; col < x; col++)
             {
                 // check carte 1 pour voir si no data ou pas
-                int m =mVProdutsOK.at(0)->getMasqVal(col,row);
-                if (m>0){
+                int m =getMasqEPVal(col,row);
+                if (m==1){
+
+                    std::vector<pDateEtat> mVTS;
                     for (tuileS2 * t : mVProdutsOK){
 
-                         std::cout << t->getDate() << ";" << t->getCRnormVal(col,row) << std::endl;
+                        /* 0; ND
+                         * 1: valeur CR swir ok.
+                         * 2; valeur CRswir NOK
+                           3 ; sol nu.*/
+                        // je pourrais stoquer les val dans un vecteur. Puis coder des fct qui travaillent sur cette map, pour en tirer les info pertinente (ex ; état en 2018)
+                        //std::cout << t->getDate() << ";" << t->getCRnormVal(col,row) << std::endl;
+                        double crnorm=t->getCRnormVal(col,row);
+                        int solnu = t->getMasqVal(col,row);
+                        int code=0;
+                        if (solnu==0){code=0;
+                        }else if(solnu==2 | solnu==3){
+                        code=3;
+                        } else if (crnorm<1.5) {
+                        code=1;
+                        } else if (crnorm>1.5) {
+                        code=2;
+                        }
+                        mVTS.push_back(pDateEtat(t->getymd(),code));
                     }
-                   test=1;
-                   break;
+                    anaTSOnePosition(&mVTS);
+
+
+
+                    test=1;
+                    break;
                 }
                 if (test){break;}
             }
@@ -434,7 +455,7 @@ void tuileS2::masque(){
             std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
             std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
             // semble beaucoup plus lent avec les options de compression gdal
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+getNameMasqueEP(i)+" "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
             //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
             //std::cout << aCommand << std::endl;
             system(aCommand.c_str());
@@ -652,7 +673,7 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
         std::cout << "file " << aFileIn << " not found " <<std::endl;
     }
     return aOut;
-};
+}
 
 
 //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
@@ -675,9 +696,7 @@ void tuileS2::normaliseCR(){
         system(aCommand.c_str());
     }
 
-
 }
-
 
 bool tuileS2::openDS(){
     //std::cout << "ouverture dataset pour " << mProd << std::endl;
@@ -693,17 +712,31 @@ bool tuileS2::openDS(){
             std::cout << "dataset pas ouvert correctement pour tuile " << mProd << std::endl;
             closeDS();
         } else {
-            aRes=1; 
+            aRes=1;
             scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
         }
+    } else {
+        std::cout << "ne trouve pas " << getRasterCRnormName() << " \n" << " ou bien " << getRasterMasqSecName() << std::endl;
     }
     return aRes;
 }
 void tuileS2::closeDS(){
-    GDALClose( mDScrnom );
-    GDALClose( mDSsolnu );
+    if (mDScrnom != NULL){GDALClose( mDScrnom );}
+    if (mDSsolnu != NULL){GDALClose( mDSsolnu );}
 
     if (scanPix!=NULL){ CPLFree(scanPix);}
+}
+
+int catalogue::getMasqEPVal(int aCol, int aRow){
+    //std::cout << "getMasqEpVal " << std::endl;
+    int aRes=0;
+    float * scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+    if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetXSize() > aCol && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+        mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
+        aRes=scanPix[0];
+    }
+    CPLFree(scanPix);
+    return aRes;
 }
 
 int tuileS2::getMasqVal(int aCol,int aRow){
@@ -727,12 +760,24 @@ double tuileS2::getCRnormVal(int aCol, int aRow){
 bool catalogue::openDS(){
     std::cout << "ouverture de tout les raster de la TS" << std::endl;
     bool aRes(1);
+
+    if (exists(getNameMasqueEP())){
+        mDSmaskEP= (GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
+        if( mDSmaskEP == NULL){
+            std::cout << "masque EP pas chargé correctement" << std::endl;
+            //GDALClose( mDSmaskEP );
+            return 0;
+        }
+    } else {
+         std::cout << "masque EP pas trouvé " <<getNameMasqueEP() << std::endl;
+    }
+
     int c(0);
     for (tuileS2 * t : mVProdutsOK){
         // si une seule tuile pose un problème lors du chargement des dataset, on annule tout les traitement
         if (!t->openDS()){
-            // fermer tout les datasets des tuiles déjà passée en revue
-            for (int i(0);i<c+1;i++){
+            // fermer tout les datasets des tuiles déjà passée en revue précédemment
+            for (int i(0);i<c;i++){
                 mVProdutsOK.at(i)->closeDS();
             }
 
@@ -741,14 +786,24 @@ bool catalogue::openDS(){
         }
         c++;
     }
+
+    if (aRes==0){
+         std::cout << "il manque certaines carte dans la série temporelle" << std::endl;
+    } else {
+         std::cout << "done" << std::endl;
+    }
+
+
+
     return aRes;
 }
 
 void catalogue::closeDS(){
     std::cout << "fermeture de tout les raster de la TS" << std::endl;
     for (tuileS2 * t : mVProdutsOK){
-    t->closeDS();
+        t->closeDS();
     }
+    if( mDSmaskEP != NULL){ GDALClose( mDSmaskEP );}
 }
 
 double getCRtheorique(year_month_day ymd){
@@ -773,3 +828,23 @@ inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
     //return  s1.getId() < s2.getId();
 }
 
+
+std::string getNameMasqueEP(int i){
+    return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif";
+}
+
+void catalogue::anaTSOnePosition(std::vector<pDateEtat> * aVTS){
+
+    // pour commencer, on analyse la TS dans son ensemble. une fois atteinte, la parcelle est notée comme atteinte pour toute les dates ultérieures jusqu'au moment ou celle-ci est éventuellement coupée
+    int  nb (0);
+    for (pDateEtat & p : *aVTS){
+        if (p.getEtat()==2) {nb++;} else {nb=0;}
+
+        if (nb>2) {
+            // on considère la parcelle comme touchée irrévocablement
+            p.SetStress(1);
+            noteStress();
+            break;
+        }         //p.cat();
+    }
+}
