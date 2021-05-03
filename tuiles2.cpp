@@ -532,7 +532,7 @@ void tuileS2::masqueSpecifique(){
     B>4%
     ainsi que tout les pixels à moins de 30 m (3 pixes donc)
     */
-    std::string out=interDirName+getRasterMasqSecName();
+    std::string out=getRasterMasqSecName();
     //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if (!boost::filesystem::exists(out) | overw){
