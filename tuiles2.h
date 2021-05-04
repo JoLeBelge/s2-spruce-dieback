@@ -9,68 +9,58 @@
 #include <sstream>
 #include <fstream>
 #include "date.h"
-
 #include <boost/filesystem.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include "boost/program_options.hpp"
 #include "./libzippp/src/libzippp.h"
-
 #include <execution>
 #include "rasterfile.h"
 
-#include "boost/program_options.hpp"
-
 namespace po = boost::program_options;
 namespace qi = boost::spirit::qi;
-
 using namespace libzippp;
-
 using namespace rapidjson;
 using namespace rapidxml;
 using namespace date;
 
 class rasterFiles;
 class pts;
-
-class pDateEtat; // sert à manipuler une date accompagnée d'un code état, à savoir sol nu, pessière saine ou pessière stressée, no data
+class TS1Pos;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
+//class pDateEtat; // sert à manipuler une date accompagnée d'un code état, à savoir sol nu, pessière saine ou pessière stressée, no data
 class tuileS2;
-class catalogue;
 
 year_month_day ymdFromString(std::string date);
 
 std::vector<pts> readPtsFile(std::string aFilePath);
-
 std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDelim);
 
 double getCRtheorique(year_month_day ymd);
 
-//bool comparePtrToTuileS2(tuileS2* a, tuileS2* b);
-
-inline bool operator< (const tuileS2 & t1, const tuileS2 & t2);
-
-struct PointerCompare {
-    bool operator()(const tuileS2* l, const tuileS2* r) {
-        return !(*l < *r);
-    }
-};
 
 std::string getNameMasqueEP(int i=1);
 
-class TSunePosition;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
-
-class TSunePosition{
+// série temporelle pour une position donnée (un pixel)
+class TS1Pos{
     public:
+    TS1Pos(int aU, int aV):mU(aU),mV(aV){}
+    void add1Date(year_month_day ymd,int code){
+        mVDates.push_back(ymd);
+        mVEtat.push_back(code);
+    }
+    // effectue l'analyse ; détection de plusieurs dates consécutives avec état dépérissant ou sol nu
+    void analyse();
 
     private:
-
+    int mU, mV;
     // données de base
     std::vector<year_month_day> mVDates;
-    std::vector<int> mVEtat;
     // analyse temporelle ; vecteur de mm dimension
     std::vector<int> mVEtat;
     // résultat par année ; un vecteur par an
     std::map<int,int> mVRes;
 };
 
+/*
 class pDateEtat{
 public:
 
@@ -88,7 +78,7 @@ private:
     year_month_day  mDate;
     int mEtat;
 
-};
+};*/
 
 
 // sert pour le téléchargement d'une tuile
@@ -143,7 +133,7 @@ public:
     void decompresse();
     bool pretraitementDone();
     void removeArchive();
-    void wrap();
+    //void wrap();
     // masque généraux, nuages et no data (edge)
     void masque();
 
@@ -197,52 +187,5 @@ private:
 
     float * scanPix;
 };
-
-// au départ d'une requête au serveur theia
-class catalogue
-{
-public:
-    // soit je crée un catalogue depuis un fichier json résultant d'une requete theia, principalement pour le téléchargement, soit je crée le catalogue depuis le dossier qui contient les produits intermédiaire
-    catalogue(std::string aJsonFile);
-    // je fait ça car j'effectue le téléchargement des données et les prétraitement sur une machine de traitement puis je prends les cartes de CRSWIR sur une autre machine, sans copier les données de base (trop lourd)
-    catalogue();
-private:
-
-    void traitement();
-
-    void analyseTS();
-    void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
-    // ouvre tout les raster dataset
-    bool openDS();
-    void closeDS();
-
-    // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
-    std::vector<tuileS2 *> mVProduts;
-    // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
-    std::vector<tuileS2 *>  mVProdutsOK;
-
-
-    void summary(){
-        for (tuileS2 * t : mVProduts){t->cat();}
-        std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
-    }
-    // comptage des produits avec cloudcover ok
-    int countValid();
-
-    // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique
-    void extractRatioForPts(std::vector<pts> * aVpts);
-
-    int getMasqEPVal(int aCol, int aRow);
-
-    // masque pessière R1
-    GDALDataset  * mDSmaskEP;
-    // une map de dataset gdal contenant les résultats, une carte raster pour chaque année.
-    // clé ; année. val ; dataset ptr
-    std::map<int,GDALDataset *> mMapZScolTS;
-
-};
-
-
-
 
 #endif // TUILES2_H

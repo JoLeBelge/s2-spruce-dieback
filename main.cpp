@@ -1,5 +1,5 @@
 #include <iostream>
-#include "tuiles2.h"
+#include "catalogue.h"
 using namespace std;
 
 extern std::string wd;
@@ -7,6 +7,7 @@ extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string iprfwFile;
+
 int main(int argc, char *argv[])
 {
     char userName[20];

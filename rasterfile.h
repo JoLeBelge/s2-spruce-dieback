@@ -38,6 +38,7 @@ protected:
     std::string mPathRaster, mPathQml, mCode;
 };
 
+
 class pts{
 public:    pts(double aX, double aY):mX(aX),mY(aY){}
 
