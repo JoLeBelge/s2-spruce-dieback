@@ -9,6 +9,7 @@ QMAKE_CXXFLAGS = -Wno-c++11-narrowing
 SOURCES += main.cpp \
     catalogue.cpp \
     rasterfile.cpp \
+    ts1pos.cpp \
     tuiles2.cpp \
     libzippp/src/libzippp.cpp \
 
@@ -53,6 +54,7 @@ HEADERS += \
     rapidxml/rapidxml.hpp \
     rapidxml/rapidxml_iterators.hpp \
     rasterfile.h \
+    ts1pos.h \
     tuiles2.h\
     libzippp/src/libzippp.h \
     date.h\

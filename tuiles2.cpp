@@ -2,12 +2,17 @@
 
 std::string wd("/home/lisein/Documents/Scolyte/S2/test/");
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
-std::string path_otb("/home/lisein/OTB/OTB-7.2.0-Linux64/bin/");
+std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
-std::string iprfwFile("");
+//std::string iprfwFile("");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
 int globSeuilCC(35);
 bool overw(0);
+
+int year_analyse(666);
+
+double Xdebug(0);
+double Ydebug(0);
 
 std::vector<std::string> vBR2{"8A", "11", "12"};
 
@@ -350,8 +355,9 @@ void tuileS2::masqueSpecifique(){
     }
     r_solnu = std::make_unique<rasterFiles>(out);
 
-    if (0){
+    if (1){
         // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
+        // après c'est peut-être une combinaison des nuages et des ombres qui sont détectés.
         // Nicolas me dis que les masques nuages de théia sont pas parfait, sourtout pour les anciennes dates.
         out=interDirName+"mask_R1_cloudINRAE.tif";
         // check que le fichier n'existe pas
@@ -373,11 +379,14 @@ void tuileS2::masqueSpecifique(){
             //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
         }
     }
-
 }
 
 double tuileS2::getCRSWIR(pts & pt){
     return r_crswir->getValueDouble(pt.X(),pt.Y());
+}
+
+double tuileS2::getCRSWIRNorm(pts & pt){
+    return r_crswirNorm->getValueDouble(pt.X(),pt.Y())*1.0/127.0;
 }
 
 int tuileS2::getMaskSolNu(pts & pt){
@@ -467,6 +476,7 @@ void tuileS2::normaliseCR(){
         std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
+    r_crswirNorm = std::make_unique<rasterFiles>(out);
 
 }
 
@@ -478,6 +488,17 @@ bool tuileS2::openDS(){
         //std::cout << "open " << getRasterCRnormName() << " \n" << " et " << getRasterMasqSecName() << std::endl;
         mDScrnom= (GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
         mDSsolnu= (GDALDataset *) GDALOpen( getRasterMasqSecName().c_str(), GA_ReadOnly );
+        /* fonctionne très bien mais année par année, si plus de donnée, sature la mémoire vive donc pas si pratique...
+        const char *pszFormat = "MEM";
+        GDALDriver *pDriver= GetGDALDriverManager()->GetDriverByName(pszFormat);
+    GDALDataset * cr=(GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
+    GDALDataset * sol=(GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
+    const char * ch="immem";
+    mDSsolnu= pDriver->CreateCopy( ch,sol,FALSE, NULL,NULL, NULL );
+    mDScrnom= pDriver->CreateCopy( ch,cr,FALSE, NULL,NULL, NULL );
+    GDALClose( cr );
+    GDALClose( sol );
+    */
 
         if( mDSsolnu == NULL |  mDScrnom == NULL)
         {
@@ -486,6 +507,8 @@ bool tuileS2::openDS(){
         } else {
             aRes=1;
             scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+            scanLineSolNu=(float *) CPLMalloc( sizeof( float ) * mYSize );
+            scanLineCR=(float *) CPLMalloc( sizeof( float ) * mYSize );
         }
     } else {
         std::cout << "ne trouve pas " << getRasterCRnormName() << " \n" << " ou bien " << getRasterMasqSecName() << std::endl;
@@ -497,6 +520,8 @@ void tuileS2::closeDS(){
     if (mDSsolnu != NULL){GDALClose( mDSsolnu );}
 
     if (scanPix!=NULL){ CPLFree(scanPix);}
+    if (scanLineSolNu!=NULL){ CPLFree(scanLineSolNu);}
+    if (scanLineCR!=NULL){ CPLFree(scanLineCR);}
 }
 
 
@@ -518,6 +543,37 @@ double tuileS2::getCRnormVal(int aCol, int aRow){
     return aRes;
 }
 
+
+void tuileS2::readCRnormLine(int aRow){
+
+    if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+        mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
+    }
+}
+void tuileS2::readMasqLine(int aRow){
+    if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+        mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
+    }
+}
+double tuileS2::getCRnormVal(int aCol){
+    // applique le gain
+    return scanLineCR[aCol]*1.0/127.0;
+}
+int tuileS2::getMasqVal(int aCol){
+    return scanLineSolNu[aCol];
+}
+
+std::string tuileS2::getRasterR1Name(std::string numBand){
+    return wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+numBand+".tif";
+}
+
+std::string tuileS2::getRasterR2Name(std::string numBand){
+    return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
+}
+
+
+
+
 double getCRtheorique(year_month_day ymd){
     year_month_day startOfYear(year{ymd.year()},month{1},day{1});
     //daysSinceStartOfYear
@@ -525,8 +581,6 @@ double getCRtheorique(year_month_day ymd){
     int x=daysSinceStartOfYear.count()+1;
     return a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x);
 }
-
-//bool comparePtrToTuileS2(tuileS2* a, tuileS2* b){ return (*a < *b); }
 
 inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
 {
@@ -540,15 +594,7 @@ inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
     //return  s1.getId() < s2.getId();
 }
 
-
 std::string getNameMasqueEP(int i){
     return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif";
-}
-
-void TS1Pos::analyse(){
-
-    for (int i(0);i<mVDates.size();i++){
-        std::cout << "date " << mVDates.at(i) << ", état " << mVEtat.at(i) << std::endl;
-    }
-
+    //return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+"_80pct.tif";
 }

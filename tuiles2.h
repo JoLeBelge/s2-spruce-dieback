@@ -25,8 +25,7 @@ using namespace date;
 
 class rasterFiles;
 class pts;
-class TS1Pos;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
-//class pDateEtat; // sert à manipuler une date accompagnée d'un code état, à savoir sol nu, pessière saine ou pessière stressée, no data
+
 class tuileS2;
 
 year_month_day ymdFromString(std::string date);
@@ -38,48 +37,6 @@ double getCRtheorique(year_month_day ymd);
 
 
 std::string getNameMasqueEP(int i=1);
-
-// série temporelle pour une position donnée (un pixel)
-class TS1Pos{
-    public:
-    TS1Pos(int aU, int aV):mU(aU),mV(aV){}
-    void add1Date(year_month_day ymd,int code){
-        mVDates.push_back(ymd);
-        mVEtat.push_back(code);
-    }
-    // effectue l'analyse ; détection de plusieurs dates consécutives avec état dépérissant ou sol nu
-    void analyse();
-
-    private:
-    int mU, mV;
-    // données de base
-    std::vector<year_month_day> mVDates;
-    // analyse temporelle ; vecteur de mm dimension
-    std::vector<int> mVEtat;
-    // résultat par année ; un vecteur par an
-    std::map<int,int> mVRes;
-};
-
-/*
-class pDateEtat{
-public:
-
-    pDateEtat(year_month_day ymd,int code):mDate(ymd),mEtat(code){}
-    int getYear() const{
-        int y= mDate.year().y_;
-        return y;
-    }
-
-    int getEtat() const { return mEtat;}
-
-    void cat() const {std::cout << mDate << " : " << mEtat << std::endl;}
-
-private:
-    year_month_day  mDate;
-    int mEtat;
-
-};*/
-
 
 // sert pour le téléchargement d'une tuile
 class tuileS2
@@ -145,6 +102,10 @@ public:
     void normaliseCR();
     std::string getRasterCRnormName();
 
+    std::string getRasterR1Name(std::string numBand);
+    // attention, il s'agit des bandes rééchantillonnée à 10 m!
+    std::string getRasterR2Name(std::string numBand);
+
     void masqueSpecifique();
     std::string getRasterMasqSecName();
     std::string getRasterMasqGenName(int resol);
@@ -152,6 +113,7 @@ public:
     std::string getRasterCRName();
 
     double getCRSWIR(pts & pt);
+    double getCRSWIRNorm(pts & pt);
     int getMaskSolNu(pts & pt);
 
     std::string getDate();
@@ -160,8 +122,17 @@ public:
 
     bool openDS();
     void closeDS();
+
+    // lecture pixel par pixel. fonctionne bien, mais lent
     int getMasqVal(int aCol, int aRow);
     double getCRnormVal(int aCol, int aRow);
+
+    // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
+
+    void readCRnormLine(int aRow);
+    double getCRnormVal(int aCol);
+    void readMasqLine(int aRow);
+    int getMasqVal(int aCol);
 
 
     bool operator < (const tuileS2& t) const {
@@ -177,15 +148,27 @@ public:
         return mDate;
     }
 
+    year_month_day * getymdPt() {
+        return &mDate;
+    }
+
+    int gety() const {
+        return mDate.year().y_;
+    }
+
 private:
     // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
+    // ou alors j'utilise juste pour le test sur un point donné. plus facile à écrire et à lire que charger tout les raster de la série temporelle...
     std::unique_ptr<rasterFiles> r_crswir;
+    std::unique_ptr<rasterFiles> r_crswirNorm;
     std::unique_ptr<rasterFiles> r_solnu;
 
     GDALDataset  * mDScrnom;
     GDALDataset  * mDSsolnu;
 
     float * scanPix;
+    float * scanLineSolNu;
+    float * scanLineCR;
 };
 
 #endif // TUILES2_H

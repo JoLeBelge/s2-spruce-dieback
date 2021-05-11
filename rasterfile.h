@@ -7,6 +7,7 @@
 #include "gdal_utils.h"
 #include <numeric>
 #include "iostream"
+#include <boost/filesystem.hpp>
 
 
 class rasterFiles;
@@ -30,7 +31,7 @@ public:
     bool rasterExist(){return exists(mPathRaster);}
 
     // méthode GDAL
-    int getValue(double x, double y);
+    int getValue(double x, double y, bool quiet=1);
     double getValueDouble(double x, double y);
 
 

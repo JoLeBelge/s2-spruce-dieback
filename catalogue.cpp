@@ -4,8 +4,12 @@ extern std::string wd;
 extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
-extern std::string iprfwFile;
+//extern std::string iprfwFile;
 extern int globSeuilCC;
+double seuilCR(1.7);
+extern int year_analyse;
+extern double Xdebug;
+extern double Ydebug;
 
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
@@ -111,7 +115,7 @@ void catalogue::traitement(){
     //std::vector<pts> aVPts=readPtsFile(iprfwFile);
     //extractRatioForPts(& aVPts);
 
-    analyseTS();
+    analyseTSinit();
 }
 
 // comptage des produits avec cloudcover ok
@@ -123,6 +127,7 @@ int catalogue::countValid(){
     return aRes;
 }
 
+/*
 void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     std::cout << " extractRatioForPts : " << aVpts->size() << " pts " << std::endl;
 
@@ -160,87 +165,228 @@ void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
     aOut.close();
 
 }
+*/
 
 // les choses sérieuses commencent ici
-void catalogue::analyseTS(){
+void catalogue::analyseTSinit(){
     // je commence par initialiser un vecteur de tuile avec uniquement les produits ok, cad sans trop de nuage
-    for (tuileS2 * t : mVProduts){
-        if (t->mCloudCover<globSeuilCC){
-            mVProdutsOK.push_back(t);
+    // et identification des différentes années couvertes par la TS en mm temps
+    // je pourrais étudier année par année histoire de soulager le temps de calcul? ici je ne garderai que l'année de mon choix
+    // ok si fait année par année le traitement est très rapide. 10 minute. Là ou c'est galère si je fait les 4 ans d'un coup.
+    // donc je travaille année par année
+    // c'est ici également que j'accède au mode "description de la TS pour un point donné"
+
+
+    std::vector<int> aVYs;
+    // tentative de tout traiter d'un coup, toute les années
+    if (year_analyse==666){
+        std::cout << "analyse pour toute les années d'un coup ------------------" << std::endl;
+        for (tuileS2 * t : mVProduts){
+            if (t->mCloudCover<globSeuilCC){
+                if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
+                mVProdutsOK.push_back(t);
+            }
         }
+        std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+
+        if (Xdebug>0 && Ydebug >0){
+            // mode test pour une position
+            analyseTSTest1pixel();
+        } else {
+            analyseTS();
+        }
+
+    } else if (year_analyse==0){
+
+        for (tuileS2 * t : mVProduts){
+            //if (t->mCloudCover<globSeuilCC && t->gety()==2018){
+            if (t->mCloudCover<globSeuilCC){
+                if (std::find(aVYs.begin(), aVYs.end(), t->gety()) == aVYs.end()){aVYs.push_back(t->gety());}
+
+            }
+        }
+    } else { aVYs.push_back(year_analyse);}
+    std::sort (aVYs.begin(), aVYs.end());
+    // je passe mYs comme argument à TS1Pos et vu que je veux faire date par date, je dois le modifier
+    // attention, j'avais deux variable y!!
+    for (int year : aVYs){
+        mYs.clear();
+        mYs.push_back(year);
+        std::cout << "analyse pour l'année " << year << "------------------" << std::endl;
+
+        for (tuileS2 * t : mVProduts){
+            //if (t->mCloudCover<globSeuilCC && t->gety()==2018){
+            if (t->mCloudCover<globSeuilCC && t->gety()==year){
+                mVProdutsOK.push_back(t);
+                //if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
+            }
+        }
+        std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+        analyseTS();
     }
+}
 
-    std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
-
-    /*for (tuileS2 * t : mVProdutsOK){
-           std::cout <<  " date " << t->getDate() << std::endl;
-    }*/
+void catalogue::analyseTS(){
 
     if (openDS()){
-
-        int x=mVProdutsOK.at(0)->getXSize();
-        int y=mVProdutsOK.at(0)->getYSize();
+        x=mVProdutsOK.at(0)->getXSize();
+        y=mVProdutsOK.at(0)->getYSize();
+        int nb = mVProdutsOK.size();
         // boucle pixel par pixel - en prenant le masque sol nu comme raster de base - pas bonne idée, je devrais ouvrir la carte ou j'ai le masque forestier car dans masque sol nu sont déjà intégré les no data nuage et edge
-        bool test(0);
+        //bool test(0);
+        int c(0);
+        int step=y/20;
+        int count(0);
 
-        for ( int row = 0; row < y; row++ )
-        {
-            for (int col = 0; col < x; col++)
-            {
+        /* Le calcul parallèle pixel par pixel nécessite de charger toute les cartes en Mémoire. fonctionne pour une année, mais pas pour la série tempo complête --> pas assez de mémoire vive.
+        for ( int row = 0; row < y; row++ ){
+            //for (int col = 0; col < x; col++)
+            //{
+            std::vector<int> r(x);
+            std::iota(std::begin(r), std::end(r), 0);
+            std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
                 // check carte 1 pour voir si no data ou pas
                 int m =getMasqEPVal(col,row);
                 if (m==1){
-
-                    //std::vector<pDateEtat> mVTS;
-                    TS1Pos ts(row,col);
+                    TS1Pos ts(row,col,&mYs,nb);
                     for (tuileS2 * t : mVProdutsOK){
 
-                        /* 0; ND
-                         * 1: valeur CR swir ok.
-                         * 2; valeur CRswir NOK
-                           3 ; sol nu.*/
-                        // je pourrais stoquer les val dans un vecteur. Puis coder des fct qui travaillent sur cette map, pour en tirer les info pertinente (ex ; état en 2018)
-                        //std::cout << t->getDate() << ";" << t->getCRnormVal(col,row) << std::endl;
+                        // 0; ND
+                         // 1: valeur CR swir ok.
+                         // 2; valeur CRswir NOK
+                           3 ; sol nu.
+
                         double crnorm=t->getCRnormVal(col,row);
                         int solnu = t->getMasqVal(col,row);
                         int code=0;
                         if (solnu==0){code=0;
                         }else if(solnu==2 | solnu==3){
                             code=3;
-                        } else if (crnorm<1.5) {
+                        } else if (crnorm<=seuilCR) {
                             code=1;
-                        } else if (crnorm>1.5) {
+                        } else if (crnorm>seuilCR) {
                             code=2;
                         }
-                        //mVTS.push_back(pDateEtat(t->getymd(),code));
-                        ts.add1Date(t->getymd(),code);
+                        ts.add1Date(t->getymdPt(),code);
                     }
-                    //anaTSOnePosition(&mVTS);
                     ts.analyse();
-
-                    test=1;
-                    break;
+                    writeRes1pos(&ts);
                 }
-                if (test){break;}
+            //}
+            });
+            c++;
+            if (c%step==0){
+                count++;
+                std::cout << count*5 << "%..." << std::endl;
+                //break;
             }
-            if (test){break;}
+        }
+        //    });
+
+        */
+        // traitement ligne par ligne pour pouvoir travailler en parallèle. Réduction extra du temps de calcul.
+
+        for ( int row = 0; row < y; row++ ){
+            // lecture masque ep
+            readMasqLine(row);
+            for (tuileS2 * t : mVProdutsOK){
+                t->readCRnormLine(row);
+                t->readMasqLine(row);
+            }
+            std::vector<int> r(x);
+            std::iota(std::begin(r), std::end(r), 0);
+            std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
+
+                if (scanLine[col]==1){
+
+                    TS1Pos ts(row,col,&mYs,nb);
+                    for (tuileS2 * t : mVProdutsOK){
+                        // lit la valeur depuis la scanline
+                        double crnorm=t->getCRnormVal(col);
+                        int solnu = t->getMasqVal(col);
+                        //std::cout << " crnorm " << crnorm << " , sol nu " << solnu << std::endl;
+                        int code=0;
+                        if (solnu==0){code=0;
+                        }else if(solnu==2 | solnu==3){
+                            code=3;
+                        } else if (crnorm<=seuilCR) {
+                            code=1;
+                        } else if (crnorm>seuilCR) {
+                            code=2;
+                        }
+
+                        ts.add1Date(t->getymdPt(),code);
+                    }
+                    ts.nettoyer();
+                    ts.analyse();
+                    writeRes1pos(&ts);
+
+                }
+            });
+            //}
+            c++;
+            if (c%step==0){
+                count++;
+                std::cout << count*5 << "%..." << std::endl;
+            }
         }
 
         closeDS();
     }
+
+}
+
+void catalogue::analyseTSTest1pixel(){
+    // attention, openDS va avoir pour effet d'écraser les couches résultats (c'est pensé comme ça)
+    std::cout << "Test pour une position : " << Xdebug << "," << Ydebug << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << std::endl;
+
+    //std::cout << "attention, les couches d'états de résultats seront vides à la fin du test pour une position donnée." << std::endl;
+    // pourquoi je dois ouvrir les dataset en fait? pour vérifier que tout les raster existent? ou c'est pour les raster résultats?
+    // if (openDS()){
+
+    int nb = mVProdutsOK.size();
+    pts pt(Xdebug,Ydebug);
+
+    TS1PosTest ts(&mYs,nb,pt);
+    std::cout << "TS1PosTest créé." << std::endl;
+    for (tuileS2 * t : mVProdutsOK){
+
+        // 0; ND
+        // 1: valeur CR swir ok.
+        // 2; valeur CRswir NOK
+        // 3 ; sol nu.
+        double crnorm=t->getCRSWIRNorm(pt);
+        int solnu = t->getMaskSolNu(pt);
+        int code=0;
+        if (solnu==0){code=0;
+        }else if(solnu==2 | solnu==3){
+            code=3;
+        } else if (crnorm<=seuilCR) {
+            code=1;
+        } else if (crnorm>seuilCR) {
+            code=2;
+        }
+        ts.add1Date(code,t);
+    }
+    ts.nettoyer();
+    ts.analyse();
+    ts.printDetail();
+    //  closeDS();
+    //}
 }
 
 int catalogue::getMasqEPVal(int aCol, int aRow){
     //std::cout << "getMasqEpVal " << std::endl;
     int aRes=0;
-    float * scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+
     if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetXSize() > aCol && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
         mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
         aRes=scanPix[0];
     }
-    CPLFree(scanPix);
+
     return aRes;
 }
+
 
 void catalogue::closeDS(){
     std::cout << "fermeture de tout les raster de la TS" << std::endl;
@@ -248,6 +394,20 @@ void catalogue::closeDS(){
         t->closeDS();
     }
     if( mDSmaskEP != NULL){ GDALClose( mDSmaskEP );}
+    CPLFree(scanPix);
+
+    const char *pszFormat = "GTiff";
+    GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+
+    for (auto kv : mMapZScolTS){
+        // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
+        std::string output(wd+"output/etatSanitaire_"+std::to_string(kv.first)+".tif");
+        const char *out=output.c_str();
+        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        GDALClose( kv.second);
+        GDALClose(ds);
+    }
+    CPLFree(scanLine);
 }
 
 
@@ -256,14 +416,25 @@ bool catalogue::openDS(){
     bool aRes(1);
 
     if (exists(getNameMasqueEP())){
-        mDSmaskEP= (GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
+        const char *pszFormat = "MEM";
+        GDALDriver *pDriver= GetGDALDriverManager()->GetDriverByName(pszFormat);
+
+        GDALDataset * mask=(GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
+        const char * ch="immem";
+
+        mDSmaskEP= pDriver->CreateCopy( ch,mask,FALSE, NULL,NULL, NULL );
+        GDALClose( mask );
+
+        //mDSmaskEP= (GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
+        scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+        scanLine=(float *) CPLMalloc( sizeof( float ) * y );
         if( mDSmaskEP == NULL){
             std::cout << "masque EP pas chargé correctement" << std::endl;
             //GDALClose( mDSmaskEP );
             return 0;
         }
     } else {
-         std::cout << "masque EP pas trouvé " <<getNameMasqueEP() << std::endl;
+        std::cout << "masque EP pas trouvé " <<getNameMasqueEP() << std::endl;
     }
 
     int c(0);
@@ -282,28 +453,48 @@ bool catalogue::openDS(){
     }
 
     if (aRes==0){
-         std::cout << "il manque certaines carte dans la série temporelle" << std::endl;
+        std::cout << "il manque certaines carte dans la série temporelle" << std::endl;
     } else {
-         std::cout << "done" << std::endl;
+        // création des raster résultats
+        //const char *pszFormat = "GTiff";
+
+        const char *pszFormat = "MEM";
+
+        GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+        if( pDriver != NULL )
+        {
+            for (int y : mYs){
+                std::string output(wd+"output/etatSanitaire_"+std::to_string(y)+".tif");
+                const char *out=output.c_str();
+                GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskEP,FALSE, NULL,NULL, NULL );
+                /* je referme pour réouvrir en mode édition
+            if( ds != NULL ){ GDALClose( ds );}
+            GDALDataset  * ds2 = (GDALDataset *) GDALOpen( out, GA_Update);
+            */
+                mMapZScolTS.emplace(std::make_pair(y,ds));
+            }
+        }
+        std::cout << "done" << std::endl;
     }
     return aRes;
 }
 
-/*
-void catalogue::anaTSOnePosition(std::vector<pDateEtat> * aVTS){
+void catalogue::writeRes1pos(TS1Pos * ts){
+       // un scanpix qui est redéfini à chaque fois car sinon il sera partagé durant le calcul en parallèle et ça va provoquer des merdes par moment
+    float * scanPix2=(float *) CPLMalloc( sizeof( float ) * 1 );
+    for (int y : mYs){
+        scanPix2[0]=ts->mVRes.at(y);
+        //std::cout << "ts res pour y " << y << " est " << scanPix[0] << ", écriture à la position " << ts->mU << " , " << ts->mV << std::endl;
+        mMapZScolTS.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+    }
+    CPLFree(scanPix2);
+}
 
-    // pour commencer, on analyse la TS dans son ensemble. une fois atteinte, la parcelle est notée comme atteinte pour toute les dates ultérieures jusqu'au moment ou celle-ci est éventuellement coupée
-    int  nb (0);
-    for (pDateEtat & p : *aVTS){
-        if (p.getEtat()==2) {nb++;} else {nb=0;}
 
-        //if (nb>2) {
-            // on considère la parcelle comme touchée irrévocablement
-            //p.SetStress(1);
-            //noteStress();
-            //break;
-        //}         p.cat();
+void catalogue::readMasqLine(int aRow){
+    if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+        //std::cout << "readMasqLine" << std::endl;
+        mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, x, 1, scanLine, x,1, GDT_Float32, 0, 0 );
     }
 }
-*/
 

@@ -1,11 +1,11 @@
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
 #include "tuiles2.h"
+#include "ts1pos.h"
 class catalogue;
 class tuileS2;
 class TS1Pos;
 
-//inline bool operator< (const tuileS2 & t1, const tuileS2 & t2);
 struct PointerCompare {
     bool operator()(const tuileS2* l, const tuileS2* r) {
         return !(*l < *r);
@@ -22,6 +22,9 @@ private:
 
     void traitement();
     void analyseTS();
+    void analyseTSinit();
+    void analyseTSTest1pixel();
+    void writeRes1pos(TS1Pos * ts);
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // ouvre tout les raster dataset
     bool openDS();
@@ -32,7 +35,6 @@ private:
     // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
     std::vector<tuileS2 *>  mVProdutsOK;
 
-
     void summary(){
         for (tuileS2 * t : mVProduts){t->cat();}
         std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
@@ -40,16 +42,23 @@ private:
     // comptage des produits avec cloudcover ok
     int countValid();
 
-    // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique
-    void extractRatioForPts(std::vector<pts> * aVpts);
+    // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique OLD OLD pas utilisé
+    //void extractRatioForPts(std::vector<pts> * aVpts);
 
     int getMasqEPVal(int aCol, int aRow);
+    void readMasqLine(int aRow);
 
     // masque pessière R1
     GDALDataset  * mDSmaskEP;
     // une map de dataset gdal contenant les résultats, une carte raster pour chaque année.
     // clé ; année. val ; dataset ptr
     std::map<int,GDALDataset *> mMapZScolTS;
+    // vector des années couvertes par la TS
+    std::vector<int> mYs;
+
+    int x,y;
+    float * scanLine;
+    float * scanPix;
 
 };
 
