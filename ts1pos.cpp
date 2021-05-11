@@ -54,32 +54,38 @@ void TS1Pos::analyse(){
     i=0;
     int j(0);
     bool retourNormale(0);
-    std::vector<int>::iterator it2;
-    if (p != mVEtatFin.end()){
-        // vérifie que j'ai 3 valeurs consécutives de stress hydrique
-        for (it = p; it != mVEtatFin.end(); it++){
-            if (*it==2){i++;} else{i=0;}
-            if (i>2){conseq=1;retourNormale=0;}
+    std::vector<int> aVEtatTmp=mVEtatFin;
+    //std::vector<int>::iterator it2;
 
-            if (*it==1){j++;} else{j=0;}
+    if (p != mVEtatFin.end()){
+        int posInit= p - mVEtatFin.begin();
+        // vérifie que j'ai 3 valeurs consécutives de stress hydrique
+        //for (it = p; it != mVEtatFin.end(); it++){
+        for (int pos= posInit; pos< mVEtatFin.size(); pos++){
+
+            if (mVEtatFin.at(pos)==2){i++;} else{i=0;}
+            //if (*it==2){i++;} else{i=0;}
+            if (i>2){conseq=1;retourNormale=0;}
+            if (mVEtatFin.at(pos)==1){j++;} else{j=0;}
              if (j>2){retourNormale=1;conseq=0;}
             // si j'ai détecté 3 stress, je met tout les suivants en stress sauf si sol nu. Si sol nu, je met code 4
-            // si retour à la normale, je changer toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
+            // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
+
              if (retourNormale){
                  // je change les 2 valeurs précédentes que j'avais écrasées.
-                 int f(0);
-                 for (it2 = it; it2 !=p; it2--){
-                 if (f<2) {*it=1;} else {*it=5;}
-                 f++;
+                 for (int posAnt(pos);posAnt>posInit-1; posAnt--){
+                 if (mVEtatFin.at(posAnt)==1) {aVEtatTmp.at(posAnt)=1;} else {aVEtatTmp.at(posAnt)=5;}
                  }
                  retourNormale=0;
              }
 
             if (conseq){
-                if (*it!=3){*it=2;} else {*it=4;}
+                if (mVEtatFin.at(pos)!=3){aVEtatTmp.at(pos)=2;} else {aVEtatTmp.at(pos)=4;}
             }
         }
     }
+
+    mVEtatFin=aVEtatTmp;
 
     /*
     for (int i(0);i<mVDates.size();i++){
@@ -209,6 +215,11 @@ int TS1Pos::getEtatPourAnnee(int y){
                     if (c>2){conseq=1; aRes=3; break;}
                 }
             }
+        }
+        // ni stress dépérissement, ni coupé, test si stress passagé
+        if (aRes==1){
+            p =std::find(etat.begin(), etat.end(), 5);
+            if (p != etat.end()){aRes=5;}
         }
     }
     }
