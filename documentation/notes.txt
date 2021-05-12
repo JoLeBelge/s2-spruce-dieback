@@ -1,0 +1,58 @@
+
+analyse des séries temporelles d'image sentinelle 2 pour détection des épicéas scolytés.
+----------------------------------------------------------------------------------------
+
+Pour le moment, l'application fonctionne tuile par tuile. Ca va certainement rester le cas.
+
+L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir présentation de Dutrieux Raphael). Les prétraitements (téléchargement des données, calcul de masque) sont fait sur base de la méthodo de Nicolas Latte (script R).
+
+0) La première étape est de questionner le serveur théia en lui donnant un nom de tuile et une plage de temps entre deux date. le serveur va créer un fichier "catalogue" au format json qui est enregistré dans un fichier texte. cette étape peut s'effectuer avec le script de Olivier Hagole comme ceci;
+ python ./theia_download.py -t T31UFR -c SENTINEL2 -a config_theia.cfg -d 2016-09-01 -f 2020-10-01 -m 1 -n
+
+1) les archives correspondant aux images pour les dates au sein de cette période d'intérêt sont téléchargées depuis theia. Les produits sont les produit 2A. +- 2 go par tuile et par date. Seules les prise de vue avec peu de nuage sont utilisées.
+
+2) effacer les bandes qui ne nous intéressent pas dans l'archive (sans décrompresser) avant de décrompresser --> gagner de la place
+
+3) décompresser l'archive, combiner les masques NO DATA (egde) et CLOUD pour ne garder que les valeurs utilisables. On combine également le masque Epicéa, basé sur la carte de probabilité de présente (attention, plusieurs version de la carte Nicorentin circule, c'est prediction_intersection_5_EP que j'ai en dernière version, renommée COMPO_5.tif. Toute les étapes suivantes sont exclusivements exécutées pour les zones masquée par la carte épicéa (gain de temps et de place)
+
+4) passer les bandes à 20 mètres de résolution à 10 mètres de résolution pour pouvoir effectuer tout les calculs avec Résolution 10 mètres
+
+5) détection du sol nu (méthode INRAE) et création d'un raster solnu.
+
+6) calcul du complex ratio SWIR (INRAE)
+
+7) normaliser les carte de CR swir. Le CRSWIR varie tout le long de l'année. Chaque carte de CRSWIR est divisée par le CRSWIR théorique pour cette date, résultant ainsi en un CR normalisé pour la période. attention, les valeurs de ce ratio sont stoquée en 8 bits, donc varie de 0 à 255, 127 correspond à 1 (donc gain de 1/127)
+
+8) Une fois que l'on a fait tout cela, on dispose de toutes les informations nécessaire à notre analyse de la série temporelle. Jusqu'ici, tout les traitements on été effectué date par date, donc c'est du monotemporelle. Maintenant, on va ouvrir simultanément tout les rasters de la série temporelle affin d'utiliser toute les dates dans nos analyses. Pour gagner en temps de calcul, cette partie du code utilise GDAL directement depuis la librairie C++. Voici les étapes du process.
+
+8A) ouverture de toutes les cartes raster (Dataset) ; CRnormalisé et Masque sol nu pour chaque date. Si il manque une seule carte pour une date --> le process s'arrête.
+
+8B) boucle sur tout les pixels de l'image. On regarde si le pixel est dans la zone d'intérêt, càd dans le masque épicéa
+8C) Si le pixel est dans la zone d'intérêt, on va effectuer l'analyse. l'analyse temporelle s'effectue donc pixel par pixel, sans prendre en compte le voisinage. Pour effectuer l'analyse, on commence par attribuer un code d'état pour chaque date; Si la position est sur une zone nuageuse pour cette date, on ne l'utilise pas. Si la position est déctectée comme sol nu, on donne la valeur 3, si elle est détectée comme étant en bon état sanitaire, code 1, si elle est stressée du point de vue hydrique, code 2. Pour faire la différence entre l'état stressé et non stressé, on regarde la valeur du CRNorm. Si elle dépasse un certain ratio, pour le moment 1.7, càd que la valeur du CR est de 1.7x plus élevée que la valeur théorique, on considère que l'on est en stress hydrique. J'ai testé avec 1.5 mais j'avais beaucoup de zone stressée.
+
+On se retrouve donc avec une série de code d'état , un code d'état par date, pour une position donnée.
+
+8D) un premier filtre sur cette série d'état pour retirer les valeurs abhérantes; si un code 2 apparait au milieu de deux code 1, on le retire. pareil pour code 3.
+
+8E) Série de filtre pour décider comment classer cette position, aboutissant à
+
+code 1; sain
+
+code 2; dépérissement
+
+code 3; coupé mais sans dépérissement détecté avant la coupe
+
+code 4 ; coupé après avoir été dépérissant
+
+code 5 ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte.
+
+8F) on sauve le résultat dans un raster, donc 1 raster pour chaque année pour le moment.
+
+----------------------------------------------------------------------------------------
+Coté informatique, l'appli utilise OTB pour le calcul de raster, et gdal comme d'habitude.
+
+3 classes d'objets sont définie et importante dans le code. Les classes catalogue, tuileS2 et TS1Pos.
+
+catalogue: c'est la classe qui contient toutes la série temporelle, donc toute les dates. Chaque date correspond à une tuile sentinel 2.
+tuileS2; c'est la classe qui contient toutes les informations relatives à une tuile pour une date données ; archive compressée, décompressée, métadonnée (date, nuage, nom du produit, répertoire ou j'ai mis les images, ect)
+TS1Pos; c'est la série temporelle de code état pour une position donnée. C'est avec cette classe que l'on fait l'analyse de la succession d'état pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc.
