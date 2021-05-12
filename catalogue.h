@@ -20,6 +20,8 @@ public:
     catalogue();
 private:
 
+    void createMaskForTuile();
+
     void traitement();
     void analyseTS();
     void analyseTSinit();

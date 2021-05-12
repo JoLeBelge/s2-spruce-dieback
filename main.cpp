@@ -13,6 +13,8 @@ extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
 
+extern bool overw;
+
 int main(int argc, char *argv[])
 {
     char userName[20];
@@ -31,15 +33,7 @@ int main(int argc, char *argv[])
     }
     //iprfwFile=EP_mask_path+"ptsIPRFW.csv";
 
-    // création du wd si nécessaire
-    boost::filesystem::path dir(wd);
-    boost::filesystem::create_directory(dir);
-    boost::filesystem::path dir2(wd+"raw/");
-    boost::filesystem::create_directory(dir2);
-    boost::filesystem::path dir3(wd+"intermediate/");
-    boost::filesystem::create_directory(dir3);
-    boost::filesystem::path dir4(wd+"output/");
-    boost::filesystem::create_directory(dir4);
+
 
     GDALAllRegister();
     // Declare the supported options.
@@ -50,6 +44,7 @@ int main(int argc, char *argv[])
             ("tuile", po::value< std::string>(), "nom de la tuile. sert pour prendre le masque input, nommer le dossier de travail (wd) et les output finaux (carte etatSanitaire).")
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
             ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
+            ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ;
 
     po::variables_map vm;
@@ -65,8 +60,20 @@ int main(int argc, char *argv[])
     wd+=vm["tuile"].as<std::string>()+"/";
     globTuile=vm["tuile"].as<std::string>();
 
-    if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
+    // création du wd si nécessaire
+    boost::filesystem::path dir(wd);
+    boost::filesystem::create_directory(dir);
+    boost::filesystem::path dir2(wd+"raw/");
+    boost::filesystem::create_directory(dir2);
+    boost::filesystem::path dir3(wd+"intermediate/");
+    boost::filesystem::create_directory(dir3);
+    boost::filesystem::path dir4(wd+"output/");
+    boost::filesystem::create_directory(dir4);
+    boost::filesystem::path dir5(wd+"input/");
+    boost::filesystem::create_directory(dir5);
 
+    if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
+    if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
 
     std::vector<double> opts;
     if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {

@@ -11,6 +11,8 @@ extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
 
+extern bool overw;
+
 extern std::string globTuile;
 
 catalogue::catalogue(std::string aJsonFile){
@@ -87,10 +89,13 @@ catalogue::catalogue(){
     }
     std::cout << " done .." << std::endl;
 
+
     traitement();
 }
 
 void catalogue::traitement(){
+
+    createMaskForTuile();
     // récapitulatif;
     summary();
 
@@ -482,7 +487,7 @@ bool catalogue::openDS(){
 }
 
 void catalogue::writeRes1pos(TS1Pos * ts){
-       // un scanpix qui est redéfini à chaque fois car sinon il sera partagé durant le calcul en parallèle et ça va provoquer des merdes par moment
+    // un scanpix qui est redéfini à chaque fois car sinon il sera partagé durant le calcul en parallèle et ça va provoquer des merdes par moment
     float * scanPix2=(float *) CPLMalloc( sizeof( float ) * 1 );
     for (int y : mYs){
         scanPix2[0]=ts->mVRes.at(y);
@@ -498,5 +503,24 @@ void catalogue::readMasqLine(int aRow){
         //std::cout << "readMasqLine" << std::endl;
         mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, x, 1, scanLine, x,1, GDT_Float32, 0, 0 );
     }
+}
+
+// lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
+void catalogue::createMaskForTuile(){
+    std::string masqueRW(EP_mask_path+"masque_EP.tif");
+    std::string out=getNameMasqueEP();
+
+    if (boost::filesystem::exists(masqueRW)){
+        if (!boost::filesystem::exists(out) | overw){
+            if (mVProduts.size()>0){
+                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 maque_EP.tif "+ out;
+                std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+                aCommand="gdalwarp -ot Byte -overwrite -tr 20 20 -r max "+out+ " "+ getNameMasqueEP(2);
+                system(aCommand.c_str());
+            }
+        }
+
+    } else { std::cout << "Je n'ai pas le masque EP pour la RW \n\n\n\n\n!!" << masqueRW << std::endl;}
 }
 
