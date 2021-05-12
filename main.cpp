@@ -6,6 +6,7 @@ extern std::string wd;
 extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
+extern std::string globTuile;
 //extern std::string iprfwFile;
 extern int year_analyse;
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
     desc.add_options()
             ("help", "produce help message")
             ("catalogue", po::value<int>(), "création d'un catalogue d'image Sentinel 2 sur base de ; option (1) fichier json résultant d'une requête theia. option (2) dossiers déjà présent dans dossier intermediate/")
-            ("WDSubDirName", po::value< std::string>(), "Si création catalogue depuis requête theia, nom du sous dossier dans lequel sauver les données. Idéalement le nom de la tuile")
+            ("tuile", po::value< std::string>(), "nom de la tuile. sert pour prendre le masque input, nommer le dossier de travail (wd) et les output finaux (carte etatSanitaire).")
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
             ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
             ;
@@ -60,8 +61,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (vm.count("tuile")) {
+    wd+=vm["tuile"].as<std::string>()+"/";
+    globTuile=vm["tuile"].as<std::string>();
+
     if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
-    if (vm.count("WDSubDirName")) {wd+=vm["WDSubDirName"].as<std::string>();}
+
 
     std::vector<double> opts;
     if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {
@@ -85,6 +90,8 @@ int main(int argc, char *argv[])
         }
         }
     }
+    }
+
 
     return 0;
 }

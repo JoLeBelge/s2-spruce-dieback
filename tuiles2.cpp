@@ -14,6 +14,8 @@ int year_analyse(666);
 double Xdebug(0);
 double Ydebug(0);
 
+std::string globTuile;
+
 std::vector<std::string> vBR2{"8A", "11", "12"};
 
 std::vector<std::string> tokeep{"_FRE_",//Flat REflectance bands (not SRE)
@@ -355,7 +357,7 @@ void tuileS2::masqueSpecifique(){
     }
     r_solnu = std::make_unique<rasterFiles>(out);
 
-    if (1){
+    if (0){
         // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
         // après c'est peut-être une combinaison des nuages et des ombres qui sont détectés.
         // Nicolas me dis que les masques nuages de théia sont pas parfait, sourtout pour les anciennes dates.
@@ -595,6 +597,6 @@ inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
 }
 
 std::string getNameMasqueEP(int i){
-    return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif";
+    return EP_mask_path+"masque_EP_"+globTuile+"_R"+std::to_string(i)+".tif";
     //return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+"_80pct.tif";
 }

@@ -11,6 +11,8 @@ extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
 
+extern std::string globTuile;
+
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
     if ( !boost::filesystem::exists( aJsonFile ) )
@@ -464,7 +466,7 @@ bool catalogue::openDS(){
         if( pDriver != NULL )
         {
             for (int y : mYs){
-                std::string output(wd+"output/etatSanitaire_"+std::to_string(y)+".tif");
+                std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskEP,FALSE, NULL,NULL, NULL );
                 /* je referme pour réouvrir en mode édition
