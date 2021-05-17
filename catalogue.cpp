@@ -31,6 +31,8 @@ catalogue::catalogue(std::string aJsonFile){
         Document document;
         document.Parse(ptr);
 
+
+
         const Value& f = document["features"];
         if (f.IsArray()){
             for (SizeType i = 0; i < document["features"].Size(); i++){
@@ -513,7 +515,7 @@ void catalogue::createMaskForTuile(){
     if (boost::filesystem::exists(masqueRW)){
         if (!boost::filesystem::exists(out) | overw){
             if (mVProduts.size()>0){
-                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 maque_EP.tif "+ out;
+                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 "+ masqueRW+ " "+ out;
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
                 aCommand="gdalwarp -ot Byte -overwrite -tr 20 20 -r max "+out+ " "+ getNameMasqueEP(2);
