@@ -502,9 +502,12 @@ void catalogue::writeRes1pos(TS1Pos * ts){
 
 void catalogue::readMasqLine(int aRow){
     if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
-        //std::cout << "readMasqLine" << std::endl;
+
         mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, x, 1, scanLine, x,1, GDT_Float32, 0, 0 );
-    }
+    }else {
+        std::cout << "readMasqLine ; failed " << std::endl;
+        }
+
 }
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     if (s=="lisein"){
 
     } else {
-        wd="/home/gef/Documents/test/";
+        wd="/media/gef/Data2/S2Scolyte/";
         buildDir="/home/gef/Documents/build-s2_ts/";
         inputJson="/home/gef/Documents/s2/theia_d/search.json";
         path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 
     std::vector<double> opts;
     if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {
+        std::cout << "Test pour une position donnee "<<std::endl;
         Xdebug=opts.at(0);
         Ydebug=opts.at(1);
     }
