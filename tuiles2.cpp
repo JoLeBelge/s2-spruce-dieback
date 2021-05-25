@@ -14,6 +14,7 @@ int year_analyse(666);
 double Xdebug(0);
 double Ydebug(0);
 
+
 std::string globTuile;
 
 std::vector<std::string> vBR2{"8A", "11", "12"};

@@ -1,6 +1,7 @@
 #include "ts1pos.h"
 
-// c'est encore très lent, il faut améliorer cela
+bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état
+
 void TS1Pos::analyse(){
 
     //nettoyer();
@@ -280,9 +281,18 @@ void TS1PosTest::nettoyer(){
 
 void TS1PosTest::printDetail(){
     std::cout << "Détail série temporelle pour un point ---" <<std::endl;
+
+    if (debugDetail){
     std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12" <<std::endl;
     for (int i(0);i<mVDates.size();i++){
         std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<std::endl;
+    }
+    }
+    else{
+        std::cout << "date;etat;etatFinal" <<std::endl;
+        for (int i(0);i<mVDates.size();i++){
+            std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) <<std::endl;
+        }
     }
     std::cout << "\n annee;etat" <<std::endl;
     for (auto kv : mVRes){

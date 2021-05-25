@@ -12,6 +12,7 @@ extern int year_analyse;
 
 extern double Xdebug;
 extern double Ydebug;
+extern bool debugDetail;
 
 extern bool overw;
 
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
             ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
+            ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
             ;
 
     po::variables_map vm;
@@ -74,6 +76,7 @@ int main(int argc, char *argv[])
 
     if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
     if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
+    if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
 
     std::vector<double> opts;
     if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {

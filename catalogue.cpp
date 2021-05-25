@@ -12,6 +12,7 @@ extern double Xdebug;
 extern double Ydebug;
 
 extern bool overw;
+extern bool debugDetail;
 
 extern std::string globTuile;
 
