@@ -32,6 +32,8 @@ catalogue::catalogue(std::string aJsonFile){
         Document document;
         document.Parse(ptr);
 
+
+
         const Value& f = document["features"];
         if (f.IsArray()){
             for (SizeType i = 0; i < document["features"].Size(); i++){
@@ -501,9 +503,12 @@ void catalogue::writeRes1pos(TS1Pos * ts){
 
 void catalogue::readMasqLine(int aRow){
     if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
-        //std::cout << "readMasqLine" << std::endl;
+
         mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, x, 1, scanLine, x,1, GDT_Float32, 0, 0 );
-    }
+    }else {
+        std::cout << "readMasqLine ; failed " << std::endl;
+        }
+
 }
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
@@ -514,7 +519,7 @@ void catalogue::createMaskForTuile(){
     if (boost::filesystem::exists(masqueRW)){
         if (!boost::filesystem::exists(out) | overw){
             if (mVProduts.size()>0){
-                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 maque_EP.tif "+ out;
+                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 "+ masqueRW+ " "+ out;
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
                 aCommand="gdalwarp -ot Byte -overwrite -tr 20 20 -r max "+out+ " "+ getNameMasqueEP(2);
