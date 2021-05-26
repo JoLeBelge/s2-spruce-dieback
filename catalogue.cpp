@@ -411,7 +411,7 @@ void catalogue::closeDS(){
 
     for (auto kv : mMapZScolTS){
         // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
-        std::string output(wd+"output/etatSanitaire_"+std::to_string(kv.first)+".tif");
+        std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
         const char *out=output.c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
         GDALClose( kv.second);
@@ -466,15 +466,15 @@ bool catalogue::openDS(){
         std::cout << "il manque certaines carte dans la série temporelle" << std::endl;
     } else {
         // création des raster résultats
-        //const char *pszFormat = "GTiff";
 
         const char *pszFormat = "MEM";
-
         GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
         if( pDriver != NULL )
         {
             for (int y : mYs){
-                std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
+                //std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
+                // MEM raster
+                std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskEP,FALSE, NULL,NULL, NULL );
                 /* je referme pour réouvrir en mode édition
