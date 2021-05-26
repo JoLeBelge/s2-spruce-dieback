@@ -38,6 +38,10 @@ class TS1Pos{
     // enlève les code 0
     void nettoyer();
 
+    void detectMelange();
+    //simplification des vecteurs pour supprimer les dates consécutives qui ont le même état et ne garder que la date moyenne
+    void concateneEtat(std::vector<year_month_day> *aVD, std::vector<int>*  aVE, std::vector<std::vector<int> > *aVPosInit);
+
 
     // regarde si la valeur val est répétée 3 fois de suite dans la série temporelle, centrée sur la position pos
     bool repetition(int pos, int val);

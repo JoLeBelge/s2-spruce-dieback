@@ -68,17 +68,17 @@ void TS1Pos::analyse(){
             //if (*it==2){i++;} else{i=0;}
             if (i>2){conseq=1;retourNormale=0;}
             if (mVEtatFin.at(pos)==1){j++;} else{j=0;}
-             if (j>2){retourNormale=1;conseq=0;}
+            if (j>2){retourNormale=1;conseq=0;}
             // si j'ai détecté 3 stress, je met tout les suivants en stress sauf si sol nu. Si sol nu, je met code 4
             // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
 
-             if (retourNormale){
-                 // je change les 2 valeurs précédentes que j'avais écrasées.
-                 for (int posAnt(pos);posAnt>posInit-1; posAnt--){
-                 if (mVEtatFin.at(posAnt)==1) {aVEtatTmp.at(posAnt)=1;} else {aVEtatTmp.at(posAnt)=5;}
-                 }
-                 retourNormale=0;
-             }
+            if (retourNormale){
+                // je change les 2 valeurs précédentes que j'avais écrasées.
+                for (int posAnt(pos);posAnt>posInit-1; posAnt--){
+                    if (mVEtatFin.at(posAnt)==1) {aVEtatTmp.at(posAnt)=1;} else {aVEtatTmp.at(posAnt)=5;}
+                }
+                retourNormale=0;
+            }
 
             if (conseq){
                 if (mVEtatFin.at(pos)!=3){aVEtatTmp.at(pos)=2;} else {aVEtatTmp.at(pos)=4;}
@@ -88,26 +88,66 @@ void TS1Pos::analyse(){
 
     mVEtatFin=aVEtatTmp;
 
-    /*
-    for (int i(0);i<mVDates.size();i++){
-        std::cout << "date " << *mVDates.at(i) << ", état init " << mVEtat.at(i) << " , état après traitement " << mVEtatFin.at(i) << std::endl;
-    }
-
-    std::cout << "-------------------------------" << std::endl;
-    */
-
-
+    // les pixels qui sont un mélange de résineux et soit de sol ou de feuillus présentent un stress en hiver mais pas de stress en été (car photosynthèse du sol ou du feuillus).
+    // je crée une classe supplémentaire pour les détecter. Avant ils étaient en stress temporaire en alternance avec état normal en été seulement
+    detectMelange();
     // maintenant, je vais résumer l'état pour chaque année afin d'exporter des cartes annuelles.
-
     for (auto kv : mVRes){
         mVRes.at(kv.first)=getEtatPourAnnee(kv.first);
     }
-    /*
-    for (auto kv : mVRes){
-        std::cout << "année " << kv.first << ", état " << kv.second << std::endl;
-    }*/
+}
 
-    //std::cout << "-------------------------------" << std::endl;
+void TS1Pos::detectMelange(){
+    // premier état stress temporaire
+    std::vector<int>::iterator p=std::find(mVEtatFin.begin(), mVEtatFin.end(), 5);
+    if (p!=mVEtatFin.end()){
+        std::vector<year_month_day> aVD;
+        std::vector<int> aVE;
+        std::vector<std::vector<int>> aVPosEtatFin;
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin);
+        // recherche de toutes les positions ou j'ai un stress temporaire et test si c'est en hiver.
+        p = aVE.begin();
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 5);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                // détecte si c'est en hiver
+                if (aVD.at(pos).month()>month{9} | aVD.at(pos).month()<month{5}){
+                    // si oui, on change les valeurs dans mEtatFinal pour passer en catégorie "mélange feuillus résineux"
+                    for (int i : aVPosEtatFin.at(pos)){
+                        mVEtatFin.at(i)=6;
+                    }
+                }
+                p++;
+            }
+        }
+    }
+}
+
+void TS1Pos::concateneEtat(std::vector<year_month_day> * aVD, std::vector<int> *aVE, std::vector<std::vector<int>> * aVPosInit){
+
+    std::vector<int> posToMerge{0};
+    for (int c(1); c<mVEtatFin.size(); c++){
+        if (mVEtatFin.at(c)!=mVEtatFin.at(c-1)){
+            // rassembler les états de c-1 et antérieurs
+            aVE->push_back(mVEtatFin.at(c-1));
+            // calcul de la date moyenne
+            year_month_day * d1 = mVDates.at(posToMerge.at(0));
+            year_month_day * d2 = mVDates.at(posToMerge.at(posToMerge.size()-1));
+            days d=(sys_days{*d2}-sys_days{*d1})/2;
+            year_month_day x = sys_days{*d1} + days{d};
+            aVD->push_back(x);
+            aVPosInit->push_back(posToMerge);
+            posToMerge.clear();
+        }
+        posToMerge.push_back(c);
+
+    }
+    /* debug
+     std::cout << "TS1Pos::concateneEtat \n Date moyenne ; Etat " << std::endl;
+     for (int c(0); c<aVE->size(); c++){
+         std::cout << aVE->at(c) << " , " << aVD->at(c) << std::endl;
+     }*/
 }
 
 void TS1Pos::nettoyer(){
@@ -195,34 +235,36 @@ int TS1Pos::getEtatPourAnnee(int y){
 
         std::vector<int>::iterator p =std::find(etat.begin(), etat.end(), 4);
         if (p != etat.end()){return 4;} else {
-        p =std::find(etat.begin(), etat.end(), 2);
-        bool conseq(0);
-        int c(0);
-        std::vector<int>::iterator it;
-        if (p != etat.end()){
-            // vérifie que j'ai 3 valeurs consécutives de stress hydrique
-            for (it = p; it != etat.end(); it++){
-                if (*it==2){c++;} else{c=0;}
-                if (c>2){conseq=1; aRes=2; break;}
-            }
-        }
-        // pas stressé 3 fois d'affilé ; je teste si état =coupé 3 fois d'affilé
-        if (!conseq){
-            p =std::find(etat.begin(), etat.end(), 3);
+            p =std::find(etat.begin(), etat.end(), 2);
+            bool conseq(0);
+            int c(0);
+            std::vector<int>::iterator it;
             if (p != etat.end()){
-                c=0;
+                // vérifie que j'ai 3 valeurs consécutives de stress hydrique
                 for (it = p; it != etat.end(); it++){
-                    if (*it==3){c++;} else{c=0;}
-                    if (c>2){conseq=1; aRes=3; break;}
+                    if (*it==2){c++;} else{c=0;}
+                    if (c>2){conseq=1; aRes=2; break;}
                 }
             }
+            // pas stressé 3 fois d'affilé ; je teste si état =coupé 3 fois d'affilé
+            if (!conseq){
+                p =std::find(etat.begin(), etat.end(), 3);
+                if (p != etat.end()){
+                    c=0;
+                    for (it = p; it != etat.end(); it++){
+                        if (*it==3){c++;} else{c=0;}
+                        if (c>2){conseq=1; aRes=3; break;}
+                    }
+                }
+            }
+            // ni stress dépérissement, ni coupé, test si stress passagé ou si mélange résineux-feuillus
+            if (aRes==1){
+                p =std::find(etat.begin(), etat.end(), 5);
+                if (p != etat.end()){aRes=5;}
+                p =std::find(etat.begin(), etat.end(), 6);
+                if (p != etat.end()){aRes=6;}
+            }
         }
-        // ni stress dépérissement, ni coupé, test si stress passagé
-        if (aRes==1){
-            p =std::find(etat.begin(), etat.end(), 5);
-            if (p != etat.end()){aRes=5;}
-        }
-    }
     }
     return aRes;
 }
@@ -283,10 +325,10 @@ void TS1PosTest::printDetail(){
     std::cout << "Détail série temporelle pour un point ---" <<std::endl;
 
     if (debugDetail){
-    std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12" <<std::endl;
-    for (int i(0);i<mVDates.size();i++){
-        std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<std::endl;
-    }
+        std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12" <<std::endl;
+        for (int i(0);i<mVDates.size();i++){
+            std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<std::endl;
+        }
     }
     else{
         std::cout << "date;etat;etatFinal" <<std::endl;
@@ -296,7 +338,7 @@ void TS1PosTest::printDetail(){
     }
     std::cout << "\n annee;etat" <<std::endl;
     for (auto kv : mVRes){
-       std::cout << kv.first << ";" << kv.second <<std::endl;
+        std::cout << kv.first << ";" << kv.second <<std::endl;
     }
 
 }

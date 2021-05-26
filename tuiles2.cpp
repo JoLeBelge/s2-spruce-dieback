@@ -1,6 +1,7 @@
 #include "tuiles2.h"
 
-std::string wd("/home/lisein/Documents/Scolyte/S2/test/");
+std::string wdRacine("/home/lisein/Documents/Scolyte/S2/test/");
+std::string wd;
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
