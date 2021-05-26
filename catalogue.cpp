@@ -411,7 +411,7 @@ void catalogue::closeDS(){
 
     for (auto kv : mMapZScolTS){
         // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
+        std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
         const char *out=output.c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
         GDALClose( kv.second);

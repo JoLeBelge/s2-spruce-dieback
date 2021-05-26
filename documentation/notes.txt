@@ -2,7 +2,9 @@
 analyse des séries temporelles d'image sentinelle 2 pour détection des épicéas scolytés.
 ----------------------------------------------------------------------------------------
 
-Pour le moment, l'application fonctionne tuile par tuile. Ca va certainement rester le cas.
+Pour le moment, l'application fonctionne tuile par tuile. mais on peux donner en argument une liste de tuile comme ceci:
+
+./s2_timeSerie --catalogue 2 --tuile T31UFR T31UGR T31UGS
 
 L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir présentation de Dutrieux Raphael). Les prétraitements (téléchargement des données, calcul de masque) sont fait sur base de la méthodo de Nicolas Latte (script R).
 
@@ -45,6 +47,8 @@ code 3; coupé mais sans dépérissement détecté avant la coupe
 code 4 ; coupé après avoir été dépérissant
 
 code 5 ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte.
+
+code 6 ; pixel qui est un mélange, détecté car présente un stress pasagé en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse)
 
 8F) on sauve le résultat dans un raster, donc 1 raster pour chaque année pour le moment.
 
