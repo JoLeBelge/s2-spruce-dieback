@@ -428,10 +428,12 @@ bool catalogue::openDS(){
     if (exists(getNameMasqueEP())){
         const char *pszFormat = "MEM";
         GDALDriver *pDriver= GetGDALDriverManager()->GetDriverByName(pszFormat);
-
         GDALDataset * mask=(GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
         const char * ch="immem";
-
+        if (mask==NULL){
+            std::cout << "masque EP pas lu correctement" << std::endl;
+            return 0;
+        }
         mDSmaskEP= pDriver->CreateCopy( ch,mask,FALSE, NULL,NULL, NULL );
         GDALClose( mask );
 
