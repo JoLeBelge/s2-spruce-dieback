@@ -9,6 +9,7 @@ extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string globTuile;
+extern double seuilCR;
 
 //extern std::string iprfwFile;
 extern int year_analyse;
@@ -49,6 +50,8 @@ int main(int argc, char *argv[])
             ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
+            ("srCR", po::value<double>(), "seuil ration CR à partir duquel on détecte un stress. Defaut 1.7")
+
             ;
 
     po::variables_map vm;
@@ -69,6 +72,7 @@ int main(int argc, char *argv[])
         if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
         if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
         if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
+        if (vm.count("srCR")) {seuilCR=vm["srCR"].as<double>();}
 
         std::vector<double> opts;
         if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {
@@ -98,7 +102,7 @@ int main(int argc, char *argv[])
                 int mode(vm["catalogue"].as<int>());
                 switch (mode) {
                 case 1:{
-                    if (aVTuiles.size()==1){
+                    //if (aVTuiles.size()==1){
 
                         // lancer la requete theia avant de créer le catalogue
                         //std::string aCommand="python "+pathTheiaD+"/theia_download.py -t "+globTuile+" -c SENTINEL2 -a "+pathTheiaD+"config_theia.cfg -d 2016-01-01 -f 2020-06-01 -m 1 -n -w"+wd;
@@ -107,9 +111,9 @@ int main(int argc, char *argv[])
                         system(aCommand.c_str());
                         std::string inputJson=wd+"search.json";
                         catalogue cata(inputJson);
-                    } else {
-                        std::cout << " vous avez renseigné une liste de tuile avec l'option création de catalogue depuis une recherche theai ; incompatible." << std::endl;
-                    }
+                    //} else {
+                    //    std::cout << " vous avez renseigné une liste de tuile avec l'option création de catalogue depuis une recherche theai ; incompatible." << std::endl;
+                    //}
                     break;
                 }
                 case 2:{

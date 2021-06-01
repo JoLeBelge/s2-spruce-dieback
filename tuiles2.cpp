@@ -300,12 +300,12 @@ void tuileS2::computeCR(){
          *
          */
 
-
         // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
         // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
-        std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+        //std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+        std::string exp("im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865)))");
         std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
-        //std::cout << aCommand << std::endl;
+        std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
     } else { std::cout << "fichiers introuvables " << NIRa << " , " << SWIR1 << " , " << SWIR2 << std::endl;}

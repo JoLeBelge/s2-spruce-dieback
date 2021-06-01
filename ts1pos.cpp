@@ -66,8 +66,9 @@ void TS1Pos::analyse(){
 
             if (mVEtatFin.at(pos)==2){i++;} else{i=0;}
             //if (*it==2){i++;} else{i=0;}
-            if (i>2){conseq=1;retourNormale=0;}
-            if (mVEtatFin.at(pos)==1){j++;} else{j=0;}
+               if (i>2){conseq=1;retourNormale=0;}
+            // j'accepte un retour à la normale uniquement sur base des états initiaux, comme cela si j'ai 121212 cela signifie pas de retour à la normale, car dans etat finale cela donne 111111
+            if (mVEtat.at(pos)==1){j++;} else{j=0;}
             if (j>2){retourNormale=1;conseq=0;}
             // si j'ai détecté 3 stress, je met tout les suivants en stress sauf si sol nu. Si sol nu, je met code 4
             // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire

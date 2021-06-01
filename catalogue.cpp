@@ -327,7 +327,7 @@ void catalogue::analyseTSTest1pixel(){
         double crnorm=t->getCRSWIRNorm(pt);
         int solnu = t->getMaskSolNu(pt);
         int code=0;
-        if (solnu==0){code=0;
+        if (solnu==0 | crnorm==0){code=0;
         }else if(solnu==2 | solnu==3){
             code=3;
         } else if (crnorm<=seuilCR) {
