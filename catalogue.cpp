@@ -97,10 +97,9 @@ catalogue::catalogue(){
 }
 
 void catalogue::traitement(){
-
-    createMaskForTuile();
     // récapitulatif;
     summary();
+    createMaskForTuile();
 
     // boucle sans multithread pour les traitements d'image
     std::for_each(
@@ -136,46 +135,6 @@ int catalogue::countValid(){
     }
     return aRes;
 }
-
-/*
-void catalogue::extractRatioForPts(std::vector<pts> * aVpts){
-    std::cout << " extractRatioForPts : " << aVpts->size() << " pts " << std::endl;
-
-    std::for_each(
-                std::execution::seq,
-                mVProduts.begin(),
-                mVProduts.end(),
-                [&](tuileS2* t)
-    {
-        // check que cloudcover est en dessous de notre seuil
-        if (t->mCloudCover<globSeuilCC){
-            std::cout << " extraction valeurs pour " << t->getDate() << std::endl;
-            for (pts & pt : *aVpts){
-                pt.mCRVals.emplace(std::make_pair(t->getDate(),t->getCRSWIR(pt)));
-                pt.mVMasqVals.emplace(std::make_pair(t->getDate(),t->getMaskSolNu(pt)));
-            }
-        }
-    });
-
-    // j'exporte les résulats
-
-    std::ofstream aOut(iprfwFile.substr(0,iprfwFile.size()-4)+"_s2_ts.csv");
-    aOut.precision(3);
-
-
-    bool testFirstL(1);
-    for (pts & pt : *aVpts){
-        if (testFirstL){
-            // header : les dates
-            aOut << pt.catHeader() << "\n";
-            testFirstL=0;
-        }
-        aOut << pt.catVal() << "\n";
-    }
-    aOut.close();
-
-}
-*/
 
 // les choses sérieuses commencent ici
 void catalogue::analyseTSinit(){

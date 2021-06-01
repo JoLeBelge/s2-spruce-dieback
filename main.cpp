@@ -1,5 +1,6 @@
 #include <iostream>
 #include "catalogue.h"
+#include <execution>
 using namespace std;
 
 extern std::string wdRacine;// j'en fait un deuxieme car je vais changer wd dans la boucle sur la liste des tuiles
@@ -8,6 +9,7 @@ extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string globTuile;
+
 //extern std::string iprfwFile;
 extern int year_analyse;
 
@@ -22,16 +24,16 @@ int main(int argc, char *argv[])
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
-
-    std::string inputJson("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/search.json");
+    std::string pathTheiaD("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/");
     if (s=="lisein"){
 
     } else {
         wdRacine="/media/gef/Data2/S2Scolyte/";
         buildDir="/home/gef/Documents/build-s2_ts/";
-        inputJson="/home/gef/Documents/s2/theia_d/search.json";
         path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
         EP_mask_path="/home/gef/Documents/input/";
+        pathTheiaD="/home/gef/Documents/s2/theia_d/";
+
     }
     //iprfwFile=EP_mask_path+"ptsIPRFW.csv";
 
@@ -97,7 +99,14 @@ int main(int argc, char *argv[])
                 switch (mode) {
                 case 1:{
                     if (aVTuiles.size()==1){
-                    catalogue cata(inputJson);
+
+                        // lancer la requete theia avant de créer le catalogue
+                        //std::string aCommand="python "+pathTheiaD+"/theia_download.py -t "+globTuile+" -c SENTINEL2 -a "+pathTheiaD+"config_theia.cfg -d 2016-01-01 -f 2020-06-01 -m 1 -n -w"+wd;
+                        std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate=2020-06-01&startDate=2016-01-01&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
+                        std::cout << aCommand << std::endl;
+                        system(aCommand.c_str());
+                        std::string inputJson=wd+"search.json";
+                        catalogue cata(inputJson);
                     } else {
                         std::cout << " vous avez renseigné une liste de tuile avec l'option création de catalogue depuis une recherche theai ; incompatible." << std::endl;
                     }

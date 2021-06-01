@@ -234,7 +234,8 @@ void tuileS2::masque(){
         std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
-        if ((!boost::filesystem::exists(out) | overw) && boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
+        if (boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
+        if ((!boost::filesystem::exists(out) | overw)) {
             //im 1 = masque EP
             //im 2 = masque edge
             //im 3 masque cloud
@@ -246,6 +247,7 @@ void tuileS2::masque(){
             //std::cout << aCommand << std::endl;
             system(aCommand.c_str());
         }
+        } else { std::cout << "fichiers masques introuvables " << edg << " , " << clm << std::endl;}
     }
 }
 
@@ -258,7 +260,8 @@ void tuileS2::resample(){
         std::string in=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+b+".tif";
         std::string inMask=interDirName+"mask_R2.tif";
         // check que le fichier n'existe pas
-        if ((!boost::filesystem::exists(out) | overw) && boost::filesystem::exists(in) && boost::filesystem::exists(inMask)){
+        if (boost::filesystem::exists(in) && boost::filesystem::exists(inMask)){
+        if ((!boost::filesystem::exists(out) | overw)){
 
             std::string exp("im2b1==1 ? im1b1 : 0");
             // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
@@ -269,6 +272,8 @@ void tuileS2::resample(){
             std::cout << aCommand << std::endl;
             system(aCommand.c_str());
         }
+
+         } else { std::cout << "fichiers introuvables " << in << " , " << inMask  << std::endl;}
     }
 }
 
@@ -280,7 +285,8 @@ void tuileS2::computeCR(){
     std::string SWIR1=getRasterR2Name("11");
     std::string SWIR2=getRasterR2Name("12");
     // check que le fichier n'existe pas
-    if ((!boost::filesystem::exists(out) | overw) && boost::filesystem::exists(NIRa) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(SWIR2)){
+    if (boost::filesystem::exists(NIRa) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(SWIR2)){
+    if ((!boost::filesystem::exists(out) | overw) ){
         /* B2 bleu
          * B3 vert
          * B4 rouge
@@ -302,6 +308,8 @@ void tuileS2::computeCR(){
         //std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
+    } else { std::cout << "fichiers introuvables " << NIRa << " , " << SWIR1 << " , " << SWIR2 << std::endl;}
+
     r_crswir = std::make_unique<rasterFiles>(out);
 }
 
@@ -350,7 +358,8 @@ void tuileS2::masqueSpecifique(){
     std::string out=getRasterMasqSecName();
     //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
-    if ((!boost::filesystem::exists(out) | overw) && boost::filesystem::exists(m) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(r)&& boost::filesystem::exists(v)){
+    if  (boost::filesystem::exists(m) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(r)&& boost::filesystem::exists(v)){
+    if ((!boost::filesystem::exists(out) | overw) ){
         //im 1 = masque général
         //im 2 = swir1
         //im 3 = r
@@ -364,6 +373,7 @@ void tuileS2::masqueSpecifique(){
         system(aCommand.c_str());
     }
     r_solnu = std::make_unique<rasterFiles>(out);
+     } else { std::cout << "fichiers introuvables " << m << " , " << SWIR1 << " , " << v << std::endl;}
 
     if (0){
         // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
@@ -381,7 +391,7 @@ void tuileS2::masqueSpecifique(){
 
             std::string exp("im1b1==1 and ((im2b1/(im3b1+im4b1+im2b1)) > 0.15 and im5b1/10000.0>0.04) ? 1 : 0");
             std::string aCommand(path_otb+"otbcli_BandMathX -il "+out+ " " + v + " " + NIRa + " " + r + " " +b+ " -out '"+ out2 + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-            std::cout << aCommand << std::endl;
+            //std::cout << aCommand << std::endl;
             //system(aCommand.c_str());
             //otbcli_BinaryMorphologicalOperation -in qb_RoadExtract.tif -out opened.tif -channel 1 -xradius 5 -yradius 5 -filter erode
         }
@@ -469,20 +479,23 @@ void tuileS2::normaliseCR(){
     std::cout << "normalize CR " ;
 
     std::string out=getRasterCRnormName();
+    std::string in=getRasterCRName();
     // check que le fichier n'existe pas
+    if (boost::filesystem::exists(in)){
     if (!boost::filesystem::exists(out) | overw){
 
         // CRSWIRnorm = CRSWIR/theoreticalCR(t)
 
-        std::string in=getRasterCRName();
+
         double cr = getCRth();
 
         // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
         std::string exp("im1b1!=0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
         std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
+        //std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
+    } else { std::cout << "fichier introuvable " << in << std::endl;}
     r_crswirNorm = std::make_unique<rasterFiles>(out);
 
 }
