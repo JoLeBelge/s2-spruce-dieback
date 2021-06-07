@@ -490,9 +490,9 @@ void tuileS2::normaliseCR(){
         double cr = getCRth();
 
         // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
-        std::string exp("im1b1!=0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
+        std::string exp("im1b1>0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
         std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        //std::cout << aCommand << std::endl;
+        std::cout << aCommand << std::endl;
         system(aCommand.c_str());
     }
     } else { std::cout << "fichier introuvable " << in << std::endl;}
