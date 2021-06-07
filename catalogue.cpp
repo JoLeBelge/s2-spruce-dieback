@@ -6,7 +6,7 @@ extern std::string path_otb;
 extern std::string EP_mask_path;
 //extern std::string iprfwFile;
 extern int globSeuilCC;
-double seuilCR(1.7);
+double seuilCR(1.4); // on est encore bien au dessus de ce que font les français
 extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
@@ -15,6 +15,8 @@ extern bool overw;
 extern bool debugDetail;
 
 extern std::string globTuile;
+
+bool doAnaTS(1);
 
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
@@ -31,8 +33,6 @@ catalogue::catalogue(std::string aJsonFile){
         in.close();
         Document document;
         document.Parse(ptr);
-
-
 
         const Value& f = document["features"];
         if (f.IsArray()){
@@ -124,7 +124,9 @@ void catalogue::traitement(){
     //std::vector<pts> aVPts=readPtsFile(iprfwFile);
     //extractRatioForPts(& aVPts);
 
+    if (doAnaTS){
     analyseTSinit();
+    }
 }
 
 // comptage des produits avec cloudcover ok

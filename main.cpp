@@ -1,6 +1,7 @@
 #include <iostream>
 #include "catalogue.h"
 #include <execution>
+#include <boost/filesystem.hpp>
 using namespace std;
 
 extern std::string wdRacine;// j'en fait un deuxieme car je vais changer wd dans la boucle sur la liste des tuiles
@@ -10,6 +11,9 @@ extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string globTuile;
 extern double seuilCR;
+
+bool mergeEtatSan(0);
+extern bool doAnaTS;
 
 //extern std::string iprfwFile;
 extern int year_analyse;
@@ -50,7 +54,9 @@ int main(int argc, char *argv[])
             ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
-            ("srCR", po::value<double>(), "seuil ration CR à partir duquel on détecte un stress. Defaut 1.7")
+            ("srCR", po::value<double>(), "seuil ration CR à partir duquel on détecte un stress. Defaut 1.4")
+            ("mergeEtatSan", po::value<bool>(), "fusionne les cartes d'état sanitaire")
+            ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
 
             ;
 
@@ -69,10 +75,26 @@ int main(int argc, char *argv[])
     if (!vm["tuile"].empty()){
 
         aVTuiles = vm["tuile"].as<vector<std::string> >();
+
+        // toutes les tuiles qui sont déja téléchargées;
+        if (aVTuiles.at(0)=="all"){
+            aVTuiles.clear();
+            for(auto & p : boost::filesystem::directory_iterator(wdRacine)){
+                std::string aTuile=p.path().filename().string();
+
+                if (aTuile.substr(0,3)=="T31"){
+                aVTuiles.push_back(aTuile);
+                std::cout << " tuile " << aTuile << "ajoutée." << std::endl;
+                }
+            }
+        }
+
         if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
         if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
         if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
         if (vm.count("srCR")) {seuilCR=vm["srCR"].as<double>();}
+        if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
+        if (vm.count("mergeEtatSan")) {mergeEtatSan=vm["mergeEtatSan"].as<bool>();}
 
         std::vector<double> opts;
         if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {
@@ -117,13 +139,16 @@ int main(int argc, char *argv[])
                     break;
                 }
                 case 2:{
-
                     // ne pas mettre de parenthèse !.
                     catalogue cata;
                     break;
                 }
                 }
             }
+        }
+        // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
+        if (mergeEtatSan){
+             //std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
         }
     }
 
