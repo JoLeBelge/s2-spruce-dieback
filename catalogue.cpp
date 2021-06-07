@@ -13,6 +13,7 @@ extern double Ydebug;
 
 extern bool overw;
 extern bool debugDetail;
+extern int nbDaysStress;
 
 extern std::string globTuile;
 

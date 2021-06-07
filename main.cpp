@@ -23,6 +23,7 @@ extern double Ydebug;
 extern bool debugDetail;
 
 extern bool overw;
+extern int nbDaysStress;
 
 int main(int argc, char *argv[])
 {
@@ -55,9 +56,9 @@ int main(int argc, char *argv[])
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
             ("srCR", po::value<double>(), "seuil ration CR à partir duquel on détecte un stress. Defaut 1.4")
+            ("nbJourStress", po::value<int>(), "nombre du jours seuil à partir dusquel on n'envisage plus un retour à la normal pour un stress temporaire pronlongé. Default 90")
             ("mergeEtatSan", po::value<bool>(), "fusionne les cartes d'état sanitaire")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
-
             ;
 
     po::variables_map vm;
@@ -68,8 +69,6 @@ int main(int argc, char *argv[])
         cout << desc << "\n";
         return 1;
     }
-
-    //if (vm.count("tuile")) {
 
     std::vector<std::string> aVTuiles;
     if (!vm["tuile"].empty()){
@@ -84,11 +83,12 @@ int main(int argc, char *argv[])
 
                 if (aTuile.substr(0,3)=="T31"){
                 aVTuiles.push_back(aTuile);
-                std::cout << " tuile " << aTuile << "ajoutée." << std::endl;
+                std::cout << " tuile " << aTuile << " ajoutée." << std::endl;
                 }
             }
         }
 
+        if (vm.count("nbJourStress")) {nbDaysStress=vm["nbJourStress"].as<int>();}
         if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
         if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
         if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
             Ydebug=opts.at(1);
         }
 
+        if (doAnaTS){
         for (std::string t : aVTuiles){
 
             wd=wdRacine+ t +"/";
@@ -146,10 +147,54 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        }
         // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
         if (mergeEtatSan){
-             //std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
+            std::map<int, std::vector<std::string>> aMES;
+            for (std::string t : aVTuiles){
+                std::string tDir=wdRacine+ t +"/";
+                boost::filesystem::directory_iterator end_itr;
+
+                  // cycle through the directory
+                  for (boost::filesystem::directory_iterator itr(tDir); itr != end_itr; ++itr)
+                  {
+                      if (itr->path().filename().string().size()>25 && itr->path().filename().extension().string()==".tif"){
+                        if (boost::filesystem::is_regular_file(itr->path()) && itr->path().filename().string().substr(0,14)=="etatSanitaire_") {
+                          std::string  etatSan= itr->path().string();
+                          //std::cout << etatSan << std::endl;
+
+                          int  year=stoi(itr->path().filename().string().substr(21,4));
+                          if (aMES.find(year)!=aMES.end()){
+                              aMES.at(year).push_back(etatSan);
+                          } else {
+                              std::vector<std::string> aV;
+                              aV.push_back(etatSan);
+                              aMES.emplace(std::make_pair(year,aV));
+                          }
+                      }
+                  }
+                  }
         }
+        // effectue le merge par année
+            boost::filesystem::path dir(wdRacine+"merge/");
+            boost::filesystem::create_directory(dir);
+
+        for (auto & kv : aMES){
+            std::cout << " fusion des cartes d'état sanitaire pour l'année " << kv.first << std::endl;
+            // crée un fichier txt qui liste les inputs - pour gdal merge
+            std::ofstream out;
+            out.open(dir.string()+"merge_"+std::to_string(kv.first)+".txt");
+            for (std::string f : kv.second){
+                out << f;
+              out << "\n";
+            }
+            out.close();
+            std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+".tif -of GTiff -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
+        }
+
     }
 
     return 0;

@@ -1,6 +1,7 @@
 #include "ts1pos.h"
 
 bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état
+int nbDaysStress(90);
 
 void TS1Pos::analyse(){
 
@@ -86,9 +87,10 @@ void TS1Pos::analyse(){
             }
         }
     }
-
     mVEtatFin=aVEtatTmp;
 
+    // on est plus restrictif sur le retour à la normale ; si x mois d'affilé en stress, pas de retour possible
+    restrictRetourNorm();
     // les pixels qui sont un mélange de résineux et soit de sol ou de feuillus présentent un stress en hiver mais pas de stress en été (car photosynthèse du sol ou du feuillus).
     // je crée une classe supplémentaire pour les détecter. Avant ils étaient en stress temporaire en alternance avec état normal en été seulement
     detectMelange();
@@ -117,6 +119,36 @@ void TS1Pos::detectMelange(){
                     // si oui, on change les valeurs dans mEtatFinal pour passer en catégorie "mélange feuillus résineux"
                     for (int i : aVPosEtatFin.at(pos)){
                         mVEtatFin.at(i)=6;
+                    }
+                }
+                p++;
+            }
+        }
+    }
+}
+
+
+// on ajoute par après une regle ; si plus de x mois stressé, on empêche le retour à la normale
+void TS1Pos::restrictRetourNorm(){
+    // premier état stress temporaire
+    std::vector<int>::iterator p=std::find(mVEtatFin.begin(), mVEtatFin.end(), 5);
+    if (p!=mVEtatFin.end()){
+        std::vector<year_month_day> aVD;
+        std::vector<int> aVE;
+        std::vector<std::vector<int>> aVPosEtatFin;
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin);
+        // recherche de toutes les positions ou j'ai un stress temporaire et test si c'est en hiver.
+        p = aVE.begin();
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 5);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                // détecte si le stress a duré plus de 3 mois
+                days d=(sys_days{aVD.at(pos)}-sys_days{aVD.at(pos-1)});
+                if (d.count()>nbDaysStress){
+                    // si oui, on change toutes les valeurs suivantes dans mEtatFinal pour repasser en scolyté
+                    for (int i : aVPosEtatFin.at(pos)){
+                        mVEtatFin.at(i)=2;
                     }
                 }
                 p++;
