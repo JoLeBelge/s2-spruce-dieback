@@ -58,7 +58,7 @@ private:
     // vector des années couvertes par la TS
     std::vector<int> mYs;
 
-    int x,y;
+    int mX,mY;
     float * scanLine;
     float * scanPix;
 

@@ -568,12 +568,16 @@ void tuileS2::readCRnormLine(int aRow){
 
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
-    }
+      } else {
+        std::cout << "readCRnormLine ; failed for " << getRasterCRnormName() <<  std::endl;
+     }
 }
 void tuileS2::readMasqLine(int aRow){
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
-    }
+       }else {
+            std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
+      }
 }
 double tuileS2::getCRnormVal(int aCol){
     // applique le gain

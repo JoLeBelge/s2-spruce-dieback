@@ -201,13 +201,12 @@ void catalogue::analyseTSinit(){
 void catalogue::analyseTS(){
 
     if (openDS()){
-        x=mVProdutsOK.at(0)->getXSize();
-        y=mVProdutsOK.at(0)->getYSize();
+
         int nb = mVProdutsOK.size();
         // boucle pixel par pixel - en prenant le masque sol nu comme raster de base - pas bonne idée, je devrais ouvrir la carte ou j'ai le masque forestier car dans masque sol nu sont déjà intégré les no data nuage et edge
         //bool test(0);
         int c(0);
-        int step=y/20;
+        int step=mY/20;
         int count(0);
 
         /* Le calcul parallèle pixel par pixel nécessite de charger toute les cartes en Mémoire. fonctionne pour une année, mais pas pour la série tempo complête --> pas assez de mémoire vive.
@@ -258,20 +257,23 @@ void catalogue::analyseTS(){
         */
         // traitement ligne par ligne pour pouvoir travailler en parallèle. Réduction extra du temps de calcul.
 
-        for ( int row = 0; row < y; row++ ){
+        for ( int row = 0; row < mY; row++ ){
             // lecture masque ep
+            //std::cout << "row " << row << std::endl;
             readMasqLine(row);
             for (tuileS2 * t : mVProdutsOK){
+                //std::cout << "tuiles  " << t->getDate()<< std::endl;
                 t->readCRnormLine(row);
                 t->readMasqLine(row);
             }
-            std::vector<int> r(x);
+            std::vector<int> r(mX);
             std::iota(std::begin(r), std::end(r), 0);
             std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
-
+            //std::for_each(std::execution::seq, std::begin(r), std::end(r), [&](int col) {
                 if (scanLine[col]==1){
 
                     TS1Pos ts(row,col,&mYs,nb);
+
                     for (tuileS2 * t : mVProdutsOK){
                         // lit la valeur depuis la scanline
                         double crnorm=t->getCRnormVal(col);
@@ -289,9 +291,10 @@ void catalogue::analyseTS(){
 
                         ts.add1Date(t->getymdPt(),code);
                     }
-                    ts.nettoyer();
-                    ts.analyse();
-                    writeRes1pos(&ts);
+
+                    ts.nettoyer();                 
+                    ts.analyse();                   
+                   writeRes1pos(&ts);
 
                 }
             });
@@ -359,7 +362,6 @@ int catalogue::getMasqEPVal(int aCol, int aRow){
     return aRes;
 }
 
-
 void catalogue::closeDS(){
     std::cout << "fermeture de tout les raster de la TS" << std::endl;
     for (tuileS2 * t : mVProdutsOK){
@@ -382,7 +384,6 @@ void catalogue::closeDS(){
     CPLFree(scanLine);
 }
 
-
 bool catalogue::openDS(){
     std::cout << "ouverture de tout les raster de la TS" << std::endl;
     bool aRes(1);
@@ -397,11 +398,14 @@ bool catalogue::openDS(){
             return 0;
         }
         mDSmaskEP= pDriver->CreateCopy( ch,mask,FALSE, NULL,NULL, NULL );
+        mX=mask->GetRasterBand(1)->GetXSize();
+        mY=mask->GetRasterBand(1)->GetYSize();
         GDALClose( mask );
 
         //mDSmaskEP= (GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
         scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
-        scanLine=(float *) CPLMalloc( sizeof( float ) * y );
+        //std::cout << "create scanline catalogue pour masq ep, longeur Y est " << mY << std::endl;
+        scanLine=(float *) CPLMalloc( sizeof( float ) * mY );
         if( mDSmaskEP == NULL){
             std::cout << "masque EP pas chargé correctement" << std::endl;
             //GDALClose( mDSmaskEP );
@@ -468,7 +472,7 @@ void catalogue::writeRes1pos(TS1Pos * ts){
 void catalogue::readMasqLine(int aRow){
     if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
 
-        mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, x, 1, scanLine, x,1, GDT_Float32, 0, 0 );
+        mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mX, 1, scanLine, mX,1, GDT_Float32, 0, 0 );
     }else {
         std::cout << "readMasqLine ; failed " << std::endl;
         }

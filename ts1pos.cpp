@@ -5,8 +5,6 @@ int nbDaysStress(90);
 
 void TS1Pos::analyse(){
 
-    //nettoyer();
-
     for (int i(0);i<mVDates.size();i++){
         //std::cout << "date " << mVDates.at(i) << ", état " << mVEtat.at(i) << std::endl;
         if (mVEtat.at(i)==1){
@@ -67,7 +65,7 @@ void TS1Pos::analyse(){
 
             if (mVEtatFin.at(pos)==2){i++;} else{i=0;}
             //if (*it==2){i++;} else{i=0;}
-               if (i>2){conseq=1;retourNormale=0;}
+            if (i>2){conseq=1;retourNormale=0;}
             // j'accepte un retour à la normale uniquement sur base des états initiaux, comme cela si j'ai 121212 cela signifie pas de retour à la normale, car dans etat finale cela donne 111111
             if (mVEtat.at(pos)==1){j++;} else{j=0;}
             if (j>2){retourNormale=1;conseq=0;}
@@ -137,14 +135,20 @@ void TS1Pos::restrictRetourNorm(){
         std::vector<int> aVE;
         std::vector<std::vector<int>> aVPosEtatFin;
         concateneEtat(& aVD, & aVE, &aVPosEtatFin);
-        // recherche de toutes les positions ou j'ai un stress temporaire et test si c'est en hiver.
+        // recherche de toutes les positions ou j'ai un stress temporaire
         p = aVE.begin();
         while (p != aVE.end()) {
             p = std::find(p, aVE.end(), 5);
             if (p != aVE.end()) {
                 int pos= p - aVE.begin();
-                // détecte si le stress a duré plus de 3 mois
-                days d=(sys_days{aVD.at(pos)}-sys_days{aVD.at(pos-1)});
+                // détecte si le stress a duré plus de 3 mois.
+                days d;
+                if (pos>0){
+                    d=(sys_days{aVD.at(pos)}-sys_days{aVD.at(pos-1)});
+                } else if (pos+1<aVD.size()){
+                    //attention, le code ci-dessus ne fonctionne pas si le stress temporaire est détecté dès le début de la TS. donc j'adapte
+                    d=(sys_days{aVD.at(pos+1)}-sys_days{aVD.at(pos)});
+                }
                 if (d.count()>nbDaysStress){
                     // si oui, on change toutes les valeurs suivantes dans mEtatFinal pour repasser en scolyté
                     for (int i : aVPosEtatFin.at(pos)){
