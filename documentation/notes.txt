@@ -2,20 +2,34 @@
 analyse des séries temporelles d'image sentinelle 2 pour détection des épicéas scolytés.
 ----------------------------------------------------------------------------------------
 
-Pour le moment, l'application fonctionne tuile par tuile. mais on peux donner en argument une liste de tuile comme ceci:
+L'application fonctionne tuile par tuile. mais on peux donner en argument une liste de tuile comme ceci:
 
 ./s2_timeSerie --catalogue 2 --tuile T31UFR T31UGR T31UGS
 
-L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir présentation de Dutrieux Raphael). Les prétraitements (téléchargement des données, calcul de masque) sont fait sur base de la méthodo de Nicolas Latte (script R).
+ou également l'option 
+
+./s2_timeSerie --catalogue 2 --tuile all
+
+qui lancera l'analyse pour toutes les tuiles déjà téléchargées précédemment.
+
+L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir présentation de Dutrieux Raphael). Les prétraitements (téléchargement des données, calcul de masque) sont fait sur base de la méthodo de Nicolas Latte (issu de son script R).
 
 0) La première étape est de questionner le serveur théia en lui donnant un nom de tuile et une plage de temps entre deux date. le serveur va créer un fichier "catalogue" au format json qui est enregistré dans un fichier texte. cette étape peut s'effectuer avec le script de Olivier Hagole comme ceci;
  python ./theia_download.py -t T31UFR -c SENTINEL2 -a config_theia.cfg -d 2016-09-01 -f 2020-10-01 -m 1 -n
+ 
+ Finalement, cet outil n'est plus nécessaire car l'appli s2_timeSerie questionne directement le serveur theia si l'option catalogue est mise à 1, ex:
+ 
+ ./s2_timeSerie --catalogue 1 --tuile T31UFR
+ 
+ mais pour l'instant il n'y a pas le choix des dates de début et de fin. Ca viendra.
 
 1) les archives correspondant aux images pour les dates au sein de cette période d'intérêt sont téléchargées depuis theia. Les produits sont les produit 2A. +- 2 go par tuile et par date. Seules les prise de vue avec peu de nuage sont utilisées.
 
 2) effacer les bandes qui ne nous intéressent pas dans l'archive (sans décrompresser) avant de décrompresser --> gagner de la place
 
 3) décompresser l'archive, combiner les masques NO DATA (egde) et CLOUD pour ne garder que les valeurs utilisables. On combine également le masque Epicéa, basé sur la carte de probabilité de présente (attention, plusieurs version de la carte Nicorentin circule, c'est prediction_intersection_5_EP que j'ai en dernière version, renommée COMPO_5.tif. Toute les étapes suivantes sont exclusivements exécutées pour les zones masquée par la carte épicéa (gain de temps et de place)
+
+A noter que le masque Epicea est le seul input nécéssaire au traitements. en résolution de 10m. Le masque global de la Région Wallonne est renseigné et celui-ci est découpé à l'emprise de chaque tuile et projeté en UTM 31 N.
 
 4) passer les bandes à 20 mètres de résolution à 10 mètres de résolution pour pouvoir effectuer tout les calculs avec Résolution 10 mètres
 
@@ -30,7 +44,7 @@ L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir prés
 8A) ouverture de toutes les cartes raster (Dataset) ; CRnormalisé et Masque sol nu pour chaque date. Si il manque une seule carte pour une date --> le process s'arrête.
 
 8B) boucle sur tout les pixels de l'image. On regarde si le pixel est dans la zone d'intérêt, càd dans le masque épicéa
-8C) Si le pixel est dans la zone d'intérêt, on va effectuer l'analyse. l'analyse temporelle s'effectue donc pixel par pixel, sans prendre en compte le voisinage. Pour effectuer l'analyse, on commence par attribuer un code d'état pour chaque date; Si la position est sur une zone nuageuse pour cette date, on ne l'utilise pas. Si la position est déctectée comme sol nu, on donne la valeur 3, si elle est détectée comme étant en bon état sanitaire, code 1, si elle est stressée du point de vue hydrique, code 2. Pour faire la différence entre l'état stressé et non stressé, on regarde la valeur du CRNorm. Si elle dépasse un certain ratio, pour le moment 1.7, càd que la valeur du CR est de 1.7x plus élevée que la valeur théorique, on considère que l'on est en stress hydrique. J'ai testé avec 1.5 mais j'avais beaucoup de zone stressée.
+8C) Si le pixel est dans la zone d'intérêt, on va effectuer l'analyse. l'analyse temporelle s'effectue donc pixel par pixel, sans prendre en compte le voisinage. Pour effectuer l'analyse, on commence par attribuer un code d'état pour chaque date; Si la position est sur une zone nuageuse pour cette date, on ne l'utilise pas. Si la position est déctectée comme sol nu, on donne la valeur 3, si elle est détectée comme étant en bon état sanitaire, code 1, si elle est stressée du point de vue hydrique, code 2. Pour faire la différence entre l'état stressé et non stressé, on regarde la valeur du CRNorm. Si elle dépasse un certain ratio, pour le moment 1.4, càd que la valeur du CR est de 1.4x plus élevée que la valeur théorique, on considère que l'on est en stress hydrique.
 
 On se retrouve donc avec une série de code d'état , un code d'état par date, pour une position donnée.
 
@@ -49,6 +63,7 @@ code 4 ; coupé après avoir été dépérissant
 code 5 ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte.
 
 code 6 ; pixel qui est un mélange, détecté car présente un stress pasagé en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse)
+
 
 8F) on sauve le résultat dans un raster, donc 1 raster pour chaque année pour le moment.
 
