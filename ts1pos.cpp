@@ -143,7 +143,9 @@ void TS1Pos::restrictRetourNorm(){
                 int pos= p - aVE.begin();
                 // détecte si le stress a duré plus de 3 mois.
                 days d;
-                if (pos>0){
+                if (aVD.size()>0) {std::cout << "bug aVD size 0 dans restrict Retour Normale" << std::endl;
+
+                if (pos>0 && aVD.size()>0){
                     d=(sys_days{aVD.at(pos)}-sys_days{aVD.at(pos-1)});
                 } else if (pos+1<aVD.size()){
                     //attention, le code ci-dessus ne fonctionne pas si le stress temporaire est détecté dès le début de la TS. donc j'adapte

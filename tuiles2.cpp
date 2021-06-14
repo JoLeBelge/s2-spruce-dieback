@@ -47,6 +47,12 @@ void tuileS2::download(){
     std::string aCommand("curl -k -s -X POST  --data-urlencode 'ident=nicolas.latte@uliege.be' --data-urlencode 'pass=a1b2c3d4ULG_' https://theia.cnes.fr/atdistrib/services/authenticate/>token.json");
     //std::cout << aCommand << std::endl;
     system(aCommand.c_str());
+    // attention, ce code écrit token au current directory et puis lis token qui est dans le build Dir. Ce qui signifie qu'il faut lancer la commande depuis le build dir sinon le token ne sera pas le bon.
+    // à modifier plus tard pour rendre plus robuste.
+    /*char tmp[256];
+    getcwd(tmp, 256);
+    cout << "Current working directory: " << tmp << endl;
+    */
     std::ifstream in(buildDir+"/token.json");
     std::ostringstream sstream;
     sstream << in.rdbuf();
