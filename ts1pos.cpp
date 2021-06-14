@@ -115,6 +115,8 @@ void TS1Pos::detectMelange(){
                 // détecte si c'est en hiver
                 if (aVD.at(pos).month()>month{9} | aVD.at(pos).month()<month{5}){
                     // si oui, on change les valeurs dans mEtatFinal pour passer en catégorie "mélange feuillus résineux"
+                    // warn! bug! si stress temporaire hivernal suivit de scolyte l'été d'après, va tout mettre en 6. pas bon
+
                     for (int i : aVPosEtatFin.at(pos)){
                         mVEtatFin.at(i)=6;
                     }
