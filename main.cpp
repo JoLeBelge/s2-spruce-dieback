@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
             Ydebug=opts.at(1);
         }
 
-        if (doAnaTS){
+
         for (std::string t : aVTuiles){
 
             wd=wdRacine+ t +"/";
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
                 }
                 }
             }
-        }
+
         }
         // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
         if (mergeEtatSan){

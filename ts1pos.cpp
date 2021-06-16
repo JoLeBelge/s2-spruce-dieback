@@ -51,7 +51,7 @@ void TS1Pos::analyse(){
     // non c'est pas du tout comme cela qu'il faut procéder. j'avais mal lu la slide de Dutrieux. C'est si 3x un retour sans stress consécutif après une période de stress, on considère que ce n'est pas un dépérissement mais uniquement un stress passagé. "retour à la normale"
     p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
     conseq=0;
-    i=0;
+    i=1;
     int j(0);
     bool retourNormale(0);
     std::vector<int> aVEtatTmp=mVEtatFin;
@@ -69,16 +69,22 @@ void TS1Pos::analyse(){
             // j'accepte un retour à la normale uniquement sur base des états initiaux, comme cela si j'ai 121212 cela signifie pas de retour à la normale, car dans etat finale cela donne 111111
             if (mVEtat.at(pos)==1){j++;} else{j=0;}
             if (j>2){retourNormale=1;conseq=0;}
-            // si j'ai détecté 3 stress, je met tout les suivants en stress sauf si sol nu. Si sol nu, je met code 4
-            // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
 
+
+               // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
             if (retourNormale){
                 // je change les 2 valeurs précédentes que j'avais écrasées.
+                //std::cout << "retour à la normale détecté  position " << pos << std::endl;
                 for (int posAnt(pos);posAnt>posInit-1; posAnt--){
+                //std::cout << "retour à la normale " << * mVDates.at(posAnt) << " , etat init " << mVEtatFin.at(posAnt) << " de " << posAnt << std::endl;
                     if (mVEtatFin.at(posAnt)==1) {aVEtatTmp.at(posAnt)=1;} else {aVEtatTmp.at(posAnt)=5;}
+                   //std::cout << " mis en stress temporaire " << std::endl;}
                 }
                 retourNormale=0;
+                posInit=pos;
             }
+
+            // si j'ai détecté 3 stress, je met tout les suivants en stress sauf si sol nu. Si sol nu, je met code 4
 
             if (conseq){
                 if (mVEtatFin.at(pos)!=3){aVEtatTmp.at(pos)=2;} else {aVEtatTmp.at(pos)=4;}
@@ -87,11 +93,26 @@ void TS1Pos::analyse(){
     }
     mVEtatFin=aVEtatTmp;
 
+    /*
+    for (auto i : mVEtatFin){
+        std::cout << i << std::endl;
+    }*/
+
     // on est plus restrictif sur le retour à la normale ; si x mois d'affilé en stress, pas de retour possible
+    //std::cout << " restric retour normale" << std::endl;
     restrictRetourNorm();
+
+    /*
+    for (auto i : mVEtatFin){
+        std::cout << i << std::endl;
+    }
+    */
+
     // les pixels qui sont un mélange de résineux et soit de sol ou de feuillus présentent un stress en hiver mais pas de stress en été (car photosynthèse du sol ou du feuillus).
     // je crée une classe supplémentaire pour les détecter. Avant ils étaient en stress temporaire en alternance avec état normal en été seulement
+    //std::cout << " detect melange" << std::endl;
     detectMelange();
+
     // maintenant, je vais résumer l'état pour chaque année afin d'exporter des cartes annuelles.
     for (auto kv : mVRes){
         mVRes.at(kv.first)=getEtatPourAnnee(kv.first);
@@ -103,9 +124,16 @@ void TS1Pos::detectMelange(){
     std::vector<int>::iterator p=std::find(mVEtatFin.begin(), mVEtatFin.end(), 5);
     if (p!=mVEtatFin.end()){
         std::vector<year_month_day> aVD;
-        std::vector<int> aVE;
+        std::vector<int> aVE, aVDuree;
         std::vector<std::vector<int>> aVPosEtatFin;
-        concateneEtat(& aVD, & aVE, &aVPosEtatFin);
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin, &aVDuree);
+
+        /*
+        for (int i(0);i<aVD.size();i++){
+            std::cout << " date; " << aVD.at(i) << " , duree " << aVDuree.at(i) << " , etat " << aVE.at(i) << std::endl;
+
+        }*/
+
         // recherche de toutes les positions ou j'ai un stress temporaire et test si c'est en hiver.
         p = aVE.begin();
         while (p != aVE.end()) {
@@ -113,18 +141,32 @@ void TS1Pos::detectMelange(){
             if (p != aVE.end()) {
                 int pos= p - aVE.begin();
                 // détecte si c'est en hiver
-                if (aVD.at(pos).month()>month{9} | aVD.at(pos).month()<month{5}){
+                if ((aVD.at(pos).month()>month{9} | aVD.at(pos).month()<month{5}) && aVDuree.at(pos)<200){
                     // si oui, on change les valeurs dans mEtatFinal pour passer en catégorie "mélange feuillus résineux"
                     // warn! bug! si stress temporaire hivernal suivit de scolyte l'été d'après, va tout mettre en 6. pas bon
-
+                    //std::cout << "detecte stress hivernal en date du " << aVD.at(pos) << std::endl;
                     for (int i : aVPosEtatFin.at(pos)){
+                        //std::cout << "change la valeur  " << mVEtatFin.at(i) << " de la date " <<  * mVDates.at(i) << std::endl;
                         mVEtatFin.at(i)=6;
+                    }
+                    // je ne sais pas à quoi c'est du, mais j'ai des code 5 en état final qui commence durant un stress (etat ini 2) puis continuent sur un code 1 (pseudo-retour à la normal) qui finissent pas un code 3 (coupé). Il faudrait donc changer les 5 en 2 (scolyté) et les 3 en 4 (coupé àprès scolyté)
+                } else if (aVE.size()>pos+1 && aVE.at(pos+1)==3) {
+
+                    //std::cout << "detecte coupe après stress temporaire " << aVD.at(pos) << std::endl;
+                    for (int i : aVPosEtatFin.at(pos)){
+                        //std::cout << "change la valeur  " << mVEtatFin.at(i) << " de la date " <<  * mVDates.at(i) << std::endl;
+                        mVEtatFin.at(i)=2;
+                    }
+                    for (int i : aVPosEtatFin.at(pos+1)){
+                        //std::cout << "change la valeur  " << mVEtatFin.at(i) << " de la date " <<  * mVDates.at(i) << " en coupe après scolyte" << std::endl;
+                        mVEtatFin.at(i)=4;
                     }
                 }
                 p++;
+                }
+
             }
         }
-    }
 }
 
 
@@ -135,25 +177,17 @@ void TS1Pos::restrictRetourNorm(){
     if (p!=mVEtatFin.end()){
         std::vector<year_month_day> aVD;
         std::vector<int> aVE;
+        std::vector<int> aVDuree;
         std::vector<std::vector<int>> aVPosEtatFin;
-        concateneEtat(& aVD, & aVE, &aVPosEtatFin);
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin, & aVDuree);
         // recherche de toutes les positions ou j'ai un stress temporaire
         p = aVE.begin();
         while (p != aVE.end()) {
             p = std::find(p, aVE.end(), 5);
             if (p != aVE.end()) {
                 int pos= p - aVE.begin();
-                // détecte si le stress a duré plus de 3 mois.
-                days d;
-                if (aVD.size()>0) {std::cout << "bug aVD size 0 dans restrict Retour Normale" << std::endl;
-
-                if (pos>0 && aVD.size()>0){
-                    d=(sys_days{aVD.at(pos)}-sys_days{aVD.at(pos-1)});
-                } else if (pos+1<aVD.size()){
-                    //attention, le code ci-dessus ne fonctionne pas si le stress temporaire est détecté dès le début de la TS. donc j'adapte
-                    d=(sys_days{aVD.at(pos+1)}-sys_days{aVD.at(pos)});
-                }
-                if (d.count()>nbDaysStress){
+                // détecte si le stress a duré plus que le nombre de jours seuil (defaut 90).
+                if (aVDuree.at(pos)>nbDaysStress){
                     // si oui, on change toutes les valeurs suivantes dans mEtatFinal pour repasser en scolyté
                     for (int i : aVPosEtatFin.at(pos)){
                         mVEtatFin.at(i)=2;
@@ -165,18 +199,21 @@ void TS1Pos::restrictRetourNorm(){
     }
 }
 
-void TS1Pos::concateneEtat(std::vector<year_month_day> * aVD, std::vector<int> *aVE, std::vector<std::vector<int>> * aVPosInit){
+void TS1Pos::concateneEtat(std::vector<year_month_day> * aVD, std::vector<int> *aVE, std::vector<std::vector<int>> * aVPosInit, std::vector<int> *aVDuree){
 
     std::vector<int> posToMerge{0};
     for (int c(1); c<mVEtatFin.size(); c++){
-        if (mVEtatFin.at(c)!=mVEtatFin.at(c-1)){
+        if (mVEtatFin.at(c)!=mVEtatFin.at(c-1) | c==mVEtatFin.size()-1){
             // rassembler les états de c-1 et antérieurs
             aVE->push_back(mVEtatFin.at(c-1));
             // calcul de la date moyenne
             year_month_day * d1 = mVDates.at(posToMerge.at(0));
             year_month_day * d2 = mVDates.at(posToMerge.at(posToMerge.size()-1));
-            days d=(sys_days{*d2}-sys_days{*d1})/2;
-            year_month_day x = sys_days{*d1} + days{d};
+
+            // durée de la période ; utile également, j'ajoute
+            days d=(sys_days{*d2}-sys_days{*d1});
+            if (aVDuree!=NULL){aVDuree->push_back(d.count());}
+            year_month_day x = sys_days{*d1} + days{d/2};
             aVD->push_back(x);
             aVPosInit->push_back(posToMerge);
             posToMerge.clear();
@@ -272,6 +309,7 @@ int TS1Pos::getEtatPourAnnee(int y){
 
 
     // il faut vérifier que j'ai 3 dates consécutives avec code 2.
+    // je pourrais être moins restrictif car des fois j'ai 1 code 2 en décembre et puis 2 autres en janvier de l'année d'après, ça fonctionne pas alors.
     if (etat.size()>0){
 
         std::vector<int>::iterator p =std::find(etat.begin(), etat.end(), 4);
@@ -300,10 +338,11 @@ int TS1Pos::getEtatPourAnnee(int y){
             }
             // ni stress dépérissement, ni coupé, test si stress passagé ou si mélange résineux-feuillus
             if (aRes==1){
-                p =std::find(etat.begin(), etat.end(), 5);
-                if (p != etat.end()){aRes=5;}
+                // le code 5 est plus contraignant que le code 6.
                 p =std::find(etat.begin(), etat.end(), 6);
                 if (p != etat.end()){aRes=6;}
+                p =std::find(etat.begin(), etat.end(), 5);
+                if (p != etat.end()){aRes=5;}
             }
         }
     }

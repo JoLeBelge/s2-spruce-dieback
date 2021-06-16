@@ -313,7 +313,7 @@ void catalogue::analyseTS(){
 
 void catalogue::analyseTSTest1pixel(){
     // attention, openDS va avoir pour effet d'écraser les couches résultats (c'est pensé comme ça)
-    std::cout << "Test pour une position : " << Xdebug << "," << Ydebug << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << std::endl;
+    std::cout << "Test pour une position : " << Xdebug << "," << Ydebug << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << " et nombre de jours de stress après lesquel on interdit un retour à la normal de " << nbDaysStress << ", tuile " << globTuile <<  std::endl;
 
     //std::cout << "attention, les couches d'états de résultats seront vides à la fin du test pour une position donnée." << std::endl;
     // pourquoi je dois ouvrir les dataset en fait? pour vérifier que tout les raster existent? ou c'est pour les raster résultats?
@@ -323,7 +323,7 @@ void catalogue::analyseTSTest1pixel(){
     pts pt(Xdebug,Ydebug);
 
     TS1PosTest ts(&mYs,nb,pt);
-    std::cout << "TS1PosTest créé." << std::endl;
+    //std::cout << "TS1PosTest créé." << std::endl;
     for (tuileS2 * t : mVProdutsOK){
 
         // 0; ND
@@ -481,13 +481,19 @@ void catalogue::readMasqLine(int aRow){
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
 void catalogue::createMaskForTuile(){
+
     std::string masqueRW(EP_mask_path+"masque_EP.tif");
+    int epsg(32631);
+    if (globTuile=="T32ULU"){
+        masqueRW=EP_mask_path+"masque_resineux.tif";
+        epsg=32632;
+    }
     std::string out=getNameMasqueEP();
 
     if (boost::filesystem::exists(masqueRW)){
         if (!boost::filesystem::exists(out) | overw){
             if (mVProduts.size()>0){
-                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:32631 -ot Byte -overwrite -tr 10 10 "+ masqueRW+ " "+ out;
+                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:"+std::to_string(epsg)+" -ot Byte -overwrite -tr 10 10 "+ masqueRW+ " "+ out;
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
                 aCommand="gdalwarp -ot Byte -overwrite -tr 20 20 -r max "+out+ " "+ getNameMasqueEP(2);
