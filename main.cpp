@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
                         // lancer la requete theia avant de créer le catalogue
                         //std::string aCommand="python "+pathTheiaD+"/theia_download.py -t "+globTuile+" -c SENTINEL2 -a "+pathTheiaD+"config_theia.cfg -d 2016-01-01 -f 2020-06-01 -m 1 -n -w"+wd;
-                        std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate=2020-06-01&startDate=2016-01-01&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
+                        std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate=2021-06-01&startDate=2016-01-01&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
                         std::cout << aCommand << std::endl;
                         system(aCommand.c_str());
                         std::string inputJson=wd+"search.json";

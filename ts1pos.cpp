@@ -70,7 +70,6 @@ void TS1Pos::analyse(){
             if (mVEtat.at(pos)==1){j++;} else{j=0;}
             if (j>2){retourNormale=1;conseq=0;}
 
-
                // si retour à la normale, je change toutes les valeurs de stress précédentes pour noter qu'il s'agit d'un stress temporaire
             if (retourNormale){
                 // je change les 2 valeurs précédentes que j'avais écrasées.
