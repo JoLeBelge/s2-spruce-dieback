@@ -26,6 +26,8 @@ extern bool overw;
 extern int nbDaysStress;
 std::string XYtestFile("toto");
 
+std::string d1("2016-01-01"),d2("2021-06-01");
+
 int main(int argc, char *argv[])
 {
     char userName[20];
@@ -60,6 +62,7 @@ int main(int argc, char *argv[])
             ("mergeEtatSan", po::value<bool>(), "fusionne les cartes d'état sanitaire")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
             ("XYtestOut", po::value< std::string>(), "fichier texte ou sauver les résultats de XYTest sur un point.")
+            ("dates",  po::value<std::vector<std::string> >()->multitoken(), "date 1 et date 2 pour le téléchargement de la série temporelle. Default; 2016-01-01 et 2021-06-01" )
             ;
 
     po::variables_map vm;
@@ -106,6 +109,13 @@ int main(int argc, char *argv[])
             Ydebug=opts.at(1);
         }
 
+        std::vector<std::string> dates;
+        if (!vm["dates"].empty() && (dates = vm["dates"].as<vector<std::string> >()).size() == 2) {
+            std::cout << "dates de début et de fin entrées par l'utilisateur "<<std::endl;
+            d1=dates.at(0);
+            d2=dates.at(1);
+        }
+
 
         for (std::string t : aVTuiles){
 
@@ -128,18 +138,14 @@ int main(int argc, char *argv[])
                 int mode(vm["catalogue"].as<int>());
                 switch (mode) {
                 case 1:{
-                    //if (aVTuiles.size()==1){
 
                         // lancer la requete theia avant de créer le catalogue
-                        //std::string aCommand="python "+pathTheiaD+"/theia_download.py -t "+globTuile+" -c SENTINEL2 -a "+pathTheiaD+"config_theia.cfg -d 2016-01-01 -f 2020-06-01 -m 1 -n -w"+wd;
-                        std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate=2021-06-01&startDate=2016-01-01&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
+                        std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
                         std::cout << aCommand << std::endl;
                         system(aCommand.c_str());
                         std::string inputJson=wd+"search.json";
                         catalogue cata(inputJson);
-                    //} else {
-                    //    std::cout << " vous avez renseigné une liste de tuile avec l'option création de catalogue depuis une recherche theai ; incompatible." << std::endl;
-                    //}
+
                     break;
                 }
                 case 2:{

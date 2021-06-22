@@ -16,6 +16,10 @@
 #include <execution>
 #include "rasterfile.h"
 
+#include <libgen.h>         // dirname
+#include <unistd.h>         // readlink
+#include <linux/limits.h>   // PATH_MAX
+
 namespace po = boost::program_options;
 namespace qi = boost::spirit::qi;
 using namespace libzippp;
