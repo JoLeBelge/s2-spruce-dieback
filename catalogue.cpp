@@ -312,13 +312,8 @@ void catalogue::analyseTS(){
 }
 
 void catalogue::analyseTSTest1pixel(){
-    // attention, openDS va avoir pour effet d'écraser les couches résultats (c'est pensé comme ça)
+
     std::cout << "Test pour une position : " << Xdebug << "," << Ydebug << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << " et nombre de jours de stress après lesquel on interdit un retour à la normal de " << nbDaysStress << ", tuile " << globTuile <<  std::endl;
-
-    //std::cout << "attention, les couches d'états de résultats seront vides à la fin du test pour une position donnée." << std::endl;
-    // pourquoi je dois ouvrir les dataset en fait? pour vérifier que tout les raster existent? ou c'est pour les raster résultats?
-    // if (openDS()){
-
     int nb = mVProdutsOK.size();
     pts pt(Xdebug,Ydebug);
 
@@ -345,9 +340,7 @@ void catalogue::analyseTSTest1pixel(){
     }
     ts.nettoyer();
     ts.analyse();
-    ts.printDetail();
-    //  closeDS();
-    //}
+    ts.printDetail();   
 }
 
 int catalogue::getMasqEPVal(int aCol, int aRow){
