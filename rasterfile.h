@@ -23,7 +23,6 @@ class rasterFiles{
 public:
     rasterFiles(std::string aPathTif);
     rasterFiles();
-    //~rasterFiles();
 
     // retourne le chemin d'accès complêt
     std::string getPathTif() const{return mPathRaster;}
@@ -42,18 +41,8 @@ protected:
 
 class pts{
 public:    pts(double aX, double aY):mX(aX),mY(aY){}
-
     double X(){return mX;}
     double Y(){return mY;}
-
-    // clé; date, val, valeur du masque
-    std::map<std::string,int> mVMasqVals;
-    // clé; date, val, valeur du cr
-    std::map<std::string,double> mCRVals;
-
-    std::string catHeader();
-    std::string catVal();
-
 private:
     double mX, mY;
 };

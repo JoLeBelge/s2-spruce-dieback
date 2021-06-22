@@ -16,8 +16,12 @@ extern bool debugDetail;
 extern int nbDaysStress;
 
 extern std::string globTuile;
+extern std::string globResXYTest;
+extern std::string XYtestFile;
 
 bool doAnaTS(1);
+
+std::vector<pts> globVPts;
 
 catalogue::catalogue(std::string aJsonFile){
     // parse le json de la requete
@@ -121,9 +125,9 @@ void catalogue::traitement(){
     });
 
     // points pour visu de la série tempo et pour vérifier la fct harmonique
-    // attention, ce code n'a jamais été utilisé, finalement j'ai récupéré la fct harmonique de dutrieux
-    //std::vector<pts> aVPts=readPtsFile(iprfwFile);
-    //extractRatioForPts(& aVPts);
+    if (XYtestFile!="toto"){
+    globVPts=readPtsFile(XYtestFile);
+    }
 
     if (doAnaTS){
     analyseTSinit();
@@ -143,11 +147,8 @@ int catalogue::countValid(){
 void catalogue::analyseTSinit(){
     // je commence par initialiser un vecteur de tuile avec uniquement les produits ok, cad sans trop de nuage
     // et identification des différentes années couvertes par la TS en mm temps
-    // je pourrais étudier année par année histoire de soulager le temps de calcul? ici je ne garderai que l'année de mon choix
-    // ok si fait année par année le traitement est très rapide. 10 minute. Là ou c'est galère si je fait les 4 ans d'un coup.
-    // donc je travaille année par année
+    // je peux choisir si je travaille année par année ou si je traite toute la série tempo d'un coup. C'était surtout utile durant le développement, car au début le temps de calcul était trop long pour toute la série tempo. Maintenant pas très utile comme option
     // c'est ici également que j'accède au mode "description de la TS pour un point donné"
-
 
     std::vector<int> aVYs;
     // tentative de tout traiter d'un coup, toute les années
@@ -163,8 +164,16 @@ void catalogue::analyseTSinit(){
 
         if (Xdebug>0 && Ydebug >0){
             // mode test pour une position
-            analyseTSTest1pixel();
-        } else {
+            analyseTSTest1pixel(Xdebug,Ydebug,globResXYTest);
+        } else if(globVPts.size()>0) {
+             // mode test pour un ensemble de position (et sauver résultat dans fichiers)
+             std::cout << " analyse en mode Test pour une liste de " << globVPts.size() << "points " << std::endl;
+            for (pts & pt : globVPts){
+
+               analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
+            }
+
+        }else{
             analyseTS();
         }
 
@@ -180,17 +189,15 @@ void catalogue::analyseTSinit(){
     } else { aVYs.push_back(year_analyse);}
     std::sort (aVYs.begin(), aVYs.end());
     // je passe mYs comme argument à TS1Pos et vu que je veux faire date par date, je dois le modifier
-    // attention, j'avais deux variable y!!
+
     for (int year : aVYs){
         mYs.clear();
         mYs.push_back(year);
         std::cout << "analyse pour l'année " << year << "------------------" << std::endl;
 
         for (tuileS2 * t : mVProduts){
-            //if (t->mCloudCover<globSeuilCC && t->gety()==2018){
             if (t->mCloudCover<globSeuilCC && t->gety()==year){
                 mVProdutsOK.push_back(t);
-                //if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
             }
         }
         std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
@@ -204,7 +211,7 @@ void catalogue::analyseTS(){
 
         int nb = mVProdutsOK.size();
         // boucle pixel par pixel - en prenant le masque sol nu comme raster de base - pas bonne idée, je devrais ouvrir la carte ou j'ai le masque forestier car dans masque sol nu sont déjà intégré les no data nuage et edge
-        //bool test(0);
+
         int c(0);
         int step=mY/20;
         int count(0);
@@ -311,16 +318,16 @@ void catalogue::analyseTS(){
 
 }
 
-void catalogue::analyseTSTest1pixel(){
+void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
 
-    std::cout << "Test pour une position : " << Xdebug << "," << Ydebug << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << " et nombre de jours de stress après lesquel on interdit un retour à la normal de " << nbDaysStress << ", tuile " << globTuile <<  std::endl;
+    std::cout << "Test pour une position : " << X << "," << Y << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << " et nombre de jours de stress après lesquel on interdit un retour à la normal de " << nbDaysStress << ", tuile " << globTuile <<  std::endl;
     int nb = mVProdutsOK.size();
-    pts pt(Xdebug,Ydebug);
+    pts pt(X,Y);
 
     TS1PosTest ts(&mYs,nb,pt);
     //std::cout << "TS1PosTest créé." << std::endl;
     for (tuileS2 * t : mVProdutsOK){
-
+        //std::cout << " date " << t->getDate() << std::endl;
         // 0; ND
         // 1: valeur CR swir ok.
         // 2; valeur CRswir NOK
@@ -340,7 +347,7 @@ void catalogue::analyseTSTest1pixel(){
     }
     ts.nettoyer();
     ts.analyse();
-    ts.printDetail();   
+    ts.printDetail(aFileOut);
 }
 
 int catalogue::getMasqEPVal(int aCol, int aRow){
@@ -432,16 +439,11 @@ bool catalogue::openDS(){
         GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
         if( pDriver != NULL )
         {
-            for (int y : mYs){
-                //std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y)+".tif");
+              for (int y : mYs){
                 // MEM raster
                 std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskEP,FALSE, NULL,NULL, NULL );
-                /* je referme pour réouvrir en mode édition
-            if( ds != NULL ){ GDALClose( ds );}
-            GDALDataset  * ds2 = (GDALDataset *) GDALOpen( out, GA_Update);
-            */
                 mMapZScolTS.emplace(std::make_pair(y,ds));
             }
         }
@@ -460,7 +462,6 @@ void catalogue::writeRes1pos(TS1Pos * ts){
     }
     CPLFree(scanPix2);
 }
-
 
 void catalogue::readMasqLine(int aRow){
     if( mDSmaskEP != NULL && mDSmaskEP->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){

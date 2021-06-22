@@ -5,7 +5,6 @@ std::string wd("toto");
 std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
-//std::string iprfwFile("");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
 int globSeuilCC(35);
 bool overw(0);
@@ -34,11 +33,21 @@ double lNIRa(865);
 double lSWIR1(1610);
 double lSWIR2(2190);
 
+/*
+ * valeurs de l'INRAE
 double a1(0.551512);
 double b1(0.062849);
 double b2 (-0.120683);
 double b3 (0.005509);
 double b4 (-0.044525);
+*/
+// ajusté sur 300 pessières saines en Ardenne
+double a1(0.58880089);
+double b1(0.05537490);
+double b2 (-0.10809739);
+double b3 (-0.01737327);
+double b4 (-0.02677137);
+
 double cst(2.0*M_PI/365.25);
 
 
@@ -241,18 +250,18 @@ void tuileS2::masque(){
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
         if (boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
-        if ((!boost::filesystem::exists(out) | overw)) {
-            //im 1 = masque EP
-            //im 2 = masque edge
-            //im 3 masque cloud
+            if ((!boost::filesystem::exists(out) | overw)) {
+                //im 1 = masque EP
+                //im 2 = masque edge
+                //im 3 masque cloud
 
-            std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
-            // semble beaucoup plus lent avec les options de compression gdal
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+getNameMasqueEP(i)+" "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-            //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
-            //std::cout << aCommand << std::endl;
-            system(aCommand.c_str());
-        }
+                std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+                // semble beaucoup plus lent avec les options de compression gdal
+                std::string aCommand(path_otb+"otbcli_BandMathX -il "+getNameMasqueEP(i)+" "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+                //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+                //std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+            }
         } else { std::cout << "fichiers masques introuvables " << edg << " , " << clm << std::endl;}
     }
 }
@@ -267,19 +276,19 @@ void tuileS2::resample(){
         std::string inMask=interDirName+"mask_R2.tif";
         // check que le fichier n'existe pas
         if (boost::filesystem::exists(in) && boost::filesystem::exists(inMask)){
-        if ((!boost::filesystem::exists(out) | overw)){
+            if ((!boost::filesystem::exists(out) | overw)){
 
-            std::string exp("im2b1==1 ? im1b1 : 0");
-            // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" "+inMask+ " -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
-            std::cout << aCommand << std::endl;
-            system(aCommand.c_str());
-            aCommand="gdalwarp -tr 10 10 -r bilinear -overwrite -srcnodata 0 -co 'COMPRESS=DEFLATE' "+ out+ " " + out10m;
-            std::cout << aCommand << std::endl;
-            system(aCommand.c_str());
-        }
+                std::string exp("im2b1==1 ? im1b1 : 0");
+                // il faut faire attention à l'ordre des raster input car les no data de im1 sont utilisés par défaut dans la couche résultat. donc masque en 2ieme position
+                std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" "+inMask+ " -out '"+ out + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
+                std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+                aCommand="gdalwarp -tr 10 10 -r bilinear -overwrite -srcnodata 0 -co 'COMPRESS=DEFLATE' "+ out+ " " + out10m;
+                std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+            }
 
-         } else { std::cout << "fichiers introuvables " << in << " , " << inMask  << std::endl;}
+        } else { std::cout << "fichiers introuvables " << in << " , " << inMask  << std::endl;}
     }
 }
 
@@ -292,8 +301,8 @@ void tuileS2::computeCR(){
     std::string SWIR2=getRasterR2Name("12");
     // check que le fichier n'existe pas
     if (boost::filesystem::exists(NIRa) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(SWIR2)){
-    if ((!boost::filesystem::exists(out) | overw) ){
-        /* B2 bleu
+        if ((!boost::filesystem::exists(out) | overw) ){
+            /* B2 bleu
          * B3 vert
          * B4 rouge
          * B8a NIRa
@@ -306,14 +315,14 @@ void tuileS2::computeCR(){
          *
          */
 
-        // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
-        // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
-        //std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
-        std::string exp("im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865)))");
-        std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
-        system(aCommand.c_str());
-    }
+            // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
+            // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
+            //std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+            std::string exp("im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865)))");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
     } else { std::cout << "fichiers introuvables " << NIRa << " , " << SWIR1 << " , " << SWIR2 << std::endl;}
 
     r_crswir = std::make_unique<rasterFiles>(out);
@@ -365,21 +374,23 @@ void tuileS2::masqueSpecifique(){
     //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if  (boost::filesystem::exists(m) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(r)&& boost::filesystem::exists(v)){
-    if ((!boost::filesystem::exists(out) | overw) ){
-        //im 1 = masque général
-        //im 2 = swir1
-        //im 3 = r
-        //im 4 = v
+        if ((!boost::filesystem::exists(out) | overw) ){
+            //im 1 = masque général
+            //im 2 = swir1
+            //im 3 = r
+            //im 4 = v
 
-        std::string exp("im1b1!=1 ? 0 : im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.08 ? 1 : im1b1==1 and im2b1/10000.0>0.125 ? 2 : im1b1==1 and ((im3b1+im4b1)/10000.0)>0.08 ? 3 : 0");
+            std::string exp("im1b1!=1 ? 0 : im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.08 ? 1 : im1b1==1 and im2b1/10000.0>0.125 ? 2 : im1b1==1 and ((im3b1+im4b1)/10000.0)>0.08 ? 3 : 0");
 
-        // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
-        std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        //std::cout << aCommand << std::endl;
-        system(aCommand.c_str());
-    }
-    r_solnu = std::make_unique<rasterFiles>(out);
-     } else { std::cout << "fichiers introuvables " << m << " , " << SWIR1 << " , " << v << std::endl;}
+            // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+            //std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
+
+    } else { std::cout << "fichiers introuvables " << m << " , " << SWIR1 << " , " << v << std::endl;}
+
+    if (boost::filesystem::exists(out)){ r_solnu = std::make_unique<rasterFiles>(out);}
 
     if (0){
         // nuage - mais trop restrictif pour moi, je ne vais pas l'utiliser tout de suite.
@@ -409,11 +420,22 @@ double tuileS2::getCRSWIR(pts & pt){
 }
 
 double tuileS2::getCRSWIRNorm(pts & pt){
-    return r_crswirNorm->getValueDouble(pt.X(),pt.Y())*1.0/127.0;
+
+    if (r_crswirNorm!=NULL){
+        return r_crswirNorm->getValueDouble(pt.X(),pt.Y())*1.0/127.0;
+    } else {
+        std::cout << "Attention, r_crswirNorm est null pour " << getDate() <<std::endl;
+        return 0;
+    }
 }
 
 int tuileS2::getMaskSolNu(pts & pt){
-    return r_solnu->getValue(pt.X(),pt.Y());
+    if (r_solnu!=NULL){
+        return r_solnu->getValue(pt.X(),pt.Y());
+    } else {
+        std::cout << "Attention, r_solnu est null pour " << getDate() <<std::endl;
+        return 0;
+    }
 }
 
 year_month_day ymdFromString(std::string date){
@@ -439,8 +461,8 @@ std::vector<pts> readPtsFile(std::string aFilePath){
     for (std::vector<std::string> l : aVV){
         if (!firstL){
             //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
-            double aX=std::stod(l.at(4));
-            double aY=std::stod(l.at(5));
+            double aX=std::stod(l.at(1));
+            double aY=std::stod(l.at(2));
             aRes.push_back(pts(aX,aY));
         } else { firstL=0;}
     }
@@ -488,19 +510,19 @@ void tuileS2::normaliseCR(){
     std::string in=getRasterCRName();
     // check que le fichier n'existe pas
     if (boost::filesystem::exists(in)){
-    if (!boost::filesystem::exists(out) | overw){
+        if (!boost::filesystem::exists(out) | overw){
 
-        // CRSWIRnorm = CRSWIR/theoreticalCR(t)
+            // CRSWIRnorm = CRSWIR/theoreticalCR(t)
 
 
-        double cr = getCRth();
+            double cr = getCRth();
 
-        // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
-        std::string exp("im1b1>0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
-        std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
-        system(aCommand.c_str());
-    }
+            // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
+            std::string exp("im1b1>0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
     } else { std::cout << "fichier introuvable " << in << std::endl;}
     r_crswirNorm = std::make_unique<rasterFiles>(out);
 
@@ -574,16 +596,16 @@ void tuileS2::readCRnormLine(int aRow){
 
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
-      } else {
+    } else {
         std::cout << "readCRnormLine ; failed for " << getRasterCRnormName() <<  std::endl;
-     }
+    }
 }
 void tuileS2::readMasqLine(int aRow){
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
-       }else {
-            std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
-      }
+    }else {
+        std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
+    }
 }
 double tuileS2::getCRnormVal(int aCol){
     // applique le gain

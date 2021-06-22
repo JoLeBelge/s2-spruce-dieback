@@ -78,18 +78,3 @@ double rasterFiles::getValueDouble(double x, double y){
     }
     return aRes;
 }
-
-std::string pts::catHeader(){
-    std::string aRes("X;Y");
-    for (auto & kv : mVMasqVals){
-        aRes+=";"+kv.first;
-    }
-    return aRes;
-}
-std::string pts::catVal(){
-    std::string aRes(std::to_string(mX)+";"+std::to_string(mY)+";");
-    for (auto & kv : mVMasqVals){
-        aRes+=";"+std::to_string(kv.second);
-    }
-    return aRes;
-}

@@ -24,7 +24,6 @@ courbeCRSWIR <- function (dates){
   return( data.frame(date,CRWSIR))
 }
 
-
 # input ; détails pour un point
 setwd("/home/lisein/Documents/Scolyte/S2/illustration")
 # mes couleurs attribuées à chaque état pour une date
@@ -55,3 +54,51 @@ legend(dtheorique$date[10], 1.7, legend=c("évolution saisonière du CRSWIR", "s
 legend(dtheorique$date[10], 1.5, legend=c("sain", "scolyté","coupé sans stress","coupé après stress", "stress temporaire", "stress temporaire hivernal"),
        col=mycol, pch=mypch, cex=0.8)
 dev.off()
+
+
+# calibration de la fct harmonique sur les points pessière saine en Ardenne pour voir la différence avec la courbe de l'INRAE
+setwd("/home/lisein/Documents/Scolyte/S2/build-s2_ts/ptSain")
+l.data <- list.files(path = ".")
+
+dsain <- employ.data <- data.frame(employee=as.Date(), salary, startdate)
+df <- data.frame(date=as.Date(character()),
+                 DIY=integer(), 
+                 crswir=double(), 
+                 stringsAsFactors=FALSE) 
+
+for (f in l.data){
+  cat(paste0(f,"\n"))
+  d <-read.csv(f, sep=";")
+  
+  dfadd <- data.frame(date=as.Date(d$date),
+                      DIY= yday(d$date), 
+                      crswir=d$CRSWIR, 
+                      stringsAsFactors=FALSE) 
+  df  <- rbind(df, dfadd)
+}
+
+plot(df$DIY,df$crswir, main="variation saisonière du CRSWIR en Belgique pour pessière saine")
+mT <- 365.25
+cst <- 2*pi/mT
+a1 <- 0.551512
+b1 <-  0.062849      
+b2 <- -0.120683
+b3 <-  0.005509
+b4 <- -0.044525 
+x <- 1:365
+y <- (a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x))
+lines(x,y, col="green", lwd=3)
+
+library(nls2)
+formule <- crswir  ~  aa1 + bb1*sin(cst*DIY)+ bb2*cos(cst*DIY)+ bb3*sin(cst*2*DIY)+ bb4*cos(cst*2*DIY)
+fit <- nls2(formule, trace=T, data=df,start = list(aa1 = a1, bb1 = b1, bb2=b2,bb3=b3,bb4=b4))
+
+#nouvelles valeurs;
+a1 <- 0.58880089  
+b1 <- 0.05537490 
+b2 <- -0.10809739 
+b3 <- -0.01737327 
+b4 <- -0.02677137
+
+y <- (a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x))
+lines(x,y, col="forestgreen", lwd=4)

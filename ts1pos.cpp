@@ -487,13 +487,13 @@ void TS1PosTest::nettoyer(){
     }
 }
 
-void TS1PosTest::printDetail(){
+void TS1PosTest::printDetail(std::string aOut){
     std::cout << "Détail série temporelle pour un point ---" <<std::endl;
 
-    if (globResXYTest!="toto"){
+    if (aOut!="toto"){
     // crée un fichier txt pour l'export des résultats
     std::ofstream out;
-    out.open(globResXYTest);
+    out.open(aOut);
 
         out << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12\n" ;
 
@@ -521,12 +521,3 @@ void TS1PosTest::printDetail(){
     }
 
 }
-
-/* // scolyté puis coupé
- if (std::find(etat.begin(), etat.end(), 3) != etat.end()){aRes=3;} else{
- // scolyté mais pas coupé
-     aRes=2;
- }
-} else if (std::find(etat.begin(), etat.end(), 3) != etat.end()) {
- // coupé mais sans avoir été scolyté avant
- aRes=4;*/

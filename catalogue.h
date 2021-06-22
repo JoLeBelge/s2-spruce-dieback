@@ -25,7 +25,7 @@ private:
     void traitement();
     void analyseTS();
     void analyseTSinit();
-    void analyseTSTest1pixel();
+    void analyseTSTest1pixel(double X, double Y, std::string aFileOut);
     void writeRes1pos(TS1Pos * ts);
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // ouvre tout les raster dataset

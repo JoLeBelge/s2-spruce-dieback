@@ -74,7 +74,7 @@ class TS1PosTest : public TS1Pos
 public:
     TS1PosTest(std::vector<int> * aVYears, int n, pts pt):TS1Pos(0,0,aVYears,n),mVCRSWIR(n,0),mVCRSWIRNorm(n,0),mVB2(n,0),mVB3(n,0),mVB4(n,0),mVB8A(n,0),mVB11(n,0),mVB12(n,0),pt_(pt){}
     void nettoyer();
-    void printDetail();
+    void printDetail(std::string aOut="toto");
 
     // overload add1Date
     void add1Date(int code, tuileS2 * t);
