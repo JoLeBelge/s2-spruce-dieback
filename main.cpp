@@ -10,6 +10,7 @@ extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string globTuile;
+extern std::string globResXYTest;
 extern double seuilCR;
 
 bool mergeEtatSan(0);
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
             ("nbJourStress", po::value<int>(), "nombre du jours seuil à partir dusquel on n'envisage plus un retour à la normal pour un stress temporaire pronlongé. Default 90")
             ("mergeEtatSan", po::value<bool>(), "fusionne les cartes d'état sanitaire")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
+            ("XYtestOut", po::value< std::string>(), "fichier texte ou sauver les résultats de XYTest sur un point.")
             ;
 
     po::variables_map vm;
@@ -95,6 +97,7 @@ int main(int argc, char *argv[])
         if (vm.count("srCR")) {seuilCR=vm["srCR"].as<double>();}
         if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
         if (vm.count("mergeEtatSan")) {mergeEtatSan=vm["mergeEtatSan"].as<bool>();}
+        if (vm.count("XYtestOut")) {globResXYTest=vm["XYtestOut"].as<std::string>();}
 
         std::vector<double> opts;
         if (!vm["XYtest"].empty() && (opts = vm["XYtest"].as<vector<double> >()).size() == 2) {
