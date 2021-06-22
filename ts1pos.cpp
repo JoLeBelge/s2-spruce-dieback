@@ -3,6 +3,8 @@
 bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état
 int nbDaysStress(90);
 
+std::string globResXYTest("toto");
+
 void TS1Pos::analyse(){
 
     for (int i(0);i<mVDates.size();i++){
@@ -34,28 +36,112 @@ void TS1Pos::analyse(){
         }
     }
 
-    // filtre ; si détection de 3 x sol nu de manière consécutif, je met toutes les dates d'après en sol nu.
+    // filtre ; si détection de sol nu plusieurs fois et durant une durée longue, je met toutes les dates d'après en sol nu.
+
     std::vector<int>::iterator p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 3);
-    bool conseq(0);
-    int i(0);
     std::vector<int>::iterator it;
     if (p != mVEtatFin.end()){
-        for (it = p; it != mVEtatFin.end(); it++){
-            if (*it==3){i++;} else{i=0;}
-            if (i>2){conseq=1;}
-            // si j'ai détecté 3 sol nu d'affilé, je met tout les suivants en code sol nu
-            if (conseq){*it=3;}
+        std::vector<year_month_day> aVD;
+        std::vector<int> aVE, aVDuree;
+        std::vector<std::vector<int>> aVPosEtatFin;
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin, &aVDuree);
+
+        p = aVE.begin();
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 3);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                int res=3;
+                // sol nu plusieurs fois d'affilé et ou sur longue période
+                if (aVPosEtatFin.at(pos).size()>2 | aVDuree.at(pos)>40){
+
+                    // si stressé avant sol, nu, code 4. Sinon ; code 3 pour toutes les dates ultérieur
+                    if (pos>0 && aVE.at(pos-1)==2){res=4;} else {res=3;}
+                    // change toutes les dates d'après
+                    for (int i(aVPosEtatFin.at(pos).at(0)); i < mVEtatFin.size(); i++){
+                        mVEtatFin.at(i)=res;
+                    }
+                } else {
+                    for (int i : aVPosEtatFin.at(pos)){
+                        mVEtatFin.at(i)=6;// mélange
+                    }
+
+                }
+                p++;
+
+            }
         }
     }
-    // OLD OLD filtre ; si détection de 3 x stress de manière consécutif, je met toutes les dates d'après en stress sauf si sol nu.
-    // non c'est pas du tout comme cela qu'il faut procéder. j'avais mal lu la slide de Dutrieux. C'est si 3x un retour sans stress consécutif après une période de stress, on considère que ce n'est pas un dépérissement mais uniquement un stress passagé. "retour à la normale"
+
+    // stressé
+    p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
+    if (p != mVEtatFin.end()){
+        std::vector<year_month_day> aVD;
+        std::vector<int> aVE, aVDuree;
+        std::vector<std::vector<int>> aVPosEtatFin;
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin, &aVDuree);
+
+        p = aVE.begin();
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 2);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                // stressé plusieurs fois d'affilé et ou sur longue période
+                if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>30){
+                    // on change les valeurs d'après
+                    for (int po(pos+1); po<aVE.size();po++){
+                    int res(2);
+                    if (aVE.at(po)==3){res=4;}
+                    for (int i : aVPosEtatFin.at(po)){
+                        mVEtatFin.at(i)=res;
+                    }
+                }
+
+                }
+                p++;
+
+            }
+        }
+        // retour à la normale
+        p = std::find(aVE.begin(), aVE.end(), 2);;
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 1);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                // retour à la normale suite à un stress temporaire
+                if ((aVPosEtatFin.at(pos).size()>2) && (aVDuree.at(pos)>30) && (aVE.at(pos-1)==2) && (aVDuree.at(pos-1)<nbDaysStress)){
+                    // on change les valeurs de stress pour les mettre en stress temporaire
+                    for (int i : aVPosEtatFin.at(pos-1)){
+                        mVEtatFin.at(i)=5;
+                    }
+                    // on remet les valeurs d'état comme avant qu'elle soient modifié par la détection du stress
+                    for (int po(pos); po<aVE.size();po++){
+                    for (int i : aVPosEtatFin.at(po)){
+                        mVEtatFin.at(i)=aVE.at(po);
+                    }
+                }
+
+                }
+                p++;
+
+            }
+        }
+
+    }
+
+    /*
+
+    bool conseq(0);
+    int i(0);
+
+    // Si 3x un retour sans stress consécutif après une période de stress, on considère que ce n'est pas un dépérissement mais uniquement un stress passagé. "retour à la normale"
     p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
     conseq=0;
     i=1;
     int j(0);
     bool retourNormale(0);
     std::vector<int> aVEtatTmp=mVEtatFin;
-    //std::vector<int>::iterator it2;
+
 
     if (p != mVEtatFin.end()){
         int posInit= p - mVEtatFin.begin();
@@ -91,6 +177,7 @@ void TS1Pos::analyse(){
         }
     }
     mVEtatFin=aVEtatTmp;
+    */
 
     /*
     for (auto i : mVEtatFin){
@@ -99,7 +186,7 @@ void TS1Pos::analyse(){
 
     // on est plus restrictif sur le retour à la normale ; si x mois d'affilé en stress, pas de retour possible
     //std::cout << " restric retour normale" << std::endl;
-    restrictRetourNorm();
+    //restrictRetourNorm();
 
     /*
     for (auto i : mVEtatFin){
@@ -162,10 +249,10 @@ void TS1Pos::detectMelange(){
                     }
                 }
                 p++;
-                }
-
             }
+
         }
+    }
 }
 
 
@@ -402,6 +489,19 @@ void TS1PosTest::nettoyer(){
 
 void TS1PosTest::printDetail(){
     std::cout << "Détail série temporelle pour un point ---" <<std::endl;
+
+    if (globResXYTest!="toto"){
+    // crée un fichier txt pour l'export des résultats
+    std::ofstream out;
+    out.open(globResXYTest);
+
+        out << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12\n" ;
+
+      for (int i(0);i<mVDates.size();i++){
+           out << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<"\n";
+      }
+      out.close();
+    }
 
     if (debugDetail){
         std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12" <<std::endl;
