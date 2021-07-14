@@ -28,13 +28,14 @@ extern bool overw;
 extern int nbDaysStress;
 std::string XYtestFile("toto");
 
-std::string d1("2016-01-01"),d2("2021-07-14");
+std::string d1("2016-01-01"),d2("2021-07-11");
 
 int main(int argc, char *argv[])
 {
 
     year_month_day today = year_month_day{floor<days>(system_clock::now())};
-    d2 = to_string(today);
+    d2 = format("%F",today);
+    std::cout << "d2 " << d2 << std::endl;
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
