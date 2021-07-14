@@ -2,7 +2,9 @@
 #include "catalogue.h"
 #include <execution>
 #include <boost/filesystem.hpp>
+#include "date.h"
 using namespace std;
+using namespace std::chrono;
 
 extern std::string wdRacine;// j'en fait un deuxieme car je vais changer wd dans la boucle sur la liste des tuiles
 extern std::string wd;
@@ -26,10 +28,13 @@ extern bool overw;
 extern int nbDaysStress;
 std::string XYtestFile("toto");
 
-std::string d1("2016-01-01"),d2("2021-06-01");
+std::string d1("2016-01-01"),d2("2021-07-14");
 
 int main(int argc, char *argv[])
 {
+
+    year_month_day today = year_month_day{floor<days>(system_clock::now())};
+    d2 = to_string(today);
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
