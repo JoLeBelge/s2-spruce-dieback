@@ -104,6 +104,7 @@ catalogue::catalogue(){
 void catalogue::traitement(){
     // récapitulatif;
     summary();
+
     createMaskForTuile();
 
     // boucle sans multithread pour les traitements d'image
@@ -123,6 +124,7 @@ void catalogue::traitement(){
             std::cout << std::endl ;
         }
     });
+    //std::cout << " boucle sur les tuiles done" << std::endl;
 
     // points pour visu de la série tempo et pour vérifier la fct harmonique
     if (XYtestFile!="toto"){
@@ -149,7 +151,7 @@ void catalogue::analyseTSinit(){
     // et identification des différentes années couvertes par la TS en mm temps
     // je peux choisir si je travaille année par année ou si je traite toute la série tempo d'un coup. C'était surtout utile durant le développement, car au début le temps de calcul était trop long pour toute la série tempo. Maintenant pas très utile comme option
     // c'est ici également que j'accède au mode "description de la TS pour un point donné"
-
+    std::cout << "analyse TS init " << std::endl;
     std::vector<int> aVYs;
     // tentative de tout traiter d'un coup, toute les années
     if (year_analyse==666){
@@ -345,7 +347,7 @@ void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
         }
         ts.add1Date(code,t);
     }
-    ts.nettoyer();
+    if (!debugDetail){ts.nettoyer();}
     ts.analyse();
     ts.printDetail(aFileOut);
 }
@@ -475,7 +477,7 @@ void catalogue::readMasqLine(int aRow){
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
 void catalogue::createMaskForTuile(){
-
+    std::cout << " create Mask For tuile " << std::endl;
     std::string masqueRW(EP_mask_path+"masque_EP.tif");
     int epsg(32631);
     if (globTuile=="T32ULU"){

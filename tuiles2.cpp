@@ -291,7 +291,7 @@ void tuileS2::resample(){
 }
 
 void tuileS2::computeCR(){
-    std::cout << "computeCR .." ;
+    std::cout << "computeCR .." << std::endl;
 
     std::string out=getRasterCRName();
     std::string NIRa=getRasterR2Name("8A");
@@ -618,11 +618,12 @@ std::string tuileS2::getRasterR1Name(std::string numBand){
 }
 
 std::string tuileS2::getRasterR2Name(std::string numBand){
-    return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
+ return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
 }
 
-
-
+std::string tuileS2::getOriginalRasterR2Name(std::string numBand){
+    return wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+numBand+".tif";
+}
 
 double getCRtheorique(year_month_day ymd){
     year_month_day startOfYear(year{ymd.year()},month{1},day{1});

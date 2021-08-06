@@ -443,31 +443,46 @@ void TS1Pos::printDetail(){
     }
 }
 
+// j'aimerai que cela fonctionne au moins partiellement pour une position qui serai en dehors du masque utilisé
 void TS1PosTest::add1Date(int code, tuileS2 * t){
-
+    //std::cout << " TS1PosTest :: add one date " << std::endl;
     mVDates.at(c)=t->getymdPt();
     mVEtat.at(c)=code;
     mVCRSWIR.at(c)=t->getCRSWIR(pt_);
-    mVCRSWIRNorm.at(c)=t->getCRSWIRNorm(pt_);
+    //mVCRSWIRNorm.at(c)=t->getCRSWIRNorm(pt_);
     rasterFiles r_b2(t->getRasterR1Name("2"));
     mVB2.at(c)=r_b2.getValue(pt_.X(),pt_.Y(),1)/10000.0;
     rasterFiles r_b3(t->getRasterR1Name("3"));
     mVB3.at(c)=r_b3.getValue(pt_.X(),pt_.Y(),1)/10000.0;
     rasterFiles r_b4(t->getRasterR1Name("4"));
     mVB4.at(c)=r_b4.getValue(pt_.X(),pt_.Y(),1)/10000.0;
-    rasterFiles r_b8A(t->getRasterR2Name("8A"));
+    rasterFiles r_b8A(t->getOriginalRasterR2Name("8A"));
     mVB8A.at(c)=r_b8A.getValue(pt_.X(),pt_.Y())/10000.0;
-    rasterFiles r_b11(t->getRasterR2Name("11"));
+    rasterFiles r_b11(t->getOriginalRasterR2Name("11"));
     mVB11.at(c)=r_b11.getValue(pt_.X(),pt_.Y())/10000.0;
-    rasterFiles r_b12(t->getRasterR2Name("12"));
+    rasterFiles r_b12(t->getOriginalRasterR2Name("12"));
     mVB12.at(c)=r_b12.getValue(pt_.X(),pt_.Y())/10000.0;
+ /* B2 bleu
+ * B3 vert
+ * B4 rouge
+ * B8a NIRa
+ * B11 SWIR1
+ * B12 SWIR2
+ *
+ * CRSWIR = SWIR1 / ( NIRa + (lSWIR1-lNIRa)* ((SWIR2 - NIRa) / (lSWIR2-lNIRa)  )   )
+ *
+ * modéliation de 2 ligne droite et ratio des segment qui passent de l'absisse à la longeur d'onde SWIR 1 vers chacunes de ces 2 droites
+ */
+    mVCRSWIR.at(c)=mVB11.at(c)/(mVB8A.at(c)+(1610-865)* ((mVB12.at(c)-mVB8A.at(c))/(2190-865)));
+    mVCRSWIRNorm.at(c)=mVCRSWIR.at(c)/getCRtheorique(*t->getymdPt());
 
     c++;
 }
 
 void TS1PosTest::nettoyer(){
     // retirer les no data et noter combien on en a eu
-    //std::cout << "nettoyer le TS1PosTest" << std::endl;
+    std::cout << "nettoyer le TS1PosTest" << std::endl;
+    // attention, si j'utiliser TS1Pos sur une zone en dehors du masque, je ne veux pas qu'il nettoye sinon il ne reste plus rien
     for (int i(0);i<mVDates.size();i++){
         if (mVEtat.at(i)==0){
             mVEtat.erase(mVEtat.begin() + i);

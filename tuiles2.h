@@ -109,6 +109,8 @@ public:
     std::string getRasterR1Name(std::string numBand);
     // attention, il s'agit des bandes rééchantillonnée à 10 m!
     std::string getRasterR2Name(std::string numBand);
+    // celle la c'est les noms des raster originaux
+    std::string getOriginalRasterR2Name(std::string numBand);
 
     void masqueSpecifique();
     std::string getRasterMasqSecName();
