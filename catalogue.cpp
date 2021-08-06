@@ -43,7 +43,7 @@ catalogue::catalogue(std::string aJsonFile){
         if (f.IsArray()){
             for (SizeType i = 0; i < document["features"].Size(); i++){
                 // je récupère les infos qui m'intéressent sur le produits
-                tuileS2 * t=new tuileS2();
+                tuileS2OneDate * t=new tuileS2OneDate();
                 t->mProd =f[i]["properties"]["productIdentifier"].GetString();
                 t->mFeature_id = f[i]["id"].GetString();
                 if (f[i]["properties"]["cloudCover"].IsInt()){t->mCloudCover = f[i]["properties"]["cloudCover"].GetInt();}
@@ -59,7 +59,7 @@ catalogue::catalogue(std::string aJsonFile){
                     std::execution::par_unseq,
                     mVProduts.begin(),
                     mVProduts.end(),
-                    [](tuileS2 * t)
+                    [](tuileS2OneDate * t)
         {
 
             // check que cloudcover est en dessous de notre seuil
@@ -90,7 +90,7 @@ catalogue::catalogue(){
     for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
         std::string aDecompressDirName= p.path().filename().string();
         // création d'une tuile
-        tuileS2 * t=new tuileS2();
+        tuileS2OneDate * t=new tuileS2OneDate();
         t->decompressDirName =aDecompressDirName;
         t->readXML();
         mVProduts.push_back(t);
@@ -112,7 +112,7 @@ void catalogue::traitement(){
                 std::execution::seq,
                 mVProduts.begin(),
                 mVProduts.end(),
-                [](tuileS2* t)
+                [](tuileS2OneDate* t)
     {
         // check que cloudcover est en dessous de notre seuil
         if (t->mCloudCover<globSeuilCC){
@@ -139,7 +139,7 @@ void catalogue::traitement(){
 // comptage des produits avec cloudcover ok
 int catalogue::countValid(){
     int aRes(0);
-    for (tuileS2 * t : mVProduts){
+    for (tuileS2OneDate * t : mVProduts){
         if (t->mCloudCover<globSeuilCC){aRes++;}
     }
     return aRes;
@@ -156,7 +156,7 @@ void catalogue::analyseTSinit(){
     // tentative de tout traiter d'un coup, toute les années
     if (year_analyse==666){
         std::cout << "analyse pour toute les années d'un coup ------------------" << std::endl;
-        for (tuileS2 * t : mVProduts){
+        for (tuileS2OneDate * t : mVProduts){
             if (t->mCloudCover<globSeuilCC){
                 if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
                 mVProdutsOK.push_back(t);
@@ -181,7 +181,7 @@ void catalogue::analyseTSinit(){
 
     } else if (year_analyse==0){
 
-        for (tuileS2 * t : mVProduts){
+        for (tuileS2OneDate * t : mVProduts){
             //if (t->mCloudCover<globSeuilCC && t->gety()==2018){
             if (t->mCloudCover<globSeuilCC){
                 if (std::find(aVYs.begin(), aVYs.end(), t->gety()) == aVYs.end()){aVYs.push_back(t->gety());}
@@ -197,7 +197,7 @@ void catalogue::analyseTSinit(){
         mYs.push_back(year);
         std::cout << "analyse pour l'année " << year << "------------------" << std::endl;
 
-        for (tuileS2 * t : mVProduts){
+        for (tuileS2OneDate * t : mVProduts){
             if (t->mCloudCover<globSeuilCC && t->gety()==year){
                 mVProdutsOK.push_back(t);
             }
@@ -270,7 +270,7 @@ void catalogue::analyseTS(){
             // lecture masque ep
             //std::cout << "row " << row << std::endl;
             readMasqLine(row);
-            for (tuileS2 * t : mVProdutsOK){
+            for (tuileS2OneDate * t : mVProdutsOK){
                 //std::cout << "tuiles  " << t->getDate()<< std::endl;
                 t->readCRnormLine(row);
                 t->readMasqLine(row);
@@ -283,7 +283,7 @@ void catalogue::analyseTS(){
 
                     TS1Pos ts(row,col,&mYs,nb);
 
-                    for (tuileS2 * t : mVProdutsOK){
+                    for (tuileS2OneDate * t : mVProdutsOK){
                         // lit la valeur depuis la scanline
                         double crnorm=t->getCRnormVal(col);
                         int solnu = t->getMasqVal(col);
@@ -328,7 +328,7 @@ void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
 
     TS1PosTest ts(&mYs,nb,pt);
     //std::cout << "TS1PosTest créé." << std::endl;
-    for (tuileS2 * t : mVProdutsOK){
+    for (tuileS2OneDate * t : mVProdutsOK){
         //std::cout << " date " << t->getDate() << std::endl;
         // 0; ND
         // 1: valeur CR swir ok.
@@ -366,7 +366,7 @@ int catalogue::getMasqEPVal(int aCol, int aRow){
 
 void catalogue::closeDS(){
     std::cout << "fermeture de tout les raster de la TS" << std::endl;
-    for (tuileS2 * t : mVProdutsOK){
+    for (tuileS2OneDate * t : mVProdutsOK){
         t->closeDS();
     }
     if( mDSmaskEP != NULL){ GDALClose( mDSmaskEP );}
@@ -418,7 +418,7 @@ bool catalogue::openDS(){
     }
 
     int c(0);
-    for (tuileS2 * t : mVProdutsOK){
+    for (tuileS2OneDate * t : mVProdutsOK){
         // si une seule tuile pose un problème lors du chargement des dataset, on annule tout les traitement
         if (!t->openDS()){
             // fermer tout les datasets des tuiles déjà passée en revue précédemment

@@ -1,4 +1,4 @@
-#include "tuiles2.h"
+#include "tuiles2OneDate.h"
 
 std::string wdRacine("/home/lisein/Documents/Scolyte/S2/test/");
 std::string wd("toto");
@@ -51,7 +51,7 @@ double b4 (-0.02677137);
 double cst(2.0*M_PI/365.25);
 
 
-void tuileS2::download(){
+void tuileS2OneDate::download(){
     // création d'un token d'authentification dans le dossier ou on a lancer la commande
     std::string aCommand("curl -k -s -X POST  --data-urlencode 'ident=nicolas.latte@uliege.be' --data-urlencode 'pass=a1b2c3d4ULG_' https://theia.cnes.fr/atdistrib/services/authenticate/>token.json");
     //std::cout << aCommand << std::endl;
@@ -72,7 +72,7 @@ void tuileS2::download(){
     system(get_product.c_str());
 }
 
-void tuileS2::nettoyeArchive(){
+void tuileS2OneDate::nettoyeArchive(){
 
     // nicolas semble dire qu'il y a 10 bandes+6 masques+1 MTD (tkpn) fichiers à garder, détection sur base de leurs noms
 
@@ -100,7 +100,7 @@ void tuileS2::nettoyeArchive(){
     }
 }
 
-void tuileS2::decompresse(){
+void tuileS2OneDate::decompresse(){
     // il faut décompresser dans le directory
     std::string aCommand= std::string("unzip -a "+ archiveName + " -d "+wd+"raw/");
     //std::cout << aCommand << "\n";
@@ -118,7 +118,7 @@ void tuileS2::decompresse(){
 
 }
 
-bool tuileS2::pretraitementDone(){
+bool tuileS2OneDate::pretraitementDone(){
     bool aRes(0);
     // récupérer le nom du dossier qui n'as pas le mm nom que l'archive (ajout suffixe V1-1 ou V2-1)
     for(auto & p : boost::filesystem::recursive_directory_iterator(wd+"raw/")){
@@ -134,12 +134,12 @@ bool tuileS2::pretraitementDone(){
     return aRes;
 }
 
-void tuileS2::removeArchive(){
+void tuileS2OneDate::removeArchive(){
     boost::filesystem::remove(archiveName);
 }
 
 
-void tuileS2::readXML(){
+void tuileS2OneDate::readXML(){
     //std::cout << " read XML .." ;
     interDirName=wd +"intermediate/"+decompressDirName +"/";
     boost::filesystem::path dir(interDirName);
@@ -163,7 +163,7 @@ void tuileS2::readXML(){
     }
 }
 
-void tuileS2::readXML(std::string aXMLfile){
+void tuileS2OneDate::readXML(std::string aXMLfile){
 
     // Read the xml file into a vector
     xml_document<> doc;
@@ -240,7 +240,7 @@ void tuileS2::readXML(std::string aXMLfile){
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
-void tuileS2::masque(){
+void tuileS2OneDate::masque(){
     std::cout << "masque .." ;
     for (int i(1) ; i<3 ; i++){
         std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
@@ -265,7 +265,7 @@ void tuileS2::masque(){
 }
 
 // resample des bandes 8A, 11 et 12 après leur avoir appliqué le masque
-void tuileS2::resample(){
+void tuileS2OneDate::resample(){
     std::cout << "resample ..";
     for (std::string b : vBR2){
         std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
@@ -290,7 +290,7 @@ void tuileS2::resample(){
     }
 }
 
-void tuileS2::computeCR(){
+void tuileS2OneDate::computeCR(){
     std::cout << "computeCR .." << std::endl;
 
     std::string out=getRasterCRName();
@@ -330,29 +330,29 @@ void tuileS2::computeCR(){
     // check EPSG
 }*/
 
-std::string tuileS2::getRasterCRName(){
+std::string tuileS2OneDate::getRasterCRName(){
     return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
 }
 
-std::string tuileS2::getRasterCRnormName(){
+std::string tuileS2OneDate::getRasterCRnormName(){
     return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm.tif";
 }
 
-std::string tuileS2::getDate(){
+std::string tuileS2OneDate::getDate(){
     return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2);
 }
 
-std::string tuileS2::getRasterMasqSecName(){
+std::string tuileS2OneDate::getRasterMasqSecName(){
     return interDirName + "mask_R1_solnu.tif";
 }
-std::string tuileS2::getRasterMasqGenName(int resol=1){
+std::string tuileS2OneDate::getRasterMasqGenName(int resol=1){
     return interDirName + "mask_R"+std::to_string(resol)+".tif";
 }
 
 //https://gis.stackexchange.com/questions/233874/what-is-the-range-of-values-of-sentinel-2-level-2a-images
 // surface _reflectance = DN/ 10 000
 // varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
-void tuileS2::masqueSpecifique(){
+void tuileS2OneDate::masqueSpecifique(){
     std::cout << "detection sol nu .." ;
     /* voir slide de Raphael D.
     1) détection sol nu
@@ -413,11 +413,11 @@ void tuileS2::masqueSpecifique(){
     }
 }
 
-double tuileS2::getCRSWIR(pts & pt){
+double tuileS2OneDate::getCRSWIR(pts & pt){
     return r_crswir->getValueDouble(pt.X(),pt.Y());
 }
 
-double tuileS2::getCRSWIRNorm(pts & pt){
+double tuileS2OneDate::getCRSWIRNorm(pts & pt){
 
     if (r_crswirNorm!=NULL){
         return r_crswirNorm->getValueDouble(pt.X(),pt.Y())*1.0/127.0;
@@ -427,7 +427,7 @@ double tuileS2::getCRSWIRNorm(pts & pt){
     }
 }
 
-int tuileS2::getMaskSolNu(pts & pt){
+int tuileS2OneDate::getMaskSolNu(pts & pt){
     if (r_solnu!=NULL){
         return r_solnu->getValue(pt.X(),pt.Y());
     } else {
@@ -501,7 +501,7 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
 }
 
 //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
-void tuileS2::normaliseCR(){
+void tuileS2OneDate::normaliseCR(){
     std::cout << "normalize CR " ;
 
     std::string out=getRasterCRnormName();
@@ -526,7 +526,7 @@ void tuileS2::normaliseCR(){
 
 }
 
-bool tuileS2::openDS(){
+bool tuileS2OneDate::openDS(){
     //std::cout << "ouverture dataset pour " << mProd << std::endl;
     //std::cout << "ouverture dataset pour " << getRasterCRnormName() << std::endl;
     bool aRes(0);
@@ -561,7 +561,7 @@ bool tuileS2::openDS(){
     }
     return aRes;
 }
-void tuileS2::closeDS(){
+void tuileS2OneDate::closeDS(){
     if (mDScrnom != NULL){GDALClose( mDScrnom );}
     if (mDSsolnu != NULL){GDALClose( mDSsolnu );}
 
@@ -571,7 +571,7 @@ void tuileS2::closeDS(){
 }
 
 
-int tuileS2::getMasqVal(int aCol,int aRow){
+int tuileS2OneDate::getMasqVal(int aCol,int aRow){
     int aRes=0;
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetXSize() > aCol && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
@@ -579,7 +579,7 @@ int tuileS2::getMasqVal(int aCol,int aRow){
     }
     return aRes;
 }
-double tuileS2::getCRnormVal(int aCol, int aRow){
+double tuileS2OneDate::getCRnormVal(int aCol, int aRow){
     double aRes=0.0;
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetXSize() > aCol && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
@@ -590,7 +590,7 @@ double tuileS2::getCRnormVal(int aCol, int aRow){
 }
 
 
-void tuileS2::readCRnormLine(int aRow){
+void tuileS2OneDate::readCRnormLine(int aRow){
 
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
@@ -598,30 +598,30 @@ void tuileS2::readCRnormLine(int aRow){
         std::cout << "readCRnormLine ; failed for " << getRasterCRnormName() <<  std::endl;
     }
 }
-void tuileS2::readMasqLine(int aRow){
+void tuileS2OneDate::readMasqLine(int aRow){
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
     }else {
         std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
     }
 }
-double tuileS2::getCRnormVal(int aCol){
+double tuileS2OneDate::getCRnormVal(int aCol){
     // applique le gain
     return scanLineCR[aCol]*1.0/127.0;
 }
-int tuileS2::getMasqVal(int aCol){
+int tuileS2OneDate::getMasqVal(int aCol){
     return scanLineSolNu[aCol];
 }
 
-std::string tuileS2::getRasterR1Name(std::string numBand){
+std::string tuileS2OneDate::getRasterR1Name(std::string numBand){
     return wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+numBand+".tif";
 }
 
-std::string tuileS2::getRasterR2Name(std::string numBand){
+std::string tuileS2OneDate::getRasterR2Name(std::string numBand){
  return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
 }
 
-std::string tuileS2::getOriginalRasterR2Name(std::string numBand){
+std::string tuileS2OneDate::getOriginalRasterR2Name(std::string numBand){
     return wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+numBand+".tif";
 }
 
@@ -633,7 +633,7 @@ double getCRtheorique(year_month_day ymd){
     return a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x);
 }
 
-inline bool operator< (const tuileS2 & t1, const tuileS2 & t2)
+inline bool operator< (const tuileS2OneDate & t1, const tuileS2OneDate & t2)
 {
 
     days diff=date::sys_days(t1.getymd())-date::sys_days(t2.getymd());

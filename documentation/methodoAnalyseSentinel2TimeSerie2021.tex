@@ -1,0 +1,243 @@
+\documentclass[a4paper, 12pt]{article} % classe de base
+%\documentclass[a4paper,twoside, 11pt]{article}
+
+%\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc} % générer .bib avec zotero, encodage europe centrale 8859 2
+\usepackage[american]{babel}	%
+
+\usepackage{amsfonts,amssymb}
+\usepackage{url}	
+\usepackage{fancyhdr} 
+\usepackage{multirow}
+\usepackage{appendix}                                      
+\usepackage{perpage}			
+\usepackage[pdftex]{color,graphicx,graphics,epsfig}
+\usepackage[square]{natbib} 
+\graphicspath{{Images/}}
+\usepackage{float}
+\usepackage{amsmath} 
+%\usepackage{subfig}
+%\usepackage[hyper=true,toc=true,number=none,style=list]{glossary}
+\usepackage[colorlinks=true]{hyperref} 
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=red} 
+\usepackage{setspace}
+\usepackage{pdfpages}
+\usepackage{subfig}
+\usepackage{listings}
+\usepackage{xcolor}
+
+%\usepackage{listingsutf8}
+\lstset{
+	literate=%
+	{á}{{\'a}}1
+	{í}{{\'i}}1
+	{é}{{\'e}}1
+	{ý}{{\'y}}1
+	{ú}{{\'u}}1
+	{ó}{{\'o}}1
+	{ě}{{\v{e}}}1
+	{š}{{\v{s}}}1
+	{č}{{\v{c}}}1
+	{ř}{{\v{r}}}1
+	{ž}{{\v{z}}}1
+	{ď}{{\v{d}}}1
+	{ť}{{\v{t}}}1
+	{ň}{{\v{n}}}1                
+	{ů}{{\r{u}}}1
+	{Á}{{\'A}}1
+	{Í}{{\'I}}1
+	{É}{{\'E}}1
+	{Ý}{{\'Y}}1
+	{Ú}{{\'U}}1
+	{Ó}{{\'O}}1
+	{Ě}{{\v{E}}}1
+	{Š}{{\v{S}}}1
+	{Č}{{\v{C}}}1
+	{Ř}{{\v{R}}}1
+	{Ž}{{\v{Z}}}1
+	{Ď}{{\v{D}}}1
+	{Ť}{{\v{T}}}1
+	{Ň}{{\v{N}}}1                
+	{Ů}{{\r{U}}}1    
+}
+
+\scriptsize
+
+
+\definecolor{dkgreen}{rgb}{0.09, 0.45, 0.27}
+\definecolor{ghostwhite}{rgb}{0.97, 0.97, 1.0}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+
+
+\title{Analyse des séries temporelles d'image Sentinel-2 pour la détection des épicéas scolytés.}
+
+%\author{Lisein J, Maus L et Claessens H}
+\date{%
+    UlG - Gembloux Agro-Bio Tech
+    \\
+    \today
+}
+
+\begin{document}
+
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+Dans le cadre du projet InterReg RegioWood 2 et de l'Accord cadre de recherche et vulgarisation forestière, la crise du Typographe qui touche les pessière wallonne est étudiée au moyen de la télédétection. L'objectif est de dresser des cartes d'état sanitaire pour chaque année étudiée sur lesquelles on puisse distinguer les arbres sains des arbre dépérissant. L'utilisation de série temporelle d'image satellite dispose d'un potentiel très intéressant pour le suivi de la phénologie des arbres.
+
+\subsection{Sentinel-2}
+
+L'imagerie multispectrale des deux satellite Sentinel-2 (A et B, mis en orbite en juin 2015 et mars 2017) du programme Copernicus est a la base de la méthodologie présenté dans ce document. La résolution des bandes spectrales de Sentinel-2 est de 10 mètres dans le meilleurs des cas (certaines fréquences utilisées pour le suivi sanitaires sont captées à 20 mètres). La fréquence de revisite à l'équateur est de 5 jours, mais on dispose en Belgique de l'ordre d'une 12aine de prise de vue par ans pour lesquelles la couverture nuageuse est suffisamment faible. Les prises de vues font l'objet de traitement et sont redécoupée selon un carroyage de tuile (figure \ref{fig:tuileRW}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{../theia_d/tuileS2Nom.png}
+\caption{La Wallonie est couverte par un total de 8 tuiles Sentinel-2, mais la tuile 31UFR couvre à elle seule une majorité de l'Ardenne Belge.}
+\label{fig:tuileRW}
+\end{figure}
+
+\section{Méthodologie}
+
+\subsection{Suivi d'un indice spectral pour la détection précoce de stress}
+
+
+L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret) développée depuis 2017. 
+
+L'indice spectral permettant la détection précoce (stade vert du dépérissement) des dépérissements provoqués par l'attaque de Typographes est le CRSWIR :
+
+%\begin{equation*}
+\begin{align*} 
+CR_{SWRIR} &= \dfrac{SWIR1}{( NIRa + (\lambda_{SWIR1}-\lambda_{NIRa})* (\dfrac{SWIR2 - NIRa}{\lambda_{SWIR2}-\lambda_{NIRa}})} \\ 
+avec&\\ 
+\lambda_{NIRa} &=865\\ 
+\lambda_{SWIR1} &=1610\\ 
+\lambda_{SWIR2} &=2190
+%\end{equation*}
+\end{align*} 
+
+Les valeurs d'un peuplements soumis à un stress physiologique voient leur CRSWIR augmenter de manière précoce.
+
+\begin{equation}\label{eq:harmo}
+ f(t) =   a_{1} + b_{1} \sin(\dfrac{2\pi}{T}t)+ b_{2} \cos(\dfrac{2\pi}{T}t)+ b_{3} \sin(\dfrac{2\pi}{T}2t)+ b_{4} \cos(\dfrac{2\pi}{T}2t)
+\end{equation} 
+
+L'équation \ref{eq:harmo} permet de modéliser les variations saisonnières de CRSWIR pour un peuplement d'épicéa sain. La constante T est égal à 365.25. Cette équation ajustée sur 300 pessières saines est illustrée pour 3 années sur la figure \ref{fig:harmo}. Pour un pixel donnée, l'étude de la série temporelle de valeurs de CRSWIR, correspondant donc à chaque date pour lesquelles une image Sentinel-2 peu ennuagée est disponible, permet de déterminer si le peuplement est soumis à un stress. Plusieurs situations existent en dehors de celle d'une pessière saine et de celle d'une pessières scolytées. En effet, il est nécessaire de déterminer si le peuplement est coupé (détection de sol nu), ou si le peuplement présente un stress temporaire du probablement à un déficit hydrique temporaire. Les pessières sur des sols à Régime Hydrique Alternatif sont fortement représentatif de cette dernière situation, avec typiquement un déficit hydrique estival entraînant un stress passager qui se manifestera par une augmentation de CRSWIR, mais qui se différentie d'une attaque de scolyte par un retour à un état sanitaire normal (diminution du CRSWIR) peu de temps après.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{fctHarmo.png}
+	\caption{L'indice CRSWIR pour un peuplement sain varie durant l'année selon une fonction harmonique (trait plein en vert sur la figure). Un arbre dépérissant va présenter une valeur de CRSWIR qui sera supérieure à la normale. On décide arbitrairement que les valeurs qui dépassent la courbe en pointillé sont considérées comme représentative d'un stress. }
+	\label{fig:harmo}
+\end{figure}
+
+Afin de facilité la comparaison d'une valeur de CRSWIR pour une date donnée avec la valeur de référence, qui est la valeur de CRSWIR d'une pessière saine représenté par l'équation \ref{eq:harmo}, nous utilisons un ratio tels que défini ci-dessous :
+
+\begin{equation}\label{eq:crswirnorm}
+CR_{SWRIR_{norm}}(t)=\dfrac{CRSWIR_{observe}}{CRSWIR_{theorique}(t)}
+\end{equation} 
+
+le $CRSWIR_{theorique}(t)$ représente bien entendu la valeur calculée au moyen de l'équation \ref{eq:crswirnorm}. Le CRSWIR normalisé est donc un ratio qui, lorsque sa valeur est de 1, représente l'état typique d'une pessière saine, et lorsqu'il dépasse un certain seuil (fixé autour de 1.5 et 1.6), est considéré comme représentatif d'un stress végétatif. Une fois le CRSWIR normalisé calculé pour chaque date de prise de vue, la suite des traitements peux s'effectuer sans à avoir à considérer la variation saisonnière inhérente au changements phénologiques de la végétation.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{illuArbreCoupe.png}
+	\caption{Exemple d'une série temporelle d'observation de CRSWIR pour un pixel donné. Un état sanitaire présumé est attribué à chaque observation en fonction de la valeur de CRSWIR, de la présence ou non de sol nu et à son état sanitaire pour les dates antérieures et postérieures. Par exemple, en 2020, l'état sanitaire attribué est celui "coupé après stress" (croix mauve sur le graphique) car d'une part le pixel est détecté comme étant en sol nu, d'autre part les observations antérieures (été 2019 et hiver 2020) sont considérées comme étant "scolyté" (étoile rouge sur le graphique) }
+	\label{fig:ex}
+\end{figure}
+
+\subsection{Ensemble de règles pour attribuer un état sanitaire}
+
+\begin{enumerate}
+	%code 1
+	\item  ; sain
+	%code 2
+	\item ; dépérissement
+	%code 3
+	\item ; coupé mais sans dépérissement détecté avant la coupe
+	%code 4
+	\item ; coupé après avoir été dépérissant
+	%code 5
+	\item ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte.
+	%code 6
+	\item ; pixel qui est un mélange, détecté car présente un stress passager en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse)
+\end{enumerate}
+
+Les filtres et les règles de décisions permettant d'attribuer un état sanitaire à une observation d'une série temporelle sont brièvement présentées ici. On peux considérer que la série temporelle pour un pixel donné est synthétisée sous forme d'un tableau à 2 colonnes pour lequel chaque ligne constitue une date pour laquelle on dispose d'une information (prise de vue non ennuagée pour cette position). La première colonne est celle contenant l'information de la date de l'observation. La deuxième colonne contient un état sanitaire présumé, qui peut prendre la valeur de 1, 2 ou 3 avant de subir l'analyse présentée ici. La valeur de 1 signifie que la valeur de CRSWIR permet de supposer que le peuplement est sain. La valeur de 2 indique par contre que le peuplement semble en situation de stress, avec un $CRSWIR_{normalise}$ supérieur au seuil fixé (ex. 1.4, voir ligne en pointillé de la figure \ref{fig:harmo}).
+
+L'analyse commence par un premier filtre qui vise à retirer les valeurs aberrantes de la série temporelle. On va pour ce faire contrôler que aucune valeur de 2 (stress) ou 3 (coupé) n'apparaît de manière isolée. L'hypothèse est simplement qu'un pixel détecté comme stressé à une date mais considéré comme sain à la date précédente à la date suivante correspond à une observation aberrantes qui sera donc retiré ici.
+
+Ensuite, un deuxième filtre vise à classer les coupes (code 3) et les coupes sanitaires (code 4). On va pour se faire identifier toutes les occurrences d'au moins 3 détection de sol nu consécutifs, ou encore de 2 détection de sol nu mais dont les 2 dates sont séparées d'au moins 40 jours (pour considérer les situations de sols nus au dessus d'une zone fortement ennuagé et donc avec une densité temporelle d'observations assez faible)). Lorsqu'une situation similaire est détecté, l'état de toutes les observations suivantes sont fixées à "coupé" ou à "coupe sanitaire" si un stress a été détecté à la date antérieure à la détection du sol nu. L'idée est bien d'évité qu'une position détectée comme sol nu ne soit classée comme étant une pessière saine les mois et années suivant la coupe. Nous attirons l'attention que la méthodologie employée ici sur des images de 10m de résolution n'as pas pour objectif d'obtenir de bon résultats sur des jeunes plantations, pour lesquels la réponse spectrale est un mélange résultant de celle des petits houppiers et de la végétation environnante.
+
+La troisième partie de l'analyse vise à la détection des situations de peuplements scolytés. Si un stress est observé plusieurs fois d'affilé, on va modifié les états sanitaires postérieurs pour s'assurer que ceux-ci correspondent soit à un stress, soit à une coupe sanitaire. Néanmoins, un \textit{retour à une situation normale} est accepté dans le cas ou un état sanitaire sain est constaté plus de 3 fois consécutivement, pour une durée excédant 30 jours et seulement dans les cas ou le dépérissement observé précédemment n'as pas duré plus longtemps qu'un certain jours (par défaut 90 jours). Lorsqu'un retour à la normale est ainsi détecté, l'état sanitaire durant la période de stress est considéré comme étant un stress temporaire (code 5) et non pas une situation de présence de scolyte.
+
+Enfin, un dernier filtre permet d'appréhender la situation assez complexe d'un pixel qui couvrirait une surface hétérogène du point de vue de la présence de l'épicéa, tels qu'un mélange épicéa-feuillus ou un mélange épicéa-sol nu.
+
+\section{Le logiciel s2{\textunderscore}timeSerie}
+
+Bien que conceptuellement la méthode ne soit pas extrêmement compliquée, le volume de donnée est considérable et nécessite une organisation soigneuse ainsi qu'une méthode de calcul optimisée. C'est dans ce but qu'est développé l'application \textbf{s2{\textunderscore}timeSerie}, sous C++ et dans un environnement Linux.
+
+L'application peut s'utiliser de la manière suivante :
+
+%--dates 2016-01-01 2017-01-01 
+\begin{lstlisting}
+./s2_timeSerie --help
+./s2_timeSerie --catalogue 1 --tuile T32ULU 
+./s2_timeSerie --catalogue 2 --tuile T31UGR --srCR 1.7
+\end{lstlisting}
+
+l'argument \textbf{tuile} renseigne le nom de une ou plusieurs tuiles Sentinel-2.
+l'argument \textbf{catalogue} peut recevoir les valeurs de 1 ou de 2. Deux modes de création d'un catalogue, c'est à dire d'une série temporelle d'images pour une tuile donnée, sont disponibles.
+
+Avec le mode 1, \textbf{s2{\textunderscore}timeSerie} effectue le téléchargement des données depuis la plateforme theia. Les informations nécessaires sont le nom de la tuile Sentinel-2 et une plage de date durant laquelle on souhaite effectuer l'analyse. Cette plage de date peux être définie avec l'argument --dates . par exemple : --dates 2016-01-01 2017-01-01.
+
+Avec le mode 2 (--catalogue 2), le catalogue est créé sur base des dossiers téléchargés précédemment. Chaque dossier correspond à une date de prise de vue. Seul le nom de la tuile est donc requis.
+
+L'appli utilise OTB comme calculatrice raster, pour tout ce qui concerne les éléments ci-dessous :
+\begin{itemize}
+	\item calcul de carte de masques (no data et nuage)
+	\item rééchantillonnage des bandes spectrales de Sentinel-2 de 20m vers 10m de résolution
+	\item calcul de carte pour la détection du sol nu
+	\item le calcul des cartes de CRSWIR
+	\item le calcul des cartes de CRSWIR normalisé
+\end{itemize}
+
+L'ensemble de ces opérations sont effectuées date par date de manière indépendante, et restent donc de l'ordre du monotemporel. Leur relative simplicité font que ces opérations sont considérées comme des prétraitements. Ces prétraitements sont évidemment préliminaires à l'analyse de la série temporelle à proprement parler.
+ 
+\subsection{Organisation du code source}
+
+Trois classes d'objets sont définies dans le projet C++ et permettent d'effectuer toutes les opérations nécessaires. Ces classes sont présentées brièvement ci-dessous. Ces informations sont une aide destiné à l'utilisateur qui souhaite lire le code source pour le comprendre et/ou le modifier. La figure \ref{fig:classes} schématise le fonctionnement des 3 classes d'objets les unes par rapports aux autres.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{illuAppliS2TS.png}
+	\caption{L'application est développé avec l'approche de programmation Orientée Objet, dont les 3 classes principales sont les classes \textbf{catalogue}, \textbf{tuileS2OneDate} et \textbf{TS1Pos} représenté sur ce graphique.\textbf{}}
+	\label{fig:ex}
+\end{figure}
+
+
+
+
+\subsection{La classe \textbf{catalogue}}
+
+C'est la classe qui contient toutes la série temporelle sur l'emprise d'une tuile. La série temporelle est consituée par l'ensemble des prises de vues sur cette tuile. Les prises de vue retenues sont celles qui présente un taux d'ennuagement inférieur à un seuil fixé à 35\%. C'est au niveau de cette classe que sont défini les dates de début et de fin de la série temporelle, mais aussi que la zone d'intérêt pour laquelle on souhaite effectuer les calculs est définie. En effet, l'analyse n'est pas effectuée sur l'ensemble du territoire mais uniquement sur les zones considérées comme étant des pessières. Le masque épicéa est donc utilisé comme donnée d'entrée et ce masque, qui convre toute la région wallonne, est découpée par la classe catalogue afin d'épouser l'emprise de la tuile.
+
+\subsection{La classe \textbf{tuileS2OneDate}}
+C'est la classe qui contient toutes les informations relatives à une tuile pour une date données ; archive compressée, décompressée, métadonnées (date, nuage, nom du produit, répertoire ou j'ai mis les images, ect). Cette classe effectue la lecture de nombreuses informations depuis le fichier XML de métadonnées du produit Sentinel-2A pour cette date. Plus d'information sont disponibles sous le lien \url{https://labo.obs-mip.fr/multitemp/sentinel-2/theias-sentinel-2-l2a-product-format/} à propos du format de données des produits 2A de Sentinel-2.
+
+Les objets \textbf{tuileS2OneDate} regroupe l'ensemble des images nécessaires à l'analyse temporelle pour la détection de stress provoqué par les scolytes. En plus des images de chaque bande spectrale du capteur de Sentinel-2, les images calculés par OTB listées précédemment dans ce document sont gérées par la classe \textbf{tuileS2OneDate}.
+
+\subsection{La classe \textbf{TS1Pos}}
+C'est la classe qui effectue l'analyse de la série temporelle (TS pour Time Serie) pour une position donnée (Pos pour Position, qui est rerpésenté par le centre de chaque pixels de l'image). C'est avec cette classe que l'on fait l'analyse de la succession de l'état sanitaire pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc. La classe \textbf{TS1Pos} n'effectue aucune opération cartographique, c'est strictement l'analyse du CRSWIR normalisé au fil du temps, combiné avec la détection ou non de sol nu, qui sert d'information.
+
+
+
+
+
+\end{document}

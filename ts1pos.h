@@ -3,10 +3,10 @@
 #include "date.h"
 #include <iostream>
 #include "map"
-#include "tuiles2.h"
+#include "tuiles2OneDate.h"
 using namespace date;
 
-class tuileS2;
+class tuileS2OneDate;
 class pts;
 
 class TS1Pos;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
@@ -77,7 +77,7 @@ public:
     void printDetail(std::string aOut="toto");
 
     // overload add1Date
-    void add1Date(int code, tuileS2 * t);
+    void add1Date(int code, tuileS2OneDate * t);
 private:
   std::vector<double> mVCRSWIR;
   std::vector<double> mVCRSWIRNorm;

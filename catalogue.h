@@ -1,27 +1,26 @@
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
-#include "tuiles2.h"
+#include "tuiles2OneDate.h"
 #include "ts1pos.h"
-class catalogue;
-class tuileS2;
+class globSeuilCC;
+class tuileS2OneDate;
 class TS1Pos;
 
 struct PointerCompare {
-    bool operator()(const tuileS2* l, const tuileS2* r) {
+    bool operator()(const tuileS2OneDate* l, const tuileS2OneDate* r) {
         return !(*l < *r);
     }
 };
-class catalogue
+class globSeuilCC
 {
 public:
     // soit je crée un catalogue depuis un fichier json résultant d'une requete theia, principalement pour le téléchargement, soit je crée le catalogue depuis le dossier qui contient les produits intermédiaire
-    catalogue(std::string aJsonFile);
+    globSeuilCC(std::string aJsonFile);
     // je fait ça car j'effectue le téléchargement des données et les prétraitement sur une machine de traitement puis je prends les cartes de CRSWIR sur une autre machine, sans copier les données de base (trop lourd)
-    catalogue();
+    globSeuilCC();
 private:
 
     void createMaskForTuile();
-
     void traitement();
     void analyseTS();
     void analyseTSinit();
@@ -33,12 +32,12 @@ private:
     void closeDS();
 
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
-    std::vector<tuileS2 *> mVProduts;
+    std::vector<tuileS2OneDate *> mVProduts;
     // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
-    std::vector<tuileS2 *>  mVProdutsOK;
+    std::vector<tuileS2OneDate *>  mVProdutsOK;
 
     void summary(){
-        for (tuileS2 * t : mVProduts){t->cat();}
+        for (tuileS2OneDate * t : mVProduts){t->cat();}
         std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
     }
     // comptage des produits avec cloudcover ok

@@ -30,7 +30,7 @@ using namespace date;
 class rasterFiles;
 class pts;
 
-class tuileS2;
+class tuileS2OneDate;
 
 year_month_day ymdFromString(std::string date);
 
@@ -43,18 +43,18 @@ double getCRtheorique(year_month_day ymd);
 std::string getNameMasqueEP(int i=1);
 
 // sert pour le téléchargement d'une tuile
-class tuileS2
+class tuileS2OneDate
 {
 public:
-    tuileS2():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0){
+    tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0){
         //std::cout << "creation tuileS2" << std::endl;
     }
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
-    tuileS2(const  tuileS2&) = delete;
-    tuileS2& operator=(const  tuileS2&) = delete;
+    tuileS2OneDate(const  tuileS2OneDate&) = delete;
+    tuileS2OneDate& operator=(const  tuileS2OneDate&) = delete;
     // move
-    tuileS2(tuileS2 &&) = default;
+    tuileS2OneDate(tuileS2OneDate &&) = default;
 
     std::string mProd,mFeature_id,mAcqDate,mProdDate;//,mPubDate;
     // attention, feature_id est uniquement utilisé par et pour la requete de téléchargement.
@@ -141,7 +141,7 @@ public:
     int getMasqVal(int aCol);
 
 
-    bool operator < (const tuileS2& t) const {
+    bool operator < (const tuileS2OneDate& t) const {
         days diff=date::sys_days(getymd())-date::sys_days(t.getymd());
         if (diff.count()>0){
             return 1;

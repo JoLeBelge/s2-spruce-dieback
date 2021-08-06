@@ -10,8 +10,8 @@ SOURCES += main.cpp \
     catalogue.cpp \
     rasterfile.cpp \
     ts1pos.cpp \
-    tuiles2.cpp \
-    libzippp/src/libzippp.cpp \
+    libzippp/src/libzippp.cpp \ \
+    tuiles2OneDate.cpp
 
 LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb
 
@@ -55,6 +55,6 @@ HEADERS += \
     rapidxml/rapidxml_iterators.hpp \
     rasterfile.h \
     ts1pos.h \
-    tuiles2.h\
     libzippp/src/libzippp.h \
-    date.h\
+    date.h\ \
+    tuiles2OneDate.h

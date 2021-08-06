@@ -21,7 +21,7 @@ L'idée générale est de se calquer sur la méthodologie de l'INRAE (voir prés
  
  ./s2_timeSerie --catalogue 1 --tuile T31UFR
  
- mais pour l'instant il n'y a pas le choix des dates de début et de fin. Ca viendra.
+On peux choisir les dates de début et de fin avec l'argument --dates . par exemple : --dates 2016-01-01 2017-01-01
 
 1) les archives correspondant aux images pour les dates au sein de cette période d'intérêt sont téléchargées depuis theia. Les produits sont les produit 2A. +- 2 go par tuile et par date. Seules les prise de vue avec peu de nuage sont utilisées.
 
