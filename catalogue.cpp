@@ -6,7 +6,7 @@ extern std::string path_otb;
 extern std::string EP_mask_path;
 //extern std::string iprfwFile;
 extern int globSeuilCC;
-double seuilCR(1.4); // on est encore bien au dessus de ce que font les français
+double seuilCR(1.5); // on est encore bien au dessus de ce que font les français
 extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
@@ -128,11 +128,11 @@ void catalogue::traitement(){
 
     // points pour visu de la série tempo et pour vérifier la fct harmonique
     if (XYtestFile!="toto"){
-    globVPts=readPtsFile(XYtestFile);
+        globVPts=readPtsFile(XYtestFile);
     }
 
     if (doAnaTS){
-    analyseTSinit();
+        analyseTSinit();
     }
 }
 
@@ -153,58 +153,31 @@ void catalogue::analyseTSinit(){
     // c'est ici également que j'accède au mode "description de la TS pour un point donné"
     std::cout << "analyse TS init " << std::endl;
     std::vector<int> aVYs;
-    // tentative de tout traiter d'un coup, toute les années
-    if (year_analyse==666){
-        std::cout << "analyse pour toute les années d'un coup ------------------" << std::endl;
-        for (tuileS2OneDate * t : mVProduts){
-            if (t->mCloudCover<globSeuilCC){
-                if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
-                mVProdutsOK.push_back(t);
-            }
+
+    std::cout << "analyse pour toute les années d'un coup ------------------" << std::endl;
+    for (tuileS2OneDate * t : mVProduts){
+        if (t->mCloudCover<globSeuilCC){
+            if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
+            mVProdutsOK.push_back(t);
         }
-        std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+    }
+    std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
 
-        if (Xdebug>0 && Ydebug >0){
-            // mode test pour une position
-            analyseTSTest1pixel(Xdebug,Ydebug,globResXYTest);
-        } else if(globVPts.size()>0) {
-             // mode test pour un ensemble de position (et sauver résultat dans fichiers)
-             std::cout << " analyse en mode Test pour une liste de " << globVPts.size() << "points " << std::endl;
-            for (pts & pt : globVPts){
+    if (Xdebug>0 && Ydebug >0){
+        // mode test pour une position
+        analyseTSTest1pixel(Xdebug,Ydebug,globResXYTest);
+    } else if(globVPts.size()>0) {
+        // mode test pour un ensemble de position (et sauver résultat dans fichiers)
+        std::cout << " analyse en mode Test pour une liste de " << globVPts.size() << "points " << std::endl;
+        for (pts & pt : globVPts){
 
-               analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
-            }
-
-        }else{
-            analyseTS();
+            analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
         }
 
-    } else if (year_analyse==0){
-
-        for (tuileS2OneDate * t : mVProduts){
-            //if (t->mCloudCover<globSeuilCC && t->gety()==2018){
-            if (t->mCloudCover<globSeuilCC){
-                if (std::find(aVYs.begin(), aVYs.end(), t->gety()) == aVYs.end()){aVYs.push_back(t->gety());}
-
-            }
-        }
-    } else { aVYs.push_back(year_analyse);}
-    std::sort (aVYs.begin(), aVYs.end());
-    // je passe mYs comme argument à TS1Pos et vu que je veux faire date par date, je dois le modifier
-
-    for (int year : aVYs){
-        mYs.clear();
-        mYs.push_back(year);
-        std::cout << "analyse pour l'année " << year << "------------------" << std::endl;
-
-        for (tuileS2OneDate * t : mVProduts){
-            if (t->mCloudCover<globSeuilCC && t->gety()==year){
-                mVProdutsOK.push_back(t);
-            }
-        }
-        std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+    }else{
         analyseTS();
     }
+
 }
 
 void catalogue::analyseTS(){
@@ -275,10 +248,17 @@ void catalogue::analyseTS(){
                 t->readCRnormLine(row);
                 t->readMasqLine(row);
             }
-            std::vector<int> r(mX);
-            std::iota(std::begin(r), std::end(r), 0);
-            std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
-            //std::for_each(std::execution::seq, std::begin(r), std::end(r), [&](int col) {
+
+
+#pragma omp parallel num_threads(12) shared(scanLine,row,mVProdutsOK)
+                {
+
+             //   std::vector<int> r(mX);
+            //std::iota(std::begin(r), std::end(r), 0);
+            //std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
+                //std::for_each(std::execution::seq, std::begin(r), std::end(r), [&](int col) {
+                #pragma omp for
+                for (int col=0 ; col<mX;col++){
                 if (scanLine[col]==1){
 
                     TS1Pos ts(row,col,&mYs,nb);
@@ -292,6 +272,7 @@ void catalogue::analyseTS(){
                         if (solnu==0){code=0;
                         }else if(solnu==2 | solnu==3){
                             code=3;
+                            // ci-dessous donc pour solnu=1 (zone oK)
                         } else if (crnorm<=seuilCR) {
                             code=1;
                         } else if (crnorm>seuilCR) {
@@ -301,13 +282,17 @@ void catalogue::analyseTS(){
                         ts.add1Date(t->getymdPt(),code);
                     }
 
-                    ts.nettoyer();                 
-                    ts.analyse();                   
-                   writeRes1pos(&ts);
+                    ts.nettoyer();
+                    ts.analyse();
+//#pragma omp critical
+//                            {
+                    writeRes1pos(&ts);
+//                    }
 
                 }
-            });
-            //}
+            //});
+            }
+            } // end pragma
             c++;
             if (c%step==0){
                 count++;
@@ -337,17 +322,21 @@ void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
         double crnorm=t->getCRSWIRNorm(pt);
         int solnu = t->getMaskSolNu(pt);
         int code=0;
-        if (solnu==0 | crnorm==0){code=0;
+        if (solnu==0){code=0;
         }else if(solnu==2 | solnu==3){
             code=3;
+            // ci-dessous donc pour solnu=1 (zone oK)
         } else if (crnorm<=seuilCR) {
             code=1;
         } else if (crnorm>seuilCR) {
             code=2;
         }
+
         ts.add1Date(code,t);
     }
-    if (!debugDetail){ts.nettoyer();}
+    //if (!debugDetail){ts.nettoyer();}
+    ts.nettoyer();
+    // ça risque d'impacter le résultat de ne pas nettoyer tout ca..
     ts.analyse();
     ts.printDetail(aFileOut);
 }
@@ -380,6 +369,9 @@ void catalogue::closeDS(){
         std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
         const char *out=output.c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+
+        // on va également copier le fichier de style qml
+        copyStyleES(output);
         GDALClose( kv.second);
         GDALClose(ds);
     }
@@ -441,7 +433,7 @@ bool catalogue::openDS(){
         GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
         if( pDriver != NULL )
         {
-              for (int y : mYs){
+            for (int y : mYs){
                 // MEM raster
                 std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
                 const char *out=output.c_str();
@@ -471,7 +463,7 @@ void catalogue::readMasqLine(int aRow){
         mDSmaskEP->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mX, 1, scanLine, mX,1, GDT_Float32, 0, 0 );
     }else {
         std::cout << "readMasqLine ; failed " << std::endl;
-        }
+    }
 
 }
 
@@ -500,3 +492,12 @@ void catalogue::createMaskForTuile(){
     } else { std::cout << "Je n'ai pas le masque EP pour la RW \n\n\n\n\n!!" << masqueRW << std::endl;}
 }
 
+void copyStyleES(std::string tifPath){
+
+    std::string aOut=tifPath.substr(0,tifPath.size()-3)+"qml";
+    if (boost::filesystem::exists(aOut)){boost::filesystem::remove(aOut);}
+    std::string aIn("../s2/documentation/etatSanitaire_.qml");
+    if (boost::filesystem::exists(aIn)){
+    boost::filesystem::copy_file(aIn,aOut);
+    }
+}

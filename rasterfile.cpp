@@ -35,7 +35,6 @@ int rasterFiles::getValue(double x, double y,bool quiet){
                 CPLFree(scanPix);
                 mBand=NULL;
             }
-
             GDALClose( mGDALDat );
         }
     } else if (!quiet){std::cout << "image introuvable : " << getPathTif() << std::endl;}

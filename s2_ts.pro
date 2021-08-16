@@ -3,17 +3,19 @@ CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 TARGET = s2_timeSerie
+QMAKE_LFLAGS+=-fopenmp
+QMAKE_CXXFLAGS+=-fopenmp
 
-QMAKE_CXXFLAGS = -Wno-c++11-narrowing
+#QMAKE_CXXFLAGS = -Wno-c++11-narrowing
 
 SOURCES += main.cpp \
     catalogue.cpp \
     rasterfile.cpp \
     ts1pos.cpp \
-    libzippp/src/libzippp.cpp \ \
+    libzippp/src/libzippp.cpp \
     tuiles2OneDate.cpp
 
-LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb
+LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb -fopenmp
 
 LIBS += -L$$PWD/../../../usr/include/ -lsqlite3
 LIBS += -L$$PWD/usr/include/gdal/ -lgdal
@@ -56,5 +58,5 @@ HEADERS += \
     rasterfile.h \
     ts1pos.h \
     libzippp/src/libzippp.h \
-    date.h\ \
+    date.h\
     tuiles2OneDate.h

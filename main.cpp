@@ -35,9 +35,7 @@ int main(int argc, char *argv[])
 
     year_month_day today = year_month_day{floor<days>(system_clock::now())};
     d2 = format("%F",today);
-    std::cout << "d2 moi " <<  today.month().getM() << std::endl;
-
-    std::cout << "d2 " << d2 << std::endl;
+    //std::cout << "d2 " << d2 << std::endl;
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
@@ -147,19 +145,23 @@ int main(int argc, char *argv[])
                 int mode(vm["catalogue"].as<int>());
                 switch (mode) {
                 case 1:{
-
+                        std::cout << "\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
                         // lancer la requete theia avant de créer le catalogue
                         std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
-                        std::cout << aCommand << std::endl;
+                        //std::cout << aCommand << std::endl;
                         system(aCommand.c_str());
                         std::string inputJson=wd+"search.json";
-                        globSeuilCC cata(inputJson);
+                        catalogue cata(inputJson);
+                        std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
 
                     break;
                 }
                 case 2:{
                     // ne pas mettre de parenthèse !.
-                    globSeuilCC cata;
+                    std::cout <<"\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
+                    catalogue cata;
+                    std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
+
                     break;
                 }
                 }
@@ -207,7 +209,7 @@ int main(int argc, char *argv[])
               out << "\n";
             }
             out.close();
-            std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+".tif -of GTiff -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
+            std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
             std::cout << aCommand << std::endl;
             system(aCommand.c_str());
         }

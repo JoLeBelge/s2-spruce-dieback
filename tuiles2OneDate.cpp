@@ -243,7 +243,8 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 void tuileS2OneDate::masque(){
     std::cout << "masque .." ;
     for (int i(1) ; i<3 ; i++){
-        std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
+        //std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
+        std::string out=getRasterMasqGenName(i);
         std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
@@ -345,7 +346,7 @@ std::string tuileS2OneDate::getDate(){
 std::string tuileS2OneDate::getRasterMasqSecName(){
     return interDirName + "mask_R1_solnu.tif";
 }
-std::string tuileS2OneDate::getRasterMasqGenName(int resol=1){
+std::string tuileS2OneDate::getRasterMasqGenName(int resol){
     return interDirName + "mask_R"+std::to_string(resol)+".tif";
 }
 

@@ -114,7 +114,7 @@ public:
 
     void masqueSpecifique();
     std::string getRasterMasqSecName();
-    std::string getRasterMasqGenName(int resol);
+    std::string getRasterMasqGenName(int resol=1);
 
     std::string getRasterCRName();
 

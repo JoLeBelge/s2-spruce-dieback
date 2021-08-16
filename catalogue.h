@@ -2,22 +2,26 @@
 #define CATALOGUE_H
 #include "tuiles2OneDate.h"
 #include "ts1pos.h"
-class globSeuilCC;
+#include <omp.h>
+class catalogue;
 class tuileS2OneDate;
 class TS1Pos;
+
+// copier le fichier de style QML pour Etat Sanitaire
+void copyStyleES(std::string tifPath);
 
 struct PointerCompare {
     bool operator()(const tuileS2OneDate* l, const tuileS2OneDate* r) {
         return !(*l < *r);
     }
 };
-class globSeuilCC
+class catalogue
 {
 public:
     // soit je crée un catalogue depuis un fichier json résultant d'une requete theia, principalement pour le téléchargement, soit je crée le catalogue depuis le dossier qui contient les produits intermédiaire
-    globSeuilCC(std::string aJsonFile);
+    catalogue(std::string aJsonFile);
     // je fait ça car j'effectue le téléchargement des données et les prétraitement sur une machine de traitement puis je prends les cartes de CRSWIR sur une autre machine, sans copier les données de base (trop lourd)
-    globSeuilCC();
+    catalogue();
 private:
 
     void createMaskForTuile();
