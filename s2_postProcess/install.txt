@@ -1,0 +1,7 @@
+installation de s2_postProcess sur machine traitement
+je clone le dépot micmac car en fait j'ai besoin non seulement des include, mais également des sources 
+git clone "https://github.com/micmacIGN/micmac" micmac
+
+sudo apt-get install make imagemagick libimage-exiftool-perl exiv2 proj-bin qt5-default
+
+je compile micmac et hop j'ai les librairies dans lib/

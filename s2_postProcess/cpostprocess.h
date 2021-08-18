@@ -28,6 +28,9 @@ public:
     // fillHole
     void fillHole(Im2D_U_INT1 * aIn, int Val2Clean, int ValConflict1, int ValCopain,int seuilVois, int aSz1, int aSz2);
     void decompressRaster(std::string aIn, std::string aOut);
+    // compresser les résultats
+    void compress();
+    void compressTif(std::string aIn);
 
     void clean();
     void evol();

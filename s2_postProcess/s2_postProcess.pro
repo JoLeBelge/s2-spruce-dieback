@@ -8,19 +8,19 @@ QT += x11extras
 SOURCES += \
         cpostprocess.cpp \
         main.cpp
-LIBS += -L$$OUT_PWD/../../../../../micmac/lib/ -lelise
-LIBS += -L$$OUT_PWD/../../../../../micmac/lib/ -lANN
+LIBS += -L$$OUT_PWD/../../micmac/lib/ -lelise
+LIBS += -L$$OUT_PWD/../../micmac/lib/ -lANN
 LIBS += -lX11 -lboost_program_options -lboost_filesystem
 
 LIBS += -L$$PWD/usr/include/gdal/ -lgdal
-INCLUDEPATH += $$PWD/usr/include/gdal/
-DEPENDPATH += $$PWD/usr/include/gdal/
+INCLUDEPATH += /usr/include/gdal/
+DEPENDPATH += /usr/include/gdal/
 
-INCLUDEPATH += $$PWD/../../../../../micmac/include/
-DEPENDPATH += $$PWD/../../../../../micmac/include/
+INCLUDEPATH += $$PWD/../../micmac/include/
+DEPENDPATH += $$PWD/../../micmac/include/
 
-PRE_TARGETDEPS += $$OUT_PWD/../../../../../micmac/lib/libelise.a
-PRE_TARGETDEPS += $$OUT_PWD/../../../../../micmac/lib/libANN.a
+PRE_TARGETDEPS += $$OUT_PWD/../../micmac/lib/libelise.a
+PRE_TARGETDEPS += $$OUT_PWD/../../micmac/lib/libANN.a
 
 HEADERS += \
     cpostprocess.h

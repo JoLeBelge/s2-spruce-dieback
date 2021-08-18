@@ -16,6 +16,20 @@ cPostProcess::cPostProcess(std::vector<std::pair<int, string>> aMRaster, int mod
 
 }
 
+void cPostProcess::compress(){
+    for (std::shared_ptr<esOney> & es : mVES){
+        compressTif(es->getNameClean());
+        compressTif(es->getNameEvol());
+    }
+}
+
+void cPostProcess::compressTif(std::string aIn){
+    std::string aCommand= std::string("gdalwarp -co 'COMPRESS=DEFLATE' -overwrite "+ aIn +" "+aIn.substr(0,aIn.size()-4)+"_co.tif ");
+    //std::cout << aCommand << "\n";
+    system(aCommand.c_str());
+
+}
+
 void cPostProcess::clean(){
     int c(0);
     for (std::shared_ptr<esOney> & es : mVES){
@@ -279,5 +293,7 @@ void esOney::loadClean(){
         mIm=new Im2D_U_INT1(Im2D_U_INT1::FromFileStd(getNameClean()));
     } else { std::cout << getNameClean() << " n'existe pas" << std::endl;}
 }
+
+
 
 

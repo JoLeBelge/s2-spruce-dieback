@@ -16,6 +16,7 @@ namespace po = boost::program_options;
  * input ; la série tempo de carte d'état sanitaire.
  *
  * ./s2_postProcess --outils 2 --rasterIn ../../../ana2021/etatSan2/etatSanitaire_ANNEE.tif
+./s2_postProcess --outils 2 --rasterIn /media/gef/Data2/S2Scolyte/merge/etatSanitaire_ANNEE.tif
 
  * */
 
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol)")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
             ;
 
@@ -95,6 +96,12 @@ int main(int argc, char *argv[])
                 std::cout << " je vais effectuer le post-traitement pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,2);
                 app.evol();
+                break;
+            }
+            case 3:{
+                std::cout << " compression pour carte output de " << vIn.size() << " cartes " << std::endl;
+                cPostProcess app(vIn,0);// mode 0 ; ne charge pas d'image en mémoire
+                app.compress();
                 break;
             }
             default:{
