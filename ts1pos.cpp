@@ -38,6 +38,7 @@ void TS1Pos::analyse(){
         }
     }
 
+
     // filtre ; si détection de sol nu plusieurs fois et durant une durée longue, je met toutes les dates d'après en sol nu.
 
     std::vector<int>::iterator p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 3);
@@ -81,6 +82,71 @@ void TS1Pos::analyse(){
         std::cout << e << std::endl;
     }*/
 
+    // pour la détection des pixels stressé, on le fait en 2 itérations ; une première avec retour à la normale possible, une deuxième sans retour possible. Sinon ça peux yoyoter.
+    detectStresseEtRetour();
+
+    p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
+    if (p != mVEtatFin.end()){
+        std::vector<year_month_day> aVD;
+        std::vector<int> aVE, aVDuree;
+        std::vector<std::vector<int>> aVPosEtatFin;
+        concateneEtat(& aVD, & aVE, &aVPosEtatFin, &aVDuree);
+
+        p = aVE.begin();
+        while (p != aVE.end()) {
+            p = std::find(p, aVE.end(), 2);
+            if (p != aVE.end()) {
+                int pos= p - aVE.begin();
+                // stressé plusieurs fois d'affilé et ou sur longue période
+                if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>30){
+                    // on change les valeurs d'après
+                    for (int po(pos+1); po<aVE.size();po++){
+                        int res(2);
+                        if (aVE.at(po)==3){res=4;
+                        }
+                        for (int i : aVPosEtatFin.at(po)){
+                            mVEtatFin.at(i)=res;
+                        }
+
+                    }
+                    break;
+                }
+                p++;
+            }
+        }
+    }
+
+    /*std::cout << "après retour normale" << std::endl;
+    for (int e : mVEtatFin){
+        std::cout << e << std::endl;
+    }*/
+    // avec les filtres ci-dessus, on peut avoir un arbre avec un stress passager en 2019 et un stress scolyte puis coupé en 2020; manque de cohérence. je refait un test
+    // oui mais attention car si stress passagé un an, puis sain 2 an, puis scolyte 3 an ; yoyote sans cohérence non plus!
+   /* if(std::find(mVEtatFin.begin(), mVEtatFin.end(), 5)!=mVEtatFin.end() && std::find(mVEtatFin.begin(), mVEtatFin.end(), 2)!=mVEtatFin.end()){
+        std::replace (mVEtatFin.begin(), mVEtatFin.end(), 5, 2);
+    }
+
+    // etat des lieux après ce filtre ;
+    std::cout << "après filtre stressé" << std::endl;
+    for (int e : mVEtatFin){
+        std::cout << e << std::endl;
+    }*/
+
+    // les pixels qui sont un mélange de résineux et soit de sol ou de feuillus présentent un stress en hiver mais pas de stress en été (car photosynthèse du sol ou du feuillus).
+    // je crée une classe supplémentaire pour les détecter. Avant ils étaient en stress temporaire en alternance avec état normal en été seulement
+    //std::cout << " detect melange" << std::endl;
+    detectMelange();
+
+
+    // maintenant, je vais résumer l'état pour chaque année afin d'exporter des cartes annuelles.
+    for (auto kv : mVRes){
+        mVRes.at(kv.first)=getEtatPourAnnee(kv.first);
+    }
+}
+
+void TS1Pos::detectStresseEtRetour(){
+
+    std::vector<int>::iterator p;
     // stressé
     p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
     if (p != mVEtatFin.end()){
@@ -98,15 +164,15 @@ void TS1Pos::analyse(){
                 if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>30){
                     // on change les valeurs d'après
                     for (int po(pos+1); po<aVE.size();po++){
-                    int res(2);
-                    if (aVE.at(po)==3){res=4;
-                    }
-                    for (int i : aVPosEtatFin.at(po)){
-                        mVEtatFin.at(i)=res;
-                    }
+                        int res(2);
+                        if (aVE.at(po)==3){res=4;
+                        }
+                        for (int i : aVPosEtatFin.at(po)){
+                            mVEtatFin.at(i)=res;
+                        }
 
-                }
-                 break;
+                    }
+                    break;
                 }
                 p++;
 
@@ -131,47 +197,35 @@ void TS1Pos::analyse(){
 
                     // retour à la normale suite à un stress temporaire
                     // situation vicieuse ou jai 222 1111 (moins de 90j) 222 1111 (plus de 90 j)
+                    // donc je dois vérifier toutes les valeurs d'état d'avant pour déterminer si j'ai des stress
+
                     if (pos-2==0 |  (pos-2>=0 && mVEtatFin.at(aVPosEtatFin.at(pos-2).at(0))!=2)){
-                    // on change les valeurs de stress pour les mettre en stress temporaire
-                    for (int i : aVPosEtatFin.at(pos-1)){
-                        mVEtatFin.at(i)=5;
-                    }
-                    // on remet les valeurs d'état comme avant qu'elles soient modifié par la détection du stress
-                    for (int po(pos); po<aVE.size();po++){
-                    for (int i : aVPosEtatFin.at(po)){
-                        mVEtatFin.at(i)=aVE.at(po);
-                    }
-                }
+                        bool testStressAnterieur(0);
+                        for(int i(0) ; i < aVPosEtatFin.at(pos-2).at(0); i++){
+                            if (mVEtatFin.at(i)==2){testStressAnterieur=1;}
+                        }
+
+                        if (!testStressAnterieur){
+                            // on change les valeurs de stress pour les mettre en stress temporaire
+                            for (int i : aVPosEtatFin.at(pos-1)){
+                                mVEtatFin.at(i)=5;
+                            }
+                            // on remet les valeurs d'état comme avant qu'elles soient modifié par la détection du stress
+                            for (int po(pos); po<aVE.size();po++){
+                                for (int i : aVPosEtatFin.at(po)){
+                                    mVEtatFin.at(i)=aVE.at(po);
+                                }
+                            }
+                        }
                     }
 
                 }
                 p++;
 
             }
-        }    
-    }
-    // avec les filtres ci-dessus, on peut avoir un arbre avec un stress passager en 2019 et un stress scolyte puis coupé en 2020; manque de cohérence. je refait un test
-    if(std::find(mVEtatFin.begin(), mVEtatFin.end(), 5)!=mVEtatFin.end() && std::find(mVEtatFin.begin(), mVEtatFin.end(), 2)!=mVEtatFin.end()){
-     std::replace (mVEtatFin.begin(), mVEtatFin.end(), 5, 2);
+        }
     }
 
-    /*¨
-    // etat des lieux après ce filtre ;
-    std::cout << "après filtre stressé" << std::endl;
-    for (int e : mVEtatFin){
-        std::cout << e << std::endl;
-    }*/
-
-    // les pixels qui sont un mélange de résineux et soit de sol ou de feuillus présentent un stress en hiver mais pas de stress en été (car photosynthèse du sol ou du feuillus).
-    // je crée une classe supplémentaire pour les détecter. Avant ils étaient en stress temporaire en alternance avec état normal en été seulement
-    //std::cout << " detect melange" << std::endl;
-    detectMelange();
-
-
-    // maintenant, je vais résumer l'état pour chaque année afin d'exporter des cartes annuelles.
-    for (auto kv : mVRes){
-        mVRes.at(kv.first)=getEtatPourAnnee(kv.first);
-    }
 }
 
 void TS1Pos::detectMelange(){
@@ -432,7 +486,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     rasterFiles r_b12(t->getOriginalRasterR2Name("12"));
     mVB12.at(c)=r_b12.getValue(pt_.X(),pt_.Y())/10000.0;
 
- /* B2 bleu
+    /* B2 bleu
  * B3 vert
  * B4 rouge
  * B8a NIRa
@@ -444,7 +498,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
  * modéliation de 2 ligne droite et ratio des segment qui passent de l'absisse à la longeur d'onde SWIR 1 vers chacunes de ces 2 droites
  */
     if (mVB12.at(c)!=-1){// dans le cas ou je tombe dans du no data, cad en dehors du masque edge
-    mVCRSWIR.at(c)=mVB11.at(c)/(mVB8A.at(c)+(1610-865)* ((mVB12.at(c)-mVB8A.at(c))/(2190-865)));
+        mVCRSWIR.at(c)=mVB11.at(c)/(mVB8A.at(c)+(1610-865)* ((mVB12.at(c)-mVB8A.at(c))/(2190-865)));
     } else { mVCRSWIR.at(c)=-1;}
     // attention, me retourne 1 si jamais toute les bandes sont
     mVCRSWIRNorm.at(c)=mVCRSWIR.at(c)/getCRtheorique(*t->getymdPt());
@@ -463,7 +517,7 @@ void TS1PosTest::nettoyer(){
     for (int i(0);i<mVDates.size();i++){
         //if (mVEtat.at(i)==0 && ){
 
-       // if (mVCRSWIR.at(i)==-1 |(mVEtat.at(i)==0 && mVB2.at(i)==0)){// des fois code =0 et B2 aussi mais pas B11 et B12 et CRSWIR
+        // if (mVCRSWIR.at(i)==-1 |(mVEtat.at(i)==0 && mVB2.at(i)==0)){// des fois code =0 et B2 aussi mais pas B11 et B12 et CRSWIR
         if (mVMasq.at(i)==2 | mVMasq.at(i)==3){
             mVEtat.erase(mVEtat.begin() + i);
             mVEtatFin.erase(mVEtatFin.begin() + i);
@@ -487,16 +541,16 @@ void TS1PosTest::printDetail(std::string aOut){
     std::cout << "Détail série temporelle pour un point ---" <<std::endl;
 
     if (aOut!="toto"){
-    // crée un fichier txt pour l'export des résultats
-    std::ofstream out;
-    out.open(aOut);
+        // crée un fichier txt pour l'export des résultats
+        std::ofstream out;
+        out.open(aOut);
 
         out << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12\n" ;
 
-      for (int i(0);i<mVDates.size();i++){
-           out << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<"\n";
-      }
-      out.close();
+        for (int i(0);i<mVDates.size();i++){
+            out << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<"\n";
+        }
+        out.close();
     }
 
     if (debugDetail){

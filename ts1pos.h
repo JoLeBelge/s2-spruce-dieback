@@ -33,6 +33,8 @@ class TS1Pos{
     void nettoyer();
     void restrictRetourNorm();
     void detectMelange();
+
+     void detectStresseEtRetour();
     //simplification des vecteurs pour supprimer les dates consécutives qui ont le même état et ne garder que la date moyenne
     void concateneEtat(std::vector<year_month_day> *aVD, std::vector<int>*  aVE, std::vector<std::vector<int> > *aVPosInit, std::vector<int> *aVDuree=NULL);
     // regarde si la valeur val est répétée 3 fois de suite dans la série temporelle, centrée sur la position pos
