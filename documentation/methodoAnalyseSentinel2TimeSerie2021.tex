@@ -22,9 +22,22 @@
 \hypersetup{urlcolor=blue,linkcolor=black,citecolor=red} 
 \usepackage{setspace}
 \usepackage{pdfpages}
-\usepackage{subfig}
+%\usepackage{subfig}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{subcaption}
+
+
+
+\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+
+\definecolor{cl1}{RGB}{123,239,77}
+\definecolor{cl2}{RGB}{255,5,1}
+\definecolor{cl3}{RGB}{19,29,222}
+\definecolor{cl4}{RGB}{152,16,25}
+\definecolor{cl5}{RGB}{228,239,8}
+\definecolor{cl6}{RGB}{239,173,29}
+
 
 %\usepackage{listingsutf8}
 \lstset{
@@ -156,17 +169,21 @@ le $CRSWIR_{theorique}(t)$ représente bien entendu la valeur calculée au moyen
 
 \begin{enumerate}
 	%code 1
-	\item  ; sain
+
+	\item \crule[cl1]{1cm}{1cm} ; sain 
 	%code 2
-	\item ; dépérissement
+
+	\item \crule[cl2]{1cm}{1cm} ; dépérissement 
 	%code 3
-	\item ; coupé mais sans dépérissement détecté avant la coupe
+
+	\item \crule[cl3]{1cm}{1cm} ; coupé mais sans dépérissement détecté avant la coupe 
 	%code 4
-	\item ; coupé après avoir été dépérissant
+
+	\item  \crule[cl4]{1cm}{1cm} ;coupé après avoir été dépérissant
 	%code 5
-	\item ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte.
+	\item \crule[cl5]{1cm}{1cm} ; stress passager, donc à priori plus un stress lié à un déficit hydrique estival qu'à une attaque de scolyte. 
 	%code 6
-	\item ; pixel qui est un mélange, détecté car présente un stress passager en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse)
+	\item \crule[cl6]{1cm}{1cm} ; pixel qui est un mélange, détecté car présente un stress passager en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse) 
 \end{enumerate}
 
 Les filtres et les règles de décisions permettant d'attribuer un état sanitaire à une observation d'une série temporelle sont brièvement présentées ici. On peux considérer que la série temporelle pour un pixel donné est synthétisée sous forme d'un tableau à 2 colonnes pour lequel chaque ligne constitue une date pour laquelle on dispose d'une information (prise de vue non ennuagée pour cette position). La première colonne est celle contenant l'information de la date de l'observation. La deuxième colonne contient un état sanitaire présumé, qui peut prendre la valeur de 1, 2 ou 3 avant de subir l'analyse présentée ici. La valeur de 1 signifie que la valeur de CRSWIR permet de supposer que le peuplement est sain. La valeur de 2 indique par contre que le peuplement semble en situation de stress, avec un $CRSWIR_{normalise}$ supérieur au seuil fixé (ex. 1.4, voir ligne en pointillé de la figure \ref{fig:harmo}).
@@ -178,6 +195,258 @@ Ensuite, un deuxième filtre vise à classer les coupes (code 3) et les coupes s
 La troisième partie de l'analyse vise à la détection des situations de peuplements scolytés. Si un stress est observé plusieurs fois d'affilé, on va modifié les états sanitaires postérieurs pour s'assurer que ceux-ci correspondent soit à un stress, soit à une coupe sanitaire. Néanmoins, un \textit{retour à une situation normale} est accepté dans le cas ou un état sanitaire sain est constaté plus de 3 fois consécutivement, pour une durée excédant 30 jours et seulement dans les cas ou le dépérissement observé précédemment n'as pas duré plus longtemps qu'un certain jours (par défaut 90 jours). Lorsqu'un retour à la normale est ainsi détecté, l'état sanitaire durant la période de stress est considéré comme étant un stress temporaire (code 5) et non pas une situation de présence de scolyte.
 
 Enfin, un dernier filtre permet d'appréhender la situation assez complexe d'un pixel qui couvrirait une surface hétérogène du point de vue de la présence de l'épicéa, tels qu'un mélange épicéa-feuillus ou un mélange épicéa-sol nu.
+
+\subsection{Illustrations}
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/1/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+	\centering état sanitaire 2018
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ES_2018.png}}
+\end{minipage}
+\begin{minipage}[b]{.32\linewidth}
+	\centering ortho 2019
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ortho_2019.png}}
+\end{minipage}%
+\begin{minipage}[b]{.32\linewidth}
+	\centering IR 2019
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/IR_2019.png}}
+\end{minipage}
+\begin{minipage}[b]{.32\linewidth}
+	\centering état sanitaire 2019
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ES_2019.png}}
+\end{minipage}
+\begin{minipage}[b]{.32\linewidth}
+	\centering ortho 2020
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ortho_2020.png}}
+\end{minipage}
+\begin{minipage}[b]{.32\linewidth}
+	\centering IR 2020
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/IR_2020.png}}
+\end{minipage}
+\begin{minipage}[b]{.32\linewidth}
+	\centering état sanitaire 2020
+	\subcaption{\includegraphics[width=\linewidth]{etatSan/1/ES_2020.png}}
+\end{minipage}
+	\caption{Illustration pour une pessière saine \crule[cl1]{1cm}{1cm}}\label{fig:illuCl1}
+\end{figure}
+
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ES_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ortho_2019.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/IR_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ES_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ortho_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/IR_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/2/ES_2020.png}}
+	\end{minipage}
+	\caption{Illustration pour une pessière scolytée \crule[cl2]{1cm}{1cm} }\label{fig:illuCl2}
+\end{figure}
+
+
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ES_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ortho_2019.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/IR_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ES_2019.png}}
+	\end{minipage}
+	
+	
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ortho_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/IR_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/3/ES_2020.png}}
+	\end{minipage}
+	\caption{Illustration pour une pessière détectée en coupe \crule[cl3]{1cm}{1cm}}\label{fig:illuCl3}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ES_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ortho_2019.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/IR_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ES_2019.png}}
+	\end{minipage}
+	
+	
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ortho_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/IR_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/4/ES_2020.png}}
+	\end{minipage}
+	\caption{Illustration pour une pessière détectée en coupe sanitaire \crule[cl4]{1cm}{1cm}}\label{fig:illuCl4}
+\end{figure}
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ES_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ortho_2019.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/IR_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ES_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ortho_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/IR_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/5/ES_2020.png}}
+	\end{minipage}
+	\caption{Illustration pour une pessière soumis à un stress temporaire \crule[cl5]{1cm}{1cm} }\label{fig:illuCl5}
+\end{figure}
+
+
+\begin{figure}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ortho_2018.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/IR_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2018
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ES_2018.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ortho_2019.png}}
+	\end{minipage}%
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/IR_2019.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2019
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ES_2019.png}}
+	\end{minipage}
+	
+	
+	\begin{minipage}[b]{.32\linewidth}
+		\centering ortho 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ortho_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering IR 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/IR_2020.png}}
+	\end{minipage}
+	\begin{minipage}[b]{.32\linewidth}
+		\centering état sanitaire 2020
+		\subcaption{\includegraphics[width=\linewidth]{etatSan/6/ES_2020.png}}
+	\end{minipage}
+	\caption{Illustration pour des pixels détectés comme étant en mélange \crule[cl6]{1cm}{1cm}}\label{fig:illuCl6}
+\end{figure}
 
 \section{Le logiciel s2{\textunderscore}timeSerie}
 

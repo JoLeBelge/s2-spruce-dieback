@@ -11,3 +11,8 @@ documentation/*.out
 documentation/*.toc
 documentation/*.synctex.gz
 documentation/Images/smiley*
+build-s2_postProcess/*
+documentation/Images/etatSan/*
+s2_postProcess/s2_postProcess.pro.user
+s2_postProcess/s2_postProcess.pro.user*
+s2_postProcess/s2_postProcess.user
