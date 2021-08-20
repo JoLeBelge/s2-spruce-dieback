@@ -1,5 +1,7 @@
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
+
+
 #include "tuiles2OneDate.h"
 #include "ts1pos.h"
 #include <omp.h>
@@ -29,7 +31,7 @@ private:
     void analyseTS();
     void analyseTSinit();
     void analyseTSTest1pixel(double X, double Y, std::string aFileOut);
-    void writeRes1pos(TS1Pos * ts);
+    void writeRes1pos(TS1Pos * ts) const;// boh c'est pas const mais je triche
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // ouvre tout les raster dataset
     bool openDS();

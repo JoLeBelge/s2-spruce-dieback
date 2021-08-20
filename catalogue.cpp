@@ -6,7 +6,7 @@ extern std::string path_otb;
 extern std::string EP_mask_path;
 //extern std::string iprfwFile;
 extern int globSeuilCC;
-double seuilCR(1.5); // on est encore bien au dessus de ce que font les français
+double seuilCR(1.7); // on est encore bien au dessus de ce que font les français
 extern int year_analyse;
 extern double Xdebug;
 extern double Ydebug;
@@ -49,6 +49,7 @@ catalogue::catalogue(std::string aJsonFile){
                 if (f[i]["properties"]["cloudCover"].IsInt()){t->mCloudCover = f[i]["properties"]["cloudCover"].GetInt();}
                 t->mAcqDate =f[i]["properties"]["startDate"].GetString();
                 t->mDate=ymdFromString(t->mAcqDate);
+                t->mPtrDate=& t->mDate;
                 t->mProdDate =f[i]["properties"]["productionDate"].GetString();
                 //t->mPubDate =f[i]["properties"]["published"].GetString();
                 mVProduts.push_back(t);
@@ -93,6 +94,7 @@ catalogue::catalogue(){
         tuileS2OneDate * t=new tuileS2OneDate();
         t->decompressDirName =aDecompressDirName;
         t->readXML();
+
         mVProduts.push_back(t);
     }
     std::cout << " done .." << std::endl;
@@ -139,7 +141,7 @@ void catalogue::traitement(){
 // comptage des produits avec cloudcover ok
 int catalogue::countValid(){
     int aRes(0);
-    for (tuileS2OneDate * t : mVProduts){
+    for (const tuileS2OneDate * t : mVProduts){
         if (t->mCloudCover<globSeuilCC){aRes++;}
     }
     return aRes;
@@ -185,113 +187,52 @@ void catalogue::analyseTS(){
     if (openDS()){
 
         int nb = mVProdutsOK.size();
-        // boucle pixel par pixel - en prenant le masque sol nu comme raster de base - pas bonne idée, je devrais ouvrir la carte ou j'ai le masque forestier car dans masque sol nu sont déjà intégré les no data nuage et edge
-
         int c(0);
         int step=mY/20;
         int count(0);
 
-        /* Le calcul parallèle pixel par pixel nécessite de charger toute les cartes en Mémoire. fonctionne pour une année, mais pas pour la série tempo complête --> pas assez de mémoire vive.
-        for ( int row = 0; row < y; row++ ){
-            //for (int col = 0; col < x; col++)
-            //{
-            std::vector<int> r(x);
-            std::iota(std::begin(r), std::end(r), 0);
-            std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
-                // check carte 1 pour voir si no data ou pas
-                int m =getMasqEPVal(col,row);
-                if (m==1){
-                    TS1Pos ts(row,col,&mYs,nb);
-                    for (tuileS2 * t : mVProdutsOK){
-
-                        // 0; ND
-                         // 1: valeur CR swir ok.
-                         // 2; valeur CRswir NOK
-                           3 ; sol nu.
-
-                        double crnorm=t->getCRnormVal(col,row);
-                        int solnu = t->getMasqVal(col,row);
-                        int code=0;
-                        if (solnu==0){code=0;
-                        }else if(solnu==2 | solnu==3){
-                            code=3;
-                        } else if (crnorm<=seuilCR) {
-                            code=1;
-                        } else if (crnorm>seuilCR) {
-                            code=2;
-                        }
-                        ts.add1Date(t->getymdPt(),code);
-                    }
-                    ts.analyse();
-                    writeRes1pos(&ts);
-                }
-            //}
-            });
-            c++;
-            if (c%step==0){
-                count++;
-                std::cout << count*5 << "%..." << std::endl;
-                //break;
-            }
-        }
-        //    });
-
-        */
-        // traitement ligne par ligne pour pouvoir travailler en parallèle. Réduction extra du temps de calcul.
-
+        // Le calcul parallèle pixel par pixel nécessite de charger toute les cartes en Mémoire. fonctionne pour une année, mais pas pour la série tempo complête --> pas assez de mémoire vive.
+        // traitement ligne par ligne pour pouvoir travailler en parallèle.
         for ( int row = 0; row < mY; row++ ){
             // lecture masque ep
-            //std::cout << "row " << row << std::endl;
             readMasqLine(row);
-            for (tuileS2OneDate * t : mVProdutsOK){
-                //std::cout << "tuiles  " << t->getDate()<< std::endl;
-                t->readCRnormLine(row);
-                t->readMasqLine(row);
+
+#pragma omp parallel num_threads(8)
+            {
+#pragma omp for
+                for (tuileS2OneDate * t : mVProdutsOK){
+                    //std::cout << "tuiles  " << t->getDate()<< std::endl;
+                    t->readCRnormLine(row);
+                    t->readMasqLine(row);
+                    t->computeCodeLine();
+                }
             }
 
+            std::vector<int> aVCol;
+            for (int col=0 ; col<mX;col++){
+                if (scanLine[col]==1){aVCol.push_back(col);}
+            }
 
-#pragma omp parallel num_threads(12) shared(scanLine,row,mVProdutsOK)
-                {
-
-             //   std::vector<int> r(mX);
-            //std::iota(std::begin(r), std::end(r), 0);
-            //std::for_each(std::execution::par, std::begin(r), std::end(r), [&](int col) {
-                //std::for_each(std::execution::seq, std::begin(r), std::end(r), [&](int col) {
-                #pragma omp for
-                for (int col=0 ; col<mX;col++){
-                if (scanLine[col]==1){
-
+            //num_threads(8) shared(row,mYs,seuilCR,scanLine,mVProdutsOK)
+#pragma omp parallel num_threads(12)
+            {
+#pragma omp for
+                for (int col : aVCol){
+                    //int tid = omp_get_thread_num();
+                    //printf("Hello world from omp thread %d\n", tid);
                     TS1Pos ts(row,col,&mYs,nb);
 
-                    for (tuileS2OneDate * t : mVProdutsOK){
-                        // lit la valeur depuis la scanline
-                        double crnorm=t->getCRnormVal(col);
-                        int solnu = t->getMasqVal(col);
-                        //std::cout << " crnorm " << crnorm << " , sol nu " << solnu << std::endl;
-                        int code=0;
-                        if (solnu==0){code=0;
-                        }else if(solnu==2 | solnu==3){
-                            code=3;
-                            // ci-dessous donc pour solnu=1 (zone oK)
-                        } else if (crnorm<=seuilCR) {
-                            code=1;
-                        } else if (crnorm>seuilCR) {
-                            code=2;
-                        }
-
-                        ts.add1Date(t->getymdPt(),code);
+                    for (const tuileS2OneDate * t : mVProdutsOK){
+                        ts.add1Date(t->getymdPt(),t->getCodeLine(col));
                     }
 
                     ts.nettoyer();
                     ts.analyse();
-//#pragma omp critical
-//                            {
+                    //#pragma omp critical
+                    //                         {
                     writeRes1pos(&ts);
-//                    }
-
+                    //                   }
                 }
-            //});
-            }
             } // end pragma
             c++;
             if (c%step==0){
@@ -302,7 +243,6 @@ void catalogue::analyseTS(){
 
         closeDS();
     }
-
 }
 
 void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
@@ -446,7 +386,7 @@ bool catalogue::openDS(){
     return aRes;
 }
 
-void catalogue::writeRes1pos(TS1Pos * ts){
+void catalogue::writeRes1pos(TS1Pos * ts) const{
     // un scanpix qui est redéfini à chaque fois car sinon il sera partagé durant le calcul en parallèle et ça va provoquer des merdes par moment
     float * scanPix2=(float *) CPLMalloc( sizeof( float ) * 1 );
     for (int y : mYs){
@@ -498,6 +438,6 @@ void copyStyleES(std::string tifPath){
     if (boost::filesystem::exists(aOut)){boost::filesystem::remove(aOut);}
     std::string aIn("../s2/documentation/etatSanitaire_.qml");
     if (boost::filesystem::exists(aIn)){
-    boost::filesystem::copy_file(aIn,aOut);
+        boost::filesystem::copy_file(aIn,aOut);
     }
 }

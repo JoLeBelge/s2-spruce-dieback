@@ -77,14 +77,17 @@ void TS1Pos::analyse(){
     }
 
     // etat des lieux après ce filtre ;
-    /*std::cout << "après filtre sol nu" << std::endl;
+   /* std::cout << "après filtre sol nu" << std::endl;
     for (int e : mVEtatFin){
         std::cout << e << std::endl;
     }*/
 
     // pour la détection des pixels stressé, on le fait en 2 itérations ; une première avec retour à la normale possible, une deuxième sans retour possible. Sinon ça peux yoyoter.
     detectStresseEtRetour();
-
+    /*std::cout << "après retour normale" << std::endl;
+    for (int e : mVEtatFin){
+        std::cout << e << std::endl;
+    }*/
     p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
     if (p != mVEtatFin.end()){
         std::vector<year_month_day> aVD;
@@ -102,7 +105,7 @@ void TS1Pos::analyse(){
                     // on change les valeurs d'après
                     for (int po(pos+1); po<aVE.size();po++){
                         int res(2);
-                        if (aVE.at(po)==3){res=4;
+                        if (aVE.at(po)==3 | aVE.at(po)==4){res=4;
                         }
                         for (int i : aVPosEtatFin.at(po)){
                             mVEtatFin.at(i)=res;
@@ -116,7 +119,7 @@ void TS1Pos::analyse(){
         }
     }
 
-    /*std::cout << "après retour normale" << std::endl;
+    /*std::cout << "après 2ieme it de stress" << std::endl;
     for (int e : mVEtatFin){
         std::cout << e << std::endl;
     }*/
@@ -167,7 +170,9 @@ void TS1Pos::detectStresseEtRetour(){
                         int res(2);
                         if (aVE.at(po)==3){res=4;
                         }
+                        //std::cout<< " change valeur etat " << std::endl;
                         for (int i : aVPosEtatFin.at(po)){
+                             //std::cout<< " po " << po << ", i " << i << ", état = " << res << std::endl;
                             mVEtatFin.at(i)=res;
                         }
 
@@ -314,6 +319,8 @@ void TS1Pos::concateneEtat(std::vector<year_month_day> * aVD, std::vector<int> *
     std::vector<int> posToMerge{0};
     for (int c(1); c<mVEtatFin.size(); c++){
         if (mVEtatFin.at(c)!=mVEtatFin.at(c-1) | c==mVEtatFin.size()-1){
+
+            if (c==mVEtatFin.size()-1){ posToMerge.push_back(c);}
             // rassembler les états de c-1 et antérieurs
             aVE->push_back(mVEtatFin.at(c-1));
             // calcul de la date moyenne
@@ -410,7 +417,7 @@ int TS1Pos::getEtatPourAnnee(int y){
     year ay{y};
     std::vector<int> etat;
     int i(0);
-    for (year_month_day * ymd : mVDates){
+    for (const year_month_day * ymd : mVDates){
         if (ymd->year()==ay){
             etat.push_back(mVEtatFin.at(i));
         }

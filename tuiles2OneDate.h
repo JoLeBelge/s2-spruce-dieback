@@ -84,6 +84,7 @@ public:
     int getYSize(){return mYSize;}
 
     year_month_day  mDate;
+    year_month_day  * mPtrDate;
 
     double mXmin, mYmin, mXmax,mYmax; // upper left X and Y
 
@@ -104,7 +105,7 @@ public:
 
     //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
     void normaliseCR();
-    std::string getRasterCRnormName();
+    std::string getRasterCRnormName() const;
 
     std::string getRasterR1Name(std::string numBand);
     // attention, il s'agit des bandes rééchantillonnée à 10 m!
@@ -113,7 +114,7 @@ public:
     std::string getOriginalRasterR2Name(std::string numBand);
 
     void masqueSpecifique();
-    std::string getRasterMasqSecName();
+    std::string getRasterMasqSecName() const;
     std::string getRasterMasqGenName(int resol=1);
 
     std::string getRasterCRName();
@@ -135,10 +136,12 @@ public:
 
     // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
 
-    void readCRnormLine(int aRow);
-    double getCRnormVal(int aCol);
-    void readMasqLine(int aRow);
-    int getMasqVal(int aCol);
+    void readCRnormLine(int aRow) const;
+    double getCRnormVal(int aCol) const;
+    void readMasqLine(int aRow) const;
+    int getMasqVal(int aCol) const;
+    void computeCodeLine();
+    int getCodeLine(int aCol) const;
 
 
     bool operator < (const tuileS2OneDate& t) const {
@@ -154,8 +157,8 @@ public:
         return mDate;
     }
 
-    year_month_day * getymdPt() {
-        return &mDate;
+    year_month_day * const & getymdPt() const{
+        return mPtrDate;
     }
 
     int gety() const {
@@ -175,6 +178,7 @@ private:
     float * scanPix;
     float * scanLineSolNu;
     float * scanLineCR;
+    int * scanLineCode;
 };
 
 #endif // TUILES2_H

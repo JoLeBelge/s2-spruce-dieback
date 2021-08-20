@@ -6,13 +6,14 @@ std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
-int globSeuilCC(35);
+int globSeuilCC(40);// 35 :je monte un peu ça car seulement 120 dates pour tuile UFR alors que 170 pour d'autres.
 bool overw(0);
 
 int year_analyse(666);
 
 double Xdebug(0);
 double Ydebug(0);
+extern double seuilCR;
 
 
 std::string globTuile;
@@ -235,6 +236,8 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
         }
     }
 
+    mPtrDate=& mDate;
+
     //std::cout << " done " << std::endl;
 }
 
@@ -335,7 +338,7 @@ std::string tuileS2OneDate::getRasterCRName(){
     return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
 }
 
-std::string tuileS2OneDate::getRasterCRnormName(){
+std::string tuileS2OneDate::getRasterCRnormName() const{
     return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm.tif";
 }
 
@@ -343,7 +346,7 @@ std::string tuileS2OneDate::getDate(){
     return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2);
 }
 
-std::string tuileS2OneDate::getRasterMasqSecName(){
+std::string tuileS2OneDate::getRasterMasqSecName() const{
     return interDirName + "mask_R1_solnu.tif";
 }
 std::string tuileS2OneDate::getRasterMasqGenName(int resol){
@@ -556,6 +559,7 @@ bool tuileS2OneDate::openDS(){
             scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
             scanLineSolNu=(float *) CPLMalloc( sizeof( float ) * mYSize );
             scanLineCR=(float *) CPLMalloc( sizeof( float ) * mYSize );
+            scanLineCode=(int *) CPLMalloc( sizeof( int ) * mYSize );
         }
     } else {
         std::cout << "ne trouve pas " << getRasterCRnormName() << " \n" << " ou bien " << getRasterMasqSecName() << std::endl;
@@ -569,6 +573,7 @@ void tuileS2OneDate::closeDS(){
     if (scanPix!=NULL){ CPLFree(scanPix);}
     if (scanLineSolNu!=NULL){ CPLFree(scanLineSolNu);}
     if (scanLineCR!=NULL){ CPLFree(scanLineCR);}
+    if (scanLineCode!=NULL){ CPLFree(scanLineCode);}
 }
 
 
@@ -591,7 +596,7 @@ double tuileS2OneDate::getCRnormVal(int aCol, int aRow){
 }
 
 
-void tuileS2OneDate::readCRnormLine(int aRow){
+void tuileS2OneDate::readCRnormLine(int aRow) const{
 
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
@@ -599,18 +604,18 @@ void tuileS2OneDate::readCRnormLine(int aRow){
         std::cout << "readCRnormLine ; failed for " << getRasterCRnormName() <<  std::endl;
     }
 }
-void tuileS2OneDate::readMasqLine(int aRow){
+void tuileS2OneDate::readMasqLine(int aRow) const{
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
     }else {
         std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
     }
 }
-double tuileS2OneDate::getCRnormVal(int aCol){
+double tuileS2OneDate::getCRnormVal(int aCol) const{
     // applique le gain
     return scanLineCR[aCol]*1.0/127.0;
 }
-int tuileS2OneDate::getMasqVal(int aCol){
+int tuileS2OneDate::getMasqVal(int aCol) const{
     return scanLineSolNu[aCol];
 }
 
@@ -619,7 +624,7 @@ std::string tuileS2OneDate::getRasterR1Name(std::string numBand){
 }
 
 std::string tuileS2OneDate::getRasterR2Name(std::string numBand){
- return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
+    return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
 }
 
 std::string tuileS2OneDate::getOriginalRasterR2Name(std::string numBand){
@@ -649,4 +654,27 @@ inline bool operator< (const tuileS2OneDate & t1, const tuileS2OneDate & t2)
 std::string getNameMasqueEP(int i){
     return wd+"input/masque_EP_"+globTuile+"_R"+std::to_string(i)+".tif";
     //return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+"_80pct.tif";
+}
+
+void tuileS2OneDate::computeCodeLine(){
+    for (int col(0); col< mYSize ; col++){
+        int solnu = getMasqVal(col);
+        //std::cout << " crnorm " << crnorm << " , sol nu " << solnu << std::endl;
+        if (solnu==0){scanLineCode[col]=0;
+        }else if(solnu==2 | solnu==3){
+            scanLineCode[col]=3;
+            // ci-dessous donc pour solnu=1 (zone oK)
+        } else {
+            double crnorm=getCRnormVal(col);
+            if (crnorm<=seuilCR) {
+                scanLineCode[col]=1;
+            } else  {
+                scanLineCode[col]=2;
+            }
+        }
+    }
+}
+
+int tuileS2OneDate::getCodeLine(int aCol) const{
+    return scanLineCode[aCol];
 }
