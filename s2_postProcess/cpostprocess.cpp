@@ -1,19 +1,21 @@
 #include "cpostprocess.h"
 
-int cn(3),cs(4), sco(2), newSco(22),oldSco(21),newCS(42), oldCS(41);
+int cn(3),cs(4),sco(2), newSco(22),oldSco(21),newCS(42), oldCS(41);
+extern std::string pathProbPres;
+
+std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
+std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
 
 cPostProcess::cPostProcess(std::vector<std::pair<int, string>> aMRaster, int mode)
 {
     GDALAllRegister();
     for (auto kv : aMRaster){
         std::string pathIn=kv.second;
-
-        std::shared_ptr<esOney> es=std::make_shared<esOney>(pathIn, mode);
+        std::shared_ptr<esOney> es=std::make_shared<esOney>(pathIn,kv.first, mode);
         // gdal a virtual char **GetMetadata(const char *pszDomain = "") pour voir si le raster est compressé ou pas mais pour le moment je ne m'ennuie pas, je le décompresse à chaque fois pour être sur
         mVES.push_back(es);
         //std::cout << "done" << std::endl;
     }
-
 }
 
 void cPostProcess::compress(){
@@ -23,11 +25,37 @@ void cPostProcess::compress(){
     }
 }
 
+void cPostProcess::statistique(){
+    std::cout << "y;tot;1;2;3;4;5;6;21;22;41;42"<< std::endl;
+    for (std::shared_ptr<esOney> & es : mVES){
+        std::cout << es->getY();
+        es->stat();
+    }
+}
+
 void cPostProcess::compressTif(std::string aIn){
     std::string aCommand= std::string("gdalwarp -co 'COMPRESS=DEFLATE' -overwrite "+ aIn +" "+aIn.substr(0,aIn.size()-4)+"_co.tif ");
     //std::cout << aCommand << "\n";
     system(aCommand.c_str());
+}
 
+// masque les cartes états sanitaires avec la probabilité de présence de l'EP
+void cPostProcess::masque(int seuilPP){
+    std::cout << "charge l'image de probabilité de présence " << std::endl;
+    Im2D_U_INT1 PP=Im2D_U_INT1::FromFileStd(pathProbPres);
+    for (std::shared_ptr<esOney> & es : mVES){
+        // gdal et otb fonctionne, mais c'est pas franchement rapide. le faire avec Elise permettrait d'accélérer la chose, déjà vu que je vais ouvrir qu'une seule fois le raster de prob de présence.
+        //std::string aCommand= std::string("gdal_calc.py -A "+  +" -B "+pathProbPres +" --calc='(B>="+std::to_string(seuilPP)+")*A' --type=Byte --outfile="+ es->getNameRaster().substr(0,es->getNameRaster().size()-4)+"_masque.tif ");
+        //std::string aCommand(path_otb+"otbcli_BandMathX -il "+es->getNameRaster()+" "+pathProbPres+ " -out '"+ es->getNameRaster().substr(0,es->getNameRaster().size()-4)+"_masque.tif" + compr_otb+"' uint8 -exp ' im2b1 >="+ std::to_string(seuilPP)+" ? im1b1 : 0' -ram 4000 -progress 0");
+        //std::cout << aCommand << "\n";
+        //system(aCommand.c_str());
+
+        std::cout << " masque Etat San " << std::endl;
+        Im2D_U_INT1 * im =es->getImPtr();
+        ELISE_COPY(select(im->all_pts(),PP.in()<seuilPP),0,im->oclip());
+        es->saveMasq();
+
+    }
 }
 
 void cPostProcess::clean(){
@@ -56,14 +84,14 @@ void cPostProcess::evol(){
     // première année ; que des nouveaux scolytes. on donne une image pour l'année précédente qui est vide
     std::shared_ptr<esOney> es0=mVES.at(0);
     Im2D_U_INT1 Im(es0->getImPtr()->sz().x,es0->getImPtr()->sz().y,0);
-     std::cout << "newSco;oldSco;newCS;oldCS \n" << std::endl;
+     std::cout << "y;newSco;oldSco;newCS;oldCS \n" << std::endl;
     es0->detectNewSco(&Im);
     es0->saveEvol();
     es0->loadClean();// j'ai modifié l'image de cette état san , je dois la recharger car j'en ai besoin pour la boucle ci-dessous
 
     for (int c(1);c<mVES.size();c++){
         std::shared_ptr<esOney> es=mVES.at(c);
-        std::cout << es->getNameRaster() << ";";
+        std::cout << es->getY() << ";";
         es->detectNewSco(mVES.at(c-1)->getImPtr());
         es->saveEvol();
         es->loadClean();
@@ -211,89 +239,3 @@ void cPostProcess::fillHole(Im2D_U_INT1 * aIn,int Val2Clean, int ValCopain,int V
     delete IbinTmp;
     ELISE_COPY(select(aIn->all_pts(),ImNbVois.in()>=seuilVois && Im.in()==1),Val2Clean,aIn->oclip());
 }
-
-void esOney::createTmp(){
-
-    // en fait mes inputs sont déjà décompressé et lourd donc je ne crée pas de raster temporaire.
-    //std::string aCommand= std::string("gdal_translate -co 'COMPRESS=NONE' "+ mRasterName +" "+getNameTmp()+" ");
-    //std::cout << aCommand << "\n";
-    //system(aCommand.c_str());
-
-    //lecture du raster
-    std::cout << "charge image " << mRasterName << std::endl;
-    mIm=new Im2D_U_INT1(Im2D_U_INT1::FromFileStd(mRasterName));
-    // std::cout << "image chargée" << std::endl;
-}
-
-
-void esOney::updateCoupeSan(Im2D_U_INT1 * imPrevYear){
-    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in()==cs),cs,mIm->oclip());
-    // j'en profite pour bloquer les pixels scolytés que j'avais pas bien bloqué dans s2_timeS aout 2021
-    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in()==sco && mIm->in()!=cs),sco,mIm->oclip());
-}
-
-void esOney::updateCoupeSanRetro(Im2D_U_INT1 * imNextYear){
-    ELISE_COPY(select(imNextYear->all_pts(),imNextYear->in()==cs && mIm->in()==cn),cs,mIm->oclip());
-}
-
-void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
-    // attention, déjà il faut être sur que les Im2D_U_INT1 sont bien les cleans et non pas les images originale.
-    INT nbnSco, nboSco,nbnCS,nboCS;
-
-    // masque ND
-    Im2D_U_INT1 nd(mIm->sz().x,mIm->sz().y,0);
-    // en fait c'est 255 les no data..
-    ELISE_COPY(select(mIm->all_pts(),mIm->in()!=0 && mIm->in()!=255),1,nd.out());
-
-    // ancien scolyte
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()==sco && mIm->in()!=cs && mIm->in()!=cn)
-               ,oldSco,mIm->oclip() | (sigma(nboSco)<< 1));
-    //nouveau scolyte
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()!=sco && mIm->in()==sco)
-               ,newSco,mIm->oclip()| (sigma(nbnSco)<< 1));
-    // ancienne coupe sanitaire
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()==cs)
-               ,oldCS,mIm->oclip()| (sigma(nboCS)<< 1));
-    // nouvelles coupe sanitaire
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs)
-               ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
-
-    std::cout << nbnSco << ";" << nboSco << ";" <<nbnCS << ";" <<nboCS << std::endl;
-}
-
-
-void esOney::saveClean(){
-    Tiff_Im::CreateFromIm(*mIm,getNameClean());
-    copyTifMTD(getNameClean());
-}
-
-void esOney::saveEvol(){
-    Tiff_Im::CreateFromIm(*mIm,getNameEvol());
-    copyTifMTD(getNameEvol());
-}
-
-esOney::esOney(std::string aRaster, int mode):mRasterName(aRaster),mIm(NULL){
-
-    switch (mode){
-    case 1:{
-        createTmp();
-        break;
-    }
-    case 2:{
-        loadClean();
-        break;
-    }
-    }
-}
-
-void esOney::loadClean(){
-    if (mIm!=NULL){delete mIm;}
-    if (fs::exists(getNameClean())){
-        std::cout << "charge image " << getNameClean() << std::endl;
-        mIm=new Im2D_U_INT1(Im2D_U_INT1::FromFileStd(getNameClean()));
-    } else { std::cout << getNameClean() << " n'existe pas" << std::endl;}
-}
-
-
-
-

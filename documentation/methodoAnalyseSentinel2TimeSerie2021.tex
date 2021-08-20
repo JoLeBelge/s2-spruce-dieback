@@ -38,6 +38,11 @@
 \definecolor{cl5}{RGB}{228,239,8}
 \definecolor{cl6}{RGB}{239,173,29}
 
+\definecolor{cl21}{RGB}{167,93,185}
+\definecolor{cl22}{RGB}{255,5,1}
+\definecolor{cl41}{RGB}{58,31,15}
+\definecolor{cl42}{RGB}{152,16,25}
+
 
 %\usepackage{listingsutf8}
 \lstset{
@@ -506,7 +511,39 @@ Les objets \textbf{tuileS2OneDate} regroupe l'ensemble des images nécessaires �
 C'est la classe qui effectue l'analyse de la série temporelle (TS pour Time Serie) pour une position donnée (Pos pour Position, qui est rerpésenté par le centre de chaque pixels de l'image). C'est avec cette classe que l'on fait l'analyse de la succession de l'état sanitaire pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc. La classe \textbf{TS1Pos} n'effectue aucune opération cartographique, c'est strictement l'analyse du CRSWIR normalisé au fil du temps, combiné avec la détection ou non de sol nu, qui sert d'information.
 
 
+\section{Les post-traitements avec s2{\textunderscore}postProcess}
+
+Les traitements illustrés jusqu'à présent sont des calculs qui s'effectuent sur base de la série temporelle, mais sans prendre en compte les effets de voisinage. On peut dire que la dimension spaciale n'est pas prise en compte. Pour assurer une certaine cohérence dans les classes d'état sanitaires assignées à chaque pixel dans les cartes annuelles, un certain nombre de post traitements sont effectué et développé dans une seconde application. Cette application est assez polyvalente, avec un nombre d'outils assez élevés. Les outils permettent les actions suivantes ;
+\begin{enumerate}\addtocounter{enumi}{-1}
+	
+	\item masquer les cartes d'états sanitaires avec la carte de probabilité de présence de l'épicéa, en utilisant un seuil de présence spécifié. Pour rappel, l'analyse de la série temporelle est effectué sur une zone définie sur base d'une probabilité de présence de l'épicéa de plus de 50\%. On peux donc avec cet outil se montrer plus restrictif en augmentant ce seuil si nécessaire. 
+	\item nettoyage des cartes d'états sanitaires. Pour le moment, il s'agit uniquement de localiser les zones de coupe non-sanitaire de petites dimensions qui sont entourées d'une coupe sanitaire. On met l'hypothèse que ces épicéas ont également été attaqué par le scolyte avant d'être abattu, comme leur voisins direct, et on change la classe pour les mettre en coupe sanitaire.
+	\item calcul des cartes d'évolutions de l'états sanitaires. Chaque carte d'état sanitaire est comparée avec celle de l'année précédente afin de classer les zones de scolyte en nouveau scolyte ou ancien scolyte, et les zones de coupe sanitaire en nouvelle ou ancienne coupe sanitaire.
+	\item  compression des cartes geotiff
+	\item calcul de statistique (surface) pour chaque classe d'état sanitaire.
+\end{enumerate}
+
+Voici les codes pour l'évolution de l'état sanitaire ainsi que la couleur associée:
+\begin{enumerate}\setcounter{enumi}{20}
+	\item \crule[cl21]{1cm}{1cm} ; ancien scolyte
+	\item \crule[cl22]{1cm}{1cm} ; nouveau scolyte
+	\setcounter{enumi}{40}
+	\item \crule[cl41]{1cm}{1cm} ; ancienne coupe sanitaire
+	\item \crule[cl42]{1cm}{1cm} ; nouvelle coupe sanitaire
+\end{enumerate} 
 
 
+\begin{figure}
+\begin{minipage}[b]{.49\linewidth}
+	\centering état sanitaire
+	\subcaption{\includegraphics[width=\linewidth]{esAvantClean.png}}
+\end{minipage}%
+\begin{minipage}[b]{.49\linewidth}
+	\centering état sanitaire après nettoyage
+	\subcaption{\includegraphics[width=\linewidth]{esApresClean.png}}
+\end{minipage}
+	\label{fig:clean}
+	\caption{Un des post-traitement vise à améliorer les cartes d'état sanitaire, sur cette illustration on vois que certaines coupe "normale" sont reclassée en coupe sanitaire sur base de relation de voisinage.}
+\end{figure}
 
 \end{document}

@@ -4,6 +4,9 @@
 
 using namespace std;
 namespace po = boost::program_options;
+int globSeuilPres(70);
+std::string pathProbPres("/home/lisein/Documents/carteApt/GIS/COMPO/202108/predictions_mean_5_EP_10m.tif");
+
 /*
  * AOUT 2021 JO
  * OBJECTIF ; on a généré des cartes d'état sanitaire pour chaque année de 2016 à 2021 pour les pessières scolytés. Il y a 6 code d'état
@@ -28,8 +31,10 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol)")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol)")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
+            ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur")
+            ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 50")
             ;
 
     po::variables_map vm;
@@ -43,6 +48,11 @@ int main(int argc, char *argv[])
 
     if (vm.count("outils")) {
         int mode(vm["outils"].as<int>());
+
+        if (vm.count("probPres")) {pathProbPres=vm["probPres"].as<std::string>();}
+        if (vm.count("seuilPP")) {globSeuilPres=vm["seuilPP"].as<int>();}
+
+
         std::string pathIn;
         if (vm.count("rasterIn")) {
             pathIn=vm["rasterIn"].as<std::string>();
@@ -86,6 +96,12 @@ int main(int argc, char *argv[])
             }
 
             switch (mode) {
+            case 0:{
+                std::cout << " je vais effectuer le post-traitement pour " << vIn.size() << " cartes " << std::endl;
+                cPostProcess app(vIn,1);
+                app.masque(globSeuilPres);
+                break;
+            }
             case 1:{
                 std::cout << " je vais effectuer le post-traitement pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,1);
@@ -99,9 +115,15 @@ int main(int argc, char *argv[])
                 break;
             }
             case 3:{
-                std::cout << " compression pour carte output de " << vIn.size() << " cartes " << std::endl;
+                std::cout << " compression pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,0);// mode 0 ; ne charge pas d'image en mémoire
                 app.compress();
+                break;
+            }
+            case 4:{
+                std::cout << " statistiques pour " << vIn.size() << " cartes " << std::endl;
+                cPostProcess app(vIn,1);
+                app.statistique();
                 break;
             }
             default:{

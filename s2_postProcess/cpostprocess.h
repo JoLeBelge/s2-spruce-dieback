@@ -6,10 +6,10 @@
 #include "StdAfx.h"
 
 #include "boost/filesystem.hpp"
-
 #include "ogrsf_frmts.h"
 #include "gdal_utils.h"
 #include <filesystem>
+#include "esoney.h"
 
 namespace fs=boost::filesystem;
 
@@ -32,6 +32,9 @@ public:
     void compress();
     void compressTif(std::string aIn);
 
+    void masque(int seuilPP);
+     void statistique();
+
     void clean();
     void evol();
 
@@ -41,37 +44,5 @@ private:
 };
 
 
-class esOney{
-public:
-    esOney(std::string aRaster, int mode);
-    ~esOney(){delete mIm;}
-
-    void createTmp();
-    void updateCoupeSan(Im2D_U_INT1 * imPrevYear);
-    void updateCoupeSanRetro(Im2D_U_INT1 * imNextYear);
-    void detectNewSco(Im2D_U_INT1 * imPrevYear);
-    void clean();
-    void copyTifMTD(std::string aRasterOut);
-    void saveClean();
-    void saveEvol();
-    void loadClean();
-
-    Im2D_U_INT1 * getImPtr(){return mIm;}
-
-    std::string getNameTmp(){
-       return mRasterName.substr(0,mRasterName.size()-4)+"_tmp.tif";
-    }
-    std::string getNameClean(){
-       return mRasterName.substr(0,mRasterName.size()-4)+"_clean.tif";
-    }
-    std::string getNameEvol(){
-       return mRasterName.substr(0,mRasterName.size()-4)+"_evol.tif";
-    }
-    std::string getNameRaster(){return mRasterName;}
-private:
-    std::string mRasterName;
-    Im2D_U_INT1 * mIm;
-
-};
 
 #endif // CPOSTPROCESS_H
