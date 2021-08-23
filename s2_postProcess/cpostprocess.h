@@ -32,6 +32,8 @@ public:
     void compress();
     void compressTif(std::string aIn);
 
+    void project();
+
     void masque(int seuilPP);
      void statistique();
 

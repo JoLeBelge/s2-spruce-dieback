@@ -20,6 +20,7 @@ extern std::string globResXYTest;
 extern std::string XYtestFile;
 
 bool doAnaTS(1);
+extern bool mDebug;
 
 std::vector<pts> globVPts;
 
@@ -123,7 +124,7 @@ void catalogue::traitement(){
             t->computeCR();
             t->masqueSpecifique();
             t->normaliseCR();
-            std::cout << std::endl ;
+            if (mDebug){std::cout << std::endl ;}
         }
     });
     //std::cout << " boucle sur les tuiles done" << std::endl;
@@ -409,7 +410,7 @@ void catalogue::readMasqLine(int aRow){
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
 void catalogue::createMaskForTuile(){
-    std::cout << " create Mask For tuile " << std::endl;
+    if (mDebug){std::cout << " create Mask For tuile start" << std::endl;}
     std::string masqueRW(EP_mask_path+"masque_EP.tif");
     int epsg(32631);
     if (globTuile=="T32ULU"){
@@ -420,6 +421,7 @@ void catalogue::createMaskForTuile(){
 
     if (boost::filesystem::exists(masqueRW)){
         if (!boost::filesystem::exists(out) | overw){
+            std::cout << " create Mask For tuile " << std::endl;
             if (mVProduts.size()>0){
                 std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:"+std::to_string(epsg)+" -ot Byte -overwrite -tr 10 10 "+ masqueRW+ " "+ out;
                 std::cout << aCommand << std::endl;
@@ -430,6 +432,11 @@ void catalogue::createMaskForTuile(){
         }
 
     } else { std::cout << "Je n'ai pas le masque EP pour la RW \n\n\n\n\n!!" << masqueRW << std::endl;}
+}
+
+void catalogue::summary(){
+        if (mDebug){for (tuileS2OneDate * t : mVProduts){t->cat();}}
+        std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
 }
 
 void copyStyleES(std::string tifPath){

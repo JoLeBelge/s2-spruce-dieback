@@ -26,6 +26,7 @@ public:
     void saveEvol();
      void saveMasq();
     void loadClean();
+    void project();
 
     void stat();
 
@@ -42,6 +43,9 @@ public:
     }
     std::string getNameMasq(){
        return mRasterName.substr(0,mRasterName.size()-4)+"_masq.tif";
+    }
+    std::string getNameProj(){
+       return mRasterName.substr(0,mRasterName.size()-4)+"_BL72.tif";
     }
     std::string getNameRaster(){return mRasterName;}
     std::string getY(){return std::to_string(mAn);}

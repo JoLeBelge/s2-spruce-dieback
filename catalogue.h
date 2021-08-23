@@ -42,10 +42,7 @@ private:
     // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
     std::vector<tuileS2OneDate *>  mVProdutsOK;
 
-    void summary(){
-        for (tuileS2OneDate * t : mVProduts){t->cat();}
-        std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
-    }
+    void summary();
     // comptage des produits avec cloudcover ok
     int countValid();
 

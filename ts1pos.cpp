@@ -77,7 +77,7 @@ void TS1Pos::analyse(){
     }
 
     // etat des lieux après ce filtre ;
-   /* std::cout << "après filtre sol nu" << std::endl;
+    /*std::cout << "après filtre sol nu" << std::endl;
     for (int e : mVEtatFin){
         std::cout << e << std::endl;
     }*/
@@ -168,7 +168,7 @@ void TS1Pos::detectStresseEtRetour(){
                     // on change les valeurs d'après
                     for (int po(pos+1); po<aVE.size();po++){
                         int res(2);
-                        if (aVE.at(po)==3){res=4;
+                        if (aVE.at(po)==3 | aVE.at(po)==4){res=4;
                         }
                         //std::cout<< " change valeur etat " << std::endl;
                         for (int i : aVPosEtatFin.at(po)){

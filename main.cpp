@@ -26,6 +26,7 @@ extern bool debugDetail;
 
 extern bool overw;
 extern int nbDaysStress;
+bool mDebug(0);// plus bavard avec cette option
 std::string XYtestFile("toto");
 
 std::string d1("2016-01-01"),d2("2021-07-11");
@@ -64,11 +65,11 @@ int main(int argc, char *argv[])
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
             ("XYtestIn", po::value< std::string>(), "Fichier texte séparateur virgule avec col 2=X et col3=3, epsg 32631 (UTM 31N), on effectue l'analyse en mode Test sur tout ces points là")
             ("XYtestOut", po::value< std::string>(), "fichier texte ou sauver les résultats de XYTest sur un point.")
-            // ("annee", po::value<int>(), "annee d'analyse - utilisé avant car faire toute les années d'un coup c'était trop long - maintenant c'est reglé")
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
-            ("mergeEtatSan", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
+            ("mergeES", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
+            ("debug", po::value<bool>(), "si true, le logiciel est plus bavard, ça aide pour débugger")
 
                ;
 
@@ -105,7 +106,8 @@ int main(int argc, char *argv[])
         if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
         if (vm.count("srCR")) {seuilCR=vm["srCR"].as<double>();}
         if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
-        if (vm.count("mergeEtatSan")) {mergeEtatSan=vm["mergeEtatSan"].as<bool>();}
+        if (vm.count("mergeES")) {mergeEtatSan=vm["mergeES"].as<bool>();}
+        if (vm.count("debug")) {mDebug=vm["debug"].as<bool>();}
         if (vm.count("XYtestOut")) {globResXYTest=vm["XYtestOut"].as<std::string>();}
         if (vm.count("XYtestIn")) {XYtestFile=vm["XYtestIn"].as<std::string>();}
 

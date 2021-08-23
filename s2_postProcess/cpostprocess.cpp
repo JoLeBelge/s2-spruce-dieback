@@ -58,6 +58,12 @@ void cPostProcess::masque(int seuilPP){
     }
 }
 
+void cPostProcess::project(){
+    for (std::shared_ptr<esOney> & es : mVES){
+        es->project();
+    }
+}
+
 void cPostProcess::clean(){
     int c(0);
     for (std::shared_ptr<esOney> & es : mVES){

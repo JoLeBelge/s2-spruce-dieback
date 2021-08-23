@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol)")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72)")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
             ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur")
             ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 50")
@@ -124,6 +124,12 @@ int main(int argc, char *argv[])
                 std::cout << " statistiques pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,1);
                 app.statistique();
+                break;
+            }
+            case 5:{
+                std::cout << " projection pour " << vIn.size() << " cartes " << std::endl;
+                cPostProcess app(vIn,0);
+                app.project();
                 break;
             }
             default:{

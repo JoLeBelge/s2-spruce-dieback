@@ -14,6 +14,7 @@ int year_analyse(666);
 double Xdebug(0);
 double Ydebug(0);
 extern double seuilCR;
+extern bool mDebug;
 
 
 std::string globTuile;
@@ -69,7 +70,7 @@ void tuileS2OneDate::download(){
 
     archiveName=wd+mProd+".zip";
     std::string get_product = "curl  -o "+archiveName+" -k -H 'Authorization: Bearer "+token+"' https://theia.cnes.fr/atdistrib/resto2/collections/SENTINEL2/"+mFeature_id+"/download/?issuerId=theia";
-    std::cout << get_product << std::endl;
+    if (mDebug){std::cout << get_product << std::endl;}
     system(get_product.c_str());
 }
 
@@ -244,7 +245,7 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
 void tuileS2OneDate::masque(){
-    std::cout << "masque .." ;
+    if (mDebug){std::cout << "masque .." ;}
     for (int i(1) ; i<3 ; i++){
         //std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
         std::string out=getRasterMasqGenName(i);
@@ -270,7 +271,7 @@ void tuileS2OneDate::masque(){
 
 // resample des bandes 8A, 11 et 12 après leur avoir appliqué le masque
 void tuileS2OneDate::resample(){
-    std::cout << "resample ..";
+    if (mDebug){std::cout << "resample ..";}
     for (std::string b : vBR2){
         std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
         std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
@@ -295,7 +296,7 @@ void tuileS2OneDate::resample(){
 }
 
 void tuileS2OneDate::computeCR(){
-    std::cout << "computeCR .." << std::endl;
+    if (mDebug){std::cout << "computeCR .." << std::endl;}
 
     std::string out=getRasterCRName();
     std::string NIRa=getRasterR2Name("8A");
@@ -357,7 +358,7 @@ std::string tuileS2OneDate::getRasterMasqGenName(int resol){
 // surface _reflectance = DN/ 10 000
 // varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
 void tuileS2OneDate::masqueSpecifique(){
-    std::cout << "detection sol nu .." ;
+    if (mDebug){std::cout << "detection sol nu .." ;}
     /* voir slide de Raphael D.
     1) détection sol nu
     swir1>12.5% et r+v >8% ça aurait pu être OU mais alors ça marche pas bien. attention, R+V>8 pct c'est plutot 16 pct car on additionne la réflectance
@@ -506,7 +507,7 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
 
 //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
 void tuileS2OneDate::normaliseCR(){
-    std::cout << "normalize CR " ;
+    if (mDebug){std::cout << "normalize CR " ;}
 
     std::string out=getRasterCRnormName();
     std::string in=getRasterCRName();
@@ -531,24 +532,12 @@ void tuileS2OneDate::normaliseCR(){
 }
 
 bool tuileS2OneDate::openDS(){
-    //std::cout << "ouverture dataset pour " << mProd << std::endl;
+
     //std::cout << "ouverture dataset pour " << getRasterCRnormName() << std::endl;
     bool aRes(0);
     if (exists(getRasterCRnormName()) && exists(getRasterMasqSecName())){
-        //std::cout << "open " << getRasterCRnormName() << " \n" << " et " << getRasterMasqSecName() << std::endl;
         mDScrnom= (GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
         mDSsolnu= (GDALDataset *) GDALOpen( getRasterMasqSecName().c_str(), GA_ReadOnly );
-        /* fonctionne très bien mais année par année, si plus de donnée, sature la mémoire vive donc pas si pratique...
-        const char *pszFormat = "MEM";
-        GDALDriver *pDriver= GetGDALDriverManager()->GetDriverByName(pszFormat);
-    GDALDataset * cr=(GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
-    GDALDataset * sol=(GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
-    const char * ch="immem";
-    mDSsolnu= pDriver->CreateCopy( ch,sol,FALSE, NULL,NULL, NULL );
-    mDScrnom= pDriver->CreateCopy( ch,cr,FALSE, NULL,NULL, NULL );
-    GDALClose( cr );
-    GDALClose( sol );
-    */
 
         if( mDSsolnu == NULL |  mDScrnom == NULL)
         {
@@ -569,7 +558,6 @@ bool tuileS2OneDate::openDS(){
 void tuileS2OneDate::closeDS(){
     if (mDScrnom != NULL){GDALClose( mDScrnom );}
     if (mDSsolnu != NULL){GDALClose( mDSsolnu );}
-
     if (scanPix!=NULL){ CPLFree(scanPix);}
     if (scanLineSolNu!=NULL){ CPLFree(scanLineSolNu);}
     if (scanLineCR!=NULL){ CPLFree(scanLineCR);}
@@ -659,7 +647,6 @@ std::string getNameMasqueEP(int i){
 void tuileS2OneDate::computeCodeLine(){
     for (int col(0); col< mYSize ; col++){
         int solnu = getMasqVal(col);
-        //std::cout << " crnorm " << crnorm << " , sol nu " << solnu << std::endl;
         if (solnu==0){scanLineCode[col]=0;
         }else if(solnu==2 | solnu==3){
             scanLineCode[col]=3;

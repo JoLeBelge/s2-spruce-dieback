@@ -72,7 +72,7 @@ void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
     ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs)
                ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
 
-    std::cout << nbnSco << ";" << nboSco << ";" <<nbnCS << ";" <<nboCS << std::endl;
+    std::cout << nbnSco/100 << ";" << nboSco/100 << ";" <<nbnCS/100 << ";" <<nboCS/100 << std::endl;
 }
 
 
@@ -125,4 +125,10 @@ void esOney::stat(){
         std::cout <<";"<< nb/100 ;
     }
     std::cout << std::endl;
+}
+
+void esOney::project(){
+    std::string aCommand= std::string("gdalwarp -t_srs EPSG:31370 -te 42250.0 21170.0 295170.0 167700.0 -ot Byte -overwrite -tr 10 10 -co 'COMPRESS=NONE' "+ mRasterName +" "+getNameProj()+" ");
+    //std::cout << aCommand << "\n";
+    system(aCommand.c_str());
 }
