@@ -29,6 +29,7 @@ public:
     void project();
 
     void stat();
+    void statWithMasque(Im2D_U_INT1 * imMasque, int aMasqVal);
 
     Im2D_U_INT1 * getImPtr(){return mIm;}
 

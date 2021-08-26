@@ -33,9 +33,12 @@ public:
     void compressTif(std::string aIn);
 
     void project();
+    void checkCompression(std::string * aRaster);
 
     void masque(int seuilPP);
      void statistique();
+     // évolution de la crise ventilée par zone bioclimatique
+      void statWithStation();
 
     void clean();
     void evol();

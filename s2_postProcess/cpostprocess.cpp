@@ -32,6 +32,40 @@ void cPostProcess::statistique(){
         es->stat();
     }
 }
+void cPostProcess::statWithStation(){
+
+    std::cout << "statWithStation " << std::endl;
+
+    checkCompression(&pathProbPres);
+
+    Im2D_U_INT1 Im=Im2D_U_INT1::FromFileStd(pathProbPres);
+    // determiner les valeurs différentes.
+    std::vector<int> vVal;
+    U_INT1 ** d = Im.data();
+    for (INT x=0; x < Im.sz().x; x++)
+    {
+        for (INT y=0; y < Im.sz().y; y++)
+        {
+            if (d[y][x] != 0 &&  d[y][x] != 255)
+            {
+                int val=d[y][x];
+                vVal.push_back(val);
+                // remplace par 0 dans l'image pour aller plus vite
+                ELISE_COPY(select(Im.all_pts(),Im.in()==val),0,Im.out());
+            }
+        }
+    }
+    std::sort(vVal.begin(),vVal.end());
+    // recharge l'image
+    Im=Im2D_U_INT1::FromFileStd(pathProbPres);
+    std::cout << "station;y;tot;1;2;3;4;5;6;21;22;41;42"<< std::endl;
+    for (int v : vVal){
+        for (std::shared_ptr<esOney> & es : mVES){
+            std::cout << v <<";"<< es->getY()<< ";";
+            es->statWithMasque(&Im,v);
+        }
+    }
+}
 
 void cPostProcess::compressTif(std::string aIn){
     std::string aCommand= std::string("gdalwarp -co 'COMPRESS=DEFLATE' -overwrite "+ aIn +" "+aIn.substr(0,aIn.size()-4)+"_co.tif ");
@@ -42,6 +76,9 @@ void cPostProcess::compressTif(std::string aIn){
 // masque les cartes états sanitaires avec la probabilité de présence de l'EP
 void cPostProcess::masque(int seuilPP){
     std::cout << "charge l'image de probabilité de présence " << std::endl;
+
+    checkCompression(&pathProbPres);
+
     Im2D_U_INT1 PP=Im2D_U_INT1::FromFileStd(pathProbPres);
     for (std::shared_ptr<esOney> & es : mVES){
         // gdal et otb fonctionne, mais c'est pas franchement rapide. le faire avec Elise permettrait d'accélérer la chose, déjà vu que je vais ouvrir qu'une seule fois le raster de prob de présence.
@@ -55,6 +92,26 @@ void cPostProcess::masque(int seuilPP){
         ELISE_COPY(select(im->all_pts(),PP.in()<seuilPP),0,im->oclip());
         es->saveMasq();
 
+    }
+}
+
+void cPostProcess::checkCompression(std::string * aRaster){
+    GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
+    bool test(0);
+    const char *comp = "COMPRESSION=DEFLATE";
+    if (strcmp(*pIn->GetMetadata("IMAGE_STRUCTURE"),comp)== 0){test=1;}
+    GDALClose(pIn);
+    if (test){
+        std::cout << "compression détectée" << std::endl;
+        std::string nameTmp=aRaster->substr(0,aRaster->size()-4)+"_tmp.tif";
+        if (!fs::exists(nameTmp)){
+            // on décompresse tout ça
+            std::string aCommand= std::string("gdal_translate -co 'COMPRESS=NONE' "+ *aRaster +" "+nameTmp+" ");
+            std::cout << aCommand << "\n";
+            system(aCommand.c_str());
+
+        }
+         *aRaster=nameTmp;
     }
 }
 
@@ -104,97 +161,7 @@ void cPostProcess::evol(){
     }
 }
 
-void esOney::copyTifMTD(std::string aRasterOut){
-    // copy projection et src dans gdal
-    GDALDataset *pIn, *pOut;
-    GDALDriver *pDriver;
-    const char *pszFormat = "GTiff";
-    pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-    pOut = (GDALDataset*) GDALOpen(aRasterOut.c_str(), GA_Update);
-    pIn = (GDALDataset*) GDALOpen(mRasterName.c_str(), GA_ReadOnly);
-    pOut->SetProjection( pIn->GetProjectionRef() );
-    double tr[6];
-    pIn->GetGeoTransform(tr);
-    pOut->SetGeoTransform(tr);
-    GDALClose(pIn);
-    GDALClose(pOut);
-}
-
-void esOney::clean(){
-    std::cout << " nettoye carte " << mRasterName << std::endl;
-    // repérer les parties connexes de coupe normale et si elles ont beaucoup de voisins en coupe sanitaire, remplacer ces valeurs pas coupes sanitaire
-    Neighbourhood V8=Neighbourhood::v8();
-    // eviter effet de bord
-    ELISE_COPY(
-                mIm->border(2),
-                0,
-                mIm->out()
-                );
-
-    // pixels de la catégorie en question :toutes les coupes non sanitaire (image de masque pour accélérer process)
-    Im2D_U_INT1 Im(mIm->sz().x,mIm->sz().y,0);
-    //ELISE_COPY(select(aIn->all_pts(),aIn->in(4)==cn),1,Im.oclip());
-    ELISE_COPY(mIm->all_pts(),mIm->in(),Im.oclip());
-
-    // j'ai trois images pour finir. Input, Im = copie de Input pour neigh_test_and_set qui modifie l'image, Im2 = selection uniquement des coupes sanitaire pour dilate qui est programmé en tendu.
-
-    // dilate en tendu ; on modifie l'input durant les traitements, je fait une couche tmp alors
-    Im2D_U_INT1 Im2(mIm->sz().x,mIm->sz().y,0);
-    ELISE_COPY(select(mIm->all_pts(),mIm->in(4)==cs),1,Im2.oclip());
-
-    U_INT1 ** d = Im.data();
-    for (INT x=0; x < mIm->sz().x; x++)
-    {
-        for (INT y=0; y < mIm->sz().y; y++)
-        {
-            if (d[y][x] == cn)
-            {
-                Liste_Pts_INT2 cc(2);//, cc2(2);
-                // lecture de la composante connexe
-                ELISE_COPY
-                        (
-                            conc
-                            (Pt2di(x,y),
-                             Im.neigh_test_and_set(V8,cn,cs,20)),
-                            //sel_func(V8,aIn.in() == c)
-                            0,
-                            cc
-                            );
-
-                // lecture des voisins de cette composante conn
-                INT nb_pts;
-                // attention avec les dilates, programmation tendue.
-                ELISE_COPY
-                        (
-                            dilate
-                            (
-                                cc.all_pts(),
-                                sel_func(V8,Im2.in()==1)
-                                ),
-                            0,
-                            Im2.out() | (sigma(nb_pts)<< 1)
-                            );
-
-                double r=((double) nb_pts)/((double) cc.card());
-                //Pt2di cdg;
-                //ELISE_COPY (cc.all_pts(),Virgule(FX,FY),cdg.sigma());
-                if (r>0.4){
-                    //std::cout << "composante connexe " << cdg.x  << " , " <<  cdg.y <<" va être remplacée par coupe sanitaire car r= " << r << " , nombre de pixel " << cc.card() << std::endl;
-                    // on change de classe
-                    ELISE_COPY (cc.all_pts(),cs,mIm->out());
-                } else {
-                    //std::cout << "composante connexe " << cdg.x  << " , " <<  cdg.y <<" ne va pas être remplacée par coupe sanitaire car r= " << r << " , nombre de pixel " << cc.card() << std::endl;
-                }
-
-                // fin if (d[y][x] == 1)
-            }
-        }
-    }
-
-    //Tiff_Im::CreateFromIm(aIn,getNameClean());
-    //mIm=& aIn;
-}
-
+/*
 void cPostProcess::cleanVoisinage(Im2D_U_INT1 * aIn,int Val2Clean, int ValConflict1, int seuilVois){
 
     std::cout << "Nettoyage carte AE valeur " << Val2Clean << ", seuil nombre de voisin " << seuilVois << " Apport d'eau à ne pas modifier : " << ValConflict1 << std::endl;
@@ -244,4 +211,4 @@ void cPostProcess::fillHole(Im2D_U_INT1 * aIn,int Val2Clean, int ValCopain,int V
     ELISE_COPY(aIn->all_pts(),rect_som(IbinTmp->in(0),aSz1)-rect_som(IbinTmp->in(0),aSz2),ImNbVois.oclip());
     delete IbinTmp;
     ELISE_COPY(select(aIn->all_pts(),ImNbVois.in()>=seuilVois && Im.in()==1),Val2Clean,aIn->oclip());
-}
+}*/

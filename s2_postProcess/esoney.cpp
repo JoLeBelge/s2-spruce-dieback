@@ -127,8 +127,118 @@ void esOney::stat(){
     std::cout << std::endl;
 }
 
+void esOney::statWithMasque(Im2D_U_INT1 * imMasque, int aMasqVal){
+    INT nb;
+    ELISE_COPY(select(mIm->all_pts(),mIm->in()!=0 && mIm->in()!=255 && imMasque->in()==aMasqVal),1,(sigma(nb)<< 1));
+    std::cout << nb/100  ;
+    std::vector<int> v{1,2,3,4,5,6,21,22,41,42};
+
+    for (int a : v){
+        nb=0;
+        ELISE_COPY(select(mIm->all_pts(),mIm->in()==a && imMasque->in()==aMasqVal),1,(sigma(nb)<< 1));
+        std::cout <<";"<< nb/100 ;
+    }
+    std::cout << std::endl;
+}
+
+
+
 void esOney::project(){
     std::string aCommand= std::string("gdalwarp -t_srs EPSG:31370 -te 42250.0 21170.0 295170.0 167700.0 -ot Byte -overwrite -tr 10 10 -co 'COMPRESS=NONE' "+ mRasterName +" "+getNameProj()+" ");
     //std::cout << aCommand << "\n";
     system(aCommand.c_str());
 }
+
+
+void esOney::clean(){
+    std::cout << " nettoye carte " << mRasterName << std::endl;
+    // repérer les parties connexes de coupe normale et si elles ont beaucoup de voisins en coupe sanitaire, remplacer ces valeurs pas coupes sanitaire
+    Neighbourhood V8=Neighbourhood::v8();
+    // eviter effet de bord
+    ELISE_COPY(
+                mIm->border(2),
+                0,
+                mIm->out()
+                );
+
+    // pixels de la catégorie en question :toutes les coupes non sanitaire (image de masque pour accélérer process)
+    Im2D_U_INT1 Im(mIm->sz().x,mIm->sz().y,0);
+    //ELISE_COPY(select(aIn->all_pts(),aIn->in(4)==cn),1,Im.oclip());
+    ELISE_COPY(mIm->all_pts(),mIm->in(),Im.oclip());
+
+    // j'ai trois images pour finir. Input, Im = copie de Input pour neigh_test_and_set qui modifie l'image, Im2 = selection uniquement des coupes sanitaire pour dilate qui est programmé en tendu.
+
+    // dilate en tendu ; on modifie l'input durant les traitements, je fait une couche tmp alors
+    Im2D_U_INT1 Im2(mIm->sz().x,mIm->sz().y,0);
+    ELISE_COPY(select(mIm->all_pts(),mIm->in(4)==cs),1,Im2.oclip());
+
+    U_INT1 ** d = Im.data();
+    for (INT x=0; x < mIm->sz().x; x++)
+    {
+        for (INT y=0; y < mIm->sz().y; y++)
+        {
+            if (d[y][x] == cn)
+            {
+                Liste_Pts_INT2 cc(2);//, cc2(2);
+                // lecture de la composante connexe
+                ELISE_COPY
+                        (
+                            conc
+                            (Pt2di(x,y),
+                             Im.neigh_test_and_set(V8,cn,cs,20)),
+                            //sel_func(V8,aIn.in() == c)
+                            0,
+                            cc
+                            );
+
+                // lecture des voisins de cette composante conn
+                INT nb_pts;
+                // attention avec les dilates, programmation tendue.
+                ELISE_COPY
+                        (
+                            dilate
+                            (
+                                cc.all_pts(),
+                                sel_func(V8,Im2.in()==1)
+                                ),
+                            0,
+                            Im2.out() | (sigma(nb_pts)<< 1)
+                            );
+
+                double r=((double) nb_pts)/((double) cc.card());
+                //Pt2di cdg;
+                //ELISE_COPY (cc.all_pts(),Virgule(FX,FY),cdg.sigma());
+                if (r>0.4){
+                    //std::cout << "composante connexe " << cdg.x  << " , " <<  cdg.y <<" va être remplacée par coupe sanitaire car r= " << r << " , nombre de pixel " << cc.card() << std::endl;
+                    // on change de classe
+                    ELISE_COPY (cc.all_pts(),cs,mIm->out());
+                } else {
+                    //std::cout << "composante connexe " << cdg.x  << " , " <<  cdg.y <<" ne va pas être remplacée par coupe sanitaire car r= " << r << " , nombre de pixel " << cc.card() << std::endl;
+                }
+
+                // fin if (d[y][x] == 1)
+            }
+        }
+    }
+
+    //Tiff_Im::CreateFromIm(aIn,getNameClean());
+    //mIm=& aIn;
+}
+
+
+void esOney::copyTifMTD(std::string aRasterOut){
+    // copy projection et src dans gdal
+    GDALDataset *pIn, *pOut;
+    GDALDriver *pDriver;
+    const char *pszFormat = "GTiff";
+    pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+    pOut = (GDALDataset*) GDALOpen(aRasterOut.c_str(), GA_Update);
+    pIn = (GDALDataset*) GDALOpen(mRasterName.c_str(), GA_ReadOnly);
+    pOut->SetProjection( pIn->GetProjectionRef() );
+    double tr[6];
+    pIn->GetGeoTransform(tr);
+    pOut->SetGeoTransform(tr);
+    GDALClose(pIn);
+    GDALClose(pOut);
+}
+

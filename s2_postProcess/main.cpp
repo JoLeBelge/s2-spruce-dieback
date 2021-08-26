@@ -20,21 +20,18 @@ std::string pathProbPres("/home/lisein/Documents/carteApt/GIS/COMPO/202108/predi
  *
  * ./s2_postProcess --outils 2 --rasterIn ../../../ana2021/etatSan2/etatSanitaire_ANNEE.tif
 ./s2_postProcess --outils 2 --rasterIn /media/gef/Data2/S2Scolyte/merge/etatSanitaire_ANNEE.tif
-
  * */
-
 
 int main(int argc, char *argv[])
 {
-
     // Declare the supported options.
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
             ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72)")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
-            ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur")
-            ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 50")
+            ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur OU alors pour calcul statistique sur zbio")
+            ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 70")
             ;
 
     po::variables_map vm;
@@ -123,7 +120,13 @@ int main(int argc, char *argv[])
             case 4:{
                 std::cout << " statistiques pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,1);
+
+                if (vm.count("probPres")){
+                    std::cout << " statistiques sur les stations " << std::endl;
+                    app.statWithStation();
+                }else{
                 app.statistique();
+                }
                 break;
             }
             case 5:{
