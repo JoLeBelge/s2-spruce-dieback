@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
                 std::cout << " statistiques pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,1);
 
-                if (vm.count("probPres")){
+                if (vm.count("probPres")){// ce n'est pas une prob présence, c'est un raster station
                     std::cout << " statistiques sur les stations " << std::endl;
                     app.statWithStation();
                 }else{
