@@ -161,6 +161,19 @@ void cPostProcess::evol(){
     }
 }
 
+void  cPostProcess::extractValToPt(std::string aShpIn){
+
+
+    for (int c(0);c<mVES.size();c++){
+        std::shared_ptr<esOney> es=mVES.at(c);
+        std::cout << es->getNameRaster() << std::endl;
+        // création d'un rasterFile pour extract value
+        es->extractValToPt(aShpIn);
+
+    }
+
+}
+
 /*
 void cPostProcess::cleanVoisinage(Im2D_U_INT1 * aIn,int Val2Clean, int ValConflict1, int seuilVois){
 

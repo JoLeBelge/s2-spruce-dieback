@@ -28,10 +28,11 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72)")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72, 6 extract value to points pour validation)")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
             ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur OU alors pour calcul statistique sur zbio")
             ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 70")
+            ("shpIn", po::value<std::string>(), "shp pour l'extraction de valeurs d'état sanitaire")
             ;
 
     po::variables_map vm;
@@ -133,6 +134,16 @@ int main(int argc, char *argv[])
                 std::cout << " projection pour " << vIn.size() << " cartes " << std::endl;
                 cPostProcess app(vIn,0);
                 app.project();
+                break;
+            }
+            case 6:{
+                std::cout << " extract value to points pour " << vIn.size() << " cartes " << std::endl;
+                if (vm.count("shpIn")){
+                    cPostProcess app(vIn,1);
+                    std::string shp=vm["shpIn"].as<std::string>();
+                    app.extractValToPt(shp);
+                }else{ std::cout << " use shp in argument please " << std::endl;}
+
                 break;
             }
             default:{

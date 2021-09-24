@@ -36,6 +36,7 @@ void esOney::createTmp(){
     //lecture du raster
     std::cout << "charge image " << mRasterName << std::endl;
     mIm=new Im2D_U_INT1(Im2D_U_INT1::FromFileStd(mRasterName));
+
     // std::cout << "image chargée" << std::endl;
 }
 
@@ -242,3 +243,104 @@ void esOney::copyTifMTD(std::string aRasterOut){
     GDALClose(pOut);
 }
 
+void esOney::extractValToPt(std::string aShpIn){
+    std::cout << " etat san extract val to pt" << std::endl;
+    // open shp file
+    GDALDataset * DS =  (GDALDataset*) GDALOpenEx( aShpIn.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL );
+    OGRLayer * lay = DS->GetLayer(0);
+
+    // création des champs si ceux-ci n'existe pas
+    std::string fieldName="ES"+std::to_string(mAn);
+    if (lay->FindFieldIndex(fieldName.c_str(),0)==-1){
+        OGRFieldDefn * oFLD(NULL);
+        oFLD= new OGRFieldDefn(fieldName.c_str(),  OFTInteger);
+        lay->CreateField(oFLD);
+    }
+    std::string fieldName2="dist"+std::to_string(mAn);
+    if (lay->FindFieldIndex(fieldName2.c_str(),0)==-1){
+        OGRFieldDefn * oFLD(NULL);
+        oFLD= new OGRFieldDefn(fieldName2.c_str(),  OFTInteger);
+        lay->CreateField(oFLD);
+    }
+    std::string fieldVois2="v2_"+std::to_string(mAn);
+    if (lay->FindFieldIndex(fieldVois2.c_str(),0)==-1){
+        OGRFieldDefn * oFLD(NULL);
+        oFLD= new OGRFieldDefn(fieldVois2.c_str(),  OFTInteger);
+        lay->CreateField(oFLD);
+    }
+    std::string fieldVois3="v3_"+std::to_string(mAn);
+    if (lay->FindFieldIndex(fieldVois3.c_str(),0)==-1){
+        OGRFieldDefn * oFLD(NULL);
+        oFLD= new OGRFieldDefn(fieldVois3.c_str(),  OFTInteger);
+        lay->CreateField(oFLD);
+    }
+    std::string fieldVois4="v4_"+std::to_string(mAn);
+    if (lay->FindFieldIndex(fieldVois4.c_str(),0)==-1){
+        OGRFieldDefn * oFLD(NULL);
+        oFLD= new OGRFieldDefn(fieldVois4.c_str(),  OFTInteger);
+        lay->CreateField(oFLD);
+    }
+
+
+    std::cout << " calcul de la distance de chamfert" << std::endl;
+    Im2D_U_INT1 mDistChanf(mIm->sz().x,mIm->sz().y,1);
+    ELISE_COPY(select(mIm->all_pts(),mIm->in()==cs | mIm->in()==sco),0,mDistChanf.out());
+
+    ChamferNoBorder(&mDistChanf);
+
+    // ouverture du raster d'état sanitaire
+    rasterFiles r(mRasterName);
+
+    // boucle sur les points du shp
+    OGRFeature *poFeature;
+    OGRPoint * pt;
+    std::cout << " boucle sur les points du shapefile" << std::endl;
+
+
+    while( (poFeature = lay->GetNextFeature()) != NULL )
+    {
+        pt=poFeature->GetGeometryRef()->toPoint();
+        int esVal= r.getValue(pt->getX(),pt->getY());
+        //std::cout << " es Val is " << esVal << std::endl;
+        poFeature->SetField(fieldName.c_str(),esVal);
+        // je récupère uv pour pouvoir travailler avec librairie élise
+        pts uv = r.getUV(pt->getX(),pt->getY());
+
+        if (uv.X()!=0 && uv.Y()!=0){
+        int ch = mDistChanf.GetR(Pt2di(uv.X(),uv.Y()));
+        int dist= ((double) ch)*5; // si résolution = 10 mètres
+        //std::cout << " point " << poFeature->GetFID() << " a une distance de  " << << " et un Etat sanitaire de " << esVal << std::endl;
+        poFeature->SetField(fieldName2.c_str(),dist);
+        // étude du voisinage maintenant
+        int c(0), v2(0),v3(0),v4(0); // nombre de pixel non nul, ES2, ES3, ES4
+        int nb(3); // 3 voisins
+        Pt2di pt1(uv.X()+nb,uv.Y()+nb);
+        Pt2di pt2(uv.X()-nb,uv.Y()-nb);
+        ELISE_COPY(select(rectangle(pt1,pt2),mIm->in()>0),0,sigma(c)<< 1);
+        ELISE_COPY(select(rectangle(pt1,pt2),mIm->in()==cs),0,sigma(v4)<< 1);
+        ELISE_COPY(select(rectangle(pt1,pt2),mIm->in()==cn),0,sigma(v3)<< 1);
+        ELISE_COPY(select(rectangle(pt1,pt2),mIm->in()==sco),0,sigma(v2)<< 1);
+        if (c>0){
+        poFeature->SetField(fieldVois2.c_str(),100.0*((double)v2 )/((double) c));
+        poFeature->SetField(fieldVois3.c_str(),100.0*((double)v3 )/((double) c));
+        poFeature->SetField(fieldVois4.c_str(),100.0*((double)v4 )/((double) c));
+        }
+        }
+
+
+
+
+        lay->SetFeature(poFeature);
+    }
+
+    GDALClose(DS);
+}
+
+void ChamferNoBorder(Im2D<U_INT1,INT> * i2d)
+{
+    int border(200);
+    Im2D_U_INT1 tmp(i2d->sz().x+2*border,i2d->sz().y+2*border,1);
+    ELISE_COPY(select(tmp.all_pts(),trans(i2d->in(1),-Pt2di(border,border))==0),0,tmp.out());
+    Chamfer::d32.im_dist(tmp);
+    ELISE_COPY(i2d->all_pts(),trans(tmp.in(255),Pt2di(border,border)),i2d->oclip());
+}

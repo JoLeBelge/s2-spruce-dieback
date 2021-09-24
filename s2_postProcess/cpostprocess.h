@@ -11,6 +11,8 @@
 #include <filesystem>
 #include "esoney.h"
 
+
+
 namespace fs=boost::filesystem;
 
 
@@ -39,6 +41,8 @@ public:
      void statistique();
      // évolution de la crise ventilée par zone bioclimatique
       void statWithStation();
+
+    void  extractValToPt(std::string aShpIn);
 
     void clean();
     void evol();

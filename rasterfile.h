@@ -33,6 +33,7 @@ public:
     int getValue(double x, double y, bool quiet=1);
     double getValueDouble(double x, double y);
 
+    pts getUV(double x, double y);
 
 protected:
     std::string mPathRaster, mPathQml, mCode;
@@ -43,6 +44,8 @@ class pts{
 public:    pts(double aX, double aY):mX(aX),mY(aY){}
     double X(){return mX;}
     double Y(){return mY;}
+    void setX(double x){ mX=x;}
+    void setY(double y){ mY=y;}
 private:
     double mX, mY;
 };

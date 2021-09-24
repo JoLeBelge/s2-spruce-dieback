@@ -121,7 +121,7 @@ L'imagerie multispectrale des deux satellites Sentinel-2 (A et B, mis en orbite 
 
 \section{Méthodologie}
 
-\subsection{Suivi d'un indice spectral pour la détection précoce de stress}
+\subsection{Suivi d'un indice spectral pour la détection précoce de stress}\label{subsec:methodo}
 
 
 L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret) développée depuis 2017. 
@@ -169,7 +169,7 @@ le $CRSWIR_{theorique}(t)$ représente bien entendu la valeur calculée au moyen
 	\label{fig:ex}
 \end{figure}
 
-\subsection{Ensemble de règles pour attribuer un état sanitaire}
+\subsection{Ensemble de règles pour attribuer un état sanitaire}\label{subsec:ES}
 
 \begin{enumerate}
 	%code 1
@@ -520,6 +520,8 @@ Les traitements illustrés jusqu'à présent sont des calculs qui s'effectuent s
 	\item calcul des cartes d'évolutions de l'états sanitaires. Chaque carte d'état sanitaire est comparée avec celle de l'année précédente afin de classer les zones de scolyte en nouveau scolyte ou ancien scolyte, et les zones de coupe sanitaire en nouvelle ou ancienne coupe sanitaire.
 	\item  compression des cartes geotiff
 	\item calcul de statistique (surface) pour chaque classe d'état sanitaire.
+	\item projection des cartes vers le SRC 31370 Belge Lambert 72.
+	\item Extraction de valeurs d'état sanitaire pour les points d'un shapefile, dans un objectif de validation de la méthodo. Diverses indices de voisinage sont également calculé, comme la distance la plus proche à un foyer de scolyte.
 \end{enumerate}
 
 Voici les codes pour l'évolution de l'état sanitaire ainsi que la couleur associée:
@@ -544,5 +546,40 @@ Voici les codes pour l'évolution de l'état sanitaire ainsi que la couleur asso
 	\label{fig:clean}
 	\caption{Un des post-traitement vise à améliorer les cartes d'état sanitaire, sur cette illustration on vois que certaines coupe "normale" sont reclassée en coupe sanitaire sur base de relation de voisinage.}
 \end{figure}
+
+\section{Validation}
+
+\subsection{Introduction}
+
+La méthode de détection des scolytes sera validée selon plusieurs méthodes, en fonction des données dont nous disposons.
+
+\subsection{Validation terrain}
+
+L'équipe du CRPF Grand-est a effectué des mesures sur le terrain en 2021 (projet RégioWood II) pour un total de 127 placettes en pessière. L'échantillonnage est stratifié pour disposer de relevés en pessières scolytées et non-scolytées représentant de manière équilibrée les 3 classes d'altitudes choisies : 0-600 mètres, 600-800 mètres et 800-1000 mètres et plus. Le protocole de mesure vise à décrire le peuplement en place au niveau dendrométrique (diamètre, statut social, essence, hauteur) et sanitaire (évaluation selon protocole DEPERISS). La station est décrite au moyen d'un sondage pédologique et via la position topographique. L'exposition, la pente et l'apport en eau sont également évalué.
+
+Nous utilisons ces données pour valider la méthode de détection des scolytes par analyse de série temporelle d'image sentinel-2, bien que la méthode aie été adaptée pour un fonctionnement optimal sur les pessières Wallonnes. En effet, les fluctuations normales de l'indice spectral utilisé ont été calibrées sur des pessières Wallonnes (voir \ref{subsec:methodo}).
+
+Les 127 placettes du CRPF sont passées en revue de manière minutieuse pour appréhender les données et corriger certaines incohérences. En effet, il est dans certains cas difficile de distinguer une situation de dépérissement dû à des conditions stationnelle et climatique contraignante d'un dépérissement dû à une attaque de scolyte. Par exemple,un examen attentif de la platte numéro 92, pour laquelle le commentaire relevé sur le terrain indique "non scolyte mais stressé", nous à permis de confirmer que cette placette ne présente pas de symptome du au scolyte. Par ailleurs, une placette d'épicéa sain peut-être installée juste à coté d'un peuplement scolyté (ex placette numéro 43). C'est une situation ambigue, étant donné que la position du centre de placette est relevée sur le terrain au moyen d'un GPS doté d'une précision de l'ordre de 10 à 20 mètres. La probabilité de localiser la placette saine numéro 43 sur un pixel scolyté étant grande, cette placette est retirée du jeu de donnée. Seul les placettes situées dans la tuile T32ULU sont utilisées pour la validation, ce qui nous amène à retirer 6 placettes. Enfin, les pessières sont localisées au moyen de la classe "sapin-épicéa" de la BD forêt de l'inventaire forestier Français (IGN France). Certaines placettes sont en dehors de cette classe "sapin-épicéa" et sont donc également mise de coté.
+
+Un total de 109 placette sont utilisées pour la validation. Elles comprennent 58 placettes de pessières saines et 54 pessières scolytées. Les pessières scolytées ayant subies une coupe sanitaire se voient attribuer la classe numéro 4, alors que les autres sont classées avec le code 2 (voir \ref{subsec:ES}). Ces classes étant dérivées de l'observation de terrain, nous les renseignons sous la terminologie \textit{état sanitaire terrain}. L'état sanitaire en 2020 est extrait de la carte d'état sanitaire : il s'agit à contrario de \textit{l'état sanitaire SIG}. De plus, la distance au foyer de scolyte le plus proche est également calculé, ainsi que les proportion de surface scolyté, coupée et en coupe sanitaire sur une vignette de 7 pixels de large (soit 70 mètres de coté, donc 35 mètres de distance du centre de placette dans toutes les directions). La distance au foyer le plus proche est utilisé pour changer l'état sanitaire de certaines placettes ; en effet, une placette située à une distance de maximum 20 mètres d'un foyer de scolytes se voit attribuer une classe d'état sanitaire 2 ou 4, en fonction de la majorité en surface des pixels du voisinage.
+
+% exemple de modification d'ES SIG pour une placette 
+
+\subsubsection{Résultats}
+
+La matrice de confusion présentée figure \ref{fig:tabConMat} montre que la concordance entre les observations terrains et la détection des pessières scolytées par télédétection est satisfaisante. Bien que la précision globale de classification n'exède pas 69.6\%, la confusion la plus courrante concerne les classes 2 et 4. En effet, tantôt des pessières scolytées sont détectées par télédétection comme étant des coupes sanitaires (n=7), tantôt des coupes sanitaires sont détectées par télédétection comme étant des pessières scolytées (n=13). Il va de soit qu'une globalisation de ces deux classes en une seule classe \textit{pessières scolytées ou coupe sanitaire} ne porte pas préjudice aux objectifs poursuivit par cette recherche, c'est-à-dire la détection des dégats provoqués par l'attaque du typographe.
+
+On notera que le nombre de faux positifs, des placettes détectées comme étant scolytées alors qu'il s'agit de peuplements sains, est ici de 0. Il est évident que le taux de faux positif est supérieur à 0\%, mais cette validation illustre le coté conservateur de la méthode : elle privilégie un nombre d'omissions élevés (n=5 dans le tableau) et un nombre de faux positif faible (nb=0), afin de garantir au mieux que les pixels détectés comme scolytés le soient le plus souvent possible.
+
+Enfin, la matrice de confusion met en lumière le fait qu'un proportion considérable de coupes sanitaires sont détectées comme étant des coupes normales (n=11). La méthode de détection des scolytes nécessite en effet de disposer de minimum 2 images satellites sur lesquelles on détecte un stress préhalablement à la coupe sanitaire. Si la coupe sanitaire est effectuées très rapidement après l'attaque de scolyte, ou si des conditions d'ennuagement prolongés ne permettent pas d'observer la pessière au moment du stade vert du dépérissement, la méthode échoue.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{confusionMat.png}
+	\caption{Matrice de confustion illustrant la confrontation des données terrains de présence/absence de scolyte avec les résultats de la méthode de détection par analyse de série temporelle d'images satellites. Le observations par télédétection montrent une bonne concordances avec les données terrains.}
+	\label{fig:tabConMat}
+\end{figure}
+
+
 
 \end{document}

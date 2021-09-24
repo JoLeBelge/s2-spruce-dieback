@@ -8,8 +8,11 @@
 #include "ogrsf_frmts.h"
 #include "gdal_utils.h"
 #include <filesystem>
+#include "../rasterfile.h"
 
 namespace fs=boost::filesystem;
+
+void ChamferNoBorder(Im2D<U_INT1,INT> * i2d);
 
 class esOney{
 public:
@@ -27,6 +30,8 @@ public:
      void saveMasq();
     void loadClean();
     void project();
+
+    void extractValToPt(std::string aShpIn);
 
     void stat();
     void statWithMasque(Im2D_U_INT1 * imMasque, int aMasqVal);

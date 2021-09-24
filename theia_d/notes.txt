@@ -1,1 +1,3 @@
  python ./theia_download.py -t T31UFR -c SENTINEL2 -a config_theia.cfg -d 2016-09-01 -f 2016-10-01 -m 1 -n
+ 
+ curl -k  -o search.json "https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate=2021-09-15&startDate=2019-04-01&maxRecords=500&location=T38SLF"
