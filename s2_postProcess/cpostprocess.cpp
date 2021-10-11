@@ -20,8 +20,9 @@ cPostProcess::cPostProcess(std::vector<std::pair<int, string>> aMRaster, int mod
 
 void cPostProcess::compress(){
     for (std::shared_ptr<esOney> & es : mVES){
-        compressTif(es->getNameClean());
-        compressTif(es->getNameEvol());
+        //compressTif(es->getNameClean());
+        //compressTif(es->getNameEvol());
+        compressTif(es->getNameRaster());
     }
 }
 
@@ -159,6 +160,19 @@ void cPostProcess::evol(){
         es->saveEvol();
         es->loadClean();
     }
+}
+
+void  cPostProcess::extractValToPt(std::string aShpIn){
+
+
+    for (int c(0);c<mVES.size();c++){
+        std::shared_ptr<esOney> es=mVES.at(c);
+        std::cout << es->getNameRaster() << std::endl;
+        // création d'un rasterFile pour extract value
+        es->extractValToPt(aShpIn);
+
+    }
+
 }
 
 /*

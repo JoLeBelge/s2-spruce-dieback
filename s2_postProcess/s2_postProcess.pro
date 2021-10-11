@@ -8,7 +8,8 @@ QT += x11extras
 SOURCES += \
         cpostprocess.cpp \
         esoney.cpp \
-        main.cpp
+        main.cpp\
+        ../rasterfile.cpp
 
 # un paramétrage différent pour l'ordi de traitement et le mien
 contains(pl,s2jo) {
@@ -37,4 +38,5 @@ DEPENDPATH += $$PWD/../../../../../micmac/include/
 
 HEADERS += \
     cpostprocess.h \
-    esoney.h
+    esoney.h \
+    ../rasterfile.h
