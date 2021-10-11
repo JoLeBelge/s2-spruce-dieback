@@ -7,11 +7,17 @@ require(lubridate)
 crswirTheorique <- function (date){
   mT <- 365.25
   cst <- 2*pi/mT
-  a1 <- 0.551512
-  b1 <-  0.062849      
-  b2 <- -0.120683
-  b3 <-  0.005509
-  b4 <- -0.044525 
+ # a1 <- 0.551512
+#  b1 <-  0.062849      
+ # b2 <- -0.120683
+#  b3 <-  0.005509
+ # b4 <- -0.044525 
+  #nouvelles valeurs;
+  a1 <- 0.58880089  
+  b1 <- 0.05537490 
+  b2 <- -0.10809739 
+  b3 <- -0.01737327 
+  b4 <- -0.02677137
   x <- yday(date)
   return(a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x))
 }
@@ -93,12 +99,30 @@ library(nls2)
 formule <- crswir  ~  aa1 + bb1*sin(cst*DIY)+ bb2*cos(cst*DIY)+ bb3*sin(cst*2*DIY)+ bb4*cos(cst*2*DIY)
 fit <- nls2(formule, trace=T, data=df,start = list(aa1 = a1, bb1 = b1, bb2=b2,bb3=b3,bb4=b4))
 
-#nouvelles valeurs;
-a1 <- 0.58880089  
-b1 <- 0.05537490 
-b2 <- -0.10809739 
-b3 <- -0.01737327 
-b4 <- -0.02677137
+
 
 y <- (a1 + b1*sin(cst*x)+ b2*cos(cst*x)+ b3*sin(cst*2*x)+ b4*cos(cst*2*x))
 lines(x,y, col="forestgreen", lwd=4)
+
+
+
+#----
+#suivi de pixel en hetraie dépérissante
+
+setwd("/home/gef/Documents/he-reponse")
+
+for (id in c(1:20)){
+d <- read.table(paste0("toto_",id,".txt"), header=T,sep=";") # il est mort le numéro 13
+d$date <-  as.Date(d$date)
+d$ndvi <-(d$B8A-d$B4)/(d$B8A+d$B4)
+pdf(paste0("he-ndvi",id,".pdf"),width = 9, height = 7)
+plot(d$date,d$CRSWIR, xlab="Date", ylab="complex ratio SWIR", main="suivi de l'état sanitaire des hêtres par télédétection", ylim=c(0.3,1.7), lwd=1.6)
+
+#plot(d$date,d$ndvi, xlab="Date", ylab="complex ratio SWIR", main="suivi de l'état sanitaire des hêtres par télédétection", ylim=c(0.0,1.0), lwd=1.6)
+
+
+
+dev.off()
+}
+
+

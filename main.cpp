@@ -14,6 +14,7 @@ extern std::string EP_mask_path;
 extern std::string globTuile;
 extern std::string globResXYTest;
 extern double seuilCR;
+extern bool docleanTS1pos;
 
 bool mergeEtatSan(0);
 extern bool doAnaTS;
@@ -63,10 +64,11 @@ int main(int argc, char *argv[])
             ("srCR", po::value<double>(), "seuil ratio CRswir à partir duquel on détecte un stress. Defaut 1.4")
             ("nbJourStress", po::value<int>(), "nombre du jours seuil à partir dusquel on n'envisage plus un retour à la normal pour un stress temporaire pronlongé. Default 90")
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
-            ("XYtestIn", po::value< std::string>(), "Fichier texte séparateur virgule avec col 2=X et col3=3, epsg 32631 (UTM 31N), on effectue l'analyse en mode Test sur tout ces points là")
+            ("XYtestIn", po::value< std::string>(), "Fichier texte séparateur virgule avec col 1 = id col 2=X et col3=3, epsg 32631 (UTM 31N), on effectue l'analyse en mode Test sur tout ces points là")
             ("XYtestOut", po::value< std::string>(), "fichier texte ou sauver les résultats de XYTest sur un point.")
             ("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
-            ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état")
+            ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état, def true")
+             ("testClean", po::value<bool>(), "pour le test sur une position, nettoyage ou pas, def true")
             ("mergeES", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
             ("debug", po::value<bool>(), "si true, le logiciel est plus bavard, ça aide pour débugger")
@@ -104,6 +106,7 @@ int main(int argc, char *argv[])
         if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
         if (vm.count("Overwrite")) {overw=vm["Overwrite"].as<bool>();}
         if (vm.count("testDetail")) {debugDetail=vm["testDetail"].as<bool>();}
+        if (vm.count("testClean")) {docleanTS1pos=vm["testClean"].as<bool>();}
         if (vm.count("srCR")) {seuilCR=vm["srCR"].as<double>();}
         if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
         if (vm.count("mergeES")) {mergeEtatSan=vm["mergeES"].as<bool>();}
@@ -127,6 +130,8 @@ int main(int argc, char *argv[])
 
 
         for (std::string t : aVTuiles){
+
+            if (t=="T32ULU"){wdRacine="/home/gef/Documents/";}
 
             wd=wdRacine+ t +"/";
             globTuile=t;
