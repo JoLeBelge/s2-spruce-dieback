@@ -203,7 +203,7 @@ struct BaseReaderHandler {
     bool Default() { return true; }
     bool Null() { return static_cast<Override&>(*this).Default(); }
     bool Bool(bool) { return static_cast<Override&>(*this).Default(); }
-    bool Int(int) { return static_cast<Override&>(*this).Default(); }
+    bool getInt(int) { return static_cast<Override&>(*this).Default(); }
     bool Uint(unsigned) { return static_cast<Override&>(*this).Default(); }
     bool Int64(int64_t) { return static_cast<Override&>(*this).Default(); }
     bool Uint64(uint64_t) { return static_cast<Override&>(*this).Default(); }
@@ -1735,7 +1735,7 @@ private:
                }
                else {
                    if (minus)
-                       cont = handler.Int(static_cast<int32_t>(~i + 1));
+                       cont = handler.getInt(static_cast<int32_t>(~i + 1));
                    else
                        cont = handler.Uint(i);
                }

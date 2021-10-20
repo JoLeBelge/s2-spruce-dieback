@@ -24,6 +24,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{subcaption}
+ \usepackage{natbib}
 
 
 
@@ -126,7 +127,7 @@ L'imagerie multispectrale des deux satellites Sentinel-2 (A et B, mis en orbite 
 \subsection{Suivi d'un indice spectral pour la détection précoce de stress}\label{subsec:methodo}
 
 
-L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret) développée depuis 2017. 
+L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret : voir \cite{dutrieux_package_2021,dutrieux_mise_2021}) développée depuis 2017. 
 
 L'indice spectral permettant la détection précoce (stade vert du dépérissement) des dépérissements provoqués par l'attaque de Typographes est le CRSWIR :
 
@@ -140,7 +141,8 @@ avec&\\
 %\end{equation*}
 \end{align*} 
 
-A noter que CR est l'acronyme de Complex Ratio.
+A noter que CR est l'acronyme de \textit{continuum removal}, technique qui consiste à maximiser le contraste spectral associé à des pics d’absorption, en normalisant la valeur de réflectance
+par rapport à la valeur d’une ‘enveloppe convexe’ calculée à partir de bandes spectrales voisines \citep{dutrieux_mise_2021}.
 Les valeurs d'un peuplements soumis à un stress physiologique voient leur CRSWIR augmenter de manière précoce.
 
 \begin{equation}\label{eq:harmo}
@@ -582,6 +584,7 @@ Enfin, la matrice de confusion met en lumière le fait qu'un proportion considé
 	\label{fig:tabConMat}
 \end{figure}
 
-
+\bibliography{s2_ts}
+\bibliographystyle{s2_ts}
 
 \end{document}

@@ -63,7 +63,6 @@ private:
     int mX,mY;
     float * scanLine;
     float * scanPix;
-
 };
 
 #endif // CATALOGUE_H

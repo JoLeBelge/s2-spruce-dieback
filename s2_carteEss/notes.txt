@@ -1,0 +1,12 @@
+octobre 2021
+------------
+
+le masque épicéa sur les Vosges s'avère très foireux, donc si on souhaite continuer nos analyses scolytes sur les vosges, je dois refaire le masque
+
+mon idée ; utiliser les cartes de composition de Nicorentin (mosaique superrésolue 2 date + deep learning) comme jeu d'entrainement, utiliser les valeurs spectrales moyenne trimestrielle (calculée sur plusieures années) pour entrainer une forêt aléatoire.
+
+Je code donc un outils pour sélectionner les points qui feront mon jeu d'entrainement, qui entrera dans s2_ts ou un outil similaire pour calcul de valeur spectrale trimestrielle.
+
+
+
+

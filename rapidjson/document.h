@@ -2520,7 +2520,7 @@ public:
     // Implementation of Handler
     bool Null() { new (stack_.template Push<ValueType>()) ValueType(); return true; }
     bool Bool(bool b) { new (stack_.template Push<ValueType>()) ValueType(b); return true; }
-    bool Int(int i) { new (stack_.template Push<ValueType>()) ValueType(i); return true; }
+    bool getInt(int i) { new (stack_.template Push<ValueType>()) ValueType(i); return true; }
     bool Uint(unsigned i) { new (stack_.template Push<ValueType>()) ValueType(i); return true; }
     bool Int64(int64_t i) { new (stack_.template Push<ValueType>()) ValueType(i); return true; }
     bool Uint64(uint64_t i) { new (stack_.template Push<ValueType>()) ValueType(i); return true; }

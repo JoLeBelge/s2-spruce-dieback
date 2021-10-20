@@ -181,7 +181,7 @@ public:
 
     bool Null()                 { Prefix(kNullType);   return EndValue(WriteNull()); }
     bool Bool(bool b)           { Prefix(b ? kTrueType : kFalseType); return EndValue(WriteBool(b)); }
-    bool Int(int i)             { Prefix(kNumberType); return EndValue(WriteInt(i)); }
+    bool getInt(int i)             { Prefix(kNumberType); return EndValue(WriteInt(i)); }
     bool Uint(unsigned u)       { Prefix(kNumberType); return EndValue(WriteUint(u)); }
     bool Int64(int64_t i64)     { Prefix(kNumberType); return EndValue(WriteInt64(i64)); }
     bool Uint64(uint64_t u64)   { Prefix(kNumberType); return EndValue(WriteUint64(u64)); }
