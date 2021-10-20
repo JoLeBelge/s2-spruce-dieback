@@ -20,6 +20,7 @@ extern std::string globResXYTest;
 extern std::string XYtestFile;
 
 bool doAnaTS(1);
+bool docleanTS1pos(1);// nettoyage TS d'un point. défaut oui. Mais si pt en dehors du masque, faut pas nettoyer^
 extern bool mDebug;
 
 std::vector<pts> globVPts;
@@ -131,6 +132,7 @@ void catalogue::traitement(){
 
     // points pour visu de la série tempo et pour vérifier la fct harmonique
     if (XYtestFile!="toto"){
+         if (globResXYTest=="toto"){globResXYTest=XYtestFile.substr(0,XYtestFile.size-4);}
         globVPts=readPtsFile(XYtestFile);
     }
 
@@ -173,8 +175,8 @@ void catalogue::analyseTSinit(){
         // mode test pour un ensemble de position (et sauver résultat dans fichiers)
         std::cout << " analyse en mode Test pour une liste de " << globVPts.size() << "points " << std::endl;
         for (pts & pt : globVPts){
-
-            analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
+            //analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
+            analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+"_"+std::to_string(pt.ID())+".txt");
         }
 
     }else{
@@ -275,9 +277,9 @@ void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
 
         ts.add1Date(code,t);
     }
-    //if (!debugDetail){ts.nettoyer();}
-    ts.nettoyer();
-    // ça risque d'impacter le résultat de ne pas nettoyer tout ca..
+     // ça risque d'impacter le résultat de ne pas nettoyer tout ca.. ben oui formément
+    if (docleanTS1pos){ts.nettoyer();}
+
     ts.analyse();
     ts.printDetail(aFileOut);
 }

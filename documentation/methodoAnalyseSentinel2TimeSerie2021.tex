@@ -107,7 +107,7 @@
 
 \section{Introduction}
 
-Dans le cadre du projet InterReg RegioWood 2 et de l'Accord cadre de recherche et vulgarisation forestière, la crise du Typographe qui touche les pessières wallonnes est étudiée au moyen de la télédétection. L'objectif est de dresser des cartes d'état sanitaire pour chaque année étudiée sur lesquelles on puisse distinguer les arbres sains des arbres dépérissants. L'utilisation de série temporelle d'images satellites dispose d'un potentiel très intéressant pour le suivi de la phénologie des arbres.
+Dans le cadre du projet InterReg RegioWood 2 et de l'Accord cadre de recherche et vulgarisation forestière, la crise du typographe qui touche les pessières wallonnes est étudiée au moyen de la télédétection. L'objectif est de dresser des cartes d'état sanitaire pour chaque année étudiée sur lesquelles on puisse distinguer les arbres sains des arbres dépérissants. L'utilisation de série temporelle d'images satellites dispose d'un potentiel très intéressant pour le suivi de la phénologie des arbres.
 
 Le présent document est un document interne de l'unité de Gestion des ressources forestières (Ulg). Pour toutes questions ou remarques, contactez Lisein jonathan par courriel (\href{mailto:liseinjon@hotmail.com}{liseinjon@hotmail.com}).
 
@@ -548,7 +548,7 @@ Voici les codes pour l'évolution de l'état sanitaire ainsi que la couleur asso
 	\subcaption{\includegraphics[width=\linewidth]{esApresClean.png}}
 \end{minipage}
 	\label{fig:clean}
-	\caption{Un des post-traitement vise à améliorer les cartes d'état sanitaire, sur cette illustration on vois que certaines coupe "normale" sont reclassée en coupe sanitaire sur base de relation de voisinage.}
+	\caption{Un des post-traitement vise à améliorer les cartes d'état sanitaire, sur cette illustration on voit que certaines coupes "normales" sont reclassées en coupe sanitaire sur base de relation de voisinage.}
 \end{figure}
 
 \section{Validation}
@@ -571,11 +571,11 @@ Un total de 109 placette sont utilisées pour la validation. Elles comprennent 5
 
 \subsubsection{Résultats}
 
-La matrice de confusion présentée figure \ref{fig:tabConMat} montre que la concordance entre les observations terrains et la détection des pessières scolytées par télédétection est satisfaisante. Bien que la précision globale de classification n'exède pas 69.6\%, la confusion la plus courrante concerne les classes 2 et 4. En effet, tantôt des pessières scolytées sont détectées par télédétection comme étant des coupes sanitaires (n=7), tantôt des coupes sanitaires sont détectées par télédétection comme étant des pessières scolytées (n=13). Il va de soit qu'une globalisation de ces deux classes en une seule classe \textit{pessières scolytées ou coupe sanitaire} ne porte pas préjudice aux objectifs poursuivit par cette recherche, c'est-à-dire la détection des dégats provoqués par l'attaque du typographe.
+La matrice de confusion présentée figure \ref{fig:tabConMat} montre que la concordance entre les observations terrains et la détection des pessières scolytées par télédétection est satisfaisante. Bien que la précision globale de classification n'exède pas 69.6\%, la confusion la plus courrante concerne les classes 2 et 4. En effet, tantôt des pessières scolytées sont détectées par télédétection comme étant des coupes sanitaires (n=7), tantôt des coupes sanitaires sont détectées par télédétection comme étant des pessières scolytées (n=13). Il va de soit qu'une globalisation de ces deux classes en une seule classe \textit{pessières scolytées ou coupe sanitaire} ne porte pas préjudice aux objectifs poursuivit par cette recherche, c'est-à-dire la détection des dégâts provoqués par l'attaque du typographe.
 
 On notera que le nombre de faux positifs, des placettes détectées comme étant scolytées alors qu'il s'agit de peuplements sains, est ici de 0. Il est évident que le taux de faux positif est supérieur à 0\%, mais cette validation illustre le coté conservateur de la méthode : elle privilégie un nombre d'omissions élevés (n=5 dans le tableau) et un nombre de faux positif faible (nb=0), afin de garantir au mieux que les pixels détectés comme scolytés le soient le plus souvent possible.
 
-Enfin, la matrice de confusion met en lumière le fait qu'un proportion considérable de coupes sanitaires sont détectées comme étant des coupes normales (n=11). La méthode de détection des scolytes nécessite en effet de disposer de minimum 2 images satellites sur lesquelles on détecte un stress préhalablement à la coupe sanitaire. Si la coupe sanitaire est effectuées très rapidement après l'attaque de scolyte, ou si des conditions d'ennuagement prolongés ne permettent pas d'observer la pessière au moment du stade vert du dépérissement, la méthode échoue.
+Enfin, la matrice de confusion met en lumière le fait qu'une proportion considérable de coupes sanitaires sont détectées comme étant des coupes normales (n=11). La méthode de détection des scolytes nécessite en effet de disposer de minimum 2 images satellites sur lesquelles on détecte un stress préalablement à la coupe sanitaire. Si la coupe sanitaire est effectuées très rapidement après l'attaque de scolyte, ou si des conditions d'ennuagement prolongées ne permettent pas d'observer la pessière au moment du stade vert du dépérissement, la méthode échoue.
 
 \begin{figure}
 	\centering

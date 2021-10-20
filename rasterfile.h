@@ -41,13 +41,20 @@ protected:
 
 
 class pts{
-public:    pts(double aX, double aY):mX(aX),mY(aY){}
+public:
+     pts(double aX, double aY):mX(aX),mY(aY),mId(-1){}
+    pts(int aId,double aX, double aY):mId(aId),mX(aX),mY(aY){}
     double X(){return mX;}
     double Y(){return mY;}
+
+    int ID(){return mId;}
+
     void setX(double x){ mX=x;}
     void setY(double y){ mY=y;}
+
 private:
     double mX, mY;
+    int mId;
 };
 
 #endif // RASTERFILE_H

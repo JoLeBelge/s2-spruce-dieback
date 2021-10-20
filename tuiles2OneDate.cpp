@@ -464,9 +464,10 @@ std::vector<pts> readPtsFile(std::string aFilePath){
     for (std::vector<std::string> l : aVV){
         if (!firstL){
             //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
+            int aId=std::stoi(l.at(0));
             double aX=std::stod(l.at(1));
             double aY=std::stod(l.at(2));
-            aRes.push_back(pts(aX,aY));
+            aRes.push_back(pts(aId,aX,aY));
         } else { firstL=0;}
     }
     return aRes;
