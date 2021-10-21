@@ -34,15 +34,32 @@ DEPENDPATH += $$PWD/../../../../../micmac/include/
 INCLUDEPATH += $$PWD/../date/include/date/
 DEPENDPATH += $$PWD/../date/include/date/
 
+INCLUDEPATH += $$PWD/../libzipp/src/
+DEPENDPATH += $$PWD/../libzipp/src/
+
+INCLUDEPATH += $$PWD/../rapidxml/
+DEPENDPATH += $$PWD/../rapidxml/
+
+INCLUDEPATH += $$PWD/../
+DEPENDPATH += $$PWD/../
+
+
+
 
 
 TARGET = s2_carteEss
 
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        ../tuiles2OneDate.cpp \
+        ../ts1pos.cpp \
+        ../catalogue.cpp \
+        ../rasterfile.cpp \
+        ../libzippp/src/libzippp.cpp \
 
 HEADERS += \
+    carteEss.h \
     ../catalogue.h \
     ../rapidjson/allocators.h \
     ../rapidjson/cursorstreamwrapper.h \
@@ -67,8 +84,8 @@ HEADERS += \
     ../rapidxml/rapidxml.hpp \
     ../rapidxml/rapidxml_iterators.hpp \
     ../rasterfile.h \
-    ../ts1pos.h \
     ../libzippp/src/libzippp.h \
+    ../ts1pos.h \
     ../date.h\
     ../tuiles2OneDate.h \
-    carteEss.h
+

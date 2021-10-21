@@ -18,7 +18,6 @@ inline bool exists (const std::string& name){
     return (stat (name.c_str(), &buffer) == 0);
 }
 
-
 class rasterFiles{
 public:
     rasterFiles(std::string aPathTif);
@@ -47,7 +46,7 @@ public:
     double X(){return mX;}
     double Y(){return mY;}
 
-    int ID(){return mId;}
+    int getID(){return mId;}
 
     void setX(double x){ mX=x;}
     void setY(double y){ mY=y;}

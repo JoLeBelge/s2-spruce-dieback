@@ -79,7 +79,7 @@ void tuileS2OneDate::nettoyeArchive(){
     // nicolas semble dire qu'il y a 10 bandes+6 masques+1 MTD (tkpn) fichiers à garder, détection sur base de leurs noms
 
     if ( boost::filesystem::exists(archiveName ) ){
-        ZipArchive zf(archiveName);
+        libzippp::ZipArchive zf(archiveName);
         zf.open(ZipArchive::WRITE);
         std::vector<ZipEntry> v=zf.getEntries();
         int c(0);
@@ -243,7 +243,7 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 }
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
-//==>new mask R1 & R2 with: 0=clear, 1=not clear (clouds/shadows/etc.), 2=blackfill (nodata at all)
+//==>new mask R1 & R2 with: 1=clear et dans masque EP input utilisateur, 2=not clear (clouds/shadows/etc.), 3=blackfill (nodata at all), 4, clear mais hors masque utilisateur (masque EP)
 void tuileS2OneDate::masque(){
     if (mDebug){std::cout << "masque .." ;}
     for (int i(1) ; i<3 ; i++){
@@ -253,12 +253,14 @@ void tuileS2OneDate::masque(){
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
         if (boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
-            if ((!boost::filesystem::exists(out) | overw)) {
+            if ((!boost::filesystem::exists(out) | overw )) {//| 1)) {
                 //im 1 = masque EP
                 //im 2 = masque edge
                 //im 3 masque cloud
 
-                std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+                //std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+                // je change, je veux claculer le masque sur toutes la tuile pour pouvoir utiliser l'outil en dehors du masque essences en input
+                std::string exp("im1b1==0 and im2b1==0 and im3b1 ==0 ? 4 : im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
                 // semble beaucoup plus lent avec les options de compression gdal
                 std::string aCommand(path_otb+"otbcli_BandMathX -il "+getNameMasqueEP(i)+" "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
                 //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
@@ -540,6 +542,21 @@ bool tuileS2OneDate::openDS(){
         mDScrnom= (GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
         mDSsolnu= (GDALDataset *) GDALOpen( getRasterMasqSecName().c_str(), GA_ReadOnly );
 
+        // tout ça c'est uniquement pour s2_carteEss
+        // fonctionne uniquement si j'augmente le nombre de fichiers descriptors, limitation du systèmes
+        //https://askubuntu.com/questions/1049058/how-to-increase-max-open-files-limit-on-ubuntu-18-04
+        std::vector<std::string> b1R{"2","3","4"};
+        std::vector<std::string> b2R{"8A","11","12"};
+        for (std::string b : b1R){
+            GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterR1Name(b).c_str(), GA_ReadOnly );
+            vDS.emplace(std::make_pair(b,DSpt));
+        }
+        for (std::string b : b2R){
+            GDALDataset * DSpt= (GDALDataset *) GDALOpen( getOriginalRasterR2Name(b).c_str(), GA_ReadOnly );
+            vDS.emplace(std::make_pair(b,DSpt));
+        }
+        //------
+
         if( mDSsolnu == NULL |  mDScrnom == NULL)
         {
             std::cout << "dataset pas ouvert correctement pour tuile " << mProd << std::endl;
@@ -563,6 +580,11 @@ void tuileS2OneDate::closeDS(){
     if (scanLineSolNu!=NULL){ CPLFree(scanLineSolNu);}
     if (scanLineCR!=NULL){ CPLFree(scanLineCR);}
     if (scanLineCode!=NULL){ CPLFree(scanLineCode);}
+
+    for (auto kv : vDS){
+        GDALDataset * DSpt=kv.second;
+        if (DSpt != NULL){GDALClose( DSpt );}
+    }
 }
 
 
@@ -580,6 +602,40 @@ double tuileS2OneDate::getCRnormVal(int aCol, int aRow){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
         // applique le gain
         aRes=scanPix[0]*1.0/127.0;
+    }
+    return aRes;
+}
+
+double tuileS2OneDate::getDSVal(std::string bande,int aCol, int aRow){
+    double aRes=0;
+    if (vDS.find(bande)!=vDS.end()){
+        GDALDataset * DSpt=vDS.at(bande);
+        if( DSpt!= NULL && DSpt->GetRasterBand(1)->GetXSize() > aCol && DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+            // redéfini un scanpix pour pouvoir utiliser la fonction membre en parrallel sans conflict
+            float * sp=(float *) CPLMalloc( sizeof( float ) * 1 );
+
+            DSpt->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, sp, 1,1, GDT_Float32, 0, 0 );
+            aRes=sp[0];
+        }
+    }
+    return aRes;
+}
+
+pts tuileS2OneDate::getUV(double x, double y){
+
+    pts aRes(0,0);
+    if( mDSsolnu != NULL){
+        GDALRasterBand * mBand = mDSsolnu->GetRasterBand( 1 );
+        double transform[6];
+        mDSsolnu->GetGeoTransform(transform);
+        double xOrigin = transform[0];
+        double yOrigin = transform[3];
+        double pixelWidth = transform[1];
+        double pixelHeight = -transform[5];
+        int col = int((x - xOrigin) / pixelWidth);
+        int row = int((yOrigin - y ) / pixelHeight);
+        aRes.setX(col);
+        aRes.setY(row);
     }
     return aRes;
 }

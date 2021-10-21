@@ -65,6 +65,9 @@ public:
     void printDetail(std::string aOut="toto");
     // overload add1Date
     void add1Date(int code, tuileS2OneDate * t);
+    std::map<int, std::vector<double> > * summaryByTri();
+
+    std::vector<int> getDateIndexForTri(int trimestre);
 private:
   std::vector<double> mVCRSWIR;
   std::vector<double> mVCRSWIRNorm;

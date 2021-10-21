@@ -17,11 +17,15 @@ extern int nbDaysStress;
 
 extern std::string globTuile;
 extern std::string globResXYTest;
-extern std::string XYtestFile;
+
+
 
 bool doAnaTS(1);
 bool docleanTS1pos(1);// nettoyage TS d'un point. défaut oui. Mais si pt en dehors du masque, faut pas nettoyer^
-extern bool mDebug;
+
+std::string XYtestFile("toto");
+
+bool mDebug(0);
 
 std::vector<pts> globVPts;
 
@@ -108,9 +112,7 @@ catalogue::catalogue(){
 void catalogue::traitement(){
     // récapitulatif;
     summary();
-
     createMaskForTuile();
-
     // boucle sans multithread pour les traitements d'image
     std::for_each(
                 std::execution::seq,
@@ -132,13 +134,11 @@ void catalogue::traitement(){
 
     // points pour visu de la série tempo et pour vérifier la fct harmonique
     if (XYtestFile!="toto"){
-         if (globResXYTest=="toto"){globResXYTest=XYtestFile.substr(0,XYtestFile.size-4);}
+         if (globResXYTest=="toto"){
+             globResXYTest=XYtestFile.substr(0,XYtestFile.size()-4);}
         globVPts=readPtsFile(XYtestFile);
     }
-
-    if (doAnaTS){
-        analyseTSinit();
-    }
+    analyseTSinit();
 }
 
 // comptage des produits avec cloudcover ok
@@ -176,10 +176,10 @@ void catalogue::analyseTSinit(){
         std::cout << " analyse en mode Test pour une liste de " << globVPts.size() << "points " << std::endl;
         for (pts & pt : globVPts){
             //analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+std::to_string((int) pt.X())+"_"+std::to_string((int) pt.Y())+".txt");
-            analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+"_"+std::to_string(pt.ID())+".txt");
+            analyseTSTest1pixel(pt.X(),pt.Y(),globResXYTest+"_"+std::to_string(pt.getID())+".txt");
         }
 
-    }else{
+    }else if (doAnaTS){
         analyseTS();
     }
 
@@ -248,6 +248,22 @@ void catalogue::analyseTS(){
     }
 }
 
+std::map<int,std::vector<double>> * catalogue::getMeanRadByTri1Pt(double X, double Y){
+
+    std::cout << "résumé radiation pour la position : " << X << "," << Y <<  std::endl;
+    //std::cout << "-" <<  std::endl;
+    int nb = mVProdutsOK.size();
+    pts pt(X,Y);
+    TS1PosTest ts(&mYs,nb,pt);
+    for (tuileS2OneDate * t : mVProdutsOK){
+        int code=0;
+        ts.add1Date(code,t);
+    }
+    ts.nettoyer(); // nettoyage classic ; se base sur le masque. hors le masque (nuage, edge, sol nul) n'est pas calculé en dehors du masque épicéa..
+
+    return ts.summaryByTri();
+}
+
 void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
 
     std::cout << "Test pour une position : " << X << "," << Y << " avec seuil ratio CRSWIR/CRSWIRtheorique(date) =" << seuilCR << " et nombre de jours de stress après lesquel on interdit un retour à la normal de " << nbDaysStress << ", tuile " << globTuile <<  std::endl;
@@ -278,9 +294,10 @@ void catalogue::analyseTSTest1pixel(double X, double Y, std::string aFileOut){
         ts.add1Date(code,t);
     }
      // ça risque d'impacter le résultat de ne pas nettoyer tout ca.. ben oui formément
-    if (docleanTS1pos){ts.nettoyer();}
-
+    if (docleanTS1pos){ts.nettoyer();
     ts.analyse();
+    }
+
     ts.printDetail(aFileOut);
 }
 

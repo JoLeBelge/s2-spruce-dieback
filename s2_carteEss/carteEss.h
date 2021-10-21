@@ -19,11 +19,20 @@ en fait ça fonctionne très bien si j'effectue l'incude de rapidjson AVANT celu
 #include "../catalogue.h"
 #include "StdAfx.h"
 
+using namespace rapidxml;
+using namespace libzippp;
+using namespace rapidjson;
+using namespace date;
+
 //using namespace std;
 namespace po = boost::program_options;
 
 void echantillonPts();
 std::vector<int> subsample(int nbSub,int nbTot);
+
+std::string roundDouble(double d, int precisionVal=3);
+
+void readXML(std::string aXMLfile);
 
 // mes points
 class mpt : public   OGRPoint
@@ -31,7 +40,8 @@ class mpt : public   OGRPoint
 public:
    mpt(double x, double y, int code):OGRPoint(x,y),mCode(code){}
    std::string cat(){ return std::to_string(mCode)+";"+std::to_string(getX())+";"+std::to_string(getY());}
-    private:
+   int Code(){return mCode;}
+private:
      int mCode;
 };
 

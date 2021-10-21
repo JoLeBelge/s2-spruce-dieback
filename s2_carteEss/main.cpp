@@ -1,5 +1,18 @@
 #include "carteEss.h"
 
+std::string pathCompo("/home/lisein/Documents/carteApt/GIS/COMPO/202109/compo_all_sp10m.tif");
+std::string pathES("/home/lisein/Documents/carteApt/GIS/ES_EP/etatSanitaire_2021_masq_evol_BL72_tmp.tif");
+
+extern std::string wdRacine;
+extern std::string buildDir;
+extern std::string EP_mask_path;
+extern std::string wd;
+extern std::string globTuile;
+
+extern std::string path_otb;
+
+extern bool doAnaTS;
+extern bool docleanTS1pos;
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +33,8 @@ int main(int argc, char *argv[])
     }
 
     int mode(vm["outils"].as<int>());
+    // lecture des paramètres pour cet utilitaire
+    readXML("s2_carteEss.xml");
     switch (mode) {
     case 1:{
         std::cout << " echantillonnage stratifié pt d'entrainement " << std::endl;
@@ -43,8 +58,6 @@ int main(int argc, char *argv[])
 void echantillonPts(){
 
     // lecture carte compo et ES2021
-    std::string pathCompo("/home/lisein/Documents/carteApt/GIS/COMPO/202109/compo_all_sp10m.tif");
-    std::string pathES("/home/lisein/Documents/carteApt/GIS/ES_EP/etatSanitaire_2021_masq_evol_BL72_tmp.tif");
     std::cout << "charge image " << pathCompo << std::endl;
     Im2D_U_INT1 imCompo=Im2D_U_INT1::FromFileStd(pathCompo);
     std::cout << "charge image " << pathES << std::endl;
@@ -55,7 +68,7 @@ void echantillonPts(){
 
     Pt2di pt1(x0,y0);
     Pt2di pt2(x0+10000,y0+10000); // grosso modo, nombre de pixel dans une tuile
-    int nbSub(250);
+    int nbSub(100);
     std::vector<mpt*> aRes;
     // selection de n pt pour chaque classe de la carte compo, sauf pour la classe épicéa pour laquelle on sera plus restrictif.
     std::vector<int> vCode{2,3,4,5,6,7,8,9};
@@ -91,17 +104,53 @@ void echantillonPts(){
              }
     }
 
+    GDALAllRegister();
     // création du catalogue, sans traitement, sans debug, puis on utilise une fonction membre spécialisée qui retourne le résumé trimestriel pour chaque pt.
-    catalogue cata();
-    //std::ofstream out;
-    //out.open("test.txt");
-    //out << "code;X;Y\n" ;
-    for (mpt * p : aRes){
-    // crée un fichier txt pour l'export des résultats
-    //out << p->cat() << "\n" ;
-    }
-    //out.close();
+    doAnaTS=0;
+    docleanTS1pos=0; // pour point en dehors du masque
+    globTuile="T31UFR";
+    wd=wdRacine+ globTuile +"/";
 
+    catalogue cata;
+    cata.openDS();
+    // crée un fichier txt pour l'export des résultats
+    std::ofstream out;
+    out.open("obs-compoS2-A.txt");
+    std::vector<std::string> vB{"b2","b3","b4","b8","b11","b12"};
+    out << "compo;X;Y";
+    for (int tri(1);tri<5;tri++){
+        for (std::string b : vB){
+        out << ";" << b<< "_" <<std::to_string(tri) ;
+        }
+    }
+    out <<"\n" ;
+    int c(0);
+    OGRSpatialReference oSourceSRS, oTargetSRS;
+    oSourceSRS.importFromEPSG(31370);
+    oTargetSRS.importFromEPSG(32631);
+    OGRCoordinateTransformation * poCT = OGRCreateCoordinateTransformation( &oSourceSRS, &oTargetSRS );
+//#pragma omp parallel num_threads(12) shared(cata,poCT)
+            //{
+//#pragma omp for
+    for (mpt * p : aRes){
+        //if (c==10){break;}
+        p->transform(poCT);
+        std::map<int,vector<double>> * r=cata.getMeanRadByTri1Pt(p->getX(),p->getY());
+//#pragma omp critical
+                               //{
+             out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+        for (auto kv : *r){
+            for (double v : kv.second){
+            out << ";"  << roundDouble(v) ;
+            }
+        }
+        out <<"\n" ;
+        }
+        c++;
+   // }
+   // }
+    out.close();
+    cata.closeDS();
 
 }
 
@@ -116,5 +165,39 @@ std::vector<int> subsample(int nbSub,int nbTot){
             nbTot--;
         }
     }else { std::cout << "poblème dans subsample" << std::endl;}
+    return aRes;
+}
+
+void readXML(std::string aXMLfile){
+    // Read the xml file into a vector
+    xml_document<> doc;
+    xml_node<> * root_node;
+    std::ifstream theFile (aXMLfile);
+    std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    // Parse the buffer using the xml file parsing library into doc
+    doc.parse<0>(&buffer[0]);
+    // Find our root node
+    root_node = doc.first_node("params");
+    xml_node<>* cur_node = root_node->first_node("pathCompo");
+    pathCompo=cur_node->value();
+    cur_node = root_node->first_node("pathES");
+    pathES=cur_node->value();
+    cur_node = root_node->first_node("wdRacine");
+    wdRacine=cur_node->value();
+    cur_node = root_node->first_node("buildDir");
+    buildDir=cur_node->value();
+    cur_node = root_node->first_node("path_otb");
+    path_otb=cur_node->value();
+    cur_node = root_node->first_node("EP_mask_path");
+    EP_mask_path=cur_node->value();
+
+}
+
+std::string roundDouble(double d, int precisionVal){
+    std::string aRes("");
+    if (precisionVal>0){aRes=std::to_string(d).substr(0, std::to_string(d).find(".") + precisionVal + 1);}
+    else  {
+        aRes=std::to_string(d+0.5).substr(0, std::to_string(d+0.5).find("."));}
     return aRes;
 }

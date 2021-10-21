@@ -27,8 +27,8 @@ extern bool debugDetail;
 
 extern bool overw;
 extern int nbDaysStress;
-bool mDebug(0);// plus bavard avec cette option
-std::string XYtestFile("toto");
+extern bool mDebug;// plus bavard avec cette option
+extern std::string XYtestFile;
 
 std::string d1("2016-01-01"),d2("2021-07-11");
 

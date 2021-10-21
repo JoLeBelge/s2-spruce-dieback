@@ -24,6 +24,13 @@ public:
     catalogue(std::string aJsonFile);
     // je fait ça car j'effectue le téléchargement des données et les prétraitement sur une machine de traitement puis je prends les cartes de CRSWIR sur une autre machine, sans copier les données de base (trop lourd)
     catalogue();
+    // renvoyer la valeur moyenne de la radiation par trimestre
+    // key ; id du trimestre. val ; vecteur de radiance (1 val par bande étudiée)
+    std::map<int, std::vector<double> > *getMeanRadByTri1Pt(double X, double Y);
+
+    // ouvre tout les raster dataset
+    bool openDS();
+    void closeDS();
 private:
 
     void createMaskForTuile();
@@ -31,11 +38,10 @@ private:
     void analyseTS();
     void analyseTSinit();
     void analyseTSTest1pixel(double X, double Y, std::string aFileOut);
+
     void writeRes1pos(TS1Pos * ts) const;// boh c'est pas const mais je triche
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
-    // ouvre tout les raster dataset
-    bool openDS();
-    void closeDS();
+
 
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
     std::vector<tuileS2OneDate *> mVProduts;

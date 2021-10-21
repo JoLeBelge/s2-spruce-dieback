@@ -125,7 +125,7 @@ void TS1Pos::analyse(){
     }*/
     // avec les filtres ci-dessus, on peut avoir un arbre avec un stress passager en 2019 et un stress scolyte puis coupé en 2020; manque de cohérence. je refait un test
     // oui mais attention car si stress passagé un an, puis sain 2 an, puis scolyte 3 an ; yoyote sans cohérence non plus!
-   /* if(std::find(mVEtatFin.begin(), mVEtatFin.end(), 5)!=mVEtatFin.end() && std::find(mVEtatFin.begin(), mVEtatFin.end(), 2)!=mVEtatFin.end()){
+    /* if(std::find(mVEtatFin.begin(), mVEtatFin.end(), 5)!=mVEtatFin.end() && std::find(mVEtatFin.begin(), mVEtatFin.end(), 2)!=mVEtatFin.end()){
         std::replace (mVEtatFin.begin(), mVEtatFin.end(), 5, 2);
     }
 
@@ -172,7 +172,7 @@ void TS1Pos::detectStresseEtRetour(){
                         }
                         //std::cout<< " change valeur etat " << std::endl;
                         for (int i : aVPosEtatFin.at(po)){
-                             //std::cout<< " po " << po << ", i " << i << ", état = " << res << std::endl;
+                            //std::cout<< " po " << po << ", i " << i << ", état = " << res << std::endl;
                             mVEtatFin.at(i)=res;
                         }
 
@@ -480,6 +480,17 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     mVDates.at(c)=t->getymdPt();
     mVEtat.at(c)=code;
     mVCRSWIR.at(c)=t->getCRSWIR(pt_);
+
+    if (1){
+    pts pt = t->getUV(pt_.X(),pt_.Y());
+    mVB2.at(c) = t->getDSVal("2", pt.X(), pt.Y())/10000.0;
+    mVB3.at(c) = t->getDSVal("3", pt.X(), pt.Y())/10000.0;
+    mVB4.at(c) = t->getDSVal("4", pt.X(), pt.Y())/10000.0;
+    mVB8A.at(c) = t->getDSVal("8A", pt.X()/2, pt.Y()/2)/10000.0;
+    mVB11.at(c) = t->getDSVal("11", pt.X()/2, pt.Y()/2)/10000.0;
+    mVB12.at(c) = t->getDSVal("12", pt.X()/2, pt.Y()/2)/10000.0;
+    }
+ if (0){
     rasterFiles r_b2(t->getRasterR1Name("2"));
     mVB2.at(c)=r_b2.getValue(pt_.X(),pt_.Y(),1)/10000.0;
     rasterFiles r_b3(t->getRasterR1Name("3"));
@@ -492,6 +503,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     mVB11.at(c)=r_b11.getValue(pt_.X(),pt_.Y())/10000.0;
     rasterFiles r_b12(t->getOriginalRasterR2Name("12"));
     mVB12.at(c)=r_b12.getValue(pt_.X(),pt_.Y())/10000.0;
+}
 
     /* B2 bleu
  * B3 vert
@@ -519,13 +531,18 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
 
 void TS1PosTest::nettoyer(){
     // retirer les no data et noter combien on en a eu
-    std::cout << "nettoyer le TS1PosTest" << std::endl;
+    //std::cout << "nettoyer le TS1PosTest" << std::endl;
     // attention, si j'utiliser TS1Pos sur une zone en dehors du masque, je ne veux pas qu'il nettoye sinon il ne reste plus rien
+    //int c1(0),c0(mVDates.size());
     for (int i(0);i<mVDates.size();i++){
         //if (mVEtat.at(i)==0 && ){
 
         // if (mVCRSWIR.at(i)==-1 |(mVEtat.at(i)==0 && mVB2.at(i)==0)){// des fois code =0 et B2 aussi mais pas B11 et B12 et CRSWIR
-        if (mVMasq.at(i)==2 | mVMasq.at(i)==3){
+        //if (mVMasq.at(i)==2 | mVMasq.at(i)==3){
+        // check que les bandes n'ont pas la valeur -10 000 (-1 car déjà facteur appliqué en amont), parceque le masque qui est calculé seulement pour l'intérieur du masque EP
+         //if ((mVMasq.at(i)==2 | mVMasq.at(i)==3) | mVB2.at(i)==-1 ){
+        if ((mVMasq.at(i)!=1 && mVMasq.at(i)!=4) ){
+
             mVEtat.erase(mVEtat.begin() + i);
             mVEtatFin.erase(mVEtatFin.begin() + i);
             mVDates.erase(mVDates.begin() + i);
@@ -540,8 +557,10 @@ void TS1PosTest::nettoyer(){
             mVB12.erase(mVB12.begin() + i);
             mVMasq.erase(mVMasq.begin() + i);
             i--;
-        }
+           // c1++;
+        } else if (mVB2.at(i)==-1){std::cout << " no data ommited" << std::endl;}
     }
+        //        std::cout << "nettoyage de " << c1 << " dates sur " << c0 << std::endl;
 }
 
 void TS1PosTest::printDetail(std::string aOut){
@@ -558,23 +577,67 @@ void TS1PosTest::printDetail(std::string aOut){
             out << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) <<"\n";
         }
         out.close();
-    }
-
-    if (debugDetail){
-        std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12;Masq" <<std::endl;
-        for (int i(0);i<mVDates.size();i++){
-            std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i)  << ";" << mVMasq.at(i)<<std::endl;
+        std::cout << " sauvé dans fichier " << aOut << std::endl;
+    } else {
+        if (debugDetail){
+            std::cout << "date;etat;etatFinal;CRSWIR;CRSWIRNorm;B2;B3;B4;B8A;B11;B12;Masq" <<std::endl;
+            for (int i(0);i<mVDates.size();i++){
+                std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) << ";" << mVCRSWIR.at(i) << ";" << mVCRSWIRNorm.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i)  << ";" << mVMasq.at(i)<<std::endl;
+            }
+        } else{
+            std::cout << "date;etat;etatFinal" <<std::endl;
+            for (int i(0);i<mVDates.size();i++){
+                std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) <<std::endl;
+            }
+        }
+        std::cout << "\n annee;etat" <<std::endl;
+        for (auto kv : mVRes){
+            std::cout << kv.first << ";" << kv.second <<std::endl;
         }
     }
-    else{
-        std::cout << "date;etat;etatFinal" <<std::endl;
-        for (int i(0);i<mVDates.size();i++){
-            std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) <<std::endl;
-        }
-    }
-    std::cout << "\n annee;etat" <<std::endl;
-    for (auto kv : mVRes){
-        std::cout << kv.first << ";" << kv.second <<std::endl;
-    }
+}
 
+std::map<int,std::vector<double>> * TS1PosTest::summaryByTri(){
+    std::map<int,std::vector<double>> * aRes=new std::map<int,std::vector<double>>;
+    // on effectue une moyenne des radiations des bandes par trimestre
+    // en première approche, le plus simple ; sélection  pour chaques trimestres des dates qui tombent dans le trimestre puis moyenne de la radiation pour chaque bande
+    for (int tri(1);tri<5;tri++){
+        std::vector<int> vIndex=getDateIndexForTri(tri);
+        double b2(0),b3(0),b4(0),b8(0),b11(0),b12(0);
+        if (vIndex.size()>0){
+            for (int i : vIndex){
+            b2+=mVB2.at(i);
+            b3+=mVB3.at(i);
+            b4+=mVB4.at(i);
+            b8+=mVB8A.at(i);
+            b11+=mVB11.at(i);
+            b12+=mVB12.at(i);
+        }
+            // calculer la moyenne
+            b2=b2/vIndex.size();
+            b3=b3/vIndex.size();
+            b4=b4/vIndex.size();
+            b8=b8/vIndex.size();
+            b11=b11/vIndex.size();
+            b12=b12/vIndex.size();
+        }
+        //std::cout << "calcul moyenne trimestrielle sur " << vIndex.size() << " observations " << std::endl;
+        std::vector<double> m{b2,b3,b4,b8,b11,b12};
+        aRes->emplace(std::make_pair(tri,m));
+    }
+    return aRes;
+}
+
+std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){
+    std::vector<int> aRes;
+    int c(0);
+    for (year_month_day * d : mVDates){
+        int m0(((trimestre-1)*3)+1);
+        int m1(((trimestre-1)*3)+3);
+        if (d->month()>=month{m0} && d->month()<=month{m1}){
+            aRes.push_back(c);
+        }
+        c++;
+    }
+    return aRes;
 }

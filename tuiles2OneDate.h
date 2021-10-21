@@ -134,6 +134,12 @@ public:
     int getMasqVal(int aCol, int aRow);
     double getCRnormVal(int aCol, int aRow);
 
+    double getDSVal(std::string bande,int aCol, int aRow);
+
+    pts getUV(double x, double y);
+    // retourne la position uv pour un point
+
+
     // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
 
     void readCRnormLine(int aRow) const;
@@ -171,6 +177,10 @@ private:
     std::unique_ptr<rasterFiles> r_crswir;
     std::unique_ptr<rasterFiles> r_crswirNorm;
     std::unique_ptr<rasterFiles> r_solnu;
+
+
+    std::map<std::string, GDALDataset*> vDS; // pour Test1Pos ; je veux pafois faire tourner le test sur des centaines de points, là ça deviens trop long alors je créer une maps de Dataset, un pour chaque bande, affin de ne pas devoir les réouvrir à chaque position
+
 
     GDALDataset  * mDScrnom;
     GDALDataset  * mDSsolnu;
