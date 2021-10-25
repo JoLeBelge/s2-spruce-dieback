@@ -111,7 +111,7 @@ void echantillonPts(){
     globTuile="T31UFR";
     wd=wdRacine+ globTuile +"/";
 
-    catalogue cata;
+    cataloguePeriodPheno cata;
     cata.openDS();
     // crée un fichier txt pour l'export des résultats
     std::ofstream out;
@@ -129,15 +129,12 @@ void echantillonPts(){
     oSourceSRS.importFromEPSG(31370);
     oTargetSRS.importFromEPSG(32631);
     OGRCoordinateTransformation * poCT = OGRCreateCoordinateTransformation( &oSourceSRS, &oTargetSRS );
-//#pragma omp parallel num_threads(12) shared(cata,poCT)
-            //{
-//#pragma omp for
+
     for (mpt * p : aRes){
         //if (c==10){break;}
         p->transform(poCT);
         std::map<int,vector<double>> * r=cata.getMeanRadByTri1Pt(p->getX(),p->getY());
-//#pragma omp critical
-                               //{
+
              out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
         for (auto kv : *r){
             for (double v : kv.second){
@@ -147,11 +144,8 @@ void echantillonPts(){
         out <<"\n" ;
         }
         c++;
-   // }
-   // }
     out.close();
     cata.closeDS();
-
 }
 
 

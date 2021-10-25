@@ -16,7 +16,7 @@
 en fait ça fonctionne très bien si j'effectue l'incude de rapidjson AVANT celui de MICMAC, Je suppose que micmac est plus propre et qu'il effectue un undef des noms de macro conflictuel, pas comme rapidjson
 */
 
-#include "../catalogue.h"
+#include "../catalogueperiodpheno.h"
 #include "StdAfx.h"
 
 using namespace rapidxml;

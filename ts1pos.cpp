@@ -479,16 +479,10 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     //std::cout << " TS1PosTest :: add one date " << std::endl;
     mVDates.at(c)=t->getymdPt();
     mVEtat.at(c)=code;
-    mVCRSWIR.at(c)=t->getCRSWIR(pt_);
+    //mVCRSWIR.at(c)=t->getCRSWIR(pt_);
 
     if (1){
-    pts pt = t->getUV(pt_.X(),pt_.Y());
-    mVB2.at(c) = t->getDSVal("2", pt.X(), pt.Y())/10000.0;
-    mVB3.at(c) = t->getDSVal("3", pt.X(), pt.Y())/10000.0;
-    mVB4.at(c) = t->getDSVal("4", pt.X(), pt.Y())/10000.0;
-    mVB8A.at(c) = t->getDSVal("8A", pt.X()/2, pt.Y()/2)/10000.0;
-    mVB11.at(c) = t->getDSVal("11", pt.X()/2, pt.Y()/2)/10000.0;
-    mVB12.at(c) = t->getDSVal("12", pt.X()/2, pt.Y()/2)/10000.0;
+
     }
  if (0){
     rasterFiles r_b2(t->getRasterR1Name("2"));
@@ -631,9 +625,10 @@ std::map<int,std::vector<double>> * TS1PosTest::summaryByTri(){
 std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){
     std::vector<int> aRes;
     int c(0);
+    int m0(((trimestre-1)*3)+1);
+    int m1(((trimestre-1)*3)+3);
     for (year_month_day * d : mVDates){
-        int m0(((trimestre-1)*3)+1);
-        int m1(((trimestre-1)*3)+3);
+
         if (d->month()>=month{m0} && d->month()<=month{m1}){
             aRes.push_back(c);
         }

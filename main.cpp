@@ -1,5 +1,5 @@
 #include <iostream>
-#include "catalogue.h"
+#include "cataloguesco.h"
 #include <execution>
 #include <boost/filesystem.hpp>
 #include "date.h"
@@ -158,7 +158,8 @@ int main(int argc, char *argv[])
                         //std::cout << aCommand << std::endl;
                         system(aCommand.c_str());
                         std::string inputJson=wd+"search.json";
-                        catalogue cata(inputJson);
+                        catalogueSco cata(inputJson);
+                        cata.traitement();
                         std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
 
                     break;
@@ -166,7 +167,8 @@ int main(int argc, char *argv[])
                 case 2:{
                     // ne pas mettre de parenthèse !.
                     std::cout <<"\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
-                    catalogue cata;
+                    catalogueSco cata;
+                    cata.traitement();
                     std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
 
                     break;

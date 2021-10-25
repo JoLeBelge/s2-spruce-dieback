@@ -13,7 +13,7 @@ int year_analyse(666);
 
 double Xdebug(0);
 double Ydebug(0);
-extern double seuilCR;
+double seuilCR(1.7);
 extern bool mDebug;
 
 
@@ -244,11 +244,11 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
 //==>new mask R1 & R2 with: 1=clear et dans masque EP input utilisateur, 2=not clear (clouds/shadows/etc.), 3=blackfill (nodata at all), 4, clear mais hors masque utilisateur (masque EP)
-void tuileS2OneDate::masque(){
+void tuileS2OneDateSco::masque(){
     if (mDebug){std::cout << "masque .." ;}
     for (int i(1) ; i<3 ; i++){
         //std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
-        std::string out=getRasterMasqGenName(i);
+        std::string out=getRasterMasqGenName("",i);
         std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
@@ -297,51 +297,16 @@ void tuileS2OneDate::resample(){
     }
 }
 
-void tuileS2OneDate::computeCR(){
-    if (mDebug){std::cout << "computeCR .." << std::endl;}
-
-    std::string out=getRasterCRName();
-    std::string NIRa=getRasterR2Name("8A");
-    std::string SWIR1=getRasterR2Name("11");
-    std::string SWIR2=getRasterR2Name("12");
-    // check que le fichier n'existe pas
-    if (boost::filesystem::exists(NIRa) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(SWIR2)){
-        if ((!boost::filesystem::exists(out) | overw) ){
-            /* B2 bleu
-         * B3 vert
-         * B4 rouge
-         * B8a NIRa
-         * B11 SWIR1
-         * B12 SWIR2
-         *
-         * CRSWIR = SWIR1 / ( NIRa + (lSWIR1-lNIRa)* ((SWIR2 - NIRa) / (lSWIR2-lNIRa)  )   )
-         *
-         * modéliation de 2 ligne droite et ratio des segment qui passent de l'absisse à la longeur d'onde SWIR 1 vers chacunes de ces 2 droites
-         *
-         */
-
-            // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
-            // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
-            //std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
-            std::string exp("im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865)))");
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
-            std::cout << aCommand << std::endl;
-            system(aCommand.c_str());
-        }
-    } else { std::cout << "fichiers introuvables " << NIRa << " , " << SWIR1 << " , " << SWIR2 << std::endl;}
-
-    r_crswir = std::make_unique<rasterFiles>(out);
-}
 
 /*void tuileS2::wrap(){
     // check EPSG
 }*/
 
-std::string tuileS2OneDate::getRasterCRName(){
+std::string tuileS2OneDateSco::getRasterCRName(){
     return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
 }
 
-std::string tuileS2OneDate::getRasterCRnormName() const{
+std::string tuileS2OneDateSco::getRasterCRnormName() const{
     return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm.tif";
 }
 
@@ -352,14 +317,15 @@ std::string tuileS2OneDate::getDate(){
 std::string tuileS2OneDate::getRasterMasqSecName() const{
     return interDirName + "mask_R1_solnu.tif";
 }
-std::string tuileS2OneDate::getRasterMasqGenName(int resol){
-    return interDirName + "mask_R"+std::to_string(resol)+".tif";
+// type = type d'application, Sco versus compo pour le moment
+std::string tuileS2OneDate::getRasterMasqGenName(std::string type, int resol){
+    return interDirName + "mask_R"+std::to_string(resol)+type+".tif";
 }
 
 //https://gis.stackexchange.com/questions/233874/what-is-the-range-of-values-of-sentinel-2-level-2a-images
 // surface _reflectance = DN/ 10 000
 // varie souvent entre 0 et 1 mais on peut avoir des valeurs supérieures à 1
-void tuileS2OneDate::masqueSpecifique(){
+void tuileS2OneDateSco::masqueSpecifique(){
     if (mDebug){std::cout << "detection sol nu .." ;}
     /* voir slide de Raphael D.
     1) détection sol nu
@@ -420,11 +386,11 @@ void tuileS2OneDate::masqueSpecifique(){
     }
 }
 
-double tuileS2OneDate::getCRSWIR(pts & pt){
+double tuileS2OneDateSco::getCRSWIR(pts & pt){
     return r_crswir->getValueDouble(pt.X(),pt.Y());
 }
 
-double tuileS2OneDate::getCRSWIRNorm(pts & pt){
+double tuileS2OneDateSco::getCRSWIRNorm(pts & pt){
 
     if (r_crswirNorm!=NULL){
         return r_crswirNorm->getValueDouble(pt.X(),pt.Y())*1.0/127.0;
@@ -434,7 +400,7 @@ double tuileS2OneDate::getCRSWIRNorm(pts & pt){
     }
 }
 
-int tuileS2OneDate::getMaskSolNu(pts & pt){
+int tuileS2OneDateSco::getMaskSolNu(pts & pt){
     if (r_solnu!=NULL){
         return r_solnu->getValue(pt.X(),pt.Y());
     } else {
@@ -508,33 +474,7 @@ std::vector<std::vector<std::string>> parseCSV2V(std::string aFileIn, char aDeli
     return aOut;
 }
 
-//crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
-void tuileS2OneDate::normaliseCR(){
-    if (mDebug){std::cout << "normalize CR " ;}
-
-    std::string out=getRasterCRnormName();
-    std::string in=getRasterCRName();
-    // check que le fichier n'existe pas
-    if (boost::filesystem::exists(in)){
-        if (!boost::filesystem::exists(out) | overw){
-
-            // CRSWIRnorm = CRSWIR/theoreticalCR(t)
-
-
-            double cr = getCRth();
-
-            // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
-            std::string exp("im1b1>0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
-            std::cout << aCommand << std::endl;
-            system(aCommand.c_str());
-        }
-    } else { std::cout << "fichier introuvable " << in << std::endl;}
-    r_crswirNorm = std::make_unique<rasterFiles>(out);
-
-}
-
-bool tuileS2OneDate::openDS(){
+bool tuileS2OneDateSco::openDS(){
 
     //std::cout << "ouverture dataset pour " << getRasterCRnormName() << std::endl;
     bool aRes(0);
@@ -573,7 +513,7 @@ bool tuileS2OneDate::openDS(){
     }
     return aRes;
 }
-void tuileS2OneDate::closeDS(){
+void tuileS2OneDateSco::closeDS(){
     if (mDScrnom != NULL){GDALClose( mDScrnom );}
     if (mDSsolnu != NULL){GDALClose( mDSsolnu );}
     if (scanPix!=NULL){ CPLFree(scanPix);}
@@ -588,7 +528,7 @@ void tuileS2OneDate::closeDS(){
 }
 
 
-int tuileS2OneDate::getMasqVal(int aCol,int aRow){
+int tuileS2OneDateSco::getMasqVal(int aCol,int aRow){
     int aRes=0;
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetXSize() > aCol && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
@@ -596,7 +536,7 @@ int tuileS2OneDate::getMasqVal(int aCol,int aRow){
     }
     return aRes;
 }
-double tuileS2OneDate::getCRnormVal(int aCol, int aRow){
+double tuileS2OneDateSco::getCRnormVal(int aCol, int aRow){
     double aRes=0.0;
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetXSize() > aCol && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
@@ -624,10 +564,14 @@ double tuileS2OneDate::getDSVal(std::string bande,int aCol, int aRow){
 pts tuileS2OneDate::getUV(double x, double y){
 
     pts aRes(0,0);
-    if( mDSsolnu != NULL){
-        GDALRasterBand * mBand = mDSsolnu->GetRasterBand( 1 );
+
+    if (vDS.find("masqR1")!=vDS.end()){
+        GDALDataset * DSpt=vDS.at("masqR1");
+
+    if( DSpt != NULL){
+        GDALRasterBand * mBand = DSpt->GetRasterBand( 1 );
         double transform[6];
-        mDSsolnu->GetGeoTransform(transform);
+        DSpt->GetGeoTransform(transform);
         double xOrigin = transform[0];
         double yOrigin = transform[3];
         double pixelWidth = transform[1];
@@ -637,11 +581,12 @@ pts tuileS2OneDate::getUV(double x, double y){
         aRes.setX(col);
         aRes.setY(row);
     }
+    }
     return aRes;
 }
 
 
-void tuileS2OneDate::readCRnormLine(int aRow) const{
+void tuileS2OneDateSco::readCRnormLine(int aRow) const{
 
     if( mDScrnom != NULL && mDScrnom->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDScrnom->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineCR, mXSize,1, GDT_Float32, 0, 0 );
@@ -649,18 +594,18 @@ void tuileS2OneDate::readCRnormLine(int aRow) const{
         std::cout << "readCRnormLine ; failed for " << getRasterCRnormName() <<  std::endl;
     }
 }
-void tuileS2OneDate::readMasqLine(int aRow) const{
+void tuileS2OneDateSco::readMasqLine(int aRow) const{
     if( mDSsolnu != NULL && mDSsolnu->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
         mDSsolnu->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineSolNu, mXSize,1, GDT_Float32, 0, 0 );
     }else {
         std::cout << "readMasqLine ; failed for " << getRasterMasqSecName() <<  std::endl;
     }
 }
-double tuileS2OneDate::getCRnormVal(int aCol) const{
+double tuileS2OneDateSco::getCRnormVal(int aCol) const{
     // applique le gain
     return scanLineCR[aCol]*1.0/127.0;
 }
-int tuileS2OneDate::getMasqVal(int aCol) const{
+int tuileS2OneDateSco::getMasqVal(int aCol) const{
     return scanLineSolNu[aCol];
 }
 
@@ -701,7 +646,7 @@ std::string getNameMasqueEP(int i){
     //return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+"_80pct.tif";
 }
 
-void tuileS2OneDate::computeCodeLine(){
+void tuileS2OneDateSco::computeCodeLine(){
     for (int col(0); col< mYSize ; col++){
         int solnu = getMasqVal(col);
         if (solnu==0){scanLineCode[col]=0;
@@ -719,6 +664,180 @@ void tuileS2OneDate::computeCodeLine(){
     }
 }
 
-int tuileS2OneDate::getCodeLine(int aCol) const{
+int tuileS2OneDateSco::getCodeLine(int aCol) const{
     return scanLineCode[aCol];
+}
+
+
+void tuileS2OneDateSco::computeCR(){
+    if (mDebug){std::cout << "computeCR .." << std::endl;}
+
+    std::string out=getRasterCRName();
+    std::string NIRa=getRasterR2Name("8A");
+    std::string SWIR1=getRasterR2Name("11");
+    std::string SWIR2=getRasterR2Name("12");
+    // check que le fichier n'existe pas
+    if (boost::filesystem::exists(NIRa) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(SWIR2)){
+        if ((!boost::filesystem::exists(out) | overw) ){
+            /* B2 bleu
+         * B3 vert
+         * B4 rouge
+         * B8a NIRa
+         * B11 SWIR1
+         * B12 SWIR2
+         *
+         * CRSWIR = SWIR1 / ( NIRa + (lSWIR1-lNIRa)* ((SWIR2 - NIRa) / (lSWIR2-lNIRa)  )   )
+         *
+         * modéliation de 2 ligne droite et ratio des segment qui passent de l'absisse à la longeur d'onde SWIR 1 vers chacunes de ces 2 droites
+         *
+         */
+
+            // si je tente de mettre sur 8 bit ; il me dis "error complex number". mais en double ça passe
+            // j'ai des overflow mais pas beauoup. Le range de valeur attendu, c'est entre 0 et 2 (voir graph de Raphael) mais j'ai des valeurs qui dépassent 2.
+            //std::string exp("im2b1!=0 ? im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865))) : 0");
+            std::string exp("im2b1/(im1b1+(1610-865)* ((im3b1-im1b1)/(2190-865)))");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+NIRa+" "+SWIR1+" "+SWIR2+" -out '"+ out + compr_otb+"' double -exp '"+exp+"' -ram 5000 -progress 0");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
+    } else { std::cout << "fichiers introuvables " << NIRa << " , " << SWIR1 << " , " << SWIR2 << std::endl;}
+
+    r_crswir = std::make_unique<rasterFiles>(out);
+}
+
+//crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
+void tuileS2OneDateSco::normaliseCR(){
+    if (mDebug){std::cout << "normalize CR " ;}
+
+    std::string out=getRasterCRnormName();
+    std::string in=getRasterCRName();
+    // check que le fichier n'existe pas
+    if (boost::filesystem::exists(in)){
+        if (!boost::filesystem::exists(out) | overw){
+
+            // CRSWIRnorm = CRSWIR/theoreticalCR(t)
+
+
+            double cr = getCRth();
+
+            // gain de 1/127, comme cela je stoque des valeurs de 0 à 2 sur du 8 bits
+            std::string exp("im1b1>0 ? 127*im1b1/"+std::to_string(cr)+" : 0");
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+in+" -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+            std::cout << aCommand << std::endl;
+            system(aCommand.c_str());
+        }
+    } else { std::cout << "fichier introuvable " << in << std::endl;}
+    r_crswirNorm = std::make_unique<rasterFiles>(out);
+
+}
+
+
+void tuileS2OneDatePheno::masque(){
+    if (mDebug){std::cout << "masque .." ;}
+    for (int i(1) ; i<3 ; i++){
+
+        std::string out=getRasterMasqGenName("pheno",i);
+        std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
+        std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
+        // check que le fichier out n'existe pas
+        if (boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
+            if ((!boost::filesystem::exists(out) | overw )) {//| 1)) {
+                //im 1 = masque ep our compo
+                //im 2 = masque edge
+                //im 3 masque cloud
+
+                //std::string exp("im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+                // je change, je veux claculer le masque sur toutes la tuile pour pouvoir utiliser l'outil en dehors du masque essences en input
+                std::string exp("im1b1==0 and im2b1==0 and im3b1 ==0 ? 4 : im1b1==1 and im2b1==0 and im3b1 ==0 ? 1 : im2b1 == 1 ? 3 : 2");
+                // semble beaucoup plus lent avec les options de compression gdal
+                std::string aCommand(path_otb+"otbcli_BandMathX -il "+getNameMasque(i)+" "+edg+ " " + clm + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+                //std::string aCommand(path_otb+"otbcli_BandMathX -il "+EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+".tif "+edg+ " " + clm + " -out "+ out +" uint8 -exp '"+exp+"' -ram 4000 -progress 0");
+                //std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+            }
+        } else { std::cout << "fichiers masques introuvables " << edg << " , " << clm << std::endl;}
+    }
+}
+
+
+void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
+
+    switch (resol){
+
+    case 1:{
+
+    if (vDS.find("masqR1")!=vDS.end()){
+        GDALDataset * DSpt=vDS.at("masqR1");
+        if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLineMasq, mXSize,1, GDT_Float32, 0, 0 );
+        } else {std::cout << " euuhh non" << std::endl;}
+    }
+
+    if (vDS.find("2")!=vDS.end()){
+        GDALDataset * DSpt=vDS.at("2");
+        if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLine1, mXSize,1, GDT_Float32, 0, 0 );
+        } else {std::cout << " euuhh non" << std::endl;}
+    }
+    if (vDS.find("3")!=vDS.end()){
+        GDALDataset * DSpt=vDS.at("3");
+        if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLine2, mXSize,1, GDT_Float32, 0, 0 );
+        } else {std::cout << " euuhh non" << std::endl;}
+    }
+    if (vDS.find("4")!=vDS.end()){
+        GDALDataset * DSpt=vDS.at("4");
+        if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLine3, mXSize,1, GDT_Float32, 0, 0 );
+        } else {std::cout << " euuhh non" << std::endl;}
+    }
+    break;
+    }
+    default:
+        break;
+
+    }
+}
+
+bool tuileS2OneDatePheno::openDS(){
+
+    bool aRes(1);
+
+        // tout ça c'est uniquement pour s2_carteEss
+        // fonctionne uniquement si j'augmente le nombre de fichiers descriptors, limitation du systèmes
+        //https://askubuntu.com/questions/1049058/how-to-increase-max-open-files-limit-on-ubuntu-18-04
+        std::vector<std::string> b1R{"2","3","4"};
+        std::vector<std::string> b2R{"8A","11","12"};
+        for (std::string b : b1R){
+            GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterR1Name(b).c_str(), GA_ReadOnly );
+            vDS.emplace(std::make_pair(b,DSpt));
+        }
+        for (std::string b : b2R){
+            GDALDataset * DSpt= (GDALDataset *) GDALOpen( getOriginalRasterR2Name(b).c_str(), GA_ReadOnly );
+            vDS.emplace(std::make_pair(b,DSpt));
+        }
+        for (int r(1) ; r<3;r++){
+            GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterMasqGenName("compo", r).c_str(), GA_ReadOnly );
+            vDS.emplace(std::make_pair("masqR"+std::to_string(r),DSpt));
+        }
+            scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+            scanLineMasq=(int *) CPLMalloc( sizeof( int ) * mYSize );
+            scanLine1=(int *) CPLMalloc( sizeof( int ) * mYSize );
+            scanLine2=(int *) CPLMalloc( sizeof( int ) * mYSize );
+            scanLine3=(int *) CPLMalloc( sizeof( int ) * mYSize );
+
+    return aRes;
+}
+void tuileS2OneDatePheno::closeDS(){
+
+    if (scanPix!=NULL){ CPLFree(scanPix);}
+    if (scanLineMasq!=NULL){ CPLFree(scanLineMasq);}
+    if (scanLine1!=NULL){ CPLFree(scanLine1);}
+    if (scanLine2!=NULL){ CPLFree(scanLine2);}
+    if (scanLine3!=NULL){ CPLFree(scanLine3);}
+
+    for (auto kv : vDS){
+        GDALDataset * DSpt=kv.second;
+        if (DSpt != NULL){GDALClose( DSpt );}
+    }
 }

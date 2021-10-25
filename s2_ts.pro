@@ -10,10 +10,11 @@ QMAKE_CXXFLAGS+=-fopenmp
 
 SOURCES += main.cpp \
     catalogue.cpp \
+    cataloguesco.cpp \
     rasterfile.cpp \
     ts1pos.cpp \
     libzippp/src/libzippp.cpp \
-    tuiles2OneDate.cpp
+    tuiles2OneDate.cpp \
 
 LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb -fopenmp
 
@@ -33,6 +34,7 @@ DEPENDPATH += $$PWD/date/include/date/
 
 HEADERS += \
     catalogue.h \
+    cataloguesco.h \
     rapidjson/allocators.h \
     rapidjson/cursorstreamwrapper.h \
     rapidjson/document.h \
@@ -59,4 +61,4 @@ HEADERS += \
     ts1pos.h \
     libzippp/src/libzippp.h \
     date.h\
-    tuiles2OneDate.h
+    tuiles2OneDate.h \

@@ -51,8 +51,10 @@ TARGET = s2_carteEss
 
 
 SOURCES += \
+    	classifrf.cpp \
         main.cpp \
         ../tuiles2OneDate.cpp \
+        ../catalogueperiodpheno.cpp \
         ../ts1pos.cpp \
         ../catalogue.cpp \
         ../rasterfile.cpp \
@@ -88,4 +90,6 @@ HEADERS += \
     ../ts1pos.h \
     ../date.h\
     ../tuiles2OneDate.h \
+    ../catalogueperiodpheno.h \ 
+    classifrf.h \
 

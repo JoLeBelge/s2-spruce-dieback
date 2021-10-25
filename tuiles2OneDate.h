@@ -32,6 +32,8 @@ class pts;
 
 class tuileS2OneDate;
 
+class tuileS2OneDateSco;
+
 year_month_day ymdFromString(std::string date);
 
 std::vector<pts> readPtsFile(std::string aFilePath);
@@ -43,12 +45,17 @@ double getCRtheorique(year_month_day ymd);
 std::string getNameMasqueEP(int i=1);
 
 // sert pour le téléchargement d'une tuile
+
+// je voulais faire une classe de base pour toutes mes applis, puis un hériatage pour tuileS2 Sco, tuileS2 composition, mais jai ma classe "catalogue" qui doit avoir comme membre un vecteur d'objet identique (entre catalogue Sco et catalogue Compo), sinon ces catalogues n'ont plus rien à partager.
+
 class tuileS2OneDate
 {
 public:
     tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0){
         //std::cout << "creation tuileS2" << std::endl;
     }
+
+    tuileS2OneDate(tuileS2OneDate * t):mCloudCover(t->mCloudCover),HotSpotDetected(t->HotSpotDetected),RainDetected(t->RainDetected),SunGlintDetected(t->SunGlintDetected),SnowPercent(t->SnowPercent),mXmin(t->mXmin), mYmin(t->mYmin), mXmax(t->mXmax),mYmax(t->mYmax),scanPix(t->scanPix),mXSize(t->mXSize),mYSize(t->mYSize){}
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
     tuileS2OneDate(const  tuileS2OneDate&) = delete;
@@ -96,16 +103,10 @@ public:
     bool pretraitementDone();
     void removeArchive();
     //void wrap();
-    // masque généraux, nuages et no data (edge)
-    void masque();
+
 
     // bandes à 20 m, 8A, 11 et 12
     void resample();
-    void computeCR();
-
-    //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
-    void normaliseCR();
-    std::string getRasterCRnormName() const;
 
     std::string getRasterR1Name(std::string numBand);
     // attention, il s'agit des bandes rééchantillonnée à 10 m!
@@ -113,42 +114,21 @@ public:
     // celle la c'est les noms des raster originaux
     std::string getOriginalRasterR2Name(std::string numBand);
 
-    void masqueSpecifique();
     std::string getRasterMasqSecName() const;
-    std::string getRasterMasqGenName(int resol=1);
-
-    std::string getRasterCRName();
-
-    double getCRSWIR(pts & pt);
-    double getCRSWIRNorm(pts & pt);
-    int getMaskSolNu(pts & pt);
+    std::string getRasterMasqGenName(std::string type="",int resol=1);
 
     std::string getDate();
 
     double getCRth(){return getCRtheorique(mDate);}
 
-    bool openDS();
+   /* bool openDS();
     void closeDS();
-
-    // lecture pixel par pixel. fonctionne bien, mais lent
-    int getMasqVal(int aCol, int aRow);
-    double getCRnormVal(int aCol, int aRow);
+    */
 
     double getDSVal(std::string bande,int aCol, int aRow);
 
     pts getUV(double x, double y);
     // retourne la position uv pour un point
-
-
-    // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
-
-    void readCRnormLine(int aRow) const;
-    double getCRnormVal(int aCol) const;
-    void readMasqLine(int aRow) const;
-    int getMasqVal(int aCol) const;
-    void computeCodeLine();
-    int getCodeLine(int aCol) const;
-
 
     bool operator < (const tuileS2OneDate& t) const {
         days diff=date::sys_days(getymd())-date::sys_days(t.getymd());
@@ -171,24 +151,91 @@ public:
         return mDate.year().y_;
     }
 
-private:
-    // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
-    // ou alors j'utilise juste pour le test sur un point donné. plus facile à écrire et à lire que charger tout les raster de la série temporelle...
+protected:
+
+   std::map<std::string, GDALDataset*> vDS; // pour Test1Pos ; je veux pafois faire tourner le test sur des centaines de points, là ça deviens trop long alors je créer une maps de Dataset, un pour chaque bande, affin de ne pas devoir les réouvrir à chaque position
+   float * scanPix;
+};
+
+
+class tuileS2OneDateSco : public tuileS2OneDate
+{
+public:
+    tuileS2OneDateSco(tuileS2OneDate * t):tuileS2OneDate(t){}
+
+    void computeCR();
+    //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
+    void normaliseCR();
+    std::string getRasterCRnormName() const;
+    // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
+    void readCRnormLine(int aRow) const;
+    double getCRnormVal(int aCol) const;
+    double getCRSWIR(pts & pt);
+    double getCRSWIRNorm(pts & pt);
+
+    void computeCodeLine();
+    int getCodeLine(int aCol) const;
+
+    bool openDS();
+    void closeDS();
+
+    // lecture pixel par pixel. fonctionne bien, mais lent
+    int getMasqVal(int aCol, int aRow);
+    double getCRnormVal(int aCol, int aRow);
+
+    void masqueSpecifique();
+
+    void readMasqLine(int aRow) const;
+    int getMasqVal(int aCol) const;
+    // masque généraux, nuages et no data (edge)
+    void masque();
+    std::string getRasterCRName();
+
+    int getMaskSolNu(pts & pt);
+
+private :
     std::unique_ptr<rasterFiles> r_crswir;
     std::unique_ptr<rasterFiles> r_crswirNorm;
-    std::unique_ptr<rasterFiles> r_solnu;
-
-
-    std::map<std::string, GDALDataset*> vDS; // pour Test1Pos ; je veux pafois faire tourner le test sur des centaines de points, là ça deviens trop long alors je créer une maps de Dataset, un pour chaque bande, affin de ne pas devoir les réouvrir à chaque position
-
+    float * scanLineCR;
+    int * scanLineCode;
+    float * scanLineSolNu;
 
     GDALDataset  * mDScrnom;
     GDALDataset  * mDSsolnu;
 
-    float * scanPix;
-    float * scanLineSolNu;
-    float * scanLineCR;
-    int * scanLineCode;
+    // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
+    // ou alors j'utilise juste pour le test sur un point donné. plus facile à écrire et à lire que charger tout les raster de la série temporelle...
+    std::unique_ptr<rasterFiles> r_solnu;
+
+};
+
+
+class tuileS2OneDatePheno : public tuileS2OneDate
+{
+public:
+    tuileS2OneDatePheno(tuileS2OneDate * t,std::string aNameMasqGlobR1,std::string aNameMasqGlobR2):tuileS2OneDate(t),mNameMasqGlobR1(aNameMasqGlobR1),mNameMasqGlobR2(mNameMasqGlobR2){}
+
+    bool openDS();
+    void closeDS();
+
+    void masque();
+
+    //std::string getNameMasque(int i=1){return  wd+"input/masque_compo1_"+globTuile+"_R"+std::to_string(i)+".tif";}
+    int * scanLineMasq;
+    int * scanLine1;
+    int * scanLine2;
+    int * scanLine3;
+    void readLines(int resol,int aRow) const;
+private :
+    std::string getNameMasque( int i){
+        std::string aRes("toto");
+        switch (i){
+        case 1: aRes=mNameMasqGlobR1;
+        case 2: aRes=mNameMasqGlobR2;
+        }
+    }
+    std::string mNameMasqGlobR1, mNameMasqGlobR2;
+
 };
 
 #endif // TUILES2_H
