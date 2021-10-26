@@ -2,6 +2,7 @@
 
 std::string pathCompo("/home/lisein/Documents/carteApt/GIS/COMPO/202109/compo_all_sp10m.tif");
 std::string pathES("/home/lisein/Documents/carteApt/GIS/ES_EP/etatSanitaire_2021_masq_evol_BL72_tmp.tif");
+std::string pathRF;
 
 extern std::string wdRacine;
 extern std::string buildDir;
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2 ; calcule bande spectrale par trimestre, 3 ; applique une forêt aléatoire")
             ;
 
     po::variables_map vm;
@@ -51,6 +52,16 @@ int main(int argc, char *argv[])
 
         cataloguePeriodPheno cata;
         cata.traitement();
+
+        break;
+    }
+    case 3:{
+        std::cout << " applique une RF " << std::endl;
+        GDALAllRegister();
+        wd=wdRacine+ globTuile +"/";
+
+        cataloguePeriodPheno cata;
+        cata.applyRF(pathRF);
 
         break;
     }
@@ -197,7 +208,8 @@ void readXML(std::string aXMLfile){
     globTuile=cur_node->value();
     cur_node = root_node->first_node("yMax");
     yMax=std::stoi(cur_node->value());
-
+    cur_node = root_node->first_node("pathRF");
+    pathRF=cur_node->value();
 }
 
 std::string roundDouble(double d, int precisionVal){

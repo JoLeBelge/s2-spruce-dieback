@@ -381,4 +381,56 @@ void cataloguePeriodPheno::closeDS(){
     CPLFree(scanLineR2);
 }
 
+void cataloguePeriodPheno::applyRF(std::string pathRFmodel){
+
+    std::vector<double> vMetrics{0.021,0.026,0.034,0.150,0.131,0.074,0.018,0.037,0.026,0.278,0.160,0.077,0.012,0.025,0.011,0.358,0.139,0.050,0.014,0.025,0.025,0.216,0.122,0.055};
+
+    std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
+    ranger::ForestClassification forest;
+    std::vector<std::string> bidon1;
+    std::ostream nullstream(0);
+    forest.initCpp(
+                std::string(""),        //arg_handler.depvarname
+                MEM_DOUBLE,//arg_handler.memmode
+                std::string(""),// arg_handler.file
+                100,// arg_handler.mtry,
+                "rf",//arg_handler.outprefix
+                500, // arg_handler.ntree
+                //&std::cout,// &verbose_out
+                &nullstream,// &verbose_out
+                0,// arg_handler.seed
+                DEFAULT_NUM_THREADS, //arg_handler.nthreads,
+                pathRFmodel,//arg_handler.predict
+                DEFAULT_IMPORTANCE_MODE,//arg_handler.impmeasure
+                0,// arg_handler.targetpartitionsize
+                std::string(""),//arg_handler.splitweights,
+                bidon1,//arg_handler.alwayssplitvars
+                std::string(""),//arg_handler.statusvarname,
+                true,//arg_handler.replace
+                bidon1,// arg_handler.catvars
+                false,// arg_handler.savemem
+                DEFAULT_SPLITRULE,// arg_handler.splitrule
+                std::string(""),// arg_handler.caseweights
+                true,// arg_handler.predall
+                0,// arg_handler.fraction
+                DEFAULT_ALPHA,//arg_handler.alpha
+                DEFAULT_MINPROP,// arg_handler.minprop
+                false,// arg_handler.holdout
+                DEFAULT_PREDICTIONTYPE, //arg_handler.predictiontype,
+                DEFAULT_NUM_RANDOM_SPLITS,//    arg_handler.randomsplits
+                DEFAULT_MAXDEPTH, //arg_handler.maxdepth
+                vMetrics,//arg_handler.mVCodeEsp);
+                aheader
+                );
+
+    forest.run(true, !(false));
+
+    // write output va me remplir le container map < nt, double >
+    forest.writeOutput();
+
+    std::cout << " prédiction ; " << forest.getClassMaj() << std::endl;
+
+
+}
+
 

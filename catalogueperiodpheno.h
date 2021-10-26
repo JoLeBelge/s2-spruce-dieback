@@ -2,6 +2,15 @@
 #define cataloguePeriodPheno_H
 #include "catalogue.h"
 #include "tuiles2onedatepheno.h"
+
+#include "ranger/globals.h"
+#include "ranger/Forest/Forest.h"
+#include "ranger/Forest/ForestClassification.h"
+#include "ranger/Forest/ForestProbability.h"
+#include "ranger/Forest/ForestSurvival.h"
+#include "ranger/Forest/ForestRegression.h"
+#include "ranger/utility/utility.h"
+
 // octobre 2021 ; le masque ep dans les vosges nous semble vraiment bancal, donc on va refaire un masque épicéa sur base de la signature spectrale de l'épicéa dans les série tempo S2
 // entrainement d'un modèle de classification des essences RF sur base d'observation de réflectance pour moyenne par trimestre pour chacune des bandes 2, 3, 4, 8, 11, 12. Jeu d'entrainement ; point de la carte compo all es de nicolas Latte.
 
@@ -9,6 +18,10 @@
 
 extern std::string wd;
 extern std::string globTuile;
+
+using namespace  ranger;
+
+
 
 class cataloguePeriodPheno : public catalogue
 {
@@ -19,7 +32,11 @@ public:
     bool openDS();
     void closeDS();
 
-     void traitement();
+    // calcule les bandes moyennes par trimestre
+    void traitement();
+
+    // applique une forêt aléatoire pour chaque pixel
+    void applyRF(std::string pathRFmodel);
 
     // renvoyer la valeur moyenne de la radiation par trimestre
     // key ; id du trimestre. val ; vecteur de radiance (1 val par bande étudiée)

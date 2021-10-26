@@ -5,4 +5,5 @@
  <buildDir>/home/gef/Documents/build-s2_ts/</buildDir>
  <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
  <EP_mask_path>/home/gef/Documents/input/</EP_mask_path>
+ <pathRF>/home/gef/Documents/input/rf_compo.forest</pathRF>
 </params>
