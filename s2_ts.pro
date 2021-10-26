@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     rasterfile.cpp \
     ts1pos.cpp \
     libzippp/src/libzippp.cpp \
-    tuiles2OneDate.cpp \
+    tuiles2OneDate.cpp \ \
+    tuiles2onedatesco.cpp
 
 LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb -fopenmp
 
@@ -61,4 +62,5 @@ HEADERS += \
     ts1pos.h \
     libzippp/src/libzippp.h \
     date.h\
-    tuiles2OneDate.h \
+    tuiles2OneDate.h \ \
+    tuiles2onedatesco.h

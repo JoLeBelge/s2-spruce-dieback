@@ -22,27 +22,26 @@ public:
     // soit je crée un catalogue depuis un fichier json résultant d'une requete theia, principalement pour le téléchargement, soit je crée le catalogue depuis le dossier qui contient les produits intermédiaire
     catalogue(std::string aJsonFile);
 
-
     void summary();
     // comptage des produits avec cloudcover ok
     int countValid();
-    void readMasqLine(int aRow);
+    void readMasqLine(int aRow, int aRes=1);
 
 protected:
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
     std::vector<tuileS2OneDate *> mVProduts;
 
-    // une map de dataset gdal contenant les résultats, une carte raster pour chaque année.
-    // clé ; année. val ; dataset ptr
-    std::map<int,GDALDataset *> mMapResults;
     // vector des années couvertes par la TS
     std::vector<int> mYs;
 
-    // masque pessière R1  pour catalogueSco ou masque forêt -non foret
-    GDALDataset  * mDSmask;
+    // masque pessière R1 (et R2)  pour catalogueSco ou masque forêt -non foret
+    GDALDataset  * mDSmaskR1;
+    GDALDataset  * mDSmaskR2;
 
     int mX,mY;
-    float * scanLine;
+
+    float * scanLineR1;
+    float * scanLineR2;
     float * scanPix;
 
 };

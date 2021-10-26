@@ -32,8 +32,6 @@ class pts;
 
 class tuileS2OneDate;
 
-class tuileS2OneDateSco;
-
 year_month_day ymdFromString(std::string date);
 
 std::vector<pts> readPtsFile(std::string aFilePath);
@@ -55,7 +53,26 @@ public:
         //std::cout << "creation tuileS2" << std::endl;
     }
 
-    tuileS2OneDate(tuileS2OneDate * t):mCloudCover(t->mCloudCover),HotSpotDetected(t->HotSpotDetected),RainDetected(t->RainDetected),SunGlintDetected(t->SunGlintDetected),SnowPercent(t->SnowPercent),mXmin(t->mXmin), mYmin(t->mYmin), mXmax(t->mXmax),mYmax(t->mYmax),scanPix(t->scanPix),mXSize(t->mXSize),mYSize(t->mYSize){}
+    tuileS2OneDate(tuileS2OneDate * t):mCloudCover(t->mCloudCover)
+      ,HotSpotDetected(t->HotSpotDetected)
+      ,RainDetected(t->RainDetected)
+      ,SunGlintDetected(t->SunGlintDetected)
+      ,SnowPercent(t->SnowPercent)
+      ,mXmin(t->mXmin)
+      , mYmin(t->mYmin)
+      , mXmax(t->mXmax)
+      ,mYmax(t->mYmax)
+      ,scanPix(t->scanPix)
+      ,mXSize(t->mXSize)
+      ,mYSize(t->mYSize)
+      ,decompressDirName(t->decompressDirName)
+      ,interDirName(t->interDirName)
+    ,outputDirName(t->outputDirName)
+    ,mDate(t->mDate)
+    ,mProd(t->mProd)
+    ,mAcqDate(t->mAcqDate)
+    ,mFeature_id(t->mFeature_id)
+    ,mPtrDate(t->mPtrDate){}
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
     tuileS2OneDate(const  tuileS2OneDate&) = delete;
@@ -157,85 +174,5 @@ protected:
    float * scanPix;
 };
 
-
-class tuileS2OneDateSco : public tuileS2OneDate
-{
-public:
-    tuileS2OneDateSco(tuileS2OneDate * t):tuileS2OneDate(t){}
-
-    void computeCR();
-    //crée une couche qui normalise le CR par le CR sensé être ok pour cette date ; sera plus facile à manipuler
-    void normaliseCR();
-    std::string getRasterCRnormName() const;
-    // lecture ligne par ligne ; j'espère gagner du temps - finalement c'est pas là que je dois gagner du temps mais sur le traitement/classe TS1Pos
-    void readCRnormLine(int aRow) const;
-    double getCRnormVal(int aCol) const;
-    double getCRSWIR(pts & pt);
-    double getCRSWIRNorm(pts & pt);
-
-    void computeCodeLine();
-    int getCodeLine(int aCol) const;
-
-    bool openDS();
-    void closeDS();
-
-    // lecture pixel par pixel. fonctionne bien, mais lent
-    int getMasqVal(int aCol, int aRow);
-    double getCRnormVal(int aCol, int aRow);
-
-    void masqueSpecifique();
-
-    void readMasqLine(int aRow) const;
-    int getMasqVal(int aCol) const;
-    // masque généraux, nuages et no data (edge)
-    void masque();
-    std::string getRasterCRName();
-
-    int getMaskSolNu(pts & pt);
-
-private :
-    std::unique_ptr<rasterFiles> r_crswir;
-    std::unique_ptr<rasterFiles> r_crswirNorm;
-    float * scanLineCR;
-    int * scanLineCode;
-    float * scanLineSolNu;
-
-    GDALDataset  * mDScrnom;
-    GDALDataset  * mDSsolnu;
-
-    // rasterFile ; finalement je vais sans doute pas utiliser ces objets, mais plutôt directement un GDALDATASET
-    // ou alors j'utilise juste pour le test sur un point donné. plus facile à écrire et à lire que charger tout les raster de la série temporelle...
-    std::unique_ptr<rasterFiles> r_solnu;
-
-};
-
-
-class tuileS2OneDatePheno : public tuileS2OneDate
-{
-public:
-    tuileS2OneDatePheno(tuileS2OneDate * t,std::string aNameMasqGlobR1,std::string aNameMasqGlobR2):tuileS2OneDate(t),mNameMasqGlobR1(aNameMasqGlobR1),mNameMasqGlobR2(mNameMasqGlobR2){}
-
-    bool openDS();
-    void closeDS();
-
-    void masque();
-
-    //std::string getNameMasque(int i=1){return  wd+"input/masque_compo1_"+globTuile+"_R"+std::to_string(i)+".tif";}
-    int * scanLineMasq;
-    int * scanLine1;
-    int * scanLine2;
-    int * scanLine3;
-    void readLines(int resol,int aRow) const;
-private :
-    std::string getNameMasque( int i){
-        std::string aRes("toto");
-        switch (i){
-        case 1: aRes=mNameMasqGlobR1;
-        case 2: aRes=mNameMasqGlobR2;
-        }
-    }
-    std::string mNameMasqGlobR1, mNameMasqGlobR2;
-
-};
 
 #endif // TUILES2_H

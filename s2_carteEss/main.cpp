@@ -14,6 +14,8 @@ extern std::string path_otb;
 extern bool doAnaTS;
 extern bool docleanTS1pos;
 
+int yMax(2018);
+
 int main(int argc, char *argv[])
 {
     // Declare the supported options.
@@ -42,7 +44,13 @@ int main(int argc, char *argv[])
         break;
     }
     case 2:{
-        std::cout << " calcul des valeurs spectrales trimestrielles moyennes (2016 - 2020) " << std::endl;
+        std::cout << " calcul des valeurs spectrales trimestrielles moyennes (2016-2017) " << std::endl;
+        GDALAllRegister();
+        globTuile="T31UFR";
+        wd=wdRacine+ globTuile +"/";
+
+        cataloguePeriodPheno cata;
+        cata.traitement();
 
         break;
     }
@@ -185,6 +193,10 @@ void readXML(std::string aXMLfile){
     path_otb=cur_node->value();
     cur_node = root_node->first_node("EP_mask_path");
     EP_mask_path=cur_node->value();
+    cur_node = root_node->first_node("globTuile");
+    globTuile=cur_node->value();
+    cur_node = root_node->first_node("yMax");
+    yMax=std::stoi(cur_node->value());
 
 }
 

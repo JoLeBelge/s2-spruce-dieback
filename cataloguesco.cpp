@@ -53,7 +53,7 @@ void catalogueSco::analyseTS(){
 
             std::vector<int> aVCol;
             for (int col=0 ; col<mX;col++){
-                if (scanLine[col]==1){aVCol.push_back(col);}
+                if (scanLineR1[col]==1){aVCol.push_back(col);}
             }
 
             //num_threads(8) shared(row,mYs,seuilCR,scanLine,mVProdutsOK)
@@ -173,8 +173,8 @@ int catalogueSco::getMasqEPVal(int aCol, int aRow){
     //std::cout << "getMasqEpVal " << std::endl;
     int aRes=0;
 
-    if( mDSmask != NULL && mDSmask->GetRasterBand(1)->GetXSize() > aCol && mDSmask->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
-        mDSmask->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
+    if( mDSmaskR1 != NULL && mDSmaskR1->GetRasterBand(1)->GetXSize() > aCol && mDSmaskR1->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+        mDSmaskR1->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
         aRes=scanPix[0];
     }
 
@@ -194,7 +194,7 @@ bool catalogueSco::openDS(){
             std::cout << "masque EP pas lu correctement" << std::endl;
             return 0;
         }
-        mDSmask= pDriver->CreateCopy( ch,mask,FALSE, NULL,NULL, NULL );
+        mDSmaskR1= pDriver->CreateCopy( ch,mask,FALSE, NULL,NULL, NULL );
         mX=mask->GetRasterBand(1)->GetXSize();
         mY=mask->GetRasterBand(1)->GetYSize();
         GDALClose( mask );
@@ -202,8 +202,8 @@ bool catalogueSco::openDS(){
         //mDSmaskEP= (GDALDataset *) GDALOpen( getNameMasqueEP().c_str(), GA_ReadOnly );
         scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
         //std::cout << "create scanline catalogue pour masq ep, longeur Y est " << mY << std::endl;
-        scanLine=(float *) CPLMalloc( sizeof( float ) * mY );
-        if( mDSmask == NULL){
+        scanLineR1=(float *) CPLMalloc( sizeof( float ) * mY );
+        if( mDSmaskR1 == NULL){
             std::cout << "masque EP pas chargé correctement" << std::endl;
             //GDALClose( mDSmaskEP );
             return 0;
@@ -240,7 +240,7 @@ bool catalogueSco::openDS(){
                 // MEM raster
                 std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
                 const char *out=output.c_str();
-                GDALDataset  * ds = pDriver->CreateCopy(out,mDSmask,FALSE, NULL,NULL, NULL );
+                GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 mMapResults.emplace(std::make_pair(y,ds));
             }
         }
@@ -333,7 +333,7 @@ void catalogueSco::closeDS(){
     for (tuileS2OneDateSco * t : mVProdutsOK){
         t->closeDS();
     }
-    if( mDSmask != NULL){ GDALClose( mDSmask );}
+    if( mDSmaskR1 != NULL){ GDALClose( mDSmaskR1 );}
     CPLFree(scanPix);
 
     const char *pszFormat = "GTiff";
@@ -350,7 +350,7 @@ void catalogueSco::closeDS(){
         GDALClose( kv.second);
         GDALClose(ds);
     }
-    CPLFree(scanLine);
+    CPLFree(scanLineR1);
 }
 
 

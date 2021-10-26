@@ -16,7 +16,7 @@ extern std::string globResXYTest;
 
 bool mDebug(0);
 
-catalogue::catalogue(std::string aJsonFile){
+catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
     // parse le json de la requete
     if ( !boost::filesystem::exists( aJsonFile ) )
     {
@@ -76,7 +76,7 @@ catalogue::catalogue(std::string aJsonFile){
     }
 }
 
-catalogue::catalogue(){
+catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
     // listing des dossiers dans intermediate puis lecture des métadonnées XML
     std::cout << "création de la collection depuis les dossiers présent dans le répertoire " << wd << "intermediate/ " << std::endl;
     for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
@@ -102,19 +102,28 @@ int catalogue::countValid(){
 }
 
 
-
 void catalogue::summary(){
         if (mDebug){for (tuileS2OneDate * t : mVProduts){t->cat();}}
         std::cout << " Nombre de produits ok ; " << countValid() << std::endl;
 }
 
-void catalogue::readMasqLine(int aRow){
-    if( mDSmask != NULL && mDSmask->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
-        mDSmask->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mX, 1, scanLine, mX,1, GDT_Float32, 0, 0 );
-    }else {
-        std::cout << "readMasqLine ; failed " << std::endl;
+void catalogue::readMasqLine(int aRow, int aRes){
+    switch (aRes) {
+    case 1:{
+        if( mDSmaskR1 != NULL && mDSmaskR1->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            mDSmaskR1->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mX, 1, scanLineR1, mX,1, GDT_Float32, 0, 0 );
+        }else {
+            std::cout << "readMasqLine R1 ; failed " << std::endl;
+        }
+        break;}
+    case 2:{
+        if( mDSmaskR2 != NULL && mDSmaskR2->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+            mDSmaskR2->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mX/2, 1, scanLineR2, mX/2,1, GDT_Float32, 0, 0 );
+        }else {
+            std::cout << "readMasqLine R2 ; failed " << std::endl;
+        }
+        break;}
+    default:
+        break;
     }
-
 }
-
-
