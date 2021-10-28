@@ -371,8 +371,6 @@ double tuileS2OneDate::getDSVal(std::string bande,int aCol, int aRow){
 pts tuileS2OneDate::getUV(double x, double y){
 
     pts aRes(0,0);
-
-    if (vDS.find("masqR1")!=vDS.end()){
         GDALDataset * DSpt=vDS.at("masqR1");
 
         if( DSpt != NULL){
@@ -388,7 +386,6 @@ pts tuileS2OneDate::getUV(double x, double y){
             aRes.setX(col);
             aRes.setY(row);
         }
-    }
     return aRes;
 }
 

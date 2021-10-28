@@ -21,6 +21,9 @@ extern std::string globResXYTest;
 extern std::string EP_mask_path;
 
 extern std::vector<std::string> vBR2;
+std::vector<std::string> vBR1{"2", "3", "4"};
+
+std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
 
 std::map<int,std::vector<double>> * cataloguePeriodPheno::getMeanRadByTri1Pt(double X, double Y){
 
@@ -197,7 +200,7 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
     int count(0);
     double gain(0.5/255.0);// j'estime que le max de radiation moyenne est 0.5
 
-    std::vector<std::string> vBR1{"2", "3", "4"};
+
 
     float * scanLineOut1=(float *) CPLMalloc( sizeof( float  ) * mY );
     float * scanLineOut2=(float *) CPLMalloc( sizeof( float  ) * mY );
@@ -366,9 +369,10 @@ void cataloguePeriodPheno::closeDS(){
     if( mDSmaskR2 != NULL){ GDALClose( mDSmaskR2 );}
     CPLFree(scanPix);
 
+    /*
     const char *pszFormat = "GTiff";
     GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-    /*
+
     for (auto kv : mMapResults){
         // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
         std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
@@ -381,24 +385,177 @@ void cataloguePeriodPheno::closeDS(){
     CPLFree(scanLineR2);
 }
 
+
+void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::string aOut){
+
+    if (openDS4RF()){
+
+        // lecture input
+        std::vector<std::unique_ptr<periodePhenoRasters>> aTS;
+        for (int tri(1); tri<5;tri++){
+            std::vector<std::string> aV;
+            for (std::string b : vBR1){
+                aV.push_back(getNameBandPeriodPheno("tri"+std::to_string(tri),b));
+            }
+            for (std::string b : vBR2){
+                aV.push_back(getNameBandPeriodPheno("tri"+std::to_string(tri),b));
+            }
+            aTS.push_back(std::make_unique<periodePhenoRasters>(aV));
+        }
+
+        // crée un fichier txt pour l'export des résultats
+        std::ofstream out;
+        out.open(aOut);
+        std::vector<std::string> vB{"b2","b3","b4","b8","b11","b12"};
+        //out << "compo;X;Y";
+        out << "compo";
+        for (int tri(1);tri<5;tri++){
+            for (std::string b : vB){
+                out << " " << b<< "_" <<std::to_string(tri) ;
+            }
+        }
+        out <<"\n" ;
+        int c(0),count(0);
+        OGRSpatialReference oSourceSRS, oTargetSRS;
+        oSourceSRS.importFromEPSG(31370);
+        oTargetSRS.importFromEPSG(32631);
+        OGRCoordinateTransformation * poCT = OGRCreateCoordinateTransformation( &oSourceSRS, &oTargetSRS );
+
+        for (mpt * p : aVPt){
+            //if (c==10){break;}
+            p->transform(poCT);
+
+            Pt2di pt=getUV(p->getX(),p->getY());
+            if (pt.x>0 && pt.y>0){
+                //out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+                    out << p->Code()  ;
+
+            for (std::unique_ptr<periodePhenoRasters> & t : aTS){
+                std::vector<int> vVal=t->getVal(pt);
+                for (int v : vVal){
+                    //vMetrics.push_back(v);
+                     out << " "  << v<<".00" ;
+                }
+            }
+            out <<"\n" ;
+            }
+
+            c++;
+            if (c%100==0){
+                count++;
+                std::cout << count << " pts..." << std::endl;
+            }
+        }
+        out.close();
+        closeDS();
+    }
+
+}
+
 void cataloguePeriodPheno::applyRF(std::string pathRFmodel){
 
-    std::vector<double> vMetrics{0.021,0.026,0.034,0.150,0.131,0.074,0.018,0.037,0.026,0.278,0.160,0.077,0.012,0.025,0.011,0.358,0.139,0.050,0.014,0.025,0.025,0.216,0.122,0.055};
+    // lecture des couches inputs
+    if (openDS4RF()){
+        // création output
+        const char *pszFormat = "GTiff";
+        GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+        //GDALDataset  * ds = pDriver->CreateCopy(getNameOutputRF().c_str(),mDSmaskR1,FALSE, NULL,NULL, NULL );
+        GDALDataset  * ds = pDriver->CreateCopy(getNameOutputRF().c_str(),mDSmaskR2,FALSE, NULL,NULL, NULL );
+        ds->GetRasterBand(1)->SetNoDataValue(255);
 
-    std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
-    ranger::ForestClassification forest;
+        // lecture input
+        std::vector<std::unique_ptr<periodePhenoRasters>> aTS;
+        for (int tri(1); tri<5;tri++){
+            std::vector<std::string> aV;
+            for (std::string b : vBR1){
+                aV.push_back(getNameBandPeriodPheno("tri"+std::to_string(tri),b));
+            }
+            for (std::string b : vBR2){
+                aV.push_back(getNameBandPeriodPheno("tri"+std::to_string(tri),b));
+            }
+            aTS.push_back(std::make_unique<periodePhenoRasters>(aV));
+        }
+        int YR2=mY/2;
+        int XR2=mX/2;
+
+        int c(0);
+        int step=YR2/100;
+        int count(0);
+        //double gain(0.5/255.0);
+        initRF(pathRFmodel);
+
+        for ( int row = 0; row < YR2; row++ ){
+            // lecture masque global dans scanLine
+            readMasqLine(row,2);
+            double compo(255);
+            for (int col=0 ; col<XR2;col++){
+                if (scanLineR2[col]==1){
+
+                    Pt2di pt(col,row);
+                    // lecture des 4 trimestres
+                    std::vector<double> vMetrics;
+                    for (std::unique_ptr<periodePhenoRasters> & t : aTS){
+
+                        std::vector<int> vVal=t->getVal(pt,2);
+                        for (int v : vVal){
+                            //vMetrics.push_back((double) v*gain);
+                            vMetrics.push_back(v);
+                        }
+                    }
+                    // call RF
+                    compo=((double) callRF(vMetrics));
+
+                } else {
+                    compo=255;
+                }
+                scanPix[0]=compo;
+                ds->GetRasterBand(1)->RasterIO( GF_Write, col, row,1,1,scanPix,1, 1,GDT_Float32, 0, 0 );
+
+            }
+
+            c++;
+            if (c%step==0){
+                count++;
+                std::cout << count << "%..." << std::endl;
+            }
+        }
+        GDALClose(ds);
+
+        closeDS();
+    }
+}
+
+int cataloguePeriodPheno::callRF(std::vector<double> aV){
+
+    //std::cout << "call RF " << std::endl;
+    /*std::cout << " valeurs utilisée par RF" << std::endl;
+    for (double v : aV){
+    std::cout << roundDouble(v,3) << " " << std::endl;
+    }*/
+    forest->setDataForPrediction(aV,aheader);
+    //std::cout << " set data ok" << std::endl;
+    forest->myrun();
+    //std::cout << " myrun done" << std::endl;
+    return forest->getClassMaj();
+}
+
+void cataloguePeriodPheno::initRF(std::string pathRFmodel){
+
+    forest=std::make_unique<ranger::ForestClassification>() ;
     std::vector<std::string> bidon1;
+    std::vector<double> vMetrics{0.0002,0.026,0.034,0.150,0.00131,0.074,0.018,0.037,0.026,0.278,0.000260,0.077,0.012,0.25,0.011,0.00358,0.139,0.50,0.014,0.025,0.025,0.416,0.122,0.015};
     std::ostream nullstream(0);
-    forest.initCpp(
+    forest->initCpp(
                 std::string(""),        //arg_handler.depvarname
                 MEM_DOUBLE,//arg_handler.memmode
                 std::string(""),// arg_handler.file
-                100,// arg_handler.mtry,
+                5,// arg_handler.mtry,
                 "rf",//arg_handler.outprefix
                 500, // arg_handler.ntree
                 //&std::cout,// &verbose_out
                 &nullstream,// &verbose_out
                 0,// arg_handler.seed
+                //9,//9 sur 12 que j'ai sur le pc s2-jo
                 DEFAULT_NUM_THREADS, //arg_handler.nthreads,
                 pathRFmodel,//arg_handler.predict
                 DEFAULT_IMPORTANCE_MODE,//arg_handler.impmeasure
@@ -422,15 +579,122 @@ void cataloguePeriodPheno::applyRF(std::string pathRFmodel){
                 vMetrics,//arg_handler.mVCodeEsp);
                 aheader
                 );
-
-    forest.run(true, !(false));
-
-    // write output va me remplir le container map < nt, double >
-    forest.writeOutput();
-
-    std::cout << " prédiction ; " << forest.getClassMaj() << std::endl;
-
-
+    //forest->myrun();
 }
 
 
+bool cataloguePeriodPheno::openDS4RF(){
+    std::cout << "ouverture des bandes moyennes par trimestre" << std::endl;
+    createMaskForTuile();
+    bool aRes(1);
+
+    for (int tri(1); tri<5;tri++){
+        for (std::string b : vBR2){
+            if (!exists(getNameBandPeriodPheno("tri"+std::to_string(tri),b))){ aRes=0; std::cout << " fichier " << getNameBandPeriodPheno("tri"+std::to_string(tri),b) << std::endl;break;}
+        }
+        for (std::string b : vBR1){
+            if (!exists(getNameBandPeriodPheno("tri"+std::to_string(tri),b))){ aRes=0; std::cout << " fichier " << getNameBandPeriodPheno("tri"+std::to_string(tri),b) << std::endl;break;}
+        }
+    }
+
+    if (aRes && exists(getNameMasque())){
+        mDSmaskR1=(GDALDataset *) GDALOpen( getNameMasque().c_str(), GA_ReadOnly );
+        mDSmaskR2=(GDALDataset *) GDALOpen( getNameMasque(2).c_str(), GA_ReadOnly );
+        mX=mDSmaskR1->GetRasterBand(1)->GetXSize();
+        mY=mDSmaskR1->GetRasterBand(1)->GetYSize();
+        scanLineR1=(float *) CPLMalloc( sizeof( float ) * mY );
+        scanLineR2=(float *) CPLMalloc( sizeof( float ) * mY/2 );
+        scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
+    }
+
+    return aRes;
+}
+
+
+
+periodePhenoRasters::periodePhenoRasters(std::vector<std::string> aVBandsPath){
+
+    //ouverture des bandes
+    std::cout << " charge en mémoire toutes les bandes d'une période phéno" << std::endl;
+    b2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(0)));
+    b3= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(1)));
+    b4= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(2)));
+    b8A= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(3)));
+    b11= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(4)));
+    b12= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(5)));
+
+    // le prob c'est la gestion des no data, je sais plus comment faire dans micmac
+    /*
+    b2R2 =  std::make_unique<Im2D_U_INT1>(b8A->sz().x,b8A->sz().y,0);
+    b3R2 =  std::make_unique<Im2D_U_INT1>(b8A->sz().x,b8A->sz().y,0);
+    b4R2 =  std::make_unique<Im2D_U_INT1>(b8A->sz().x,b8A->sz().y,0);
+     Fonc_Num resample(Fonc_Num aIn) = StdFoncChScale(aIn,Pt2dr(0,0),Pt2dr(2,2));
+     {
+     }*/
+    resampleR1toR2(aVBandsPath.at(0));
+    resampleR1toR2(aVBandsPath.at(1));
+    resampleR1toR2(aVBandsPath.at(2));
+    b2R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(0))));
+    b3R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(1))));
+    b4R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(2))));
+
+}
+
+void periodePhenoRasters::resampleR1toR2(std::string aR1){
+std::string aR2=getR2Name(aR1);
+    if (!exists(aR2)){
+        std::string aCommand="gdalwarp -tr 20 20 -r average -overwrite -srcnodata 255 -co 'COMPRESS=NONE' "+ aR1+ " " + aR2;
+        system(aCommand.c_str());
+    }
+}
+
+std::string periodePhenoRasters::getR2Name(std::string aR1){
+return aR1.substr(0,aR1.size()-4)+"R2.tif";
+}
+
+std::vector<int> periodePhenoRasters::getVal(const Pt2di & pt,int resol){
+    std::vector<int> aRes;
+    //std::cout << " pt " << pt << std::endl;
+    switch (resol) {
+    case 1:{
+        aRes.push_back(b2->GetI(pt));
+        aRes.push_back(b3->GetI(pt));
+        aRes.push_back(b4->GetI(pt));
+        Pt2di ptR2(pt.x/2, pt.y/2);
+        aRes.push_back(b8A->GetI(ptR2));
+        aRes.push_back(b11->GetI(ptR2));
+        aRes.push_back(b12->GetI(ptR2));
+        break;}
+    case 2:{
+        // je travaille à la résolution R2
+        aRes.push_back(b2R2->GetI(pt));
+        aRes.push_back(b3R2->GetI(pt));
+        aRes.push_back(b4R2->GetI(pt));
+
+        aRes.push_back(b8A->GetI(pt));
+        aRes.push_back(b11->GetI(pt));
+        aRes.push_back(b12->GetI(pt));
+        break;}
+    default:
+        break;
+    }
+
+    return aRes;
+}
+
+Pt2di cataloguePeriodPheno::getUV(double x, double y){
+            double transform[6];
+            mDSmaskR1->GetGeoTransform(transform);
+            double xOrigin = transform[0];
+            double yOrigin = transform[3];
+            double pixelWidth = transform[1];
+            double pixelHeight = -transform[5];
+            int col = int((x - xOrigin) / pixelWidth);
+            int row = int((yOrigin - y ) / pixelHeight);
+            if (col<mX && row<mY && col>-1 && row >-1){return Pt2di(col,row);} else {
+
+                std::cout << "col =" << col << ", row " << row << std::endl;
+                return Pt2di(0,0);
+            }
+
+}

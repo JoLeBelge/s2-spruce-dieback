@@ -34,15 +34,6 @@ std::string roundDouble(double d, int precisionVal=3);
 
 void readXML(std::string aXMLfile);
 
-// mes points
-class mpt : public   OGRPoint
-{
-public:
-   mpt(double x, double y, int code):OGRPoint(x,y),mCode(code){}
-   std::string cat(){ return std::to_string(mCode)+";"+std::to_string(getX())+";"+std::to_string(getY());}
-   int Code(){return mCode;}
-private:
-     int mCode;
-};
+
 
 #endif // CARTEESS_H

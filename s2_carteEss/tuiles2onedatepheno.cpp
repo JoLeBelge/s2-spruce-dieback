@@ -149,7 +149,7 @@ void tuileS2OneDatePheno::masque(){
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas
         if (boost::filesystem::exists(clm) && boost::filesystem::exists(edg)) {
-            if ((!boost::filesystem::exists(out) | overw )) {//| 1)) {
+            if ((!boost::filesystem::exists(out) | overw)) { //| 1)) {
                 //im 1 = masque ep our compo
                 //im 2 = masque edge
                 //im 3 masque cloud

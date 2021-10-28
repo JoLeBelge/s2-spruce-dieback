@@ -233,6 +233,7 @@ void ForestClassification::writeConfusionFile() {
 
 void ForestClassification::writePredictionFile() {
 
+   // std::cout << " writePredictionFile()"<< std::endl;
   // Open prediction file for writing
     /*
   std::string filename = output_prefix + ".prediction";
@@ -256,7 +257,7 @@ void ForestClassification::writePredictionFile() {
           aSumVote.emplace(std::make_pair(getClassValues()[i],0));
       }
 
-     // std::cout << "predictions[i][j][k] = "<< predictions[0][0][1] << std::endl;
+      //std::cout << "predictions size = "<< predictions.size() << std::endl;
     for (size_t k = 0; k < num_trees; ++k) {
       //outfile << "Tree " << k << ":" << std::endl;
       for (size_t i = 0; i < predictions.size(); ++i) {
@@ -268,15 +269,15 @@ void ForestClassification::writePredictionFile() {
       }
       //outfile << std::endl;
     }
-
+    mPredictions.clear();
     // niveau trophique ou hydrique
     for (int i(0) ; i<class_values.size(); i++){aSumVote.at(getClassValues()[i])=100*aSumVote.at(getClassValues()[i])/num_trees;}
     for (auto nhVote : aSumVote){
-    std::cout << "Niveau "<< nhVote.first << " : " << nhVote.second << "%" <<std::endl;
+    //std::cout << "Niveau "<< nhVote.first << " : " << nhVote.second << "%" <<std::endl;
     mPredictions.emplace(std::make_pair(nhVote.first,nhVote.second));
     }
 
-  } else {
+  }/* else {
     for (size_t i = 0; i < predictions.size(); ++i) {
       for (size_t j = 0; j < predictions[i].size(); ++j) {
         for (size_t k = 0; k < predictions[i][j].size(); ++k) {
@@ -284,7 +285,7 @@ void ForestClassification::writePredictionFile() {
         }
       }
     }
-  }
+  }*/
 
   //if (verbose_out)
    // *verbose_out << "Saved predictions to file " << filename << "." << std::endl;

@@ -136,12 +136,14 @@ void Tree::grow(std::vector<double>* variable_importance) {
 
 void Tree::predict(const Data* prediction_data, bool oob_prediction) {
 
+
   size_t num_samples_predict;
   if (oob_prediction) {
     num_samples_predict = num_samples_oob;
   } else {
     num_samples_predict = prediction_data->getNumRows();
   }
+
 
   prediction_terminal_nodeIDs.resize(num_samples_predict, 0);
 
@@ -190,6 +192,7 @@ void Tree::predict(const Data* prediction_data, bool oob_prediction) {
 
     prediction_terminal_nodeIDs[i] = nodeID;
   }
+
 }
 
 void Tree::computePermutationImportance(std::vector<double>& forest_importance, std::vector<double>& forest_variance) {

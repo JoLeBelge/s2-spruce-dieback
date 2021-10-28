@@ -1,9 +1,22 @@
 <params>
- <pathCompo>/home/gef/Documents/input/compo_all_sp10m.tif</pathCompo>
+  <pathCompo>/home/gef/Documents/input/compo_all_sp10m.tif</pathCompo>
+
  <pathES>/home/gef/Documents/input/etatSanitaire_2021_masq_evol_BL72_tmp.tif</pathES>
- <wdRacine>/media/gef/Data2/S2Scolyte/</wdRacine>
+ 
  <buildDir>/home/gef/Documents/build-s2_ts/</buildDir>
  <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
- <EP_mask_path>/home/gef/Documents/input/</EP_mask_path>
- <pathRF>/home/gef/Documents/input/rf_compo.forest</pathRF>
+  <globTuile>T31UFR</globTuile>
+ <wdRacine>/media/gef/Data2/S2Scolyte/</wdRacine>
+ <EP_mask_path>/home/gef/Documents/input/masqCompoAllBL72.tif</EP_mask_path>
+ 
+ <!--<EP_mask_path>/home/gef/Documents/input/tmp-masqCompo.tif</EP_mask_path>
+
+   <globTuile>T32ULU</globTuile>
+   <wdRacine>/home/gef/Documents/</wdRacine>
+ <EP_mask_path>/home/gef/Documents/input/masque_resineux.tif</EP_mask_path>
+ -->
+ <!--> T32ULU masque_resineux <-->
+
+ <yMax>2018</globTuile>
+  <pathRF>/home/gef/Documents/input/rf_compo20211028.forest</pathRF>
 </params>

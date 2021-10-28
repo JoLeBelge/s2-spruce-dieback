@@ -32,6 +32,7 @@
 
 extern std::string roundDouble(double d, int precisionVal);
 
+
 namespace ranger {
 
 class Forest {
@@ -46,6 +47,10 @@ public:
   std::vector<std::string> mVCodeEsp;
   std::vector<std::string> mVHeader;
 
+  std::unique_ptr<Data> load_data_from_vMetrics(std::vector<double> aVM,std::string aHeader);
+
+  void setDataForPrediction(std::vector<double> aVM, std::string aHeader);
+
   // Init from c++ main or Rcpp from R
   void initCpp(std::string dependent_variable_name, MemoryMode memory_mode, std::string input_file, uint mtry,
       std::string output_prefix, uint num_trees, std::ostream* verbose_out, uint seed, uint num_threads,
@@ -58,6 +63,7 @@ public:
       ,
                const std::vector<double>& aVMetrics ,
                const std::string& aHeader);
+
   void initR(std::string dependent_variable_name, std::unique_ptr<Data> input_data, uint mtry, uint num_trees,
       std::ostream* verbose_out, uint seed, uint num_threads, ImportanceMode importance_mode, uint min_node_size,
       std::vector<std::vector<double>>& split_select_weights,
@@ -77,6 +83,7 @@ public:
 
   // Grow or predict
   void run(bool verbose, bool compute_oob_error);
+  void myrun();
 
   // Write results to output files
   void writeOutput();
@@ -225,6 +232,7 @@ protected:
 
   std::vector<std::unique_ptr<Tree>> trees;
   std::unique_ptr<Data> data;
+  //Data * data;
 
   std::vector<std::vector<std::vector<double>>> predictions;
   double overall_prediction_error;

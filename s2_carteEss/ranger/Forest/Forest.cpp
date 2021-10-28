@@ -65,20 +65,34 @@ std::unique_ptr<Data> load_data_from_file(const std::string& data_path, const Me
   return result;
 }
 
-std::unique_ptr<Data> load_data_from_vMetrics(std::vector<double> aVM,std::string aHeader) {
+std::unique_ptr<Data> Forest::load_data_from_vMetrics(std::vector<double> aVM,std::string aHeader) {
   //std::cout << "load_data_from_VCodeEsp." << std::endl;
   std::unique_ptr<Data> result { };
   result = make_unique<DataDouble>();
+
 
   std::string data="0"; // code bidon pour composition
   for (double var : aVM){
               data+=" "+ roundDouble(var,4) ;
   }
 
-  std::cout << " data " << data << std::endl;
+  //std::cout << " data of " << aVM.size() << " elements :" << data << std::endl;
 
   result->loadFromStrings(data,aHeader);
+  //std::cout << " loadFromStrings done " << std::endl;
   return result;
+}
+
+void Forest::setDataForPrediction(std::vector<double> aVM,std::string aHeader){
+
+    // attention, je ne peux pas remplacer les Data, car c'est un unique_ptr ; ça ne se remplace pas (bien)
+    // donc je modifie les données existantes.
+    std::string data1="0";
+    for (double var : aVM){
+                data1+=" "+ roundDouble(var,4) ;
+    }
+    this->data->loadFromStrings(data1,aHeader);
+    //predictions.clear();
 }
 
 void Forest::initCpp(std::string dependent_variable_name, MemoryMode memory_mode, std::string input_file, uint mtry,
@@ -345,10 +359,18 @@ void Forest::run(bool verbose, bool compute_oob_error) {
   }
 }
 
+void Forest::myrun() {
+    predict();
+    // write output va me remplir le container map < nt, double > via methode writePredictionFile()
+   // std::cout << " predict ok" << std::endl;
+    writeOutput();
+}
+
 // #nocov start
 void Forest::writeOutput() {
-
-  if (verbose_out)
+    //std::cout << " writeOutput " << std::endl;
+    // je commente tout car si je relance +iere fois en changeant les données,ça bug ici
+ /* if (verbose_out)
     *verbose_out << std::endl;
   writeOutputInternal();
   if (verbose_out) {
@@ -364,9 +386,10 @@ void Forest::writeOutput() {
     *verbose_out << "Seed:                              " << seed << std::endl;
     *verbose_out << "Number of threads:                 " << num_threads << std::endl;
     *verbose_out << std::endl;
-  }
-
+  }*/
+    // std::cout << " toto" << std::endl;
   if (prediction_mode) {
+ //std::cout << " tata" << std::endl;
     writePredictionFile();
   } else {
     if (verbose_out) {
@@ -582,9 +605,11 @@ void Forest::predict() {
   // Predict
   std::vector<std::thread> threads;
   threads.reserve(num_threads);
+  // std::cout << " threads reserved " << num_threads << std::endl;
   for (uint i = 0; i < num_threads; ++i) {
     threads.emplace_back(&Forest::predictTreesInThread, this, i, data.get(), false);
   }
+  //std::cout << " toto " << std::endl;
   showProgress("Predicting..", num_trees);
   for (auto &thread : threads) {
     thread.join();
@@ -1038,7 +1063,6 @@ void Forest::showProgress(std::string operation, size_t max_progress) {
   }
 }
 #endif
-
 
 
 } // namespace ranger

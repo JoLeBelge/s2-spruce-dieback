@@ -11,6 +11,8 @@
 #include "ranger/Forest/ForestRegression.h"
 #include "ranger/utility/utility.h"
 
+#include "StdAfx.h"
+
 // octobre 2021 ; le masque ep dans les vosges nous semble vraiment bancal, donc on va refaire un masque épicéa sur base de la signature spectrale de l'épicéa dans les série tempo S2
 // entrainement d'un modèle de classification des essences RF sur base d'observation de réflectance pour moyenne par trimestre pour chacune des bandes 2, 3, 4, 8, 11, 12. Jeu d'entrainement ; point de la carte compo all es de nicolas Latte.
 
@@ -21,7 +23,16 @@ extern std::string globTuile;
 
 using namespace  ranger;
 
-
+// mes points
+class mpt : public   OGRPoint
+{
+public:
+   mpt(double x, double y, int code):OGRPoint(x,y),mCode(code){}
+   std::string cat(){ return std::to_string(mCode)+";"+std::to_string(getX())+";"+std::to_string(getY());}
+   int Code(){return mCode;}
+private:
+     int mCode;
+};
 
 class cataloguePeriodPheno : public catalogue
 {
@@ -32,20 +43,31 @@ public:
     bool openDS();
     void closeDS();
 
+    bool openDS4RF();
+
     // calcule les bandes moyennes par trimestre
     void traitement();
 
     // applique une forêt aléatoire pour chaque pixel
     void applyRF(std::string pathRFmodel);
+    int callRF(std::vector<double> aV);
+    void initRF(std::string pathRFmodel);
 
     // renvoyer la valeur moyenne de la radiation par trimestre
     // key ; id du trimestre. val ; vecteur de radiance (1 val par bande étudiée)
     std::map<int, std::vector<double> > *getMeanRadByTri1Pt(double X, double Y);
 
+    // plus abouti, beaucoup plus rapide surtout. point en BL72
+    void getMeanRadByTriMultiPt(std::vector<mpt*> aVPt, std::string aOut);
 
     void syntheseTempoRadiation(std::vector<tuileS2OneDatePheno *> aVTuileS2, std::string aOutSuffix);
 
     std::string getNameBandPeriodPheno(std::string aPrefix, std::string aBand){return wd+"output/"+aPrefix+"_"+aBand +"_"+globTuile+".tif";}
+    std::string getNameOutputRF(){return wd+"output/compoTS_RF_tuile"+globTuile+".tif";}
+
+    // pour la R1 bien entendu. input = utm 31 N
+    Pt2di getUV(double x, double y);
+
 private:
     void createMaskForTuile();
     std::vector<tuileS2OneDatePheno *> getTuileS2ForTri(int trimestre);
@@ -57,6 +79,38 @@ private:
     // clé ; année. val ; dataset ptr
     //std::map<int,GDALDataset *> mMapResults;
     std::map<std::string,GDALDataset *> mMapResults;
+
+    std::unique_ptr<ranger::ForestClassification> forest;
 };
+
+
+class periodePhenoRasters;
+
+// je vais plutôt tenter d'utilser elise pour changer de GDAL
+class periodePhenoRasters
+{
+public:
+ periodePhenoRasters(std::vector<std::string> aVBandsPath);
+
+ std::vector<int> getVal(const Pt2di &pt, int resol=1);
+
+ void resampleR1toR2(std::string aR1);
+ std::string getR2Name(std::string aR1);
+
+private:
+
+  std::unique_ptr<Im2D_U_INT1> b2;
+  std::unique_ptr<Im2D_U_INT1>  b3;
+  std::unique_ptr<Im2D_U_INT1>  b4;
+  std::unique_ptr<Im2D_U_INT1>  b8A;
+  std::unique_ptr<Im2D_U_INT1>  b11;
+  std::unique_ptr<Im2D_U_INT1>  b12;
+
+  std::unique_ptr<Im2D_U_INT1> b2R2;
+  std::unique_ptr<Im2D_U_INT1>  b3R2;
+  std::unique_ptr<Im2D_U_INT1>  b4R2;
+
+};
+
 
 #endif // cataloguePeriodPheno_H

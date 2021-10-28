@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     // Declare the supported options.
     po::options_description desc("Allowed options");
     desc.add_options()
-            ("help", "produce help message")
+            ("help", "produce help message - Attention, l'appli va lire le fichier XML s2_carteEss.xml pour définir les options de l'outils (tuiles et masque utilisé)")
             ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2 ; calcule bande spectrale par trimestre, 3 ; applique une forêt aléatoire")
             ;
 
@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
     int mode(vm["outils"].as<int>());
     // lecture des paramètres pour cet utilitaire
     readXML("s2_carteEss.xml");
+    GDALAllRegister();
+    wd=wdRacine+ globTuile +"/";
     switch (mode) {
     case 1:{
         std::cout << " echantillonnage stratifié pt d'entrainement " << std::endl;
@@ -46,10 +48,6 @@ int main(int argc, char *argv[])
     }
     case 2:{
         std::cout << " calcul des valeurs spectrales trimestrielles moyennes (2016-2017) " << std::endl;
-        GDALAllRegister();
-        globTuile="T31UFR";
-        wd=wdRacine+ globTuile +"/";
-
         cataloguePeriodPheno cata;
         cata.traitement();
 
@@ -57,10 +55,8 @@ int main(int argc, char *argv[])
     }
     case 3:{
         std::cout << " applique une RF " << std::endl;
-        GDALAllRegister();
-        wd=wdRacine+ globTuile +"/";
-
         cataloguePeriodPheno cata;
+
         cata.applyRF(pathRF);
 
         break;
@@ -75,7 +71,6 @@ int main(int argc, char *argv[])
 }
 
 void echantillonPts(){
-
     // lecture carte compo et ES2021
     std::cout << "charge image " << pathCompo << std::endl;
     Im2D_U_INT1 imCompo=Im2D_U_INT1::FromFileStd(pathCompo);
@@ -83,11 +78,11 @@ void echantillonPts(){
     Im2D_U_INT1 imES=Im2D_U_INT1::FromFileStd(pathES);
     double xO(42250.0),yO(167700.0);
     int x0=((double) abs(xO-153038.0)/10.0);
-    int y0=((double) abs(yO-136888.0)/10.0);
+    int y0=((double) abs(yO-136700.0)/10.0);
 
     Pt2di pt1(x0,y0);
     Pt2di pt2(x0+10000,y0+10000); // grosso modo, nombre de pixel dans une tuile
-    int nbSub(100);
+    int nbSub(1000);// 100 c'est pas du tout assez, je passe à 1000 par classe
     std::vector<mpt*> aRes;
     // selection de n pt pour chaque classe de la carte compo, sauf pour la classe épicéa pour laquelle on sera plus restrictif.
     std::vector<int> vCode{2,3,4,5,6,7,8,9};
@@ -119,6 +114,7 @@ void echantillonPts(){
                  // création d'un points ogr
                  //pt p(tx[k],ty[k]);
                  aRes.push_back(new mpt(xO+10*tx[k]+5.0,yO-10*ty[k]-5.0,es)); // +5 et -5 pour être au centre du pixel
+                 //aRes.push_back(new mpt(tx[k],ty[k]));
                  //std::cout << " point " << k << " , " << std::to_string(pt.getX()) << " , " << std::to_string(pt.getY()) << std::endl;
              }
     }
@@ -130,25 +126,10 @@ void echantillonPts(){
     globTuile="T31UFR";
     wd=wdRacine+ globTuile +"/";
 
+
+    /* utilisé dans la premiere étape de prototypage
     cataloguePeriodPheno cata;
     cata.openDS();
-    // crée un fichier txt pour l'export des résultats
-    std::ofstream out;
-    out.open("obs-compoS2-A.txt");
-    std::vector<std::string> vB{"b2","b3","b4","b8","b11","b12"};
-    out << "compo;X;Y";
-    for (int tri(1);tri<5;tri++){
-        for (std::string b : vB){
-        out << ";" << b<< "_" <<std::to_string(tri) ;
-        }
-    }
-    out <<"\n" ;
-    int c(0);
-    OGRSpatialReference oSourceSRS, oTargetSRS;
-    oSourceSRS.importFromEPSG(31370);
-    oTargetSRS.importFromEPSG(32631);
-    OGRCoordinateTransformation * poCT = OGRCreateCoordinateTransformation( &oSourceSRS, &oTargetSRS );
-
     for (mpt * p : aRes){
         //if (c==10){break;}
         p->transform(poCT);
@@ -164,7 +145,34 @@ void echantillonPts(){
         }
         c++;
     out.close();
-    cata.closeDS();
+    cata.closeDS();*/
+
+    cataloguePeriodPheno cata;
+
+    cata.getMeanRadByTriMultiPt(aRes,"obs-compoS2-B.txt");
+
+
+    /*if(cata.openDS4RF()){ // vérifie que les bandes rayonnement moyen par trimestre sont calculées. attention, elles doivent l'être pour toute la forêt wallone sur cette tuile du coup..
+
+    // extraction pour chaque point de la valeur
+    for (mpt * p : aRes){
+        //if (c==10){break;}
+        p->transform(poCT);
+        //std::map<int,vector<double>> * r=cata.getMeanRadByTri1Pt(p->getX(),p->getY());
+        std::map<int,vector<int>> * r=cata.getMeanRadByTri1Pt(p->getX(),p->getY());
+
+            // out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+        out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+        for (auto kv : *r){
+            for ( v : kv.second){
+            out << ";"  << roundDouble(v) ;
+            }
+        }
+        out <<"\n" ;
+        }
+        c++;
+        */
+
 }
 
 
@@ -183,6 +191,7 @@ std::vector<int> subsample(int nbSub,int nbTot){
 
 void readXML(std::string aXMLfile){
     // Read the xml file into a vector
+    std::cout << " read params " << std::endl;
     xml_document<> doc;
     xml_node<> * root_node;
     std::ifstream theFile (aXMLfile);
@@ -210,6 +219,7 @@ void readXML(std::string aXMLfile){
     yMax=std::stoi(cur_node->value());
     cur_node = root_node->first_node("pathRF");
     pathRF=cur_node->value();
+    std::cout << " done" << std::endl;
 }
 
 std::string roundDouble(double d, int precisionVal){

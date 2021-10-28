@@ -81,8 +81,10 @@ bool Data::loadFromFile(std::string filename) {
 }
 
 // #jo start
+
 bool Data::loadFromStrings(std::string aRel,std::string aHeader) {
 
+  variable_names.clear();// ok maintenant je peux recharger des données
   bool result;
   // Open input file
   //std::ifstream input_file;
@@ -103,7 +105,7 @@ bool Data::loadFromStrings(std::string aRel,std::string aHeader) {
   num_cols = variable_names.size();
   num_cols_no_snp = num_cols;
 
-  //std::cout << "nombre d'espèces dans header" << num_cols << std::endl;
+  //std::cout << "nombre de variable " << num_cols  << ", nombre de ligne " << num_rows << std::endl;
 
   // Read body
   reserveMemory();
@@ -115,10 +117,10 @@ bool Data::loadFromStrings(std::string aRel,std::string aHeader) {
     std::stringstream line_stream(line);
     size_t column = 0;
     while (readFromStream(line_stream, token)) {
-      // lecture du relevé, il n'y a qu'un ligne
       set(column, row, token, error);
       ++column;
     }
+
 
     if (column > num_cols) {
       throw std::runtime_error(
@@ -131,7 +133,7 @@ bool Data::loadFromStrings(std::string aRel,std::string aHeader) {
     ++row;
  // }
   num_rows = row;
-  return error;
+  //return error;
 
 
   externalData = false;
