@@ -6,6 +6,8 @@
 #include "tuiles2OneDate.h"
 using namespace date;
 
+extern bool mDebug;
+
 class tuileS2OneDate;
 class pts;
 
@@ -23,6 +25,7 @@ class TS1Pos{
     }
 
     void add1Date(year_month_day * ymd,int code){
+        if (mDebug){std::cout << "TS1Pos::add1Date" << std::endl;}
         mVDates.at(c)=ymd;
         mVEtat.at(c)=code;
         c++;
@@ -44,6 +47,8 @@ class TS1Pos{
     int filtreVoisinDirect(int i, int val);
     int getEtatPourAnnee(int y);
     void printDetail();
+
+    int getDelaisCoupe(int y);
     int mU, mV;
     // résultat par année ; un vecteur par an
     std::map<int,int> mVRes;

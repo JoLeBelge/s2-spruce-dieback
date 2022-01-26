@@ -91,7 +91,7 @@ bool tuileS2OneDatePheno::openDS(){
         vDS.emplace(std::make_pair(b,DSpt));
     }
     for (int r(1) ; r<3;r++){
-        GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterMasqGenName("pheno", r).c_str(), GA_ReadOnly );
+        GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterMasqGenName(r).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair("masqR"+std::to_string(r),DSpt));
     }
     scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
@@ -143,7 +143,7 @@ void tuileS2OneDatePheno::masque(){
     if (mDebug){std::cout << "masque .." << std::endl;}
     for (int i(1) ; i<3 ; i++){
 
-        std::string out=getRasterMasqGenName("pheno",i);
+        std::string out=getRasterMasqGenName(i);
 
         std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");

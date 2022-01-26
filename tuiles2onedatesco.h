@@ -2,6 +2,15 @@
 #define TUILES2ONEDATESCO_H
 #include "tuiles2OneDate.h"
 
+extern bool overw;
+extern bool mDebug;
+extern std::string path_otb;
+extern std::string compr_otb;
+extern std::string wd;
+extern std::string globTuile;
+extern std::string globSuffix;
+extern double seuilCR;
+
 
 class tuileS2OneDateSco : public tuileS2OneDate
 {

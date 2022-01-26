@@ -13,6 +13,7 @@ extern bool debugDetail;
 
 extern std::string globTuile;
 extern std::string globResXYTest;
+extern std::string globSuffix;
 
 bool mDebug(0);
 
@@ -44,6 +45,7 @@ catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scan
                 t->mDate=ymdFromString(t->mAcqDate);
                 t->mPtrDate=& t->mDate;
                 t->mProdDate =f[i]["properties"]["productionDate"].GetString();
+                t->mSuffix = globSuffix;
                 //t->mPubDate =f[i]["properties"]["published"].GetString();
                 mVProduts.push_back(t);
             }
@@ -85,7 +87,7 @@ catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLine
         tuileS2OneDate * t=new tuileS2OneDate();
         t->decompressDirName =aDecompressDirName;
         t->readXML();
-
+        t->mSuffix = globSuffix;
         mVProduts.push_back(t);
     }
     std::cout << " done .." << std::endl;

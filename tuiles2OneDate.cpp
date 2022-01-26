@@ -16,6 +16,9 @@ double Ydebug(0);
 double seuilCR(1.7);
 extern bool mDebug;
 
+// scolytes; j'aimerai pouvoir avoir plusieurs masques , celui gha EP >50% et celui EP+DO > 50 % pour les besoins d'Adrien.
+// donc j'identifie toutes mes couches intermédiaires et de résultats avec ce suffixe.
+std::string globSuffix("");
 
 std::string globTuile;
 
@@ -273,17 +276,16 @@ void tuileS2OneDate::resample(){
     // check EPSG
 }*/
 
-
 std::string tuileS2OneDate::getDate(){
     return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2);
 }
 
 std::string tuileS2OneDate::getRasterMasqSecName() const{
-    return interDirName + "mask_R1_solnu.tif";
+    return interDirName + "mask"+mSuffix+"_R1_solnu.tif";
 }
-// type = type d'application, Sco versus compo pour le moment
-std::string tuileS2OneDate::getRasterMasqGenName(std::string type, int resol){
-    return interDirName + "mask_R"+std::to_string(resol)+type+".tif";
+//suffix= type d'application, Sco, compo , EP, DO+EP
+std::string tuileS2OneDate::getRasterMasqGenName(int resol){
+    return interDirName + "mask_R"+std::to_string(resol)+mSuffix+".tif";
 }
 
 year_month_day ymdFromString(std::string date){
@@ -394,7 +396,7 @@ std::string tuileS2OneDate::getRasterR1Name(std::string numBand){
 }
 
 std::string tuileS2OneDate::getRasterR2Name(std::string numBand){
-    return interDirName+"band_R2_B"+numBand+"_mask_10m.tif";
+    return interDirName+"band_R2_B"+numBand+"_mask"+mSuffix+"_10m.tif";
 }
 
 std::string tuileS2OneDate::getOriginalRasterR2Name(std::string numBand){

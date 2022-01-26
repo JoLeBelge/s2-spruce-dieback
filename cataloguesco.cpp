@@ -23,7 +23,7 @@ extern int nbDaysStress;
 
 extern std::string globTuile;
 extern std::string globResXYTest;
-
+extern std::string globSuffix;
 
 void catalogueSco::analyseTS(){
 
@@ -236,12 +236,20 @@ bool catalogueSco::openDS(){
         GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
         if( pDriver != NULL )
         {
+            if (debugDetail){std::cout << " création des couches résultats" << std::endl;}
             for (int y : mYs){
-                // MEM raster
+                // MEM raster : le nom output ne sert à rien mais il faut en donner un
                 std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 mMapResults.emplace(std::make_pair(y,ds));
+                // même chose pour les délais de coupe et la première date de détection d'un problème (cf besoin de Arthur)
+                if (debugDetail){std::cout << " delais de coupe année " << y << std::endl;}
+                output=wd+"output/etatSanitaire_"+globTuile+"_delaisCoupe"+std::to_string(y);
+                out=output.c_str();
+                GDALDataset  * ds2 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
+                ds2->GetRasterBand(1)->SetNoDataValue(0);
+                mMapResults.emplace(std::make_pair(y*10,ds2));
             }
         }
         std::cout << "done" << std::endl;
@@ -256,7 +264,12 @@ void catalogueSco::writeRes1pos(TS1Pos * ts) const{
         scanPix2[0]=ts->mVRes.at(y);
         //std::cout << "ts res pour y " << y << " est " << scanPix[0] << ", écriture à la position " << ts->mU << " , " << ts->mV << std::endl;
         mMapResults.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+        // délais de coupe
+        scanPix2[0]=ts->getDelaisCoupe(y);
+        mMapResults.at(y*10)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
     }
+
+    // écriture des délais de coupe
     CPLFree(scanPix2);
 }
 
@@ -265,10 +278,9 @@ void catalogueSco::writeRes1pos(TS1Pos * ts) const{
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
 void catalogueSco::createMaskForTuile(){
     if (mDebug){std::cout << " create Mask For tuile start" << std::endl;}
-    std::string masqueRW(EP_mask_path+"masque_EP.tif");
+    std::string masqueRW(EP_mask_path);
     int epsg(32631);
     if (globTuile=="T32ULU"){
-        masqueRW=EP_mask_path+"masque_resineux.tif";
         epsg=32632;
     }
     std::string out=getNameMasque();
@@ -341,10 +353,9 @@ void catalogueSco::closeDS(){
 
     for (auto kv : mMapResults){
         // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
+        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+std::to_string(kv.first)+".tif");
         const char *out=output.c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
-
         // on va également copier le fichier de style qml
         copyStyleES(output);
         GDALClose( kv.second);
@@ -352,7 +363,5 @@ void catalogueSco::closeDS(){
     }
     CPLFree(scanLineR1);
 }
-
-
 // copier le fichier de style QML pour Etat Sanitaire
 void copyStyleES(std::string tifPath);

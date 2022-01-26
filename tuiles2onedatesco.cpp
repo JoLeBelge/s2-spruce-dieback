@@ -68,8 +68,7 @@ void tuileS2OneDateSco::normaliseCR(){
 }
 
 std::string getNameMasqueEP(int i){
-    return wd+"input/masque_EP_"+globTuile+"_R"+std::to_string(i)+".tif";
-    //return EP_mask_path+"masque_EP_T31UFR_R"+std::to_string(i)+"_80pct.tif";
+    return wd+"input/masque_EP"+globSuffix+"_"+globTuile+"_R"+std::to_string(i)+".tif";
 }
 
 void tuileS2OneDateSco::computeCodeLine(){
@@ -276,11 +275,11 @@ void tuileS2OneDateSco::masqueSpecifique(){
 }
 
 std::string tuileS2OneDateSco::getRasterCRName(){
-    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR.tif";
+    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR"+mSuffix+".tif";
 }
 
 std::string tuileS2OneDateSco::getRasterCRnormName() const{
-    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm.tif";
+    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm"+mSuffix+".tif";
 }
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
@@ -289,7 +288,7 @@ void tuileS2OneDateSco::masque(){
     if (mDebug){std::cout << "masque .." ;}
     for (int i(1) ; i<3 ; i++){
         //std::string out=interDirName+"mask_R"+std::to_string(i)+".tif";
-        std::string out=getRasterMasqGenName("",i);
+        std::string out=getRasterMasqGenName(i);
         std::string clm(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R"+std::to_string(i)+".tif");
         std::string edg(wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_EDG_R"+std::to_string(i)+".tif");
         // check que le fichier out n'existe pas

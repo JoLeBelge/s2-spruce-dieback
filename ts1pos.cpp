@@ -1,6 +1,6 @@
 #include "ts1pos.h"
 
-bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état
+bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état/ redondant avec mDebug
 int nbDaysStress(90);
 
 std::string globResXYTest("toto");
@@ -424,7 +424,6 @@ int TS1Pos::getEtatPourAnnee(int y){
         i++;
     }
 
-
     // il faut vérifier que j'ai 3 dates consécutives avec code 2.
     // je pourrais être moins restrictif car des fois j'ai 1 code 2 en décembre et puis 2 autres en janvier de l'année d'après, ça fonctionne pas alors.
     if (etat.size()>0){
@@ -481,10 +480,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     mVEtat.at(c)=code;
     //mVCRSWIR.at(c)=t->getCRSWIR(pt_);
 
-    if (1){
 
-    }
- if (0){
     rasterFiles r_b2(t->getRasterR1Name("2"));
     mVB2.at(c)=r_b2.getValue(pt_.X(),pt_.Y(),1)/10000.0;
     rasterFiles r_b3(t->getRasterR1Name("3"));
@@ -497,7 +493,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     mVB11.at(c)=r_b11.getValue(pt_.X(),pt_.Y())/10000.0;
     rasterFiles r_b12(t->getOriginalRasterR2Name("12"));
     mVB12.at(c)=r_b12.getValue(pt_.X(),pt_.Y())/10000.0;
-}
+
 
     /* B2 bleu
  * B3 vert
@@ -584,9 +580,10 @@ void TS1PosTest::printDetail(std::string aOut){
                 std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) <<std::endl;
             }
         }
-        std::cout << "\n annee;etat" <<std::endl;
+        std::cout << "\n annee;etat;delaisCoupe" <<std::endl;
+
         for (auto kv : mVRes){
-            std::cout << kv.first << ";" << kv.second <<std::endl;
+            std::cout << kv.first << ";" << kv.second << ";" << getDelaisCoupe(kv.first) <<std::endl;
         }
     }
 }
@@ -633,6 +630,46 @@ std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){
             aRes.push_back(c);
         }
         c++;
+    }
+    return aRes;
+}
+
+int TS1Pos::getDelaisCoupe(int y){
+    if (mDebug){std::cout << "TS1Pos::getDelaisCoupe " << y << std::endl;}
+
+    int aRes(0);
+    //if (mVRes.at(y)==2 | mVRes.at(y)==4)
+    if (mVRes.at(y)==4){
+        // arbre coupé après dépérissement constaté
+        // récupère un vecteur de code d'état qui correspond à cette année
+        year ay{y};
+        std::vector<int> etat;
+        std::vector<year_month_day *> dates;
+        int i(0);
+        //for (const year_month_day * ymd : mVDates){
+        for (year_month_day * ymd : mVDates){
+            if (ymd->year()==ay){
+                dates.push_back(ymd);
+                etat.push_back(mVEtatFin.at(i));
+            }
+            i++;
+        }
+
+        std::vector<int>::iterator p =std::find(etat.begin(), etat.end(), 2);
+        if (p != etat.end()){
+            int pos0=p - etat.begin();
+            //std::distance(vec.begin(), it)
+            std::vector<int>::iterator q =std::find(etat.begin(), etat.end(), 4);
+            if (q != etat.end()){
+            int pos1=q - etat.begin();
+            days d=(sys_days{*dates.at(pos1)}-sys_days{*dates.at(pos0)});
+            aRes=std::max(d.count()/7,1);
+            }
+
+        } else {
+            // coupée l'année d'avant
+            aRes=254;
+        }
     }
     return aRes;
 }

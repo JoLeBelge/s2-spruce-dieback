@@ -44,6 +44,8 @@ protected:
     float * scanLineR2;
     float * scanPix;
 
+
+
 };
 
 

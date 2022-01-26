@@ -49,7 +49,7 @@ std::string getNameMasqueEP(int i=1);
 class tuileS2OneDate
 {
 public:
-    tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0){
+    tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0),mSuffix(""){
         //std::cout << "creation tuileS2" << std::endl;
     }
 
@@ -72,7 +72,8 @@ public:
     ,mProd(t->mProd)
     ,mAcqDate(t->mAcqDate)
     ,mFeature_id(t->mFeature_id)
-    ,mPtrDate(t->mPtrDate){}
+    ,mPtrDate(t->mPtrDate)
+    ,mSuffix(t->mSuffix){}
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
     tuileS2OneDate(const  tuileS2OneDate&) = delete;
@@ -132,7 +133,7 @@ public:
     std::string getOriginalRasterR2Name(std::string numBand);
 
     std::string getRasterMasqSecName() const;
-    std::string getRasterMasqGenName(std::string type="",int resol=1);
+    std::string getRasterMasqGenName(int resol=1);
 
     std::string getDate();
 
@@ -167,11 +168,12 @@ public:
     int gety() const {
         return mDate.year().y_;
     }
-
+    std::string mSuffix;
 protected:
 
    std::map<std::string, GDALDataset*> vDS; // pour Test1Pos ; je veux pafois faire tourner le test sur des centaines de points, là ça deviens trop long alors je créer une maps de Dataset, un pour chaque bande, affin de ne pas devoir les réouvrir à chaque position
    float * scanPix;
+
 };
 
 

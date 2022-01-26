@@ -75,9 +75,8 @@ private:
 
     std::vector<tuileS2OneDatePheno *>  mVProdutsOK;
 
-    // une map de dataset gdal contenant les résultats, une carte raster pour chaque année.
-    // clé ; année. val ; dataset ptr
-    //std::map<int,GDALDataset *> mMapResults;
+    // une map de dataset gdal contenant les résultats (pas les mm pour catalogue PeriodPheno que catalogue Sco
+    // clé ; nom de la banbde. val ; dataset ptr
     std::map<std::string,GDALDataset *> mMapResults;
 
     std::unique_ptr<ranger::ForestClassification> forest;

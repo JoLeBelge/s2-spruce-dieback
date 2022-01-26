@@ -2,7 +2,7 @@
   <pathCompo>/home/gef/Documents/input/compo_all_sp10m.tif</pathCompo>
 
  <pathES>/home/gef/Documents/input/etatSanitaire_2021_masq_evol_BL72_tmp.tif</pathES>
- 
+  <suffix> pheno </suffix>
  <buildDir>/home/gef/Documents/build-s2_ts/</buildDir>
  <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
   <globTuile>T31UFR</globTuile>

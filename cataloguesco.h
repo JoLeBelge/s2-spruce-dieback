@@ -1,7 +1,7 @@
 #ifndef CATALOGUESCO_H
 #define CATALOGUESCO_H
 #include "catalogue.h"
-#include "tuiles2OneDate.h"
+#include "tuiles2onedatesco.h"
 
 class catalogueSco;
 
@@ -25,6 +25,9 @@ private:
 
     // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique OLD OLD pas utilisé
     //void extractRatioForPts(std::vector<pts> * aVpts);
+
+
+    std::map<int,GDALDataset *> mMapResults;
 
     int getMasqEPVal(int aCol, int aRow);
     std::string getNameMasque(int i=1){return getNameMasqueEP(i);}

@@ -15,6 +15,8 @@ extern std::string path_otb;
 extern bool doAnaTS;
 extern bool docleanTS1pos;
 
+extern std::string globSuffix;
+
 int yMax(2018);
 
 int main(int argc, char *argv[])
@@ -219,6 +221,8 @@ void readXML(std::string aXMLfile){
     yMax=std::stoi(cur_node->value());
     cur_node = root_node->first_node("pathRF");
     pathRF=cur_node->value();
+    cur_node = root_node->first_node("suffix");
+    globSuffix=cur_node->value();
     std::cout << " done" << std::endl;
 }
 
