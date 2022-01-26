@@ -15,6 +15,7 @@ documentation/*.synctex.gz
 documentation/Images/smiley*
 build-s2_postProcess/*
 build-s2_carteEss/*
+build-s2_ts/*
 documentation/Images/etatSan/*
 s2_carteEss/s2_carteEss.pro.user
 s2_carteEss/s2_carteEss.pro.user*
