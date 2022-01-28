@@ -296,6 +296,11 @@ void readXML(std::string aXMLfile){
         cur_node = root_node->first_node("doFirstDateSco");
         if (cur_node){doFirstDateSco=std::stoi(cur_node->value());} else {std::cout << " pas doFirstDateSco dans fichier xml" << std::endl;}
 
+        cur_node = root_node->first_node("date1");
+        if (cur_node){d1=cur_node->value();} else {std::cout << " pas date1 dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("date2");
+        if (cur_node){d2=cur_node->value();} else {std::cout << " pas date2 dans fichier xml" << std::endl;}
+
         cur_node = root_node->first_node("doAnaTS");
         if (cur_node){doAnaTS=std::stoi(cur_node->value());} else {std::cout << " pas doAnaTS dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("Tuiles");

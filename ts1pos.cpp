@@ -420,6 +420,11 @@ int TS1Pos::getEtatPourAnnee(int y){
     for (const year_month_day * ymd : mVDates){
         if (ymd->year()==ay){
             etat.push_back(mVEtatFin.at(i));
+            // on rajoute deux dates car si on observe un stress scolyte en décembre, suivi de deux autres l'année d'après, on veux le savoir.
+            /*if (i+1<mVDates.size() && mVDates.at(i+1)->year()>ay && mVEtatFin.at(i)==2){
+                etat.push_back(mVEtatFin.at(i+1));
+                if (i+2<mVDates.size() && mVEtatFin.at(i+1)==2
+            }*/
         }
         i++;
     }
@@ -582,7 +587,7 @@ void TS1PosTest::printDetail(std::string aOut){
         }
         std::cout << "\n annee;etat;delaisCoupe;FirstDateSco" <<std::endl;
         for (auto kv : mVRes){
-            std::cout << kv.first << ";" << kv.second << ";" << getDelaisCoupe(kv.first) << kv.second << ";" << getDelaisCoupe(kv.first,1) <<std::endl;
+            std::cout << kv.first << ";" << kv.second << ";" << getDelaisCoupe(kv.first) << ";" << getDelaisCoupe(kv.first,1) <<std::endl;
         }
     }
 }
@@ -638,7 +643,9 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
 
     int aRes(0);
 
-    if (mVRes.at(y)==4 | (mVRes.at(y)==2 && firstDate)){
+    if (mVRes.at(y)==4 | (mVRes.at(y)==2 && firstDate)){ // quand j'ai deux dates scolyté en fin d'année, il me met dans les résultats que c'est pas scolyté vu qu'il en faut 3 d'affilé Grr
+
+        // ./s2_timeSerie --xmlIn ../s2_sco.xml --XYtest 672435 5567025  me montre une situation conflictuelle ou ça ne fonctionne pas. C'est pour ces pixels qui sont en feuillus et qui sont détecté comme étant scolyté durant l'hiver. Rien ne fonctionne sur les feuillus, l'algo détecte soit de la coupe, soit du stress, rien ne va
         // arbre coupé après dépérissement constaté
         // récupère un vecteur de code d'état qui correspond à cette année
         year ay{y};
@@ -650,6 +657,12 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
             if (ymd->year()==ay){
                 dates.push_back(ymd);
                 etat.push_back(mVEtatFin.at(i));
+                // à priori la méthode fonctionne pas si le changement de ES 1 vers ES 2 ou de ES2 vers ES 4 à lieu précisément entre deux années. Par exemple un scolyte coupé en décembre.  Faudrai y remédier. en prenant une date de l'année d'après?
+                // si c'est la dernière date de l'année, je prends une date de l'année d'après si jamais le changement 2 --> 4 à lieu à ce moment
+                if (i+1<mVDates.size() && mVDates.at(i+1)->year()>ay){
+                    dates.push_back(mVDates.at(i+1));
+                    etat.push_back(mVEtatFin.at(i+1));
+                }
             }
             i++;
         }
@@ -658,11 +671,15 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
         if (p != etat.end()){
             int pos0=p - etat.begin();
             if (firstDate){
+                if (pos0==0){aRes=255;//std::cout << "scolyte dès le début d'année" << std::endl;
+                } else {
                 year_month_day debuty(dates.at(pos0)->year(),month{1},day{1});
+                //std::cout << " date début de l'année " << debuty << ", début de l'attaque " << *dates.at(pos0) << ", pos0=" << pos0<< std::endl;
                 days d=sys_days{*dates.at(pos0)}-sys_days{debuty};
                 aRes=std::max(d.count()/7,1); // sous forme de nombre de semaines également
+                }
             } else {
-            //std::distance(vec.begin(), it)
+
             std::vector<int>::iterator q =std::find(etat.begin(), etat.end(), 4);
             if (q != etat.end()){
             int pos1=q - etat.begin();

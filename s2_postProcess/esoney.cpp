@@ -14,9 +14,7 @@ void esOney::createTmp(){
     const char *comp = "COMPRESSION=DEFLATE";
     if (strcmp(*pIn->GetMetadata("IMAGE_STRUCTURE"),comp)== 0){test=1;}
 
-
     //std::cout << "compression " << *pIn->GetMetadata("IMAGE_STRUCTURE")<< std::endl;
-
     //std::cout << "compression " << pIn->GetMetadataItem("COMPRESSION", "IMAGE_STRUCTURE")<< std::endl;
 
     GDALClose(pIn);

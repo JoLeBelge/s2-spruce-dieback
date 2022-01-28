@@ -14,6 +14,7 @@ struct PointerCompare {
         return !(*l < *r);
     }
 };
+extern std::string d1,d2;
 
 class catalogue
 {

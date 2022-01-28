@@ -10,30 +10,33 @@
  <doDelaisCoupe>1</doDelaisCoupe>
  <doFirstDateSco>1</doFirstDateSco>
  
+  <date1>2016-01-01</date1>
+ <!-- <date2>2018-01-01</date2>  -->
+ 
  <Tuiles>
         <Tuile name="T31UER">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-           <doTuile>0</doTuile>
+           <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UES">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-              <doTuile>0</doTuile>
+              <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UFQ">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-              <doTuile>0</doTuile>
+              <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UFR">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-              <doTuile>0</doTuile>
+              <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UFS">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-              <doTuile>0</doTuile>
+              <doTuile>1</doTuile>
         </Tuile>
          <Tuile name="T31UGR">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
-              <doTuile>0</doTuile>
+              <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UGS">
           <wd>/media/gef/Datas/S2Scolyte/</wd>

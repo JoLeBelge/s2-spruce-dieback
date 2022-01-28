@@ -80,6 +80,23 @@ catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scan
 catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
     // listing des dossiers dans intermediate puis lecture des métadonnées XML
     std::cout << "création de la collection depuis les dossiers présent dans le répertoire " << wd << "intermediate/ " << std::endl;
+
+
+    std::cout << "d1 " << d1 << " , d2 " << d2 << std::endl;
+     std::istringstream in1{d1},in2{d2};
+     //date::sys_days sd1,sd2;
+     //date::parse(in1, "%F", sd1);
+     //date::parse(in2, "%F", sd2);
+     date::year_month_day dfirst;
+     date::year_month_day dlast;
+
+     in1 >> date::parse("%F", dfirst);
+     in2 >> date::parse("%F", dlast);
+
+
+
+
+
     for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
         std::string aDecompressDirName= p.path().filename().string();
         // création d'une tuile
@@ -87,7 +104,10 @@ catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLine
         t->decompressDirName =aDecompressDirName;
         t->readXML();
         t->mSuffix = globSuffix;
+
+        if (t->getymd() > dfirst && t->getymd() < dlast){
         mVProduts.push_back(t);
+        } else if (mDebug){ std::cout << "prise de vue " << t->getDate() << " pas prise en compte , date1  " << dfirst <<" , date 2 " << dlast<< std::endl;}
     }
     // change le nombre de fichiers que l'appli peut ouvrir simultanément
 

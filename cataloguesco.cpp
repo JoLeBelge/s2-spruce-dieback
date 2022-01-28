@@ -240,7 +240,7 @@ bool catalogueSco::openDS(){
             if (debugDetail){std::cout << " création des couches résultats" << std::endl;}
             for (int y : mYs){
                 // MEM raster : le nom output ne sert à rien mais il faut en donner un
-                std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
+                std::string output="toto";
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 mMapResults.emplace(std::make_pair(y,ds));
@@ -359,10 +359,9 @@ void catalogueSco::closeDS(){
 
     const char *pszFormat = "GTiff";
     GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-   // c'est à ce moment qu'on sauve au format tif no résultats
+   // c'est à ce moment qu'on sauve au format tif nos résultats
     for (auto kv : mMapResults){
-        const char *out=getNameES(kv.first).c_str();
-        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        GDALDataset  * ds = pDriver->CreateCopy(getNameES(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
         // on va également copier le fichier de style qml
         copyStyleES(getNameES(kv.first));
         GDALClose( kv.second);
@@ -370,16 +369,17 @@ void catalogueSco::closeDS(){
     }
     if (doDelaisCoupe){
     for (auto kv : mMapDelaisCoupe){
-        const char *out=getNameDelaisCoupe(kv.first).c_str();
-        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        //const char *out2=getNameDelaisCoupe(kv.first).c_str(); // cette ligne est erronée ; le string retourné par la fonction est une variables temporaire, et donc un pointeur vers cette variable va être déréférencé
+        std::cout << "export date délais coupe " << getNameDelaisCoupe(kv.first) << std::endl;
+        GDALDataset  * ds = pDriver->CreateCopy(getNameDelaisCoupe(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
         GDALClose(kv.second);
         GDALClose(ds);
     }
     }
     if (doFirstDateSco){
     for (auto kv : mMapFirstDateSco){
-        const char *out=getNameFirstDateSco(kv.first).c_str();
-        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        std::cout << "export date première attaque " << getNameFirstDateSco(kv.first) << std::endl;
+        GDALDataset  * ds = pDriver->CreateCopy(getNameFirstDateSco(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
         GDALClose(kv.second);
         GDALClose(ds);
     }
