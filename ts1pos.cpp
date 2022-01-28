@@ -637,8 +637,8 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
     if (mDebug){std::cout << "TS1Pos::getDelaisCoupe " << y << std::endl;}
 
     int aRes(0);
-    //if (mVRes.at(y)==2 | mVRes.at(y)==4)
-    if (mVRes.at(y)==4){
+
+    if (mVRes.at(y)==4 | (mVRes.at(y)==2 && firstDate)){
         // arbre coupé après dépérissement constaté
         // récupère un vecteur de code d'état qui correspond à cette année
         year ay{y};
@@ -657,7 +657,6 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
         std::vector<int>::iterator p =std::find(etat.begin(), etat.end(), 2);
         if (p != etat.end()){
             int pos0=p - etat.begin();
-
             if (firstDate){
                 year_month_day debuty(dates.at(pos0)->year(),month{1},day{1});
                 days d=sys_days{*dates.at(pos0)}-sys_days{debuty};
@@ -674,7 +673,7 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
 
         } else {
             // coupée l'année d'avant
-            aRes=254;
+            aRes=255;
         }
     }
     return aRes;

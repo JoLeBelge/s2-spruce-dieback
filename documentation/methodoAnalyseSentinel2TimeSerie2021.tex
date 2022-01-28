@@ -218,6 +218,7 @@ le $CRSWIR_{theorique}(t)$ représente bien entendu la valeur calculée au moyen
 	\item \crule[cl6]{1cm}{1cm} ; pixel qui est un mélange, détecté car présente un stress passager en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse) 
 \end{enumerate}
 
+
 Les filtres et les règles de décisions permettant d'attribuer un état sanitaire à une observation d'une série temporelle sont brièvement présentés ici. On peux considérer que la série temporelle pour un pixel donné est synthétisée sous forme d'un tableau à 2 colonnes pour lequel chaque ligne constitue une date pour laquelle on dispose d'une information (prise de vue non ennuagée pour cette position). La première colonne est celle contenant l'information de la date de l'observation. La deuxième colonne contient un état sanitaire présumé, qui peut prendre la valeur de 1, 2 ou 3 avant de subir l'analyse présentée ici. La valeur de 1 signifie que la valeur de CRSWIR permet de supposer que le peuplement est sain. La valeur de 2 indique par contre que le peuplement semble en situation de stress, avec un $CRSWIR_{normalise}$ supérieur au seuil fixé (ex. 1.4, voir ligne en pointillé de la figure \ref{fig:harmo}).
 
 L'analyse commence par un premier filtre qui vise à retirer les valeurs aberrantes de la série temporelle. On va pour ce faire contrôler que aucune valeur de 2 (stress) ou 3 (coupé) n'apparaît de manière isolée. L'hypothèse est simplement qu'un pixel détecté comme stressé à une date mais considéré comme sain à la date précédente à la date suivante correspond à une observation aberrantes qui sera donc retiré ici.
@@ -480,6 +481,17 @@ Enfin, un dernier filtre permet d'appréhender la situation assez complexe mais 
 	\caption{Illustration pour des pixels détectés comme étant en mélange \crule[cl6]{1cm}{1cm}}\label{fig:illuCl6}
 \end{figure}
 
+\subsection{Délais de coupe et première date de détection de scolyte}
+
+Les résultats de la détection des scolytes par analyse de série temporelle est résumée sous forme de carte d'états sanitaires annuelles. Disposer d'un état sanitaire par année est un compromis de synthèse, affin de simplifier l'information tout en disposant de suffisamment de détails. Néanmoins, il peut s'avérer nécessaire d'utiliser d'autre informations, tels que, pour un peuplement en éclaircie sanitaire, le délais de coupe. Egalement, la première date de détection d'une attaque de scolyte est aussi intéressante, d'une part pour un suivi plus fin des foyers de scolyte, d'autre part pour la validation de la carte d'état sanitaire par photointerprétation des orthophotomosaiques annuelles de la région Wallonne.
+Les cartes de délais de coupe et de première apparition des scolytes peuvent être exportées de manière optionnelle. Il s'agit, comme pour les cartes d'état sanitaire, d'une série temporelle de carte à raison de une par année.
+L'information ne sera pertinente que pour la première année d'attaque de scolyte. 
+Si un peuplement est attaqué en 2017, la carte de délais de coupe et de première date d'attaque pour l'année  2018 contiendra une valeur nulle.
+Ces cartes sont de format 8bits, avec des valeurs comprises entre 0 et 255.
+Affin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours.
+
+Par ailleurs, la valeur spéciale 255 signifie que le pixel a été attaqué et/ou coupé l'année précédente. La valeur de 0, elle, est utilisée si le pixel n'est pas dans le masque forestier ou si aucune attaque de scolyte n'est à constater.
+
 \section{Le logiciel s2{\textunderscore}timeSerie}
 
 Bien que conceptuellement la méthode ne soit pas extrêmement compliquée, le volume de donnée est considérable et nécessite une organisation soigneuse ainsi qu'une méthode de calcul optimisée. C'est dans ce but qu'est développé l'application \textbf{s2{\textunderscore}timeSerie}, sous C++ et dans un environnement Linux.
@@ -505,40 +517,48 @@ Maintenant, les paramètres sont renseignés au moyen d'un fichier xml qui prés
 \begin{lstlisting}
 <params>
 
-<buildDir>/home/gef/Documents/build-s2_ts/</buildDir>
 <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
 <EP_mask_path>/home/gef/Documents/input/masque_EP.tif</EP_mask_path>
 <suffix></suffix>
-<catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
+<catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 
+2 : pas de téléchargement -->
 <doAnaTS> 1 </doAnaTS>
 <debugDetail>0</debugDetail>
 
+<doDelaisCoupe>1</doDelaisCoupe>
+<doFirstDateSco>1</doFirstDateSco>
+
 <Tuiles>
-<Tuile name="T31UER">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UES">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UFQ">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UFR">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UFS">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UGR">
-<wd>/media/gef/Data2/S2Scolyte/</wd>
-</Tuile>
-<Tuile name="T31UGS">
-<wd>//media/gef/Datas/S2Scolyte/</wd>
-</Tuile>
+	<Tuile name="T31UER">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UES">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UFQ">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UFR">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UFS">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UGR">
+		<wd>/media/gef/Data2/S2Scolyte/</wd>
+		<doTuile>0</doTuile>
+	</Tuile>
+	<Tuile name="T31UGS">
+		<wd>/media/gef/Datas/S2Scolyte/</wd>
+		<doTuile>1</doTuile>
+	</Tuile>
 </Tuiles>
-
 </params>
-
 \end{lstlisting}
 
 Ce sytème offre plus de flexibilité, à savoir

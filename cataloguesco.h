@@ -34,6 +34,16 @@ private:
 
     int getMasqEPVal(int aCol, int aRow);
     std::string getNameMasque(int i=1){return getNameMasqueEP(i);}
+
+    std::string getNameDelaisCoupe(int y){
+        return wd+"delaisCoupe_"+globTuile+"_"+globSuffix+"_"+std::to_string(y)+".tif";
+    }
+    std::string getNameFirstDateSco(int y){
+        return wd+"FirstDateSco_"+globTuile+"_"+globSuffix+"_"+std::to_string(y)+".tif";
+    }
+    std::string getNameES(int y){
+        return wd+"etatSanitaire_"+globTuile+"_"+globSuffix+std::to_string(y)+".tif";
+    }
     // ouvre tout les raster dataset
     bool openDS();
     void closeDS();

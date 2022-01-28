@@ -279,24 +279,25 @@ void readXML(std::string aXMLfile){
         root_node = doc.first_node("params");
 
         cur_node = root_node->first_node("path_otb");
-        path_otb=cur_node->value();
+         if (cur_node){
+        path_otb=cur_node->value();} else {std::cout << " pas path_otb dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("EP_mask_path");
-        EP_mask_path=cur_node->value();
+        if (cur_node){EP_mask_path=cur_node->value();} else {std::cout << " pas EP_mask_path dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("suffix");
-        globSuffix=cur_node->value();
+        if (cur_node){globSuffix=cur_node->value();} else {std::cout << " pas suffix dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("catalogueMode");
-        catalogueMode=std::stoi(cur_node->value());
+        if (cur_node){catalogueMode=std::stoi(cur_node->value());} else {std::cout << " pas catalogueMode dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("debugDetail");
-        debugDetail=std::stoi(cur_node->value());
+        if (cur_node){debugDetail=std::stoi(cur_node->value());} else {std::cout << " pas debugDetail dans fichier xml" << std::endl;}
         mDebug=debugDetail;
 
         cur_node = root_node->first_node("doDelaisCoupe");
-        doDelaisCoupe=std::stoi(cur_node->value());
+        if (cur_node){doDelaisCoupe=std::stoi(cur_node->value());} else {std::cout << " pas doDelaisCoupe dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("doFirstDateSco");
-        doFirstDateSco=std::stoi(cur_node->value());
+        if (cur_node){doFirstDateSco=std::stoi(cur_node->value());} else {std::cout << " pas doFirstDateSco dans fichier xml" << std::endl;}
 
         cur_node = root_node->first_node("doAnaTS");
-        doAnaTS=std::stoi(cur_node->value());
+        if (cur_node){doAnaTS=std::stoi(cur_node->value());} else {std::cout << " pas doAnaTS dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("Tuiles");
         // tuile et chemin d'accès; je dois mettre ça dans deux vecteur, je suppose. Ou un vecteur de tuple pour avoir les deux directement.
         for (xml_node<> * node = cur_node->first_node("Tuile"); node; node = node->next_sibling())
@@ -304,13 +305,15 @@ void readXML(std::string aXMLfile){
             std::string n(node->first_attribute("name")->value());
             //std::cout << " tuile " << n <<  std::endl;
             xml_node<> * nodeP=node->first_node("wd");
-            mapTuiles.emplace(std::make_pair(n,nodeP->value()));
+             if (nodeP){mapTuiles.emplace(std::make_pair(n,nodeP->value()));} else {std::cout << " pas wd pour tuile " << n << " dans fichier xml" << std::endl;}
             nodeP=node->first_node("doTuile");
+            if (nodeP){
             mapDoTuiles.emplace(std::make_pair(n,std::stoi(nodeP->value())));
+            } else {
+                mapDoTuiles.emplace(std::make_pair(n,true));
+            }
         }
 
-        //cur_node = root_node->first_node("globTuile");
-        //globTuile=cur_node->value();
         std::cout << " done" << std::endl;
     }
 }

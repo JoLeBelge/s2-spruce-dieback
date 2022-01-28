@@ -248,12 +248,12 @@ bool catalogueSco::openDS(){
                 if (doDelaisCoupe){
                 if (debugDetail){std::cout << " delais de coupe année " << y << std::endl;}
                 GDALDataset  * ds2 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
-                ds2->GetRasterBand(1)->SetNoDataValue(0);
+                ds2->GetRasterBand(1)->SetNoDataValue(255);
                 mMapDelaisCoupe.emplace(std::make_pair(y,ds2));
                 }
                 if (doFirstDateSco){
                 GDALDataset  * ds3 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
-                ds3->GetRasterBand(1)->SetNoDataValue(0);
+                ds3->GetRasterBand(1)->SetNoDataValue(255);
                 mMapFirstDateSco.emplace(std::make_pair(y,ds3));
                 }
             }
@@ -359,21 +359,18 @@ void catalogueSco::closeDS(){
 
     const char *pszFormat = "GTiff";
     GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-
+   // c'est à ce moment qu'on sauve au format tif no résultats
     for (auto kv : mMapResults){
-        // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+std::to_string(kv.first)+".tif");
-        const char *out=output.c_str();
+        const char *out=getNameES(kv.first).c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
         // on va également copier le fichier de style qml
-        copyStyleES(output);
+        copyStyleES(getNameES(kv.first));
         GDALClose( kv.second);
         GDALClose(ds);
     }
     if (doDelaisCoupe){
     for (auto kv : mMapDelaisCoupe){
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+"_delaisCoupe_"+std::to_string(kv.first)+".tif");
-        const char *out=output.c_str();
+        const char *out=getNameDelaisCoupe(kv.first).c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
         GDALClose(kv.second);
         GDALClose(ds);
@@ -381,8 +378,7 @@ void catalogueSco::closeDS(){
     }
     if (doFirstDateSco){
     for (auto kv : mMapFirstDateSco){
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+"_FirstDateSco_"+std::to_string(kv.first)+".tif");
-        const char *out=output.c_str();
+        const char *out=getNameFirstDateSco(kv.first).c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
         GDALClose(kv.second);
         GDALClose(ds);
