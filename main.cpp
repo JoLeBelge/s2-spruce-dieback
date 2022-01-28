@@ -31,6 +31,7 @@ extern std::string XYtestFile;
 
 // key ; nom de tuile. Val ; working directory
 std::map<std::string,std::string> mapTuiles;
+std::map<std::string,bool> mapDoTuiles;
 extern std::string globSuffix;
 int catalogueMode(1);
 
@@ -152,6 +153,8 @@ int main(int argc, char *argv[])
                     mapTuiles.emplace(std::make_pair(t,"/home/gef/Documents/"));
                 }
                 else {  mapTuiles.emplace(std::make_pair(t,wdRacine));}
+
+                mapDoTuiles.emplace(std::make_pair(t,1));
             }
 
 
@@ -160,47 +163,49 @@ int main(int argc, char *argv[])
 
         for (auto kv : mapTuiles){
 
-            std::string t=kv.first;
-            wd=kv.second+ t +"/";
-            globTuile=t;
-            std::cout << " tuile " <<   globTuile << ", wd " << wd << std::endl;
+            if (mapDoTuiles.find(kv.first)!=mapDoTuiles.end() && mapDoTuiles.at(kv.first)){
+                std::string t=kv.first;
+                wd=kv.second+ t +"/";
+                globTuile=t;
+                std::cout << " tuile " <<   globTuile << ", wd " << wd << std::endl;
 
-            // création du wd si nécessaire
-            boost::filesystem::path dir(wd);
-            boost::filesystem::create_directory(dir);
-            boost::filesystem::path dir2(wd+"raw/");
-            boost::filesystem::create_directory(dir2);
-            boost::filesystem::path dir3(wd+"intermediate/");
-            boost::filesystem::create_directory(dir3);
-            boost::filesystem::path dir4(wd+"output/");
-            boost::filesystem::create_directory(dir4);
-            boost::filesystem::path dir5(wd+"input/");
-            boost::filesystem::create_directory(dir5);
+                // création du wd si nécessaire
+                boost::filesystem::path dir(wd);
+                boost::filesystem::create_directory(dir);
+                boost::filesystem::path dir2(wd+"raw/");
+                boost::filesystem::create_directory(dir2);
+                boost::filesystem::path dir3(wd+"intermediate/");
+                boost::filesystem::create_directory(dir3);
+                boost::filesystem::path dir4(wd+"output/");
+                boost::filesystem::create_directory(dir4);
+                boost::filesystem::path dir5(wd+"input/");
+                boost::filesystem::create_directory(dir5);
 
 
-            switch (catalogueMode) {
-            case 1:{
-                std::cout << "\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
-                // lancer la requete theia avant de créer le catalogue
-                std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
-                //std::cout << aCommand << std::endl;
-                system(aCommand.c_str());
-                std::string inputJson=wd+"search.json";
-                catalogueSco cata(inputJson);
-                cata.traitement();
-                std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
+                switch (catalogueMode) {
+                case 1:{
+                    std::cout << "\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
+                    // lancer la requete theia avant de créer le catalogue
+                    std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
+                    //std::cout << aCommand << std::endl;
+                    system(aCommand.c_str());
+                    std::string inputJson=wd+"search.json";
+                    catalogueSco cata(inputJson);
+                    cata.traitement();
+                    std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
 
-                break;
-            }
-            case 2:{
-                // ne pas mettre de parenthèse !.
-                std::cout <<"\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
-                catalogueSco cata;
-                cata.traitement();
-                std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
+                    break;
+                }
+                case 2:{
+                    // ne pas mettre de parenthèse !.
+                    std::cout <<"\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
+                    catalogueSco cata;
+                    cata.traitement();
+                    std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
 
-                break;
-            }
+                    break;
+                }
+                }
             }
         }
 
@@ -264,6 +269,7 @@ void readXML(std::string aXMLfile){
         std::cout << " read params " << std::endl;
         xml_document<> doc;
         xml_node<> * root_node;
+         xml_node<> * cur_node;
         std::ifstream theFile (aXMLfile);
         std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
         buffer.push_back('\0');
@@ -271,6 +277,7 @@ void readXML(std::string aXMLfile){
         doc.parse<0>(&buffer[0]);
         // Find our root node
         root_node = doc.first_node("params");
+
         cur_node = root_node->first_node("path_otb");
         path_otb=cur_node->value();
         cur_node = root_node->first_node("EP_mask_path");
@@ -298,6 +305,8 @@ void readXML(std::string aXMLfile){
             //std::cout << " tuile " << n <<  std::endl;
             xml_node<> * nodeP=node->first_node("wd");
             mapTuiles.emplace(std::make_pair(n,nodeP->value()));
+            nodeP=node->first_node("doTuile");
+            mapDoTuiles.emplace(std::make_pair(n,std::stoi(nodeP->value())));
         }
 
         //cur_node = root_node->first_node("globTuile");

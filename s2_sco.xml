@@ -13,24 +13,31 @@
  <Tuiles>
         <Tuile name="T31UER">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+           <doTuile>0</doTuile>
         </Tuile>
         <Tuile name="T31UES">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>0</doTuile>
         </Tuile>
         <Tuile name="T31UFQ">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>0</doTuile>
         </Tuile>
         <Tuile name="T31UFR">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>0</doTuile>
         </Tuile>
         <Tuile name="T31UFS">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>0</doTuile>
         </Tuile>
          <Tuile name="T31UGR">
           <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>0</doTuile>
         </Tuile>
         <Tuile name="T31UGS">
-          <wd>//media/gef/Datas/S2Scolyte/</wd>
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
         </Tuile>
  </Tuiles>
 
