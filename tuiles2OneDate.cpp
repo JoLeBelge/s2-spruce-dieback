@@ -2,7 +2,6 @@
 
 std::string wdRacine("/home/lisein/Documents/Scolyte/S2/test/");
 std::string wd("toto");
-std::string buildDir("/home/lisein/Documents/Scolyte/S2/build-s2_ts/");
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
@@ -19,6 +18,11 @@ extern bool mDebug;
 // scolytes; j'aimerai pouvoir avoir plusieurs masques , celui gha EP >50% et celui EP+DO > 50 % pour les besoins d'Adrien.
 // donc j'identifie toutes mes couches intermédiaires et de résultats avec ce suffixe.
 std::string globSuffix("");
+
+
+bool doDelaisCoupe(0);
+bool doFirstDateSco(0);
+
 
 std::string globTuile;
 
@@ -62,8 +66,6 @@ void tuileS2OneDate::download(){
     //std::cout << aCommand << std::endl;
 
     system(aCommand.c_str());
-
-    //std::ifstream in(buildDir+"/token.json");
     // lecture du token là ou on a lancé la commande
     std::ifstream in("token.json");
     std::ostringstream sstream;

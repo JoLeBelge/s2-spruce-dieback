@@ -11,7 +11,6 @@ extern double Xdebug;
 extern double Ydebug;
 
 extern std::string wd;
-extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 //extern std::string iprfwFile;
@@ -24,6 +23,8 @@ extern int nbDaysStress;
 extern std::string globTuile;
 extern std::string globResXYTest;
 extern std::string globSuffix;
+extern bool doDelaisCoupe;
+extern bool doFirstDateSco;
 
 void catalogueSco::analyseTS(){
 
@@ -244,12 +245,17 @@ bool catalogueSco::openDS(){
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 mMapResults.emplace(std::make_pair(y,ds));
                 // même chose pour les délais de coupe et la première date de détection d'un problème (cf besoin de Arthur)
+                if (doDelaisCoupe){
                 if (debugDetail){std::cout << " delais de coupe année " << y << std::endl;}
-                output=wd+"output/etatSanitaire_"+globTuile+"_delaisCoupe"+std::to_string(y);
-                out=output.c_str();
                 GDALDataset  * ds2 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 ds2->GetRasterBand(1)->SetNoDataValue(0);
-                mMapResults.emplace(std::make_pair(y*10,ds2));
+                mMapDelaisCoupe.emplace(std::make_pair(y,ds2));
+                }
+                if (doFirstDateSco){
+                GDALDataset  * ds3 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
+                ds3->GetRasterBand(1)->SetNoDataValue(0);
+                mMapFirstDateSco.emplace(std::make_pair(y,ds3));
+                }
             }
         }
         std::cout << "done" << std::endl;
@@ -265,14 +271,17 @@ void catalogueSco::writeRes1pos(TS1Pos * ts) const{
         //std::cout << "ts res pour y " << y << " est " << scanPix[0] << ", écriture à la position " << ts->mU << " , " << ts->mV << std::endl;
         mMapResults.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
         // délais de coupe
+        if (doDelaisCoupe){
         scanPix2[0]=ts->getDelaisCoupe(y);
-        mMapResults.at(y*10)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+        mMapDelaisCoupe.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+        }
+        if (doFirstDateSco){
+        scanPix2[0]=ts->getDelaisCoupe(y,1);
+        mMapFirstDateSco.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+        }
     }
-
-    // écriture des délais de coupe
     CPLFree(scanPix2);
 }
-
 
 
 // lors de la création initiale du catalogue pour une nouvelle tuile, il faut créer le masque pour cette zone.
@@ -334,7 +343,7 @@ void copyStyleES(std::string tifPath){
 
     std::string aOut=tifPath.substr(0,tifPath.size()-3)+"qml";
     if (boost::filesystem::exists(aOut)){boost::filesystem::remove(aOut);}
-    std::string aIn("../s2/documentation/etatSanitaire_.qml");
+    std::string aIn("../documentation/etatSanitaire_.qml");
     if (boost::filesystem::exists(aIn)){
         boost::filesystem::copy_file(aIn,aOut);
     }
@@ -360,6 +369,24 @@ void catalogueSco::closeDS(){
         copyStyleES(output);
         GDALClose( kv.second);
         GDALClose(ds);
+    }
+    if (doDelaisCoupe){
+    for (auto kv : mMapDelaisCoupe){
+        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+"_delaisCoupe_"+std::to_string(kv.first)+".tif");
+        const char *out=output.c_str();
+        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        GDALClose(kv.second);
+        GDALClose(ds);
+    }
+    }
+    if (doFirstDateSco){
+    for (auto kv : mMapFirstDateSco){
+        std::string output(wd+"etatSanitaire_"+globTuile+"_"+globSuffix+"_FirstDateSco_"+std::to_string(kv.first)+".tif");
+        const char *out=output.c_str();
+        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
+        GDALClose(kv.second);
+        GDALClose(ds);
+    }
     }
     CPLFree(scanLineR1);
 }

@@ -580,10 +580,9 @@ void TS1PosTest::printDetail(std::string aOut){
                 std::cout << *mVDates.at(i) << ";" << mVEtat.at(i) << ";" << mVEtatFin.at(i) <<std::endl;
             }
         }
-        std::cout << "\n annee;etat;delaisCoupe" <<std::endl;
-
+        std::cout << "\n annee;etat;delaisCoupe;FirstDateSco" <<std::endl;
         for (auto kv : mVRes){
-            std::cout << kv.first << ";" << kv.second << ";" << getDelaisCoupe(kv.first) <<std::endl;
+            std::cout << kv.first << ";" << kv.second << ";" << getDelaisCoupe(kv.first) << kv.second << ";" << getDelaisCoupe(kv.first,1) <<std::endl;
         }
     }
 }
@@ -634,7 +633,7 @@ std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){
     return aRes;
 }
 
-int TS1Pos::getDelaisCoupe(int y){
+int TS1Pos::getDelaisCoupe(int y, bool firstDate){
     if (mDebug){std::cout << "TS1Pos::getDelaisCoupe " << y << std::endl;}
 
     int aRes(0);
@@ -658,12 +657,19 @@ int TS1Pos::getDelaisCoupe(int y){
         std::vector<int>::iterator p =std::find(etat.begin(), etat.end(), 2);
         if (p != etat.end()){
             int pos0=p - etat.begin();
+
+            if (firstDate){
+                year_month_day debuty(dates.at(pos0)->year(),month{1},day{1});
+                days d=sys_days{*dates.at(pos0)}-sys_days{debuty};
+                aRes=std::max(d.count()/7,1); // sous forme de nombre de semaines également
+            } else {
             //std::distance(vec.begin(), it)
             std::vector<int>::iterator q =std::find(etat.begin(), etat.end(), 4);
             if (q != etat.end()){
             int pos1=q - etat.begin();
             days d=(sys_days{*dates.at(pos1)}-sys_days{*dates.at(pos0)});
             aRes=std::max(d.count()/7,1);
+            }
             }
 
         } else {

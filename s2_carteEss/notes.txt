@@ -7,6 +7,8 @@ mon idée ; utiliser les cartes de composition de Nicorentin (mosaique superrés
 
 Je code donc un outils pour sélectionner les points qui feront mon jeu d'entrainement, qui entrera dans s2_ts ou un outil similaire pour calcul de valeur spectrale trimestrielle.
 
+J'ai fait une première version en novembre 2021, mais j'ai du faire cela dans la précipitation. Du coup, ça a fonctionné, mais le résultat n'était pas hyper probant. Je pense que je devrais recommencer en partant non pas de la carte de toutes les essences, mais des cartes de pourcentage de gha individuelle affin de sélectionner comme jeu d'entrainement des peuplements pur. tenter sur la classe bouleau, particulièrement mauvaise. après avoir vérifier que la carte "bouleau" ne soit pas trop mauvaise.
+
 
 
 

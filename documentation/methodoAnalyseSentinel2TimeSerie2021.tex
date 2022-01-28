@@ -26,6 +26,30 @@
 \usepackage{subcaption}
  \usepackage{natbib}
 
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	showstringspaces=false,
+	commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+	morestring=[b]",
+	morestring=[s]{>}{<},
+	morecomment=[s]{<?}{?>},
+	stringstyle=\color{black},
+	identifierstyle=\color{darkblue},
+	keywordstyle=\color{cyan},
+	morekeywords={xmlns,version,type}% list your attributes here
+}
 
 
 \newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
@@ -460,11 +484,10 @@ Enfin, un dernier filtre permet d'appréhender la situation assez complexe mais 
 
 Bien que conceptuellement la méthode ne soit pas extrêmement compliquée, le volume de donnée est considérable et nécessite une organisation soigneuse ainsi qu'une méthode de calcul optimisée. C'est dans ce but qu'est développé l'application \textbf{s2{\textunderscore}timeSerie}, sous C++ et dans un environnement Linux.
 
-L'application peut s'utiliser de la manière suivante :
+L'application a été développée au départ avec une série d'arguments optionnels que l'utilisateur renseignait lors du lancement de l'application, de la manière suivante :
 
 %--dates 2016-01-01 2017-01-01 
 \begin{lstlisting}
-./s2_timeSerie --help
 ./s2_timeSerie --catalogue 1 --tuile T32ULU 
 ./s2_timeSerie --catalogue 2 --tuile T31UGR --srCR 1.7
 \end{lstlisting}
@@ -475,6 +498,60 @@ l'argument \textbf{catalogue} peut recevoir les valeurs de 1 ou de 2. Deux modes
 Avec le mode 1, \textbf{s2{\textunderscore}timeSerie} effectue le téléchargement des données depuis la plateforme theia. Les informations nécessaires sont le nom de la tuile Sentinel-2 et une plage de date durant laquelle on souhaite effectuer l'analyse. Cette plage de date peux être définie avec l'argument --dates . par exemple : --dates 2016-01-01 2017-01-01.
 
 Avec le mode 2 (--catalogue 2), le catalogue est créé sur base des dossiers téléchargés précédemment. Chaque dossier correspond à une date de prise de vue. Seul le nom de la tuile est donc requis.
+
+La complexité grandissantes du jeu de donnée nous a obligé à changer la manière dont les paramètres sont renseignés. 
+Maintenant, les paramètres sont renseignés au moyen d'un fichier xml qui présente une structure telle que celle-ci:
+\lstset{language=XML}
+\begin{lstlisting}
+<params>
+
+<buildDir>/home/gef/Documents/build-s2_ts/</buildDir>
+<path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
+<EP_mask_path>/home/gef/Documents/input/masque_EP.tif</EP_mask_path>
+<suffix></suffix>
+<catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
+<doAnaTS> 1 </doAnaTS>
+<debugDetail>0</debugDetail>
+
+<Tuiles>
+<Tuile name="T31UER">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UES">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UFQ">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UFR">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UFS">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UGR">
+<wd>/media/gef/Data2/S2Scolyte/</wd>
+</Tuile>
+<Tuile name="T31UGS">
+<wd>//media/gef/Datas/S2Scolyte/</wd>
+</Tuile>
+</Tuiles>
+
+</params>
+
+\end{lstlisting}
+
+Ce sytème offre plus de flexibilité, à savoir
+\begin{itemize}
+	\item renseigner une liste de tuiles et leur chemin d'accès. Les séries temporelles de deux tuiles différentes ne doivent pas nécessairement être sur le même disque dur.
+	\item renseigner un masque global (=qui couvre plusieurs tuiles, ex masque épicéa en RW) ainsi qu'un suffix qui sera utilisé pour tout les résultats intermédiaire et finaux. Cela permet d'effectuer l'analyse sur des zones différentes, ce qui n'était pas prévu initialement.
+	\item un fichier xml offre une manipulation plus aisée dès qu'il s'agit de renseigner un nombre très élevés de paramètres.
+\end{itemize}
+
+Le fichier xml est passé en argument lors de l'appel à l'outil \textbf{s2{\textunderscore}timeSerie}:
+\begin{lstlisting}
+./s2_timeSerie --xmlIn ./s2_scoBelgique.xml 
+\end{lstlisting}
 
 L'appli utilise OTB comme calculatrice raster, pour tout ce qui concerne les éléments ci-dessous :
 \begin{itemize}
@@ -495,10 +572,10 @@ Trois classes d'objets sont définies dans le projet C++ et permettent d'effectu
 	\centering
 	\includegraphics[width=\linewidth]{illuAppliS2TS.png}
 	\caption{L'application est développé avec l'approche de programmation Orientée Objet, dont les 3 classes principales sont les classes \textbf{catalogue}, \textbf{tuileS2OneDate} et \textbf{TS1Pos} représenté sur ce graphique.\textbf{}}
-	\label{fig:ex}
+	\label{fig:classes}
 \end{figure}
 
-
+Afin de pouvoir utiliser ces classes dans différentes applications, des classes de bases sont développées pour \textbf{catalogue} et \textbf{tuileS2OneDate}. Des classes plus spécialisées héritent ensuite de ces trois classes de bases en fonction des objectifs poursuivit. Ainsi, pour la détection des scolytes, les classes \textbf{catalogueSco} et \textbf{tuileS2OneDateSco}  sont spécialisées.
 
 
 \subsection{La classe \textbf{catalogue}}

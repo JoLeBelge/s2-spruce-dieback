@@ -26,8 +26,11 @@ private:
     // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique OLD OLD pas utilisé
     //void extractRatioForPts(std::vector<pts> * aVpts);
 
-
     std::map<int,GDALDataset *> mMapResults;
+
+    // j'ai besoin des délais de coupes et de la date de la première détection d'une attaque de scolyte ; en option
+    std::map<int,GDALDataset *> mMapDelaisCoupe;
+    std::map<int,GDALDataset *> mMapFirstDateSco;
 
     int getMasqEPVal(int aCol, int aRow);
     std::string getNameMasque(int i=1){return getNameMasqueEP(i);}

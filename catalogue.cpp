@@ -1,7 +1,6 @@
 #include "catalogue.h"
 
 extern std::string wd;
-extern std::string buildDir;
 extern std::string path_otb;
 //extern std::string iprfwFile;
 extern int globSeuilCC;
@@ -90,9 +89,14 @@ catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLine
         t->mSuffix = globSuffix;
         mVProduts.push_back(t);
     }
+    // change le nombre de fichiers que l'appli peut ouvrir simultanément
+
+    struct rlimit lim = {65536, 65536};
+    if (setrlimit(RLIMIT_STACK, &lim) == -1) {
+                           printf("rlimit failed\n");
+                   }
     std::cout << " done .." << std::endl;
 }
-
 
 // comptage des produits avec cloudcover ok
 int catalogue::countValid(){

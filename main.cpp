@@ -8,7 +8,6 @@ using namespace std::chrono;
 
 extern std::string wdRacine;// j'en fait un deuxieme car je vais changer wd dans la boucle sur la liste des tuiles
 extern std::string wd;
-extern std::string buildDir;
 extern std::string path_otb;
 extern std::string EP_mask_path;
 extern std::string globTuile;
@@ -35,7 +34,8 @@ std::map<std::string,std::string> mapTuiles;
 extern std::string globSuffix;
 int catalogueMode(1);
 
-
+extern bool doDelaisCoupe;
+extern bool doFirstDateSco;
 
 std::string d1("2016-01-01"),d2("2021-07-11");
 
@@ -50,16 +50,12 @@ int main(int argc, char *argv[])
     char userName[20];
     getlogin_r(userName,sizeof(userName));
     std::string s(userName);
-    //std::string pathTheiaD("/home/lisein/Documents/Scolyte/S2/s2_ts/theia_d/");
     if (s=="lisein"){
 
     } else {
         wdRacine="/media/gef/Data2/S2Scolyte/";
-        buildDir="/home/gef/Documents/build-s2_ts/";
         path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
         EP_mask_path="/home/gef/Documents/input/";
-        //pathTheiaD="/home/gef/Documents/s2/theia_d/";
-
     }
 
     GDALAllRegister();
@@ -116,8 +112,6 @@ int main(int argc, char *argv[])
             Xdebug=opts.at(0);
             Ydebug=opts.at(1);
         }
-
-
 
         // paramètres issu du xml
         if(mapTuiles.size()==0){
@@ -277,8 +271,6 @@ void readXML(std::string aXMLfile){
         doc.parse<0>(&buffer[0]);
         // Find our root node
         root_node = doc.first_node("params");
-        xml_node<>* cur_node = root_node->first_node("buildDir");
-        buildDir=cur_node->value();
         cur_node = root_node->first_node("path_otb");
         path_otb=cur_node->value();
         cur_node = root_node->first_node("EP_mask_path");
@@ -290,6 +282,11 @@ void readXML(std::string aXMLfile){
         cur_node = root_node->first_node("debugDetail");
         debugDetail=std::stoi(cur_node->value());
         mDebug=debugDetail;
+
+        cur_node = root_node->first_node("doDelaisCoupe");
+        doDelaisCoupe=std::stoi(cur_node->value());
+        cur_node = root_node->first_node("doFirstDateSco");
+        doFirstDateSco=std::stoi(cur_node->value());
 
         cur_node = root_node->first_node("doAnaTS");
         doAnaTS=std::stoi(cur_node->value());

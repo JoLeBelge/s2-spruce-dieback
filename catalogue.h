@@ -4,6 +4,7 @@ class catalogue;
 #include "tuiles2OneDate.h"
 #include "ts1pos.h"
 #include <omp.h>
+#include <sys/resource.h>
 
 class tuileS2OneDate;
 class TS1Pos;

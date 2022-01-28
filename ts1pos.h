@@ -48,7 +48,7 @@ class TS1Pos{
     int getEtatPourAnnee(int y);
     void printDetail();
 
-    int getDelaisCoupe(int y);
+    int getDelaisCoupe(int y,bool firstDate=0);
     int mU, mV;
     // résultat par année ; un vecteur par an
     std::map<int,int> mVRes;
