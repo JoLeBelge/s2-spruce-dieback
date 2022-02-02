@@ -153,3 +153,16 @@ void catalogue::readMasqLine(int aRow, int aRes){
         break;
     }
 }
+
+int catalogue::getMasqVal(int aCol, int aRow){
+    //std::cout << "getMasqEpVal " << std::endl;
+    int aRes=0;
+
+    if( mDSmaskR1 != NULL && mDSmaskR1->GetRasterBand(1)->GetXSize() > aCol && mDSmaskR1->GetRasterBand(1)->GetYSize() > aRow && aRow >=0 && aCol >=0){
+        mDSmaskR1->GetRasterBand(1)->RasterIO( GF_Read, aCol, aRow, 1, 1, scanPix, 1,1, GDT_Float32, 0, 0 );
+        aRes=scanPix[0];
+    }
+
+    return aRes;
+}
+

@@ -13,7 +13,6 @@ void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
     switch (resol){
 
     case 1:{
-
         if (vDS.find("masqR1")!=vDS.end()){
             GDALDataset * DSpt=vDS.at("masqR1");
             if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){

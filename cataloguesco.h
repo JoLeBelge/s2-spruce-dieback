@@ -32,7 +32,7 @@ private:
     std::map<int,GDALDataset *> mMapDelaisCoupe;
     std::map<int,GDALDataset *> mMapFirstDateSco;
 
-    int getMasqEPVal(int aCol, int aRow);
+
     std::string getNameMasque(int i=1){return getNameMasqueEP(i);}
 
     std::string getNameDelaisCoupe(int y){

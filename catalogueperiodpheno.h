@@ -20,6 +20,7 @@
 
 extern std::string wd;
 extern std::string globTuile;
+extern std::string globSuffix;
 
 using namespace  ranger;
 
@@ -62,16 +63,23 @@ public:
 
     void syntheseTempoRadiation(std::vector<tuileS2OneDatePheno *> aVTuileS2, std::string aOutSuffix);
 
-    std::string getNameBandPeriodPheno(std::string aPrefix, std::string aBand){return wd+"output/"+aPrefix+"_"+aBand +"_"+globTuile+".tif";}
-    std::string getNameOutputRF(){return wd+"output/compoTS_RF_tuile"+globTuile+".tif";}
+    std::string getNameBandPeriodPheno(std::string aPrefix, std::string aBand){return wd+"output/"+aPrefix+"_"+aBand +"_"+globTuile+"_"+globSuffix+".tif";}
+    std::string getNameOutputRF(){return wd+"output/compoTS_RF_tuile"+globTuile+"_"+globSuffix+".tif";}
 
     // pour la R1 bien entendu. input = utm 31 N
     Pt2di getUV(double x, double y);
 
+    bool isInMasq(const Pt2di & pt){
+        bool aRes(0);
+        if (getMasqVal(pt.x, pt.y)==1){aRes=1;}
+        return aRes;
+    }
+
+
 private:
     void createMaskForTuile();
     std::vector<tuileS2OneDatePheno *> getTuileS2ForTri(int trimestre);
-    std::string getNameMasque(int i=1){return  wd+"input/masque_compo_"+globTuile+"_R"+std::to_string(i)+".tif";}
+    std::string getNameMasque(int i=1){return  wd+"input/masque_compo_"+globTuile+"_"+globSuffix+"_R"+std::to_string(i)+".tif";}
 
     std::vector<tuileS2OneDatePheno *>  mVProdutsOK;
 

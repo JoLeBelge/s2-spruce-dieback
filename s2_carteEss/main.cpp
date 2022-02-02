@@ -6,7 +6,7 @@ std::string pathCompo("/home/lisein/Documents/carteApt/GIS/COMPO/202109/compo_al
 //std::string pathES("/home/lisein/Documents/carteApt/GIS/ES_EP/etatSanitaire_2021_masq_evol_BL72_tmp.tif");
 std::string pathES("/media/gef/Data2/S2Scolyte/merge/etatSanitaire_2020_masq_evol_BL72.tif");
 std::string pathRF;
-
+extern bool mDebug;
 extern std::string wdRacine;
 extern std::string EP_mask_path;
 extern std::string wd;
@@ -91,7 +91,7 @@ void echantillonPts(){
     std::vector<Im2D_U_INT1*> vImCompo;
     std::vector<std::string> vPaths{"AU", "BO","CH","DO", "EP", "HE", "MZ", "PE", "PI"};
     for (int i(1);i<10;i++){
-        std::string aRName("/home/gef/Documents/input/compo/compo_"+std::to_string(i)+"_"+vPaths.at(i-1)+".tif");
+        std::string aRName("/home/gef/Documents/input/compo/compo_"+std::to_string(i)+"_"+vPaths.at(i-1)+"10m.tif");
         if (compression(aRName)){decompress(aRName); aRName=getNameTmp(aRName);}
         // attention, il on fait les pourcentage de gha en résolution 2m!!! fait chier, faut repasser en 10 mètres sinon ç'est incompatible avec carte état sanitaire
         // décompressé ça fait 6gb par image, pas possible de tout charger en mémoire vive.
@@ -110,13 +110,14 @@ void echantillonPts(){
     int nbSub(1000);// 100 c'est pas du tout assez, je passe à 1000 par classe
     std::vector<mpt*> aRes;
     // selection de n pt pour chaque classe de la carte compo, sauf pour la classe épicéa pour laquelle on sera plus restrictif.
-    std::vector<int> vCode{2,3,4,5,6,7,8,9};
+    std::vector<int> vCode{1,2,3,4,5,6,7,8,9};
     for (int es : vCode){
         Liste_Pts_INT2 pts(2);
         if (es!=5){
             //ce serai efficace si je faisait directement une sélection du rectangle correspondant  grosso modo à la tuile centrale de RW
             //ELISE_COPY(select(rectangle(pt1,pt2),imCompo.in()==es),0,pts);
-            ELISE_COPY(select(rectangle(pt1,pt2),vImCompo.at(es)->in()>80),0,pts);
+            // attention car no data sont à 255 donc si je précise pas , il va les sélectionner le con
+            ELISE_COPY(select(rectangle(pt1,pt2),vImCompo.at(es-1)->in()>80 && vImCompo.at(es-1)->in()<101),0,pts);
             // maintenant je tire au sort n pt et je récupère leur coordonnées.
             // attention par ailleurs, je ne veux que des points sur la tuile sentinel 2 la plus présente en Belgique! enfin j'imagine que c'est plus simple.
         } else {
@@ -135,13 +136,14 @@ void echantillonPts(){
         //std::cout << "echantillonnage ; nombre de points " << s.size() << std::endl;
         INT2 * tx =d[0];
         INT2 * ty =d[1];
-        //for (INT k=0 ; k<nb ; k++){
         for (int k : s){
             //std::cout << "pt id " << k << " , " << tx[k] << "," << ty[k] << ";"<< std::endl;
             // création d'un points ogr
             //pt p(tx[k],ty[k]);
-            aRes.push_back(new mpt(xO+10*tx[k]+5.0,yO-10*ty[k]-5.0,es)); // +5 et -5 pour être au centre du pixel
-            //aRes.push_back(new mpt(tx[k],ty[k]));
+            // attention, est-ce que les positions données par tx et ty commencent à 0 ou à 1. en plus, ça n'est peut-être pas la bonne lecture
+
+            //aRes.push_back(new mpt(xO+10*tx[k]+5.0,yO-10*ty[k]-5.0,es)); // +5 et -5 pour être au centre du pixel
+            aRes.push_back(new mpt(xO+10*(tx[k])+5,yO-10*(ty[k])-5,es)); // +5 et -5 pour être au centre du pixel
             //std::cout << " point " << k << " , " << std::to_string(pt.getX()) << " , " << std::to_string(pt.getY()) << std::endl;
         }
     }
@@ -175,7 +177,7 @@ void echantillonPts(){
 
     cataloguePeriodPheno cata;
 
-    cata.getMeanRadByTriMultiPt(aRes,"obs-compoS2-B.txt");
+    cata.getMeanRadByTriMultiPt(aRes,"obs-compoS2-C.txt");
 
 
     /*if(cata.openDS4RF()){ // vérifie que les bandes rayonnement moyen par trimestre sont calculées. attention, elles doivent l'être pour toute la forêt wallone sur cette tuile du coup..
@@ -241,10 +243,14 @@ void readXML(std::string aXMLfile){
     if (cur_node){globTuile=cur_node->value();} else {std::cout << " pas globTuile dans fichier xml" << std::endl;}
     cur_node = root_node->first_node("yMax");
     if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
+    cur_node = root_node->first_node("debug");
+    if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
     cur_node = root_node->first_node("pathRF");
     if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
     cur_node = root_node->first_node("suffix");
-    if (cur_node){globSuffix=cur_node->value();} else {std::cout << " pas suffix dans fichier xml" << std::endl;}
+    if (cur_node){globSuffix=cur_node->value();
+    globSuffix.erase(std::remove(globSuffix.begin(), globSuffix.end(), ' '), globSuffix.end());
+    } else {std::cout << " pas suffix dans fichier xml" << std::endl;}
     std::cout << " done" << std::endl;
 }
 

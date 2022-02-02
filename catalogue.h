@@ -28,6 +28,8 @@ public:
     // comptage des produits avec cloudcover ok
     int countValid();
     void readMasqLine(int aRow, int aRes=1);
+    int getMasqVal(int aCol, int aRow);
+
 
 protected:
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date

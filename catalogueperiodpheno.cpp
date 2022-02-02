@@ -119,16 +119,19 @@ void cataloguePeriodPheno::createMaskForTuile(){
 
         epsg=32632;
     }
-    std::string out=getNameMasque();
+    std::string out=getNameMasque(2);
 
     if (boost::filesystem::exists(masque)){
         if (!boost::filesystem::exists(out) | overw){
             std::cout << " create Mask For tuile " << std::endl;
             if (mVProduts.size()>0){
-                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:"+std::to_string(epsg)+" -ot Byte -overwrite -tr 10 10 "+ masque+ " "+ out;
+                // un effet indésirable à éviter c'est que les masques R1 et R2 n 'ai pas exactement la même emprise, du à cette résolution différente justement.
+                // c'est pour éviter cela que je fait d'abors le masque R2 puis le R1 (du moins restrictif vers le plus restrictif)
+                // pour la carte scolyte c'est pas fait, mais fonctionne pas pareil donc pas grave
+                std::string aCommand="gdalwarp -te "+std::to_string(mVProduts.at(0)->mXmin)+" "+std::to_string(mVProduts.at(0)->mYmin)+" "+std::to_string(mVProduts.at(0)->mXmax)+" "+std::to_string(mVProduts.at(0)->mYmax)+ " -t_srs EPSG:"+std::to_string(epsg)+" -ot Byte -r max -overwrite -tr 20 20 "+ masque+ " "+ out;
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
-                aCommand="gdalwarp -ot Byte -overwrite -tr 20 20 -r max "+out+ " "+ getNameMasque(2);
+                aCommand="gdalwarp -ot Byte -overwrite -tr 10 10 "+out+ " "+ getNameMasque();
                 system(aCommand.c_str());
             }
         }
@@ -407,8 +410,8 @@ void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::st
         std::ofstream out;
         out.open(aOut);
         std::vector<std::string> vB{"b2","b3","b4","b8","b11","b12"};
-        //out << "compo;X;Y";
-        out << "compo";
+        if (mDebug) {out << "compo;X;Y";} else {out << "compo";}
+        // créer les headers des bandes
         for (int tri(1);tri<5;tri++){
             for (std::string b : vB){
                 out << " " << b<< "_" <<std::to_string(tri) ;
@@ -426,10 +429,16 @@ void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::st
             p->transform(poCT);
 
             Pt2di pt=getUV(p->getX(),p->getY());
-            if (pt.x>0 && pt.y>0){
-                //out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
-                    out << p->Code()  ;
 
+            if (pt.x>0 && pt.y>0){
+                if (mDebug) {
+                out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+                } else if (isInMasq(pt)){
+                // check que le point a des valeurs spectrale qui sont ok. une incohérence entre le masque utilisé pour générer les bande trimetrielles et les carte de prob fait qu'il existe quelques points qui sont en dehors du masque, valeur spectrale 255
+                out << p->Code()  ;
+                }
+
+            if (mDebug | isInMasq(pt)){
             for (std::unique_ptr<periodePhenoRasters> & t : aTS){
                 std::vector<int> vVal=t->getVal(pt);
                 for (int v : vVal){
@@ -438,12 +447,15 @@ void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::st
                 }
             }
             out <<"\n" ;
+            } else {
+                std::cout << " le point n'est pas dans le masque, je le vire" << std::endl;
+            }
             }
 
             c++;
             if (c%100==0){
                 count++;
-                std::cout << count << " pts..." << std::endl;
+                std::cout << count << "% ..." << std::endl;
             }
         }
         out.close();
@@ -541,6 +553,7 @@ int cataloguePeriodPheno::callRF(std::vector<double> aV){
 
 void cataloguePeriodPheno::initRF(std::string pathRFmodel){
 
+    if (mDebug){std::cout << " init RF with file :" << pathRFmodel <<"." <<std::endl;}
     forest=std::make_unique<ranger::ForestClassification>() ;
     std::vector<std::string> bidon1;
     std::vector<double> vMetrics{0.0002,0.026,0.034,0.150,0.00131,0.074,0.018,0.037,0.026,0.278,0.000260,0.077,0.012,0.25,0.011,0.00358,0.139,0.50,0.014,0.025,0.025,0.416,0.122,0.015};

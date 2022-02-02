@@ -7,8 +7,60 @@ mon idée ; utiliser les cartes de composition de Nicorentin (mosaique superrés
 
 Je code donc un outils pour sélectionner les points qui feront mon jeu d'entrainement, qui entrera dans s2_ts ou un outil similaire pour calcul de valeur spectrale trimestrielle.
 
+Avec 1000 obvservations par classe, et aussi je suis avec les valeurs integer 8bit de radiation,
+Overall OOB prediction error (Fraction missclassified): 0.361984
+
+Class specific prediction errors:
+                2     3     4     5     6     7     8     9
+predicted 2     536   104   47    1     108   85    36    87    
+predicted 3     118   607   18    0     127   47    115   73    
+predicted 4     43    17    665   120   22    70    22    55    
+predicted 5     5     1     126   856   0     12    3     24    
+predicted 6     85    131   18    0     598   44    52    39    
+predicted 7     55    23    40    5     44    560   48    76    
+predicted 8     52    59    25    2     61    76    679   69    
+predicted 9     96    49    57    15    40    97    24    554 
+
+
 J'ai fait une première version en novembre 2021, mais j'ai du faire cela dans la précipitation. Du coup, ça a fonctionné, mais le résultat n'était pas hyper probant. Je pense que je devrais recommencer en partant non pas de la carte de toutes les essences, mais des cartes de pourcentage de gha individuelle affin de sélectionner comme jeu d'entrainement des peuplements pur. tenter sur la classe bouleau, particulièrement mauvaise. après avoir vérifier que la carte "bouleau" ne soit pas trop mauvaise.
 
+fev 2022 ; nouveau jeu d'entrainement sur les carte de composition individuelle en sélectionnant un pourcentage de gha en plus de 80 % pour chaque essence.
+J'ajoute la classe "autre essence" également (classe 1)
 
+./s2_carteEss --outils 1 ./s2_carteEss.xml 
+ 
+ranger --file obs-compoS2-C.txt --depvarname compo --write --outprefix rf_compo --ntree 2000 --> OOB prediction error (Fraction missclassified): 0.475838
 
+AU - Others	1
+BO - Birchs	2
+CH - Oaks	3
+DO - Douglas_fir	4
+EP - Spruces	5
+HE - Beech	6
+MZ - Larchs	7
+PE - Poplars	8
+PI - Pines	9
+
+Assez peu probant car il existait unbug ; les bandes sont résumées par trimestre à leur résolution native. R1 : 10 m, R2 20 m. des points sont dans le masque forestier de 20x20 mais en dehors pour la résolution 10x10 --> je change ça en créant premièrement le masque R2 Puis le R1 sur base du R2.
+
+Overall OOB prediction error (Fraction missclassified): 0.372407
+Class specific prediction errors:
+                1     2     3     4     5     6     7     8     9
+predicted 1     379   74    66    38    0     76    64    150   54    
+predicted 2     85    575   52    53    1     103   70    20    77    
+predicted 3     120   65    686   13    0     82    51    54    45    
+predicted 4     29    47    15    652   105   13    46    17    73    
+predicted 5     9     11    5     116   867   7     16    4     16    
+predicted 6     92    60    85    10    0     610   36    36    25    
+predicted 7     35    45    26    26    3     47    602   46    44    
+predicted 8     159   15    20    18    0     30    29    560   42    
+predicted 9     53    94    41    67    21    31    76    31    605  
+
+je nomme ce modèle rf_compo20220202.rf
+
+Attention!! ranger dois être exactement la mm version que celle utilsée dans le code s2_carteEss, sinon ça bug au moment de l'utilisation du modèle dans c++ (terminate called after throwing an instance of 'std::runtime_error' what():  Wrong treetype. Loaded file is not a classification forest.)
+
+IL FAUT DONC LANCER RANGER DEPUIS MON ORDI puis récupérer le modèle
+
+--------
 

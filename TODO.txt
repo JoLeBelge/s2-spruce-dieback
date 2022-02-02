@@ -3,6 +3,7 @@ TO DO s2_timeSerie;
 -test lancer soft avec un autre masque global (en belgique) et un autre suffix pour voir si tout fonctionne comme je veux.
 -option catalogue "clean" pour effacer tout les résultats intermédiaires pour un suffix donné
 
--générer résultats tout les 6 mois plutôt que une fois par an.--> pour Philippe ça avais de l'intérêt
+-générer résultats tout les 6 mois plutôt que une fois par an.--> pour Philippe ça avais de l'intérêt, voir définition des objectifs de recherche "Cartophor"
 -mettre à jours cartes en ligne sur Forestimator vu que 2021 est fini
+
 
