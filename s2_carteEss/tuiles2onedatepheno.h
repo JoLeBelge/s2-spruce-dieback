@@ -11,7 +11,7 @@ public:
       ,scanLine1(NULL)
       ,scanLine2(NULL)
       ,scanLine3(NULL)
-        {}
+    {}
 
     bool openDS();
     void closeDS();
@@ -23,6 +23,9 @@ public:
     float * scanLine1;
     float * scanLine2;
     float * scanLine3;
+    float * scanLine4;
+    float * scanLine5;
+    float * scanLine6;
     void readLines(int resol,int aRow) const;
     void initLines(int resol);
 private :

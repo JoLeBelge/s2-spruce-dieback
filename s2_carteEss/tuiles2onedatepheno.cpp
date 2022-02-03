@@ -8,6 +8,9 @@ extern int globSeuilCC;
 extern bool overw;
 extern bool mDebug;
 
+extern std::vector<std::string> vBR2;
+extern std::vector<std::string> vBR1;
+
 void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
 
     switch (resol){
@@ -38,6 +41,12 @@ void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
                 DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLine3, mXSize,1, GDT_Float32, 0, 0 );
             } else {std::cout << " euuhh non 4" << std::endl;}
         }
+        if (vDS.find("8")!=vDS.end()){
+            GDALDataset * DSpt=vDS.at("8");
+            if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+                DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, mXSize, 1, scanLine4, mXSize,1, GDT_Float32, 0, 0 );
+            } else {std::cout << " euuhh non 5" << std::endl;}
+        }
         break;
     }
     case 2:{
@@ -66,6 +75,24 @@ void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
                 DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, XR2, 1, scanLine3, XR2,1, GDT_Float32, 0, 0 );
             } else {std::cout << " euuhh non 12" << std::endl;}
         }
+        if (vDS.find("5")!=vDS.end()){
+            GDALDataset * DSpt=vDS.at("5");
+            if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+                DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, XR2, 1, scanLine4, XR2,1, GDT_Float32, 0, 0 );
+            } else {std::cout << " euuhh non 5" << std::endl;}
+        }
+        if (vDS.find("6")!=vDS.end()){
+            GDALDataset * DSpt=vDS.at("6");
+            if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+                DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, XR2, 1, scanLine5, XR2,1, GDT_Float32, 0, 0 );
+            } else {std::cout << " euuhh non 6" << std::endl;}
+        }
+        if (vDS.find("7")!=vDS.end()){
+            GDALDataset * DSpt=vDS.at("7");
+            if(  DSpt != NULL &&  DSpt->GetRasterBand(1)->GetYSize() > aRow && aRow >=0){
+                DSpt->GetRasterBand(1)->RasterIO( GF_Read, 0, aRow, XR2, 1, scanLine6, XR2,1, GDT_Float32, 0, 0 );
+            } else {std::cout << " euuhh non 7" << std::endl;}
+        }
         break;
     }
     default:
@@ -77,15 +104,11 @@ void tuileS2OneDatePheno::readLines(int resol,int aRow) const{
 bool tuileS2OneDatePheno::openDS(){
 
     bool aRes(1);
-    // fonctionne uniquement si j'augmente le nombre de fichiers descriptors, limitation du systèmes
-    //https://askubuntu.com/questions/1049058/how-to-increase-max-open-files-limit-on-ubuntu-18-04
-    std::vector<std::string> b1R{"2","3","4"};
-    std::vector<std::string> b2R{"8A","11","12"};
-    for (std::string b : b1R){
+    for (std::string b : vBR1){
         GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterR1Name(b).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair(b,DSpt));
     }
-    for (std::string b : b2R){
+    for (std::string b : vBR2){
         GDALDataset * DSpt= (GDALDataset *) GDALOpen( getOriginalRasterR2Name(b).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair(b,DSpt));
     }
@@ -105,6 +128,7 @@ void tuileS2OneDatePheno::closeDS(){
     if (scanLine1!=NULL){ CPLFree(scanLine1);}
     if (scanLine2!=NULL){ CPLFree(scanLine2);}
     if (scanLine3!=NULL){ CPLFree(scanLine3);}
+    if (scanLine4!=NULL){ CPLFree(scanLine4);}
 
     for (auto kv : vDS){
         GDALDataset * DSpt=kv.second;
@@ -118,12 +142,16 @@ void tuileS2OneDatePheno::initLines(int resol){
     if (scanLine1!=NULL){ CPLFree(scanLine1);}
     if (scanLine2!=NULL){ CPLFree(scanLine2);}
     if (scanLine3!=NULL){ CPLFree(scanLine3);}
+    if (scanLine4!=NULL){ CPLFree(scanLine4);}
+    if (scanLine5!=NULL){ CPLFree(scanLine5);}
+    if (scanLine6!=NULL){ CPLFree(scanLine6);}
     switch (resol) {
     case 1:{
         scanLineMasq=(float *) CPLMalloc( sizeof( float ) * mYSize );
         scanLine1=(float *) CPLMalloc( sizeof( float ) * mYSize );
         scanLine2=(float *) CPLMalloc( sizeof( float ) * mYSize );
         scanLine3=(float *) CPLMalloc( sizeof( float ) * mYSize );
+        scanLine4=(float *) CPLMalloc( sizeof( float ) * mYSize );
         break;}
     case 2:{
         int YR2=mYSize/2;
@@ -131,6 +159,9 @@ void tuileS2OneDatePheno::initLines(int resol){
         scanLine1=(float *) CPLMalloc( sizeof( float ) * YR2 );
         scanLine2=(float *) CPLMalloc( sizeof( float ) * YR2 );
         scanLine3=(float *) CPLMalloc( sizeof( float ) * YR2 );
+        scanLine4=(float *) CPLMalloc( sizeof( float ) * YR2 );
+        scanLine5=(float *) CPLMalloc( sizeof( float ) * YR2 );
+        scanLine6=(float *) CPLMalloc( sizeof( float ) * YR2 );
         break;}
     default:
         break;

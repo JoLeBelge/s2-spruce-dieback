@@ -20,8 +20,8 @@ extern std::string globResXYTest;
 
 extern std::string EP_mask_path;
 
-extern std::vector<std::string> vBR2;
-std::vector<std::string> vBR1{"2", "3", "4"};
+extern std::vector<std::string> vBR2; // variable partagée avec projet scolyte, donc redéfinir ici les valeurs dans le code
+std::vector<std::string> vBR1{"2","3","4","8"};
 
 std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
 
@@ -203,11 +203,10 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
     int count(0);
     double gain(0.5/255.0);// j'estime que le max de radiation moyenne est 0.5
 
-
-
     float * scanLineOut1=(float *) CPLMalloc( sizeof( float  ) * mY );
     float * scanLineOut2=(float *) CPLMalloc( sizeof( float  ) * mY );
     float * scanLineOut3=(float *) CPLMalloc( sizeof( float  ) * mY );
+    float * scanLineOut4=(float *) CPLMalloc( sizeof( float  ) * mY );
 
     mMapResults.clear();
     const char *pszFormat = "GTiff";
@@ -217,13 +216,12 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
         for (std::string b : vBR1){
             // MEM raster
             std::string output=getNameBandPeriodPheno(aOutSuffix,b);
-
             const char *out=output.c_str();
             GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
             mMapResults.emplace(std::make_pair(b,ds));
         }
     }
-    std::cout << " bandes résolution 1 " << std::endl;
+    std::cout << " bandes résolution 1 : Bandes 2, 3, 4 et 8" << std::endl;
     for ( int row = 0; row < mY; row++ ){
         // lecture masque global dans scanLine
         readMasqLine(row);
@@ -235,12 +233,13 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
 
         for (int col=0 ; col<mX;col++){
             if (scanLineR1[col]==1){
-                double b2(0),b3(0),b4(0),n(0);//,b8(0),b11(0),b12(0);
+                double b2(0),b3(0),b4(0),b8(0),n(0);//,b8(0),b11(0),b12(0);
                 for (tuileS2OneDatePheno * t : aVTuileS2){
                     if (t->scanLineMasq[col]==1){
                         b2+=t->scanLine1[col];
                         b3+=t->scanLine2[col];
                         b4+=t->scanLine3[col];
+                        b8+=t->scanLine4[col];
                         n++;
                     }
                 }
@@ -250,16 +249,19 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
                     b2=b2/(10000.0*n);
                     b3=b3/(10000.0*n);
                     b4=b4/(10000.0*n);
+                    b8=b8/(10000.0*n);
                     // sauver les résultats
                     scanLineOut1[col]=b2/gain;
                     scanLineOut2[col]=b3/gain;
                     scanLineOut3[col]=b4/gain;
+                    scanLineOut4[col]=b8/gain;
                     //std::cout << "b2 = " << b2*50 << std::endl;
                 }
             } else {
                 scanLineOut1[col]=255;
                 scanLineOut2[col]=255;
                 scanLineOut3[col]=255;
+                scanLineOut4[col]=255;
             }
         }
 
@@ -267,6 +269,7 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
         mMapResults.at("2")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,mX,1,scanLineOut1, mX, 1,GDT_Float32, 0, 0 );
         mMapResults.at("3")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,mX,1,scanLineOut2,mX, 1,GDT_Float32, 0, 0 );
         mMapResults.at("4")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,mX,1,scanLineOut3, mX, 1,GDT_Float32, 0, 0 );
+        mMapResults.at("8")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,mX,1,scanLineOut4, mX, 1,GDT_Float32, 0, 0 );
         c++;
         if (c%step==0){
             count++;
@@ -276,35 +279,36 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
     CPLFree(scanLineOut1);
     CPLFree(scanLineOut2);
     CPLFree(scanLineOut3);
-    GDALClose(mMapResults.at("2"));
-    GDALClose(mMapResults.at("3"));
-    GDALClose(mMapResults.at("4"));
-
+    CPLFree(scanLineOut4);
+    // on ferme toutes les couche raster de résultats
+    for (auto kv: mMapResults){
+        GDALClose(kv.second);
+    }
+    mMapResults.clear();
 
     // bandes R2 maintenant ---------------------------------------------------------
     int YR2=mY/2,XR2=mX/2;
     scanLineOut1=(float *) CPLMalloc( sizeof( float  ) * YR2 );
     scanLineOut2=(float *) CPLMalloc( sizeof( float  ) * YR2 );
     scanLineOut3=(float *) CPLMalloc( sizeof( float  ) * YR2 );
+    scanLineOut4=(float *) CPLMalloc( sizeof( float  ) * YR2 );
+    float * scanLineOut5=(float *) CPLMalloc( sizeof( float  ) * YR2 );
+    float * scanLineOut6=(float *) CPLMalloc( sizeof( float  ) * YR2 );
     c=0;count=0;step=YR2/20;
 
     for (tuileS2OneDatePheno * t : aVTuileS2){
         //initialize les objects scanline et lecture masque global R2
         t->initLines(2);
-
     }
 
-    mMapResults.clear();
-
     for (std::string b : vBR2){
-        // MEM raster
         std::string output=getNameBandPeriodPheno(aOutSuffix,b);
         const char *out=output.c_str();
         GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR2,FALSE, NULL,NULL, NULL );
         ds->GetRasterBand(1)->SetNoDataValue(255);
         mMapResults.emplace(std::make_pair(b,ds));
     }
-    std::cout << " bandes résolution 2 " << std::endl;
+    std::cout << " bandes résolution R2 : 5, 6, 7, 8A, 11 et 12 " << std::endl;
 
     for ( int row = 0; row < YR2; row++ ){
         // lecture masque global scanLine
@@ -317,12 +321,15 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
 
         for (int col=0 ; col<XR2;col++){
             if (scanLineR2[col]==1){
-                double b8(0),b11(0),b12(0),n(0);
+                double b8(0),b11(0),b12(0),b5(0),b6(0),b7(0),n(0);
                 for (tuileS2OneDatePheno * t : aVTuileS2){
                     if (t->scanLineMasq[col]==1){
                         b8+=t->scanLine1[col];
                         b11+=t->scanLine2[col];
                         b12+=t->scanLine3[col];
+                        b5+=t->scanLine4[col];
+                        b6+=t->scanLine5[col];
+                        b7+=t->scanLine6[col];
                         n++;
                     }
                 }
@@ -332,15 +339,24 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
                     b8=b8/(10000.0*n);
                     b11=b11/(10000.0*n);
                     b12=b12/(10000.0*n);
+                    b5=b5/(10000.0*n);
+                    b6=b6/(10000.0*n);
+                    b7=b7/(10000.0*n);
                     // sauver les résultats
                     scanLineOut1[col]=b8/gain;
                     scanLineOut2[col]=b11/gain;
                     scanLineOut3[col]=b12/gain;
+                    scanLineOut4[col]=b5/gain;
+                    scanLineOut5[col]=b6/gain;
+                    scanLineOut6[col]=b7/gain;
                 }
             } else {
                 scanLineOut1[col]=255;
                 scanLineOut2[col]=255;
                 scanLineOut3[col]=255;
+                scanLineOut4[col]=255;
+                scanLineOut5[col]=255;
+                scanLineOut6[col]=255;
             }
         }
 
@@ -348,6 +364,9 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
         mMapResults.at("8A")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut1, XR2, 1,GDT_Float32, 0, 0 );
         mMapResults.at("11")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut2,XR2, 1,GDT_Float32, 0, 0 );
         mMapResults.at("12")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut3, XR2, 1,GDT_Float32, 0, 0 );
+        mMapResults.at("5")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut4, XR2, 1,GDT_Float32, 0, 0 );
+        mMapResults.at("6")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut5,XR2, 1,GDT_Float32, 0, 0 );
+        mMapResults.at("7")->GetRasterBand(1)->RasterIO( GF_Write, 0, row,XR2,1,scanLineOut6, XR2, 1,GDT_Float32, 0, 0 );
         c++;
         if (c%step==0){
             count++;
@@ -357,9 +376,13 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
     CPLFree(scanLineOut1);
     CPLFree(scanLineOut2);
     CPLFree(scanLineOut3);
-    GDALClose(mMapResults.at("8A"));
-    GDALClose(mMapResults.at("11"));
-    GDALClose(mMapResults.at("12"));
+
+    // on ferme toutes les couche raster de résultats
+    for (auto kv: mMapResults){
+        GDALClose(kv.second);
+    }
+    mMapResults.clear();
+
 }
 
 
@@ -372,18 +395,6 @@ void cataloguePeriodPheno::closeDS(){
     if( mDSmaskR2 != NULL){ GDALClose( mDSmaskR2 );}
     CPLFree(scanPix);
 
-    /*
-    const char *pszFormat = "GTiff";
-    GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-
-    for (auto kv : mMapResults){
-        // c'est à ce moment qu'on sauve au format tif no petit résultats chéri
-        std::string output(wd+"etatSanitaire_"+globTuile+"_"+std::to_string(kv.first)+".tif");
-        const char *out=output.c_str();
-        GDALDataset  * ds = pDriver->CreateCopy(out,kv.second,FALSE, NULL,NULL, NULL );
-        GDALClose( kv.second);
-        GDALClose(ds);
-    }*/
     CPLFree(scanLineR1);
     CPLFree(scanLineR2);
 }
@@ -432,24 +443,24 @@ void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::st
 
             if (pt.x>0 && pt.y>0){
                 if (mDebug) {
-                out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
+                    out << p->Code() << ";"  << roundDouble(p->getX(),0) << ";" << roundDouble(p->getY(),0) ;
                 } else if (isInMasq(pt)){
-                // check que le point a des valeurs spectrale qui sont ok. une incohérence entre le masque utilisé pour générer les bande trimetrielles et les carte de prob fait qu'il existe quelques points qui sont en dehors du masque, valeur spectrale 255
-                out << p->Code()  ;
+                    // check que le point a des valeurs spectrale qui sont ok. une incohérence entre le masque utilisé pour générer les bande trimetrielles et les carte de prob fait qu'il existe quelques points qui sont en dehors du masque, valeur spectrale 255
+                    out << p->Code()  ;
                 }
 
-            if (mDebug | isInMasq(pt)){
-            for (std::unique_ptr<periodePhenoRasters> & t : aTS){
-                std::vector<int> vVal=t->getVal(pt);
-                for (int v : vVal){
-                    //vMetrics.push_back(v);
-                     out << " "  << v<<".00" ;
+                if (mDebug | isInMasq(pt)){
+                    for (std::unique_ptr<periodePhenoRasters> & t : aTS){
+                        std::vector<int> vVal=t->getVal(pt);
+                        for (int v : vVal){
+                            //vMetrics.push_back(v);
+                            out << " "  << v<<".00" ;
+                        }
+                    }
+                    out <<"\n" ;
+                } else {
+                    std::cout << " le point n'est pas dans le masque, je le vire" << std::endl;
                 }
-            }
-            out <<"\n" ;
-            } else {
-                std::cout << " le point n'est pas dans le masque, je le vire" << std::endl;
-            }
             }
 
             c++;
@@ -538,16 +549,13 @@ void cataloguePeriodPheno::applyRF(std::string pathRFmodel){
 }
 
 int cataloguePeriodPheno::callRF(std::vector<double> aV){
-
-    //std::cout << "call RF " << std::endl;
+    if (mDebug) {std::cout << "call RF " << std::endl;}
     /*std::cout << " valeurs utilisée par RF" << std::endl;
     for (double v : aV){
     std::cout << roundDouble(v,3) << " " << std::endl;
     }*/
     forest->setDataForPrediction(aV,aheader);
-    //std::cout << " set data ok" << std::endl;
     forest->myrun();
-    //std::cout << " myrun done" << std::endl;
     return forest->getClassMaj();
 }
 
@@ -592,7 +600,6 @@ void cataloguePeriodPheno::initRF(std::string pathRFmodel){
                 vMetrics,//arg_handler.mVCodeEsp);
                 aheader
                 );
-    //forest->myrun();
 }
 
 
@@ -629,12 +636,18 @@ periodePhenoRasters::periodePhenoRasters(std::vector<std::string> aVBandsPath){
 
     //ouverture des bandes
     std::cout << " charge en mémoire toutes les bandes d'une période phéno" << std::endl;
+    if (aVBandsPath.size()==10){
     b2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(0)));
     b3= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(1)));
     b4= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(2)));
-    b8A= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(3)));
-    b11= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(4)));
-    b12= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(5)));
+    b8= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(3)));
+    b5= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(4)));
+    b6= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(5)));
+    b7= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(6)));
+    b8A= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(7)));
+    b11= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(8)));
+    b12= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(aVBandsPath.at(9)));
+    } else { std::cout << "il me manque des bandes (10 en tout) pour créer la préiode phéno" << std::endl;}
 
     // le prob c'est la gestion des no data, je sais plus comment faire dans micmac
     /*
@@ -647,14 +660,16 @@ periodePhenoRasters::periodePhenoRasters(std::vector<std::string> aVBandsPath){
     resampleR1toR2(aVBandsPath.at(0));
     resampleR1toR2(aVBandsPath.at(1));
     resampleR1toR2(aVBandsPath.at(2));
+    resampleR1toR2(aVBandsPath.at(3));
+
     b2R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(0))));
     b3R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(1))));
     b4R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(2))));
-
+    b8R2= std::make_unique<Im2D_U_INT1>(Im2D_U_INT1::FromFileStd(getR2Name(aVBandsPath.at(3))));
 }
 
 void periodePhenoRasters::resampleR1toR2(std::string aR1){
-std::string aR2=getR2Name(aR1);
+    std::string aR2=getR2Name(aR1);
     if (!exists(aR2)){
         std::string aCommand="gdalwarp -tr 20 20 -r average -overwrite -srcnodata 255 -co 'COMPRESS=NONE' "+ aR1+ " " + aR2;
         system(aCommand.c_str());
@@ -662,7 +677,7 @@ std::string aR2=getR2Name(aR1);
 }
 
 std::string periodePhenoRasters::getR2Name(std::string aR1){
-return aR1.substr(0,aR1.size()-4)+"R2.tif";
+    return aR1.substr(0,aR1.size()-4)+"R2.tif";
 }
 
 std::vector<int> periodePhenoRasters::getVal(const Pt2di & pt,int resol){
@@ -673,7 +688,11 @@ std::vector<int> periodePhenoRasters::getVal(const Pt2di & pt,int resol){
         aRes.push_back(b2->GetI(pt));
         aRes.push_back(b3->GetI(pt));
         aRes.push_back(b4->GetI(pt));
+        aRes.push_back(b8->GetI(pt));
         Pt2di ptR2(pt.x/2, pt.y/2);
+        aRes.push_back(b5->GetI(ptR2));
+        aRes.push_back(b6->GetI(ptR2));
+        aRes.push_back(b7->GetI(ptR2));
         aRes.push_back(b8A->GetI(ptR2));
         aRes.push_back(b11->GetI(ptR2));
         aRes.push_back(b12->GetI(ptR2));
@@ -683,7 +702,11 @@ std::vector<int> periodePhenoRasters::getVal(const Pt2di & pt,int resol){
         aRes.push_back(b2R2->GetI(pt));
         aRes.push_back(b3R2->GetI(pt));
         aRes.push_back(b4R2->GetI(pt));
+        aRes.push_back(b8R2->GetI(pt));
 
+        aRes.push_back(b5->GetI(pt));
+        aRes.push_back(b6->GetI(pt));
+        aRes.push_back(b7->GetI(pt));
         aRes.push_back(b8A->GetI(pt));
         aRes.push_back(b11->GetI(pt));
         aRes.push_back(b12->GetI(pt));
@@ -696,18 +719,18 @@ std::vector<int> periodePhenoRasters::getVal(const Pt2di & pt,int resol){
 }
 
 Pt2di cataloguePeriodPheno::getUV(double x, double y){
-            double transform[6];
-            mDSmaskR1->GetGeoTransform(transform);
-            double xOrigin = transform[0];
-            double yOrigin = transform[3];
-            double pixelWidth = transform[1];
-            double pixelHeight = -transform[5];
-            int col = int((x - xOrigin) / pixelWidth);
-            int row = int((yOrigin - y ) / pixelHeight);
-            if (col<mX && row<mY && col>-1 && row >-1){return Pt2di(col,row);} else {
+    double transform[6];
+    mDSmaskR1->GetGeoTransform(transform);
+    double xOrigin = transform[0];
+    double yOrigin = transform[3];
+    double pixelWidth = transform[1];
+    double pixelHeight = -transform[5];
+    int col = int((x - xOrigin) / pixelWidth);
+    int row = int((yOrigin - y ) / pixelHeight);
+    if (col<mX && row<mY && col>-1 && row >-1){return Pt2di(col,row);} else {
 
-                std::cout << "col =" << col << ", row " << row << std::endl;
-                return Pt2di(0,0);
-            }
+        std::cout << "col =" << col << ", row " << row << std::endl;
+        return Pt2di(0,0);
+    }
 
 }

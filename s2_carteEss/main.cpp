@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     desc.add_options()
             ("help", "produce help message - Attention, l'appli va lire le fichier XML s2_carteEss.xml pour définir les options de l'outils (tuiles et masque utilisé)")
             ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2 ; calcule bande spectrale par trimestre, 3 ; applique une forêt aléatoire")
+            ("xmlIn", po::value< std::string>()->required(), "Fichier xml contenant les paramètres pour l'application s2 carte Ess")
             ;
 
     po::variables_map vm;
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
 
     int mode(vm["outils"].as<int>());
     // lecture des paramètres pour cet utilitaire
-    readXML("s2_carteEss.xml");
+    readXML(vm["xmlIn"].as<std::string>());
     GDALAllRegister();
     wd=wdRacine+ globTuile +"/";
     switch (mode) {
@@ -121,7 +122,7 @@ void echantillonPts(){
             // maintenant je tire au sort n pt et je récupère leur coordonnées.
             // attention par ailleurs, je ne veux que des points sur la tuile sentinel 2 la plus présente en Belgique! enfin j'imagine que c'est plus simple.
         } else {
-            // épicéa sain uniquement
+            // épicéa sain uniquement. Mais du coup il n'y a pas les épicéa en bordure et autre.
             //ELISE_COPY(select(rectangle(pt1,pt2),imCompo.in()==es && imES.in()==1),0,pts);
             ELISE_COPY(select(rectangle(pt1,pt2),imES.in()==1),0,pts);
 

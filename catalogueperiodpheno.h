@@ -15,12 +15,14 @@
 
 // octobre 2021 ; le masque ep dans les vosges nous semble vraiment bancal, donc on va refaire un masque épicéa sur base de la signature spectrale de l'épicéa dans les série tempo S2
 // entrainement d'un modèle de classification des essences RF sur base d'observation de réflectance pour moyenne par trimestre pour chacune des bandes 2, 3, 4, 8, 11, 12. Jeu d'entrainement ; point de la carte compo all es de nicolas Latte.
-
+//
 // mon object hérite de catalogue, vu que c'est en effet une variante du catalogue de base
 
 extern std::string wd;
 extern std::string globTuile;
 extern std::string globSuffix;
+
+extern std::vector<std::string> vBR2;
 
 using namespace  ranger;
 
@@ -38,8 +40,8 @@ private:
 class cataloguePeriodPheno : public catalogue
 {
 public:
-    cataloguePeriodPheno(){}
-    cataloguePeriodPheno(std::string aJsonFile):catalogue(aJsonFile){}
+    cataloguePeriodPheno(){vBR2={"5","6","7","8A","11","12"};}
+    cataloguePeriodPheno(std::string aJsonFile):catalogue(aJsonFile){vBR2={"5","6","7","8A","11","12"};}
 
     bool openDS();
     void closeDS();
@@ -106,17 +108,22 @@ public:
 
 private:
 
-  std::unique_ptr<Im2D_U_INT1> b2;
+  std::unique_ptr<Im2D_U_INT1>  b2;
   std::unique_ptr<Im2D_U_INT1>  b3;
   std::unique_ptr<Im2D_U_INT1>  b4;
+  std::unique_ptr<Im2D_U_INT1>  b8;
+
+  std::unique_ptr<Im2D_U_INT1>  b5;
+  std::unique_ptr<Im2D_U_INT1>  b6;
+  std::unique_ptr<Im2D_U_INT1>  b7;
   std::unique_ptr<Im2D_U_INT1>  b8A;
   std::unique_ptr<Im2D_U_INT1>  b11;
   std::unique_ptr<Im2D_U_INT1>  b12;
 
-  std::unique_ptr<Im2D_U_INT1> b2R2;
+  std::unique_ptr<Im2D_U_INT1>  b2R2;
   std::unique_ptr<Im2D_U_INT1>  b3R2;
   std::unique_ptr<Im2D_U_INT1>  b4R2;
-
+  std::unique_ptr<Im2D_U_INT1>  b8R2;
 };
 
 
