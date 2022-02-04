@@ -11,6 +11,9 @@ public:
       ,scanLine1(NULL)
       ,scanLine2(NULL)
       ,scanLine3(NULL)
+      ,scanLine4(NULL)
+      ,scanLine5(NULL)
+      ,scanLine6(NULL)
     {}
 
     bool openDS();

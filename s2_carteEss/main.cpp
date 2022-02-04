@@ -220,6 +220,7 @@ std::vector<int> subsample(int nbSub,int nbTot){
 
 void readXML(std::string aXMLfile){
     // Read the xml file into a vector
+     if ( !boost::filesystem::exists( aXMLfile ) ){ std::cout << " fichier " << aXMLfile << " n'existe pas " << std::endl;} else {
     std::cout << " read params " << std::endl;
     xml_document<> doc;
     xml_node<> * root_node;
@@ -252,6 +253,7 @@ void readXML(std::string aXMLfile){
     if (cur_node){globSuffix=cur_node->value();
     globSuffix.erase(std::remove(globSuffix.begin(), globSuffix.end(), ' '), globSuffix.end());
     } else {std::cout << " pas suffix dans fichier xml" << std::endl;}
+    }
     std::cout << " done" << std::endl;
 }
 

@@ -64,3 +64,27 @@ IL FAUT DONC LANCER RANGER DEPUIS MON ORDI puis récupérer le modèle
 
 --------
 
+voir dépot ABC ranger qui semble assez génial, genre meme usage que vsurf mais en mieux?
+
+https://github.com/diyabc/abcranger
+
+
+--------------------
+
+Premier modèle avec toutes les bandes spectrales R1 et R2
+
+Overall OOB prediction error (Fraction missclassified): 0.358236
+
+Class specific prediction errors:
+                1     2     3     4     5     6     7     8     9
+predicted 1     390   77    75    34    0     78    63    151   57    
+predicted 2     104   606   51    56    2     110   79    24    83    
+predicted 3     117   62    697   13    0     61    48    56    43    
+predicted 4     28    48    15    681   113   13    44    20    70    
+predicted 5     7     4     4     95    866   7     12    1     17    
+predicted 6     80    53    74    10    0     641   33    39    18    
+predicted 7     35    45    25    22    1     42    609   44    39    
+predicted 8     160   12    17    18    0     21    32    557   40    
+predicted 9     40    79    38    64    15    26    70    26    614   
+
+

@@ -105,20 +105,24 @@ bool tuileS2OneDatePheno::openDS(){
 
     bool aRes(1);
     for (std::string b : vBR1){
+        if (mDebug){ std::cout << "ouverture bande " << getRasterR1Name(b) << std::endl;}
         GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterR1Name(b).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair(b,DSpt));
     }
     for (std::string b : vBR2){
+        if (mDebug){ std::cout << "ouverture bande " << getOriginalRasterR2Name(b) << std::endl;}
         GDALDataset * DSpt= (GDALDataset *) GDALOpen( getOriginalRasterR2Name(b).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair(b,DSpt));
     }
     for (int r(1) ; r<3;r++){
+        if (mDebug){ std::cout << "ouverture bande " << getRasterMasqGenName(r) << std::endl;}
         GDALDataset * DSpt= (GDALDataset *) GDALOpen( getRasterMasqGenName(r).c_str(), GA_ReadOnly );
         vDS.emplace(std::make_pair("masqR"+std::to_string(r),DSpt));
     }
     scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
     initLines(1);
 
+     if (mDebug){ std::cout << "openDS tuile done " << std::endl;}
     return aRes;
 }
 void tuileS2OneDatePheno::closeDS(){

@@ -23,9 +23,11 @@ extern std::string EP_mask_path;
 extern std::vector<std::string> vBR2; // variable partagée avec projet scolyte, donc redéfinir ici les valeurs dans le code
 std::vector<std::string> vBR1{"2","3","4","8"};
 
-std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
+//std::string aheader="compo b2_1 b3_1 b4_1 b8_1 b11_1 b12_1 b2_2 b3_2 b4_2 b8_2 b11_2 b12_2 b2_3 b3_3 b4_3 b8_3 b11_3 b12_3 b2_4 b3_4 b4_4 b8_4 b11_4 b12_4";
+std::string aheader="compo 2_1 3_1 4_1 8_1 5_1 6_1 7_1 8A_1 11_1 12_1 2_2 3_2 4_2 8_2 5_2 6_2 7_2 8A_2 11_2 12_2 2_3 3_3 4_3 8_3 5_3 6_3 7_3 8A_3 11_3 12_3 2_4 3_4 4_4 8_4 5_4 6_4 7_4 8A_4 11_4 12_4";
+std::vector<double> vMetrics{90.00,93.00,104.00,174.00,101.00,130.00,141.00,158.00,79.00,49.00,12.00,22.00,15.00,179.00,49.00,144.00,175.00,193.00,98.00,47.00,8.00,16.00,8.00,188.00,31.00,137.00,182.00,198.00,86.00,35.00,9.00,22.00,23.00,146.00,47.00,93.00,114.00,140.00,81.00,40.00};
 
-std::map<int,std::vector<double>> * cataloguePeriodPheno::getMeanRadByTri1Pt(double X, double Y){
+  std::map<int,std::vector<double>> * cataloguePeriodPheno::getMeanRadByTri1Pt(double X, double Y){
 
     std::cout << "résumé radiation pour la position : " << X << "," << Y <<  std::endl;
     //std::cout << "-" <<  std::endl;
@@ -74,10 +76,11 @@ bool cataloguePeriodPheno::openDS(){
     } else {
         std::cout << "masque pas trouvé " <<getNameMasque() << std::endl;
     }
-
+    if (mDebug){ std::cout << "masques catalogue ouvert." << std::endl;}
     int c(0);
     for (tuileS2OneDatePheno * t : mVProdutsOK){
         // si une seule tuile pose un problème lors du chargement des dataset, on annule tout les traitement
+        if (mDebug){ std::cout << "tuile " << t->getDate() << std::endl;}
         if (!t->openDS()){
             // fermer tout les datasets des tuiles déjà passée en revue précédemment
             for (int i(0);i<c;i++){
@@ -92,22 +95,8 @@ bool cataloguePeriodPheno::openDS(){
 
     if (aRes==0){
         std::cout << "il manque certaines carte dans la série temporelle" << std::endl;
-    } /*else {
-        // création des raster résultats
-        const char *pszFormat = "MEM";
-        GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-        if( pDriver != NULL )
-        {
-            for (int y : mYs){
-                // MEM raster
-                std::string output(wd+"output/etatSanitaire_"+globTuile+"_"+std::to_string(y));
-                const char *out=output.c_str();
-                GDALDataset  * ds = pDriver->CreateCopy(out,mDSmask,FALSE, NULL,NULL, NULL );
-                mMapResults.emplace(std::make_pair(y,ds));
-            }
-        }
-        std::cout << "done" << std::endl;
-    }*/
+    }
+    std::cout << "done" << std::endl;
     return aRes;
 }
 
@@ -145,10 +134,9 @@ void cataloguePeriodPheno::traitement(){
     createMaskForTuile();
 
     for (tuileS2OneDate * t : mVProduts){
-        if (t->mCloudCover<globSeuilCC && t->gety()<2018) {
+        if (t->mCloudCover<globSeuilCC && t->gety()<yMax) {
             std::cout << "ajout tuile " <<  t->getDate() <<std::endl;
             //if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
-
             mVProdutsOK.push_back(new tuileS2OneDatePheno(t, getNameMasque(1), getNameMasque(2)));
         }
     }
@@ -227,10 +215,17 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
         readMasqLine(row);
         // lecture, pour chaque tuile, de la ligne pour le masque et des lignes pour les bandes R1
         //donc 4 scanlignes par tuiles
+#pragma omp parallel num_threads(8)
+        {
+#pragma omp for
         for (tuileS2OneDatePheno * t : aVTuileS2){
             t->readLines(1,row);
         }
+        }
 
+#pragma omp parallel num_threads(12)
+            {
+#pragma omp for
         for (int col=0 ; col<mX;col++){
             if (scanLineR1[col]==1){
                 double b2(0),b3(0),b4(0),b8(0),n(0);//,b8(0),b11(0),b12(0);
@@ -263,6 +258,7 @@ void cataloguePeriodPheno::syntheseTempoRadiation(std::vector<tuileS2OneDatePhen
                 scanLineOut3[col]=255;
                 scanLineOut4[col]=255;
             }
+        }
         }
 
         // sauver données dans raster résultats
@@ -420,7 +416,10 @@ void cataloguePeriodPheno::getMeanRadByTriMultiPt(std::vector<mpt*> aVPt,std::st
         // crée un fichier txt pour l'export des résultats
         std::ofstream out;
         out.open(aOut);
-        std::vector<std::string> vB{"b2","b3","b4","b8","b11","b12"};
+        std::vector<std::string> vB;
+        vB.reserve( vBR1.size() + vBR2.size() ); // preallocate memory
+        vB.insert( vB.end(), vBR1.begin(), vBR1.end() );
+        vB.insert( vB.end(), vBR2.begin(), vBR2.end() );
         if (mDebug) {out << "compo;X;Y";} else {out << "compo";}
         // créer les headers des bandes
         for (int tri(1);tri<5;tri++){
@@ -564,7 +563,7 @@ void cataloguePeriodPheno::initRF(std::string pathRFmodel){
     if (mDebug){std::cout << " init RF with file :" << pathRFmodel <<"." <<std::endl;}
     forest=std::make_unique<ranger::ForestClassification>() ;
     std::vector<std::string> bidon1;
-    std::vector<double> vMetrics{0.0002,0.026,0.034,0.150,0.00131,0.074,0.018,0.037,0.026,0.278,0.000260,0.077,0.012,0.25,0.011,0.00358,0.139,0.50,0.014,0.025,0.025,0.416,0.122,0.015};
+
     std::ostream nullstream(0);
     forest->initCpp(
                 std::string(""),        //arg_handler.depvarname
@@ -576,8 +575,9 @@ void cataloguePeriodPheno::initRF(std::string pathRFmodel){
                 //&std::cout,// &verbose_out
                 &nullstream,// &verbose_out
                 0,// arg_handler.seed
-                //9,//9 sur 12 que j'ai sur le pc s2-jo
-                DEFAULT_NUM_THREADS, //arg_handler.nthreads,
+                //9,//9 sur 12 que j'ai sur le pc s2-jo. attention, si hyperthreading, je peux faire x2
+                20,
+                //DEFAULT_NUM_THREADS, //arg_handler.nthreads,
                 pathRFmodel,//arg_handler.predict
                 DEFAULT_IMPORTANCE_MODE,//arg_handler.impmeasure
                 0,// arg_handler.targetpartitionsize
@@ -601,7 +601,6 @@ void cataloguePeriodPheno::initRF(std::string pathRFmodel){
                 aheader
                 );
 }
-
 
 bool cataloguePeriodPheno::openDS4RF(){
     std::cout << "ouverture des bandes moyennes par trimestre" << std::endl;
