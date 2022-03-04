@@ -30,6 +30,10 @@ public:
     void readMasqLine(int aRow, int aRes=1);
     int getMasqVal(int aCol, int aRow);
 
+    int getEPSG();
+
+    void init();
+
 
 protected:
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date

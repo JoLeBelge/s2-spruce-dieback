@@ -5,7 +5,7 @@ std::string wd("toto");
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
 std::string EP_mask_path("/home/lisein/Documents/Scolyte/S2/input/");
 std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
-int globSeuilCC(40);// 35 :je monte un peu ça car seulement 120 dates pour tuile UFR alors que 170 pour d'autres.
+int globSeuilCC(35);// 35 :je monte un peu ça car seulement 120 dates pour tuile UFR alors que 170 pour d'autres.
 bool overw(0);
 
 int year_analyse(666);
@@ -147,7 +147,7 @@ void tuileS2OneDate::removeArchive(){
 
 
 void tuileS2OneDate::readXML(){
-    //std::cout << " read XML .." ;
+    if (mDebug){std::cout << " read XML .." ;}
     interDirName=wd +"intermediate/"+decompressDirName +"/";
     boost::filesystem::path dir(interDirName);
     boost::filesystem::create_directory(dir);
@@ -217,6 +217,8 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 
     cur_node = root_node->first_node("Geoposition_Informations")->first_node("Coordinate_Reference_System")->first_node("Horizontal_Coordinate_System")->first_node("HORIZONTAL_CS_CODE");
     mEPSG=std::stoi(cur_node->value());
+    if (mDebug) { std::cout << " epsg " << mEPSG << std::endl;}
+
     cur_node = root_node->first_node("Product_Characteristics")->first_node("PLATFORM");;
     mSat=cur_node->value();
     cur_node = root_node->first_node("Product_Characteristics")->first_node("ACQUISITION_DATE");;
@@ -251,10 +253,10 @@ void tuileS2OneDate::readXML(std::string aXMLfile){
 void tuileS2OneDate::resample(){
     if (mDebug){std::cout << "resample ..";}
     for (std::string b : vBR2){
-        std::string out=interDirName+"band_R2_B"+b+"_mask_20m.tif";
-        std::string out10m=interDirName+"band_R2_B"+b+"_mask_10m.tif";
-        std::string in=wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+b+".tif";
-        std::string inMask=interDirName+"mask_R2.tif";
+        std::string out=getRasterR2Name(b,2);;
+        std::string out10m=getRasterR2Name(b);
+        std::string in=getOriginalRasterR2Name(b);
+        std::string inMask=getRasterMasqGenName(2);
         // check que le fichier n'existe pas
         if (boost::filesystem::exists(in) && boost::filesystem::exists(inMask)){
             if ((!boost::filesystem::exists(out) | overw)){
@@ -397,8 +399,10 @@ std::string tuileS2OneDate::getRasterR1Name(std::string numBand){
     return wd+"/raw/"+decompressDirName+"/"+decompressDirName+"_FRE_B"+numBand+".tif";
 }
 
-std::string tuileS2OneDate::getRasterR2Name(std::string numBand){
-    return interDirName+"band_R2_B"+numBand+"_mask"+mSuffix+"_10m.tif";
+std::string tuileS2OneDate::getRasterR2Name(std::string numBand,int aR){
+    std::string aRes=interDirName+"band_R2_B"+numBand+"_mask"+mSuffix+"_10m.tif";
+    if (aR==2){aRes=interDirName+"band_R2_B"+numBand+"_mask"+mSuffix+"_20m.tif";}
+    return aRes;
 }
 
 std::string tuileS2OneDate::getOriginalRasterR2Name(std::string numBand){

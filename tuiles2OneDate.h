@@ -49,7 +49,7 @@ std::string getNameMasqueEP(int i=1);
 class tuileS2OneDate
 {
 public:
-    tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0),mSuffix(""){
+    tuileS2OneDate():mCloudCover(0),HotSpotDetected(1),RainDetected(1),SunGlintDetected(1),SnowPercent(100),mXmin(0.0), mYmin(0.0), mXmax(0.0),mYmax(0.0),scanPix(NULL),mXSize(0),mYSize(0),mSuffix(""),mEPSG(0){
         //std::cout << "creation tuileS2" << std::endl;
     }
 
@@ -73,7 +73,8 @@ public:
     ,mAcqDate(t->mAcqDate)
     ,mFeature_id(t->mFeature_id)
     ,mPtrDate(t->mPtrDate)
-    ,mSuffix(t->mSuffix){}
+    ,mSuffix(t->mSuffix)
+    ,mEPSG(t->mEPSG){}
 
     // il faut notre copy contructor si un des membres de la classe est un unique ptr
     tuileS2OneDate(const  tuileS2OneDate&) = delete;
@@ -86,7 +87,7 @@ public:
 
     int mCloudCover;
     std::string archiveName, decompressDirName, outputDirName,interDirName;
-    void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << std::endl; }
+    void cat(){std::cout << "produit " << mProd << " , id " << mFeature_id << ", date "<< mAcqDate << ", cloudcover " << mCloudCover << ", EPSG " << mEPSG <<std::endl; }
     void catQual(){std::cout << "mCloudCover " << mCloudCover << " , HotSpotDetected " << HotSpotDetected << ", RainDetected "<< RainDetected << ", SunGlintDetected " << SunGlintDetected << ", SnowPercent " << SnowPercent<< std::endl;
                    std::cout << "mTile " << mTile << " , mOrbitN " << mOrbitN<< ", EPSG"<< mEPSG << ", date" << mAcqDate << ", Sat " << mSat<< ", ULX " << mXmin << ", ULY " << mYmin <<  std::endl;
                               if (mEPSG!=32631){
@@ -128,7 +129,7 @@ public:
 
     std::string getRasterR1Name(std::string numBand);
     // attention, il s'agit des bandes rééchantillonnée à 10 m!
-    std::string getRasterR2Name(std::string numBand);
+    std::string getRasterR2Name(std::string numBand, int aR=1);
     // celle la c'est les noms des raster originaux
     std::string getOriginalRasterR2Name(std::string numBand);
 
@@ -136,6 +137,8 @@ public:
     std::string getRasterMasqGenName(int resol=1);
 
     std::string getDate();
+
+    int getEPSG(){return mEPSG;}
 
     double getCRth(){return getCRtheorique(mDate);}
 

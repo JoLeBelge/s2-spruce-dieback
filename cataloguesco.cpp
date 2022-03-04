@@ -94,6 +94,8 @@ void catalogueSco::traitement(){
     // récapitulatif;
     summary();
     createMaskForTuile();
+    // check que le masque a bien été crée:
+    if (boost::filesystem::exists(getNameMasque())){
 
     for (tuileS2OneDate * t : mVProduts){
         if (t->mCloudCover<globSeuilCC){
@@ -130,6 +132,10 @@ void catalogueSco::traitement(){
         globVPts=readPtsFile(XYtestFile);
     }
     analyseTSinit();
+
+    } else {
+        std::cout << "erreur, masque tuile pas créé : je ne fait pas les traitements " << std::endl;
+    }
 }
 
 
@@ -276,10 +282,9 @@ void catalogueSco::writeRes1pos(TS1Pos * ts) const{
 void catalogueSco::createMaskForTuile(){
     if (mDebug){std::cout << " create Mask For tuile start" << std::endl;}
     std::string masqueRW(EP_mask_path);
-    int epsg(32631);
-    if (globTuile=="T32ULU"){
-        epsg=32632;
-    }
+    int epsg=getEPSG();
+    if (mDebug){std::cout << " EPSG = " << epsg << std::endl;}
+
     std::string out=getNameMasque();
 
     if (boost::filesystem::exists(masqueRW)){

@@ -39,3 +39,4 @@ ulimit -n
 https://stackoverflow.com/questions/4076848/how-to-do-the-equivalent-of-ulimit-n-400-from-within-c
 
 --> j'ai intégré le changement de limite de nombre de fichiers à ouvrir directement dans le code C++
+mais ça ne fonctionne plus on dirait...

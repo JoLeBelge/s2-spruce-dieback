@@ -40,6 +40,8 @@ extern bool doFirstDateSco;
 
 std::string d1("2016-01-01"),d2("2021-07-11");
 
+int mergeEPSG(0);
+
 void readXML(std::string aXMLfile);
 
 int main(int argc, char *argv[])
@@ -171,7 +173,7 @@ int main(int argc, char *argv[])
 
                 // création du wd si nécessaire
                 boost::filesystem::path dir(wd);
-                boost::filesystem::create_directory(dir);
+                if(!boost::filesystem::exists(dir)){boost::filesystem::create_directory(dir);}
                 boost::filesystem::path dir2(wd+"raw/");
                 boost::filesystem::create_directory(dir2);
                 boost::filesystem::path dir3(wd+"intermediate/");
@@ -187,7 +189,7 @@ int main(int argc, char *argv[])
                     std::cout << "\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
                     // lancer la requete theia avant de créer le catalogue
                     std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
-                    //std::cout << aCommand << std::endl;
+                    if (mDebug){std::cout << aCommand << "\n" << std::endl;}
                     system(aCommand.c_str());
                     std::string inputJson=wd+"search.json";
                     catalogueSco cata(inputJson);
@@ -212,20 +214,29 @@ int main(int argc, char *argv[])
 
         // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
         if (mergeEtatSan){
+
+            std::cout << " merge Etat sanitaire " << std::endl;
             std::map<int, std::vector<std::string>> aMES;
-            for (std::string t : aVTuiles){
-                std::string tDir=wdRacine+ t +"/";
+
+            for (auto kv : mapTuiles){
+
+
+                std::string t=kv.first;
+                std::string tDir=kv.second+ t +"/";
+                std::cout << " tuile " << tDir << std::endl;
+
+                std::string aBaseName("etatSanitaire_"+t+"_"+globSuffix);
                 boost::filesystem::directory_iterator end_itr;
 
                 // cycle through the directory
                 for (boost::filesystem::directory_iterator itr(tDir); itr != end_itr; ++itr)
                 {
-                    if (itr->path().filename().string().size()>25 && itr->path().filename().extension().string()==".tif"){
-                        if (boost::filesystem::is_regular_file(itr->path()) && itr->path().filename().string().substr(0,14)=="etatSanitaire_") {
+                    if (itr->path().filename().extension().string()==".tif"){
+                        if (boost::filesystem::is_regular_file(itr->path()) && itr->path().filename().string().substr(0,aBaseName.size())==aBaseName) {
                             std::string  etatSan= itr->path().string();
                             //std::cout << etatSan << std::endl;
-
-                            int  year=stoi(itr->path().filename().string().substr(21,4));
+                            int  year=stoi(itr->path().filename().string().substr(aBaseName.size(),4));
+                            //if (mDebug){std::cout << "year " << year << std::endl;}
                             if (aMES.find(year)!=aMES.end()){
                                 aMES.at(year).push_back(etatSan);
                             } else {
@@ -237,9 +248,37 @@ int main(int argc, char *argv[])
                     }
                 }
             }
+
+            // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
             // effectue le merge par année
             boost::filesystem::path dir(wdRacine+"merge/");
             boost::filesystem::create_directory(dir);
+
+            // vérifie le src et si pas celui qu'on souhaite, on reprojette avant merge
+            std::cout << " Vérifie la cohérence des SRC" << std::endl;
+            for (auto & kv : aMES){
+                int k(0);
+                for (std::string f : kv.second){
+                    GDALDataset * DS= (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
+                    OGRSpatialReference osr;
+                    osr.importFromWkt(DS->GetProjectionRef());
+                    if (OGRERR_NONE!=osr.AutoIdentifyEPSG()){std::cout << " auto i epsg failed" << std::endl;}
+                    int EPSG=std::stoi(osr.GetAuthorityCode("PROJCS"));
+                    GDALClose(DS);
+                    if (EPSG!=mergeEPSG){
+                        boost::filesystem::path p(f);
+                        std::string out= wdRacine+"merge/"+p.filename().string();
+                        std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
+                        std::cout << aCommand << std::endl;
+                        system(aCommand.c_str());
+                        aMES.at(kv.first).at(k)=out;
+                    }
+                    k++;
+                }
+            }
+
+
+
 
             for (auto & kv : aMES){
                 std::cout << " fusion des cartes d'état sanitaire pour l'année " << kv.first << std::endl;
@@ -257,6 +296,7 @@ int main(int argc, char *argv[])
             }
         }
 
+
     }
 
     return 0;
@@ -269,7 +309,7 @@ void readXML(std::string aXMLfile){
         std::cout << " read params " << std::endl;
         xml_document<> doc;
         xml_node<> * root_node;
-         xml_node<> * cur_node;
+        xml_node<> * cur_node;
         std::ifstream theFile (aXMLfile);
         std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
         buffer.push_back('\0');
@@ -279,8 +319,8 @@ void readXML(std::string aXMLfile){
         root_node = doc.first_node("params");
 
         cur_node = root_node->first_node("path_otb");
-         if (cur_node){
-        path_otb=cur_node->value();} else {std::cout << " pas path_otb dans fichier xml" << std::endl;}
+        if (cur_node){
+            path_otb=cur_node->value();} else {std::cout << " pas path_otb dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("EP_mask_path");
         if (cur_node){EP_mask_path=cur_node->value();} else {std::cout << " pas EP_mask_path dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("suffix");
@@ -301,6 +341,11 @@ void readXML(std::string aXMLfile){
         cur_node = root_node->first_node("date2");
         if (cur_node){d2=cur_node->value();} else {std::cout << " pas date2 dans fichier xml" << std::endl;}
 
+        cur_node = root_node->first_node("mergeEPSG");
+        if (cur_node){mergeEPSG=std::stoi(cur_node->value());} else {std::cout << " pas mergeEPSG dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("mergeEtatSan");
+        if (cur_node){mergeEtatSan=std::stoi(cur_node->value());} else {std::cout << " pas mergeEtatSan dans fichier xml" << std::endl;}
+
         cur_node = root_node->first_node("doAnaTS");
         if (cur_node){doAnaTS=std::stoi(cur_node->value());} else {std::cout << " pas doAnaTS dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("Tuiles");
@@ -310,10 +355,10 @@ void readXML(std::string aXMLfile){
             std::string n(node->first_attribute("name")->value());
             //std::cout << " tuile " << n <<  std::endl;
             xml_node<> * nodeP=node->first_node("wd");
-             if (nodeP){mapTuiles.emplace(std::make_pair(n,nodeP->value()));} else {std::cout << " pas wd pour tuile " << n << " dans fichier xml" << std::endl;}
+            if (nodeP){mapTuiles.emplace(std::make_pair(n,nodeP->value()));} else {std::cout << " pas wd pour tuile " << n << " dans fichier xml" << std::endl;}
             nodeP=node->first_node("doTuile");
             if (nodeP){
-            mapDoTuiles.emplace(std::make_pair(n,std::stoi(nodeP->value())));
+                mapDoTuiles.emplace(std::make_pair(n,std::stoi(nodeP->value())));
             } else {
                 mapDoTuiles.emplace(std::make_pair(n,true));
             }

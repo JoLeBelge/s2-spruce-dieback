@@ -75,12 +75,23 @@ catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scan
         });   
 
     }
+
+    // en fait j'ai un bug qui apparait quand je traite les tuiles dans la boucle en parrallel, des fois les métadonnées lue dans le XML ne sont pas prise en compte, des fois oui.
+    // pourtant j'ai besoin de cette boucle pour le téléchargement en parrallel
+    for(tuileS2OneDate * t : mVProduts)
+    {
+        delete t;
+    }
+    mVProduts.clear();
+
+    init();
+
 }
 
-catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
+
+void catalogue::init(){
     // listing des dossiers dans intermediate puis lecture des métadonnées XML
     std::cout << "création de la collection depuis les dossiers présent dans le répertoire " << wd << "intermediate/ " << std::endl;
-
 
     std::cout << "d1 " << d1 << " , d2 " << d2 << std::endl;
      std::istringstream in1{d1},in2{d2};
@@ -92,9 +103,6 @@ catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLine
 
      in1 >> date::parse("%F", dfirst);
      in2 >> date::parse("%F", dlast);
-
-
-
 
 
     for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
@@ -116,6 +124,10 @@ catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLine
                            printf("rlimit failed\n");
                    }
     std::cout << " done .." << std::endl;
+}
+
+catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
+    init();
 }
 
 // comptage des produits avec cloudcover ok
@@ -163,6 +175,12 @@ int catalogue::getMasqVal(int aCol, int aRow){
         aRes=scanPix[0];
     }
 
+    return aRes;
+}
+
+int catalogue::getEPSG(){
+    int aRes(0);
+    if (mVProduts.size()>0){aRes=mVProduts.at(0)->getEPSG();}
     return aRes;
 }
 
