@@ -252,7 +252,9 @@ int main(int argc, char *argv[])
             // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
             // effectue le merge par année
             boost::filesystem::path dir(wdRacine+"merge/");
+            boost::filesystem::path dir2(wdRacine+"merge/tmp/");
             boost::filesystem::create_directory(dir);
+            boost::filesystem::create_directory(dir2);
 
             // vérifie le src et si pas celui qu'on souhaite, on reprojette avant merge
             std::cout << " Vérifie la cohérence des SRC" << std::endl;
@@ -267,7 +269,7 @@ int main(int argc, char *argv[])
                     GDALClose(DS);
                     if (EPSG!=mergeEPSG){
                         boost::filesystem::path p(f);
-                        std::string out= wdRacine+"merge/"+p.filename().string();
+                        std::string out= wdRacine+"merge/tmp/"+p.filename().string();
                         std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
                         std::cout << aCommand << std::endl;
                         system(aCommand.c_str());
@@ -290,7 +292,7 @@ int main(int argc, char *argv[])
                     out << "\n";
                 }
                 out.close();
-                std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
+                std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+"_"+globSuffix+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
             }

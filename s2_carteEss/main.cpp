@@ -21,6 +21,10 @@ extern std::string globSuffix;
 
 std::string d1("2016-01-01"),d2("2021-07-11");
 
+// key ; nom de tuile. Val ; working directory
+std::map<std::string,std::string> mapTuiles;
+std::map<std::string,bool> mapDoTuiles;
+
 bool compression(std::string aRasterName);
 void decompress(std::string aRasterName);
 std::string getNameTmp(std::string aIn);
@@ -52,31 +56,42 @@ int main(int argc, char *argv[])
     // lecture des paramètres pour cet utilitaire
     readXML(vm["xmlIn"].as<std::string>());
     GDALAllRegister();
-    wd=wdRacine+ globTuile +"/";
-    switch (mode) {
-    case 1:{
-        std::cout << " echantillonnage stratifié pt d'entrainement " << std::endl;
-        echantillonPts();
-        break;
-    }
-    case 2:{
-        std::cout << " calcul des valeurs spectrales trimestrielles moyennes (2016-2017) " << std::endl;
-        cataloguePeriodPheno cata;
-        cata.traitement();
 
-        break;
-    }
-    case 3:{
-        std::cout << " applique une RF " << std::endl;
-        cataloguePeriodPheno cata;
+    for (auto kv : mapTuiles){
 
-        cata.applyRF(pathRF);
+        if (mapDoTuiles.find(kv.first)!=mapDoTuiles.end() && mapDoTuiles.at(kv.first)){
+            std::string t=kv.first;
+            wd=kv.second+ t +"/";
+            globTuile=t;
+            std::cout << " tuile " <<   globTuile << ", wd " << wd << " , outil " << mode <<std::endl;
 
-        break;
-    }
-    default:{
-        std::cout << " mode outils incorrect " << std::endl;
-    }
+            //wd=wdRacine+ globTuile +"/";
+            switch (mode) {
+            case 1:{
+                std::cout << " echantillonnage stratifié pt d'entrainement " << std::endl;
+                echantillonPts();
+                break;
+            }
+            case 2:{
+                std::cout << " calcul des valeurs spectrales trimestrielles moyennes (2016-2017) " << std::endl;
+                cataloguePeriodPheno cata;
+                cata.traitement();
+
+                break;
+            }
+            case 3:{
+                std::cout << " applique une RF " << std::endl;
+                cataloguePeriodPheno cata;
+
+                cata.applyRF(pathRF);
+
+                break;
+            }
+            default:{
+                std::cout << " mode outils incorrect " << std::endl;
+            }
+            }
+        }
     }
 
     return 1;
@@ -220,39 +235,58 @@ std::vector<int> subsample(int nbSub,int nbTot){
 
 void readXML(std::string aXMLfile){
     // Read the xml file into a vector
-     if ( !boost::filesystem::exists( aXMLfile ) ){ std::cout << " fichier " << aXMLfile << " n'existe pas " << std::endl;} else {
-    std::cout << " read params " << std::endl;
-    xml_document<> doc;
-    xml_node<> * root_node;
-    std::ifstream theFile (aXMLfile);
-    std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
-    buffer.push_back('\0');
-    // Parse the buffer using the xml file parsing library into doc
-    doc.parse<0>(&buffer[0]);
-    // Find our root node
-    root_node = doc.first_node("params");
-    xml_node<>* cur_node = root_node->first_node("pathCompo");
-    if (cur_node){pathCompo=cur_node->value();} else {std::cout << " pas pathCompo dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("pathES");
-    if (cur_node){pathES=cur_node->value();} else {std::cout << " pas pathES dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("wdRacine");
-    if (cur_node){wdRacine=cur_node->value();} else {std::cout << " pas wdRacine dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("path_otb");
-    if (cur_node){path_otb=cur_node->value();} else {std::cout << " pas path_otb dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("EP_mask_path");
-    if (cur_node){EP_mask_path=cur_node->value();} else {std::cout << " pas EP_mask_path dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("globTuile");
-    if (cur_node){globTuile=cur_node->value();} else {std::cout << " pas globTuile dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("yMax");
-    if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("debug");
-    if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("pathRF");
-    if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
-    cur_node = root_node->first_node("suffix");
-    if (cur_node){globSuffix=cur_node->value();
-    globSuffix.erase(std::remove(globSuffix.begin(), globSuffix.end(), ' '), globSuffix.end());
-    } else {std::cout << " pas suffix dans fichier xml" << std::endl;}
+    if ( !boost::filesystem::exists( aXMLfile ) ){ std::cout << " fichier " << aXMLfile << " n'existe pas " << std::endl;} else {
+        std::cout << " read params " << std::endl;
+        xml_document<> doc;
+        xml_node<> * root_node;
+        std::ifstream theFile (aXMLfile);
+        std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+        buffer.push_back('\0');
+        // Parse the buffer using the xml file parsing library into doc
+        doc.parse<0>(&buffer[0]);
+        // Find our root node
+        root_node = doc.first_node("params");
+        xml_node<>* cur_node = root_node->first_node("pathCompo");
+        if (cur_node){pathCompo=cur_node->value();} else {std::cout << " pas pathCompo dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("pathES");
+        if (cur_node){pathES=cur_node->value();} else {std::cout << " pas pathES dans fichier xml" << std::endl;}
+        //cur_node = root_node->first_node("wdRacine");
+        //if (cur_node){wdRacine=cur_node->value();} else {std::cout << " pas wdRacine dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("path_otb");
+        if (cur_node){path_otb=cur_node->value();} else {std::cout << " pas path_otb dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("EP_mask_path");
+        if (cur_node){EP_mask_path=cur_node->value();} else {std::cout << " pas EP_mask_path dans fichier xml" << std::endl;}
+        //cur_node = root_node->first_node("globTuile");
+        //if (cur_node){globTuile=cur_node->value();} else {std::cout << " pas globTuile dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("yMax");
+        if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("debug");
+        if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("pathRF");
+        if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("suffix");
+        if (cur_node){globSuffix=cur_node->value();
+            globSuffix.erase(std::remove(globSuffix.begin(), globSuffix.end(), ' '), globSuffix.end());
+
+
+            cur_node = root_node->first_node("Tuiles");
+            // tuile et chemin d'accès; je dois mettre ça dans deux vecteur, je suppose. Ou un vecteur de tuple pour avoir les deux directement.
+            for (xml_node<> * node = cur_node->first_node("Tuile"); node; node = node->next_sibling())
+            {
+                std::string n(node->first_attribute("name")->value());
+                //std::cout << " tuile " << n <<  std::endl;
+                xml_node<> * nodeP=node->first_node("wd");
+                if (nodeP){mapTuiles.emplace(std::make_pair(n,nodeP->value()));} else {std::cout << " pas wd pour tuile " << n << " dans fichier xml" << std::endl;}
+                nodeP=node->first_node("doTuile");
+                if (nodeP){
+                    mapDoTuiles.emplace(std::make_pair(n,std::stoi(nodeP->value())));
+                } else {
+                    mapDoTuiles.emplace(std::make_pair(n,true));
+                }
+            }
+
+
+        } else {std::cout << " pas suffix dans fichier xml" << std::endl;}
     }
     std::cout << " done" << std::endl;
 }

@@ -103,11 +103,9 @@ bool cataloguePeriodPheno::openDS(){
 void cataloguePeriodPheno::createMaskForTuile(){
     if (mDebug){std::cout << " create Mask For tuile start" << std::endl;}
     std::string masque(EP_mask_path);
-    int epsg(32631);
-    if (globTuile=="T32ULU"){
+    int epsg=getEPSG();
+    if (mDebug){std::cout << " EPSG = " << epsg << std::endl;}
 
-        epsg=32632;
-    }
     std::string out=getNameMasque(2);
 
     if (boost::filesystem::exists(masque)){
@@ -127,6 +125,7 @@ void cataloguePeriodPheno::createMaskForTuile(){
 
     } else { std::cout << "Je n'ai pas le masque pour la RW \n\n\n\n\n!!" << masque << std::endl;}
 }
+
 
 void cataloguePeriodPheno::traitement(){
     // récapitulatif;
