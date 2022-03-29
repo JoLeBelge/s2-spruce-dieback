@@ -190,13 +190,20 @@ void TS1Pos::detectStresseEtRetour(){
             std::cout << e << std::endl;
         }*/
 
+        // check qu'il n'est pas détecté en coupe sanitaire, sinon pas de retour à la normale
+        // std::vector<int>::iterator p3=std::find(mVEtatFin.begin(), mVEtatFin.end(), 4);
+        if (std::find(mVEtatFin.begin(), mVEtatFin.end(), 4)==mVEtatFin.end()){
+        // retour à la normale. attention, je peux avoir un vrai retour à la normal suivi d'un vrai scolyte puis coupé
+        //p = std::find(aVE.begin(), aVE.end(), 2);
+        p=aVE.begin();
+        while ((p = std::find_if(p, aVE.end(), isScolyte)) != aVE.end())
+        {
 
-        // retour à la normale
-        p = std::find(aVE.begin(), aVE.end(), 2);;
-        while (p != aVE.end()) {
-            p = std::find(p, aVE.end(), 1);
-            if (p != aVE.end()) {
-                int pos= p - aVE.begin();
+        //while (p != aVE.end()) {
+            std::vector<int>::iterator p2;
+            p2 = std::find(p, aVE.end(), 1);
+            if (p2 != aVE.end()) {
+                int pos= p2 - aVE.begin();
                 // retour à la normale suite à un stress temporaire
                 if ((aVPosEtatFin.at(pos).size()>2) && (aVDuree.at(pos)>30) && (aVE.at(pos-1)==2) && (aVDuree.at(pos-1)<nbDaysStress)){
 
@@ -226,11 +233,17 @@ void TS1Pos::detectStresseEtRetour(){
 
                 }
                 p++;
+                p2++;
 
             }
         }
+        }
     }
 
+}
+
+bool isScolyte(int x){
+    return x == 2;
 }
 
 void TS1Pos::detectMelange(){
@@ -727,22 +740,22 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
             year_month_day * ymdFirstSco=mVDates.at(p);
             // on compare la date premier scolyte à l'année qui nous intéresse
             if (firstDate){
-            year_month_day debuty(ay,month{1},day{1});
-            days d=sys_days{*ymdFirstSco}-sys_days{debuty};
-            aRes=(d.count()/7);
+                year_month_day debuty(ay,month{1},day{1});
+                days d=sys_days{*ymdFirstSco}-sys_days{debuty};
+                aRes=100+(d.count()/7);
             } else {
-            // on compare la date premier scolyte à la date de coupe sanitaire.
-                 for (int i(0);i<mVDates.size();i++){
-                     if (mVEtatFin.at(i)==4){
+                // on compare la date premier scolyte à la date de coupe sanitaire.
+                for (int i(0);i<mVDates.size();i++){
+                    if (mVEtatFin.at(i)==4){
 
-                         year_month_day * ymdCoupe=mVDates.at(i);
-                         //std::cout << " got the coupe date : " << *ymdCoupe << std::endl;
-                         days d=sys_days{*ymdCoupe}-sys_days{*ymdFirstSco};
-                         //std::cout << " number of days : " << d.count() << std::endl;
-                         aRes=(d.count()/7);
-                         break;
-                     }
-                 }
+                        year_month_day * ymdCoupe=mVDates.at(i);
+                        //std::cout << " got the coupe date : " << *ymdCoupe << std::endl;
+                        days d=sys_days{*ymdCoupe}-sys_days{*ymdFirstSco};
+                        //std::cout << " number of days : " << d.count() << std::endl;
+                        aRes=std::max(d.count()/7,1);
+                        break;
+                    }
+                }
             }
         }
 

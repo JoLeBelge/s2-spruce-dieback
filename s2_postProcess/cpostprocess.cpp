@@ -96,6 +96,27 @@ void cPostProcess::masque(int seuilPP){
     }
 }
 
+// alignement entre couche de masque et couche input (qui vient du merge de toutes les tuiles)
+void cPostProcess::checkAlign(std::string * aRaster, std::string * aRasterMasq){
+    GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
+    bool test(0);
+    const char *comp = "COMPRESSION=DEFLATE";
+    if (strcmp(*pIn->GetMetadata("IMAGE_STRUCTURE"),comp)== 0){test=1;}
+    GDALClose(pIn);
+    if (test){
+        std::cout << "compression détectée" << std::endl;
+        std::string nameTmp=aRaster->substr(0,aRaster->size()-4)+"_tmp.tif";
+        if (!fs::exists(nameTmp)){
+            // on décompresse tout ça
+            std::string aCommand= std::string("gdal_translate -co 'COMPRESS=NONE' "+ *aRaster +" "+nameTmp+" ");
+            std::cout << aCommand << "\n";
+            system(aCommand.c_str());
+
+        }
+         *aRaster=nameTmp;
+    }
+}
+
 void cPostProcess::checkCompression(std::string * aRaster){
     GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
     bool test(0);

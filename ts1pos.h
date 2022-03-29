@@ -4,9 +4,12 @@
 #include <iostream>
 #include "map"
 #include "tuiles2OneDate.h"
+#include "algorithm"
 using namespace date;
 
 extern bool mDebug;
+
+bool isScolyte(int x);
 
 class tuileS2OneDate;
 class pts;
