@@ -1,0 +1,163 @@
+\section{Introduction}
+
+\begin{itemize}
+    \item Aire de répartition de l'épicéa
+    \item Scolyte description générale, plus précision typographe chalcographe
+    \item Evolution des dégats lié au scolyte dans le monde
+    \item Début de la crise en Wallonie + Vosges en 2018
+    \item Objectif de l'article: caractérisation des attaque de scolytes en Wallonie et dans les Vosges selon deux variables environnementales +paramètres macro 
+\end{itemize}
+
+\section{Matériel et méthode}
+
+\subsection{Description zone de la Zone d'étude}
+
+\begin{itemize}
+\item Description zone d'étude générale + tuile S2 traitées (figure: \ref{fig: rep_vosg}) 
+    \item Description générale de la forêt wallonne 
+    \item Description de la pessière wallonne (figure: \ref{fig: rep_wal})
+    \item Description générale de la foret vosgienne 
+    \item Description de la pessière vosgienne (figure: \ref{fig: rep_vosg})
+    \item Comparaison Température et précipitation vosges et Wallonie entre moyenne trentenaire et données pour l'année 2018 (figure \ref{fig: clim_wal} et figure \ref{fig: clim_vosge})
+  
+\end{itemize}
+
+
+
+\subsection{Données de MNT et de Sous-secteurs Radiatif}
+
+\begin{itemize}
+    \item Provenance des données de MNT
+    \item Méthodologie de calcul des sous-secteur radiatif.
+\end{itemize}
+
+\subsection{Données de détection de scolyte}
+\begin{itemize}
+    \item Description méthodologie de détection des pixels scolytés (approche multi date, CRSWIR, règles pour discriminer les pixels scolytés des autres pixels.)
+    \item calcul probabilité de présence de scolyte 
+\end{itemize}
+\subsection{Analyse stat}
+\begin{itemize}
+    \item test de student 
+\end{itemize}
+
+\section{résultats}
+
+\subsection{ Altitude vs probabilité de présence de scolyte}
+
+
+
+\begin{itemize}
+    \item Description figure \ref{fig: sco_alti}
+    \item Wallonie: Diminution de la probabilité de présence de scolyte avec l'augmentation de l'altitude 
+    \item Vosges pas de relation clair avec l'altitude. Cependant, les classes d'altitude 2, 11 et 12 semblent + touchées que les autres classes d'altitude
+    
+    \item Wallonie + Vosges: Augmentation de la probabilité de présence de scolyte avec le temps quelque soit la classe d'altitude.
+\end{itemize}
+
+
+
+
+
+\subsection{Sous-secteur radiatif vs probabilité de présence de scolyte}
+
+
+\begin{itemize}
+    \item Description figure \ref{fig: ss_wall} 
+    \item Wallonie: Différences significative entre les différents sous secteurs. Les sous secteur froid sont  plus touchés que les sous secteur chaud et les plateaux. Les plateaux sont moins touché en Wallonie.
+    \item Vosges: pas de différence significative entre les sous secteurs ( \ref{fig: ss_vosg})
+    
+\end{itemize}
+
+%sous-secteur
+%graphe + descruipton
+ 
+
+\section{Discussion}
+
+\subsection{Différence entre Vosges et Wallonie}
+\begin{itemize}
+    \item Différence climat (Climat semicontinental/montagnard vs climat tempéré océanique)
+    \item Différence sylvicole ( Wallonie futaie régulière exploitable vs Vosges peuplement + mélangé et moins exploitable en haute altitude)
+    \item Sommet des vosges epicéas endémiques vs épicéas en plantations (résilience peuplement )
+    
+\end{itemize}
+
+\subsection{Facteur déterminant l'attaque par l'épicéa ou le scolyte}
+
+\begin{itemize}
+    \item Discussion généralisation de modèle scolyte/ dépérissement des épicéas
+    \item est ce la Biologie du scolyte/ ou le stress de l'épicéa qui conditionne le dépérissement massif ?
+    
+\end{itemize}
+
+\section{Conclusion}
+
+Dépérissement différents pour les Vosges et la Wallonie.
+
+\section{Figure}
+
+\begin{figure} [htbp] 
+    \centering
+    \includegraphics[width=1\textwidth]{figure/waql_2.png}
+    \caption{Zones d'études avec le MNT (XXX) et les tuiles du satellite Sentinelle 2 employées(XXX légende carré rouge).}
+    \label{fig: situ}
+\end{figure}
+  \begin{figure}[htbp]
+    \begin{minipage}[b]{1 \linewidth}
+       \centering
+    \includegraphics[width=1\textwidth]{figure/elevation_spruce_stand_wall.png}
+    \caption{Répartition de la pessière wallonne en fonction de l'altitude en 2018.}
+    \label{fig: rep_wal}
+%\caption sert à insérer une légende
+    \end{minipage}\hfill
+    \vspace{1cm}
+    \begin{minipage}[b]{1 \linewidth}
+     \centering
+    \includegraphics[width=1\textwidth]{figure/elevation_spruce_stand_vosge.png}
+    \caption{Répartition de la pessière vosgienne en fonction de l'altitude en 2018.}
+    \label{fig: rep_vosg}
+    \end{minipage}
+\end{figure}
+
+\begin{figure} [htbp] 
+    \centering
+    \includegraphics[width=1\textwidth]{figure/ombrothermicdiagram_2018_vf.png}
+    \caption{Diagramme ombrothermique de la pessière Wallonne (XXX mettre la légende) pour une période trentenaire (1990-2020) et pour l'année 2018.}
+    \label{fig: clim_wal}
+\end{figure}
+
+
+\begin{figure} [htbp] 
+    \centering
+    \includegraphics[width=1\textwidth]{figure/ombrothermicdiagram_vosge_2018_vf.png}
+    \caption{Diagramme ombrothermique de la pessière vosgienne (XXX mettre la légende) pour une période trentenaire (1990-2020) et pour l'année 2018 (\textbf{in progress...}).}
+    \label{fig: clim_vosge}
+\end{figure}
+
+\begin{landscape}
+\begin{figure} [htbp] 
+    \centering
+    \includegraphics[width=1.2\textwidth]{figure/Wall_vs_vosges.png}
+    \caption{Probabilité de présence de scolyte en fonction de l'altitude pour la Wallonie et les Vosges}
+    \label{fig: sco_alti}
+\end{figure}
+
+\end{landscape}
+
+\begin{figure}[htbp]
+    \begin{minipage}[b]{1 \linewidth}
+       \centering
+    \includegraphics[width=1\textwidth]{figure/evol_ss_wal.png}
+    \caption{Évolution de la crise du typographe en région wallonne en fonction des sous-secteurs.}
+    \label{fig: ss_wall}
+%\caption sert à insérer une légende
+    \end{minipage}\hfill
+    \vspace{1cm}
+    \begin{minipage}[b]{1 \linewidth}
+     \centering
+    \includegraphics[width=1\textwidth]{figure/evol_ss_vosges.png}
+    \caption{Évolution de la crise du typographe dans les Vosges en fonction des sous-secteurs .}
+    \label{fig: ss_vosg}
+    \end{minipage}
+\end{figure}

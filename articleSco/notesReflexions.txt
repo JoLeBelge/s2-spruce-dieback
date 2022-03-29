@@ -1,0 +1,111 @@
+
+p20 CHARARAS 1959 climatScolytes
+
+A la lumière de cette expérience on comprend maintenant l'influence à première vue contradictoire de l'ensoleil-
+lement sur l'essaimage ; alors qu'en avril, époque où la tempéra-
+ture ne dépasse pas 14° en moyenne, le soleil favorise les sorties,
+en juillet au contraire l'exposition directe aux rayons solaires met
+obstacle aussi bien à la ponte qu'à la nutrition car la température
+dépasse alors le seuil de torpeur par la chaleur.
+
+un livre que j'ai pas vu en ligne ;
+
+https://www.taylorfrancis.com/chapters/edit/10.1201/9780429327025-29/determination-effect-solar-radiation-spatial-predictive-modelling-bark-beetle-occurrence-using-several-mathematical-methods-%C4%8Fura%C4%8Diov%C3%A1-jak%C3%B3csov%C3%A1
+
+Pavel Mezei :
+
+We found
+that digital elevation model (DEM)-derived potential radiation loads predicted beetle infestation,
+especially in the peak phase of beetle epidemic. Moreover, spots attacked at the beginning of our
+study period had higher values of received solar radiation than spots at the end of the study period,
+indicating that bark beetles prefer sites with higher insolation during outbreak. We conclude that
+solar radiation, easily determined from the DEM, better identified beetle infestations than commonly
+used meteorological variables
+
+Sprull 2017:
+
+I. typographus outbreaks in Europe are  most  commonly  initiated  by  fine-scale  disturbance events, such as wind storms, that  provide  suitable  breeding  substrates  for  colonization (e.g. severely weakened or dead windthrown trees) and then progress as long-er-lasting  disturbances  (5–7  years)  through  living  trees.
+...
+mortality was generally more prevalent on
+north-facing slopes.
+
+Our BRT (Boosted Regression Trees)
+analysis showed that the relative time of
+spruce mortality was best predicted by elevation and solar equi-
+nox radiation (Table 3).
+
+contradict findings by Netherer
+and Nopp-Mayr (2005), Kautz et al. (2013),
+Mezei et al. (2012, 2014b) that show strong
+correlations between Norway spruce mortal-
+ity severity, I. typographus populations, and
+incoming solar radiation. However, radia-
+tion may be less important on high-elevation
+north-facing slopes, which are typically less
+sun-stressed by abrupt increases in radiation
+resultant from wind throw or sanitary fell-
+ing (Jakuš et al. 2011a).
+
+
+Mezei 2014 
+
+We hypothesised that host factors would be most important in the early stages of the outbreak and that the role of insolation would be more important in later stages.
+
+
+Kautz "sun effet" 2013
+Results revealed that 2nd year edges of scenario II feature a highly significant orientation preference (Friedman-ANOVA: p \ 0.005; Fig. 5), whereas infestation probabilities were equally distributed to all orientations in the following years
+(p [ 0.1 for each of 3rd to 5th year).
+
+Secondly, our results show a temporal alteration of edge
+attractiveness: in the 2nd year, edge trees (scenarios I and
+II) suffer a higher risk of being infested than in the fol-
+lowing years, particularly in case of II where infested trees
+were removed (Fig. 4). Furthermore, the 2nd year after
+clearing showed a strong orientation preference for south-
+facing edges (Fig. 5). This preference got lost in the fol-
+lowing years, most likely due to the gradual adaptation of
+sun-exposed trees to stress caused by altered microclimatic
+conditions.
+
+--> le scolyte aime le soleil la deuxième année. En tout cas, on note un changement au cours des années des sites de prédilection du scolyte.
+
+--> temporal alteration pour attractiveness de la radiation co pour RW
+
+Flight behaviour of Ips typographus L. (Col., Scolytidae) in an environment
+without pheromones: 
+Les corrélations les plus fortes correspondent à celles entre le taux d’envol et le nombre d’heures d’ensoleillement par jour (r = 0.75, P < 0.005), l’humidité relative moyenne en journée (r = -0.75, P < 0.005) et l’indice de couverture nuageuse à midi (r = -0.63,P < 0.005). &copy; 1999 Éditions scientifiques et médicales Elsevier SAS
+
+jacus 2003 : pas de scolyte sur les ss froid.
+
+
+2022 03 08 : je commence à avoir pas mal de piste pour expliquer la forte abondance de scolyte en sous-secteur nord (à priori contre-intuitif)
+
+-facteur age peuplement en interaction avec SS ; peuplement plus vieux en SS nord
+-interaction sylviculture et sous-secteur ; on est très attentif sur les SS sud
+-arbre stressé régulièrement le long de sa vie moins apétant pour scolytes :plants suffering from moderate stress caused e.g., by a shortage of light or nutrients
+or by herbivory generally direct more plant carbon to defense mechanisms than unstressed (Wermelinger 2021)
+ones
+
+-tempêtes (5 pendant hiver 2017_2018) ont touché préférentiellement les SS froid (Ana en 2017 ouest, tempête Eleanor ouest  1/01 1/03)
+
+https://belgorage.be/breves-et-articles/vents-violents/base-de-donnees-breves-et-articles-2018-01-03-orages-2
+https://fr.wikipedia.org/wiki/Temp%C3%AAte_Ana_(2017)
+https://fr.wikipedia.org/wiki/Saison_des_temp%C3%AAtes_hivernales_en_Europe_de_2017-2018
+
+Wermelinger 2021
+-production de résine plus élevé avec la chaleur (meilleure viscosité si température élevée)
+-natural enemies du scolyte plus important avec chaleur ; bark beetle mortality by predators decreased and that by parasitoids increased with
+temperature
+
+These multifaceted, trophic
+interactions between host tree, phloem feeders, and their natural enemies are intricate per
+se and difficult to analyze. Such multitrophic interactions have been identified
+as important gaps in process-based ecosystem models
+
+-peuplement SS nord plus mélangé et donc plus de faux positif pour la méthode de détection du scolyte (masque EP pas parfait)
+
+-composition peuplement SS nord dans les Vosges ; plus mélangés.
+
+
+
+
