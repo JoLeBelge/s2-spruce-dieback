@@ -48,6 +48,8 @@ class TS1Pos{
     int getEtatPourAnnee(int y);
     void printDetail();
 
+    int getPositionFirstSco();
+
     int getDelaisCoupe(int y,bool firstDate=0);
     int mU, mV;
     // résultat par année ; un vecteur par an
