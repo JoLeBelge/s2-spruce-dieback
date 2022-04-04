@@ -19,6 +19,8 @@ extern bool docleanTS1pos;
 
 extern std::string globSuffix;
 
+int mergeEPSG(0);
+
 std::string d1("2016-01-01"),d2("2021-07-11");
 
 // key ; nom de tuile. Val ; working directory
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message - Attention, l'appli va lire le fichier XML s2_carteEss.xml pour définir les options de l'outils (tuiles et masque utilisé)")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2 ; calcule bande spectrale par trimestre, 3 ; applique une forêt aléatoire")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (1: prepare point d'entrainement sur base carte compo et état sanitaire EP 2021, 2 ; calcule bande spectrale par trimestre, 3 ; applique une forêt aléatoire, 4 merge results")
             ("xmlIn", po::value< std::string>()->required(), "Fichier xml contenant les paramètres pour l'application s2 carte Ess")
             ;
 
@@ -87,12 +89,81 @@ int main(int argc, char *argv[])
 
                 break;
             }
+            case 4:{
+                break;
+            }
             default:{
                 std::cout << " mode outils incorrect " << std::endl;
             }
             }
         }
     }
+
+    // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
+    if (mode==4){
+        std::vector<std::string> aVCompo;
+        std::cout << " merge carte compo" << std::endl;
+            for (auto kv : mapTuiles){
+
+                std::string t=kv.first;
+                std::string tDir=kv.second+ t +"/";
+                std::cout << " tuile " << tDir << std::endl;
+                std::string aName=tDir + getNameOutputCompo(kv.first);
+                if (fs::exists(aName)){
+                aVCompo.push_back(aName);
+                } else {
+                 std::cout << " fichier " << aName << " n'existe pas.. " << std::endl;
+                }
+
+            }
+
+            // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
+            // effectue le merge par année
+            boost::filesystem::path dir(wdRacine+"merge/");
+            boost::filesystem::path dir2(wdRacine+"merge/tmp/");
+            boost::filesystem::create_directory(dir);
+            boost::filesystem::create_directory(dir2);
+
+            // vérifie le src et si pas celui qu'on souhaite, on reprojette avant merge
+            std::cout << " Vérifie la cohérence des SRC" << std::endl;
+            int k(0);
+            for (std::string f : aVCompo){
+                    GDALDataset * DS= (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
+                    OGRSpatialReference osr;
+                    osr.importFromWkt(DS->GetProjectionRef());
+                    if (OGRERR_NONE!=osr.AutoIdentifyEPSG()){std::cout << " auto i epsg failed" << std::endl;}
+                    int EPSG=std::stoi(osr.GetAuthorityCode("PROJCS"));
+                    GDALClose(DS);
+                    if (EPSG!=mergeEPSG){
+                        boost::filesystem::path p(f);
+                        std::string out= wdRacine+"merge/tmp/"+p.filename().string();
+
+                        std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
+                        std::cout << aCommand << std::endl;
+                        if (!boost::filesystem::exists(out)){
+                        system(aCommand.c_str());
+                        }
+                        aVCompo.at(k)=out;
+                    }
+                    k++;
+                }
+
+                // crée un fichier txt qui liste les inputs - pour gdal merge
+                std::ofstream out;
+                std::string aMergeName("merge_compoTS_RF_"+globSuffix);
+                std::string aMergeFile=dir.string()+aMergeName+".txt";
+                out.open(aMergeFile);
+                for (std::string f : aVCompo){
+                    out << f;
+                    out << "\n";
+                }
+                out.close();
+
+                std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+"/"+aMergeName +".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
+                std::cout << aCommand << std::endl;
+                system(aCommand.c_str());
+
+        }
 
     return 1;
 
@@ -263,6 +334,9 @@ void readXML(std::string aXMLfile){
         cur_node = root_node->first_node("debug");
         if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("pathRF");
+        cur_node = root_node->first_node("mergeEPSG");
+        if (cur_node){mergeEPSG=std::stoi(cur_node->value());} else {std::cout << " pas mergeEPSG dans fichier xml" << std::endl;}
+
         if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("suffix");
         if (cur_node){globSuffix=cur_node->value();

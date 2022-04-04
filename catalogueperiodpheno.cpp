@@ -43,7 +43,7 @@ std::vector<double> vMetrics{90.00,93.00,104.00,174.00,101.00,130.00,141.00,158.
     return ts.summaryByTri();
 }
 
-
+std::string getNameOutputCompo(std::string aTuile){return "output/compoTS_RF_tuile"+aTuile+"_"+globSuffix+".tif";}
 
 bool cataloguePeriodPheno::openDS(){
     std::cout << "ouverture de tout les raster de la TS" << std::endl;

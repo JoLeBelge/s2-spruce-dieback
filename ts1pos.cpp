@@ -232,10 +232,11 @@ void TS1Pos::detectStresseEtRetour(){
                     }
 
                 }
-                p++;
-                p2++;
+
 
             }
+            p++;
+            //p2++;
         }
         }
     }

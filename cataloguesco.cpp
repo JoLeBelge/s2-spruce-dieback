@@ -40,7 +40,7 @@ void catalogueSco::analyseTS(){
         for ( int row = 0; row < mY; row++ ){
             // lecture masque ep
             readMasqLine(row);
-
+omp_set_dynamic(0); // pour lui imposer le nombre de thread à utiliser, sinon le "dynamic teams " choisi moins de threads si trop de dates dans ma ts
 #pragma omp parallel num_threads(8)
             {
 #pragma omp for
@@ -64,6 +64,7 @@ void catalogueSco::analyseTS(){
                 for (int col : aVCol){
                     //int tid = omp_get_thread_num();
                     //printf("Hello world from omp thread %d\n", tid);
+                    //std::cout << "row " << row << " , " << col << std::endl;
                     TS1Pos ts(row,col,&mYs,nb);
 
                     for (const tuileS2OneDateSco * t : mVProdutsOK){
