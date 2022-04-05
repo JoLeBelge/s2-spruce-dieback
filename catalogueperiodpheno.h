@@ -37,6 +37,9 @@ private:
      int mCode;
 };
 
+std::string getNameOutputCompo(std::string aTuile);
+
+
 class cataloguePeriodPheno : public catalogue
 {
 public:
@@ -66,7 +69,7 @@ public:
     void syntheseTempoRadiation(std::vector<tuileS2OneDatePheno *> aVTuileS2, std::string aOutSuffix);
 
     std::string getNameBandPeriodPheno(std::string aPrefix, std::string aBand){return wd+"output/"+aPrefix+"_"+aBand +"_"+globTuile+"_"+globSuffix+".tif";}
-    std::string getNameOutputRF(){return wd+"output/compoTS_RF_tuile"+globTuile+"_"+globSuffix+".tif";}
+    std::string getNameOutputRF(){return wd+getNameOutputCompo(globTuile);}
 
     // pour la R1 bien entendu. input = utm 31 N
     Pt2di getUV(double x, double y);

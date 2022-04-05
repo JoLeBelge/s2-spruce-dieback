@@ -44,6 +44,8 @@ int mergeEPSG(0);
 
 void readXML(std::string aXMLfile);
 
+std::string getBaseName(int mode, string aTuile);
+
 int main(int argc, char *argv[])
 {
 
@@ -162,7 +164,7 @@ int main(int argc, char *argv[])
 
         }
 
-
+        if (!mergeEtatSan){
         for (auto kv : mapTuiles){
 
             if (mapDoTuiles.find(kv.first)!=mapDoTuiles.end() && mapDoTuiles.at(kv.first)){
@@ -210,92 +212,118 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        }
 
 
         // fin du traitement de chacune des tuiles. maintenant on peux fusionner les tuiles si on le souhaite
         if (mergeEtatSan){
 
-            std::cout << " merge Etat sanitaire " << std::endl;
-            std::map<int, std::vector<std::string>> aMES;
+            std::cout << " merge Etat sanitaire (et carte firstDate / delaisCoupe si il y en a)" << std::endl;
 
-            for (auto kv : mapTuiles){
+            for (int x(1);x<4;x++){
+
+                std::cout << " Mode " << x << std::endl;
+
+                // un peu moche mais bon
+                int add(0);
+                if(x>1){add=1;}
+                std::map<int, std::vector<std::string>> aMES;
+
+                for (auto kv : mapTuiles){
+
+                    std::string t=kv.first;
+                    std::string tDir=kv.second+ t +"/";
+                    std::cout << " tuile " << tDir << std::endl;
+
+                    std::string aBaseName=getBaseName(x,t);
+                    if (mDebug){std::cout << "baseName " << aBaseName << std::endl;}
+                    boost::filesystem::directory_iterator end_itr;
+
+                    // cycle through the directory
+                    for (boost::filesystem::directory_iterator itr(tDir); itr != end_itr; ++itr)
+                    {
+                        if (itr->path().filename().extension().string()==".tif"){
+                            if (boost::filesystem::is_regular_file(itr->path()) && itr->path().filename().string().substr(0,aBaseName.size())==aBaseName && itr->path().filename().string().size()==aBaseName.size()+add+4+4) {
+                                std::string  etatSan= itr->path().string();
+                                if (mDebug){std::cout << etatSan << std::endl;}
 
 
-                std::string t=kv.first;
-                std::string tDir=kv.second+ t +"/";
-                std::cout << " tuile " << tDir << std::endl;
-
-                std::string aBaseName("etatSanitaire_"+t+"_"+globSuffix);
-                boost::filesystem::directory_iterator end_itr;
-
-                // cycle through the directory
-                for (boost::filesystem::directory_iterator itr(tDir); itr != end_itr; ++itr)
-                {
-                    if (itr->path().filename().extension().string()==".tif"){
-                        if (boost::filesystem::is_regular_file(itr->path()) && itr->path().filename().string().substr(0,aBaseName.size())==aBaseName) {
-                            std::string  etatSan= itr->path().string();
-                            //std::cout << etatSan << std::endl;
-                            int  year=stoi(itr->path().filename().string().substr(aBaseName.size(),4));
-                            //if (mDebug){std::cout << "year " << year << std::endl;}
-                            if (aMES.find(year)!=aMES.end()){
-                                aMES.at(year).push_back(etatSan);
-                            } else {
-                                std::vector<std::string> aV;
-                                aV.push_back(etatSan);
-                                aMES.emplace(std::make_pair(year,aV));
+                                int  year=stoi(itr->path().filename().string().substr(aBaseName.size()+add,4));
+                                //if (mDebug){std::cout << "year " << year << std::endl;}
+                                if (aMES.find(year)!=aMES.end()){
+                                    aMES.at(year).push_back(etatSan);
+                                } else {
+                                    std::vector<std::string> aV;
+                                    aV.push_back(etatSan);
+                                    aMES.emplace(std::make_pair(year,aV));
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
-            // effectue le merge par année
-            boost::filesystem::path dir(wdRacine+"merge/");
-            boost::filesystem::path dir2(wdRacine+"merge/tmp/");
-            boost::filesystem::create_directory(dir);
-            boost::filesystem::create_directory(dir2);
+                // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
+                // effectue le merge par année
+                boost::filesystem::path dir(wdRacine+"merge/");
+                boost::filesystem::path dir2(wdRacine+"merge/tmp/");
+                boost::filesystem::create_directory(dir);
+                boost::filesystem::create_directory(dir2);
 
-            // vérifie le src et si pas celui qu'on souhaite, on reprojette avant merge
-            std::cout << " Vérifie la cohérence des SRC" << std::endl;
-            for (auto & kv : aMES){
-                int k(0);
-                for (std::string f : kv.second){
-                    GDALDataset * DS= (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
-                    OGRSpatialReference osr;
-                    osr.importFromWkt(DS->GetProjectionRef());
-                    if (OGRERR_NONE!=osr.AutoIdentifyEPSG()){std::cout << " auto i epsg failed" << std::endl;}
-                    int EPSG=std::stoi(osr.GetAuthorityCode("PROJCS"));
-                    GDALClose(DS);
-                    if (EPSG!=mergeEPSG){
-                        boost::filesystem::path p(f);
-                        std::string out= wdRacine+"merge/tmp/"+p.filename().string();
-                        std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
-                        std::cout << aCommand << std::endl;
-                        system(aCommand.c_str());
-                        aMES.at(kv.first).at(k)=out;
+                // vérifie le src et si pas celui qu'on souhaite, on reprojette avant merge
+                std::cout << " Vérifie la cohérence des SRC" << std::endl;
+                for (auto & kv : aMES){
+                    int k(0);
+                    for (std::string f : kv.second){
+                        GDALDataset * DS= (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
+                        OGRSpatialReference osr;
+                        osr.importFromWkt(DS->GetProjectionRef());
+                        if (OGRERR_NONE!=osr.AutoIdentifyEPSG()){std::cout << " auto i epsg failed" << std::endl;}
+                        int EPSG=std::stoi(osr.GetAuthorityCode("PROJCS"));
+                        GDALClose(DS);
+                        if (EPSG!=mergeEPSG){
+                            boost::filesystem::path p(f);
+                            std::string out= wdRacine+"merge/tmp/"+p.filename().string();
+
+                            std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
+                            std::cout << aCommand << std::endl;
+                            if (!boost::filesystem::exists(out) | overw){
+                            system(aCommand.c_str());
+                            }
+                            aMES.at(kv.first).at(k)=out;
+                        }
+                        k++;
                     }
-                    k++;
+                }
+
+
+                for (auto & kv : aMES){
+                    std::cout << " fusion des cartes d'état sanitaire pour l'année " << kv.first << std::endl;
+                    std::string aBaseResult("etatSanitaire");
+                    switch (x) {
+                    case 2:
+                        aBaseResult="FirstDateSco";
+                        break;
+                    case 3:
+                        aBaseResult="delaisCoupe";
+                    default:
+                        break;
+                    }
+                    // crée un fichier txt qui liste les inputs - pour gdal merge
+                    std::ofstream out;
+                    std::string aMergeFile=dir.string()+"merge_"+aBaseResult+"_"+std::to_string(kv.first)+".txt";
+                    out.open(aMergeFile);
+                    for (std::string f : kv.second){
+                        out << f;
+                        out << "\n";
+                    }
+                    out.close();
+
+                    std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+aBaseResult+"_"+std::to_string(kv.first)+globSuffix+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
+                    std::cout << aCommand << std::endl;
+                    system(aCommand.c_str());
                 }
             }
 
-
-
-
-            for (auto & kv : aMES){
-                std::cout << " fusion des cartes d'état sanitaire pour l'année " << kv.first << std::endl;
-                // crée un fichier txt qui liste les inputs - pour gdal merge
-                std::ofstream out;
-                out.open(dir.string()+"merge_"+std::to_string(kv.first)+".txt");
-                for (std::string f : kv.second){
-                    out << f;
-                    out << "\n";
-                }
-                out.close();
-                std::string aCommand("gdal_merge.py -n 0 -o "+dir.string()+"/etatSanitaire_"+std::to_string(kv.first)+"_"+globSuffix+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+dir.string()+"/merge_"+std::to_string(kv.first)+".txt");
-                std::cout << aCommand << std::endl;
-                system(aCommand.c_str());
-            }
         }
 
 
@@ -368,4 +396,24 @@ void readXML(std::string aXMLfile){
 
         std::cout << " done" << std::endl;
     }
+}
+
+std::string getBaseName(int mode, std::string aTuile){
+    std::string aRes("");
+
+    switch (mode) {
+    case 1:{
+        aRes="etatSanitaire_"+aTuile+"_"+globSuffix;
+        break;}
+    case 2:{
+        aRes="FirstDateSco_"+aTuile+"_"+globSuffix;
+        break;}
+    case 3:{
+        aRes="delaisCoupe_"+aTuile+"_"+globSuffix;
+        break;}
+    default:
+        break;
+    }
+    return aRes;
+
 }
