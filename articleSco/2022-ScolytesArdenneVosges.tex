@@ -73,7 +73,7 @@
 
 %pdftotext 2021-phytoSpy.pdf - | tr -d '.' | wc -w pour le nombre de mot
 
-\title{Ips Typographus behaviour show notable differences between Belgium and north France : a remote sensing analysis of 2016-2021 spruce dieback}
+\title{Bark beetle infection of spruce differs between Belgium and north France : a remote sensing analysis of 2016-2021 dieback}
 
 \begin{abstract}
 
@@ -105,9 +105,9 @@
 \begin{itemize}
 	\item Description zone d'étude générale + tuile S2 traitées (figure: \ref{fig:rep_vosg}) 
 	\item Description générale de la forêt wallonne 
-	\item Description de la pessière wallonne (figure: \ref{fig:rep_wal})
+	\item Description de la pessière wallonne 
 	\item Description générale de la foret vosgienne 
-	\item Description de la pessière vosgienne (figure: \ref{fig:rep_vosg})
+	\item Description de la pessière vosgienne
 	\item Comparaison Température et précipitation vosges et Wallonie entre moyenne trentenaire et données pour l'année 2018 (figure \ref{fig:diagOT})
 	
 \end{itemize}
@@ -123,18 +123,58 @@
 
 
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
-\citep{bolyn_forest_2018}
 
-\citep{grabska_forest_2019,ma_tree_2021,abdullah_sentinel-2_2019}
 
-% mask ep
-% méthode de détection
+The European Union’s earth observation programme, with its satellite twin constellation Sentinel-2A and Sentinel-2B, provides free earth imagery with a high revisit time. 
+Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m. 
+S2 imagery have been intensively used recently for forestry purpose, including for the monitoring of bark beetle outbreaks. 
+Low and Koukal \citep{low_phenology_2020} have modelled phenology courses of vegetation indices to detect forest disturbances. 
+They have properly mapped Bark beetle infestation in Austrian spruce stands.
+Ali \textit{et al.} \citep{ali_canopy_2021} have used multi-years time series remote sensing data in order to detect early bark beetle infestation in Germany. 
+They have highlighted the potential of S2 data for the production of reliable infestation maps.
+Barta \textit{et al.} \citep{barta_early_2021} have studied spectral trajectories of nine bands and six vegetation indices from S2 imagery for the 2018 vegetation season. 
+They have confirmed the superiority of multi-date data for the classification by Random Forest of infested stands in the Czech Republic.
+
+In this present research, the detection of bark beetle infestation is realized by using dense time series of S2 imagery following the methodology developped by Dutrieux \textit{et al.} \citep{dutrieux_package_2021}.
+Vegetation changes are tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} ($SWIR_{CR}$) indice.
+All S2 acquisitions are used in the analyses, provided that the cloud couver do not excess 35 percent.  Bottom Of Atmosphere reflectance images (L2A product) are downloaded from the Theia data cluster \citep{theia_team_value-added_nodate} for all the 6 granules, which are tiles of 100km x 100km, that covers Wallonia. 
+For north France, one single granule covers the Vosges mountains.
+The $SWIR_{CR}$ is based on three spectral bands, the near-infrared, the shortwave infrared 1 band and the shortwave infrared 2, and is sensitive to the foliage water content (figure \ref{fig:harmo}).
+Seasonal variation of $SWIR_{CR}$ for healthy stand is modelled and a bark beetle attack is detected if the observations deviates from the healthy phenology trajectory. 
+Figure \ref{fig:harmo} illustrates a time-serie of $SWIR_{CR}$ observations (grey dots) for one pixel. 
+In 2018, the observations goes beyond the threshold represented by the purple-dashed line, which shows that the spruce stand suffer from a serious stress induced by a bark beetle attack.
+A bark beetle outbreak is confirmed as soon as $SWIR_{CR}$ vegetation indice show a stress for at least three consecutive times.
+In parallel to the detection of bark beetle stress, stand cutting and thinning are subject of particular attention. 
+Bare soil is detected by using a combination of red, green and shortwave infrared reflectance values.
+Cutting are thus taken into account and are classified either as normal harvest cutting or as sanitary thinning based on the health status prior to the cutting.
+The analysis of image time-serie is thus quite straightforward and is performed individually pixel per pixel starting from the 2016 year, which is the beginning of S2 acquisitions. 
+The dense time-serie covers the 2016-2021 period and count a minimum of 180 acquistion dates. 
+The health status is summarized in annual health maps by means of four classes ; healthy, bark beetle attached, cutted and sanitary thinning.
+
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{fctHarmo-page001.png}
-	\caption{Modelisation of seasonal variation of CRSWIR vegetation indice accros vegetetion period for a spuce stand.}
+	\includegraphics[width=\textwidth]{fctHarmo.png}
+	\caption{Bark beetle infestation map are computed by detecting change in the $SWIR_{CR}$ phenology metric. The \textit{SWIR Continuum Removal} is computed using three bands from Sentinel-2 imagery for every single acquisition date and his value is compared to a threshold (purple dashed line) in order to detect vegetation stress. If a stress is detected three consecutive times, we assume that a bark beetle infection occured.}
 	\label{fig:harmo}
 \end{figure}
+
+Our approach of bark beetle detection is only suitable for spruce, as it is closely related to the phenological course of healthy spruce forest.
+An essential prerequisite is thus to have a proper mapping of spruce stands.
+For the south of Belgium, we use existing reliable composition maps \citep{bolyn_forest_2018} computed from remote sensing data in order to restrict our analysis to spruces.
+In Vosges mountains, the composition map comes from the French Mapping agency (Forest BD version 2). 
+Composition of forest stand is determined by photointerpretation and forest stands identifyed as "spruce or fir" serve as starting point to limit our analysis.
+Time series are a convenient means to track phenology changes. 
+More broadly than the dectection of bark beetle infestion, phenology courses are highly suitable for forest tree species discrimination \citep{lisein_discrimination_2015,grabska_forest_2019,ma_tree_2021}.
+We have used S2 spectral bands courses along the vegetation season to refine the determination of species present in the area interpreted as "spruce or fir" in Vosges.
+The objective is to identify and remove every area that are not spruce stand, as pixels located on others species than spruce are likely to be wrongly detected as a bark beetle attack.
+All S2 spectral bands were first summarized for each of the four trimesters of the year, by simply averaging all observations occuring during the trimester.
+Then, a Random Forest algorithm was trained on these synthetic intra-annual time serie to discriminate spruce from non-spruce pixels, based on a training set of observation from Belgium \citep{bolyn_forest_2018}.
+Eventually, this Random Forest classifier was applied on "spruce and fir" area of Vosges and bark beetle detection was carried on only for pixels detected as spruce. 
+
+
+
+
+
 
 \subsection{Analyse stat}
 \begin{itemize}
@@ -197,26 +237,11 @@ Dépérissement différents pour les Vosges et la Wallonie.
 
 \begin{figure} [htbp] 
 	\centering
-	\includegraphics[width=1\textwidth]{waql_2.png}
+	\includegraphics[width=1\textwidth]{waql.png}
 	\caption{Zones d'études avec le MNT (XXX) et les tuiles du satellite Sentinelle 2 employées(XXX légende carré rouge).}
 	\label{fig:situ}
 \end{figure}
-\begin{figure}[htbp]
-	\begin{minipage}[b]{1 \linewidth}
-		\centering
-		\includegraphics[width=1\textwidth]{elevation_spruce_stand_wall.png}
-		\caption{Répartition de la pessière wallonne en fonction de l'altitude en 2018.}
-		\label{fig:rep_wal}
-		%\caption sert à insérer une légende
-	\end{minipage}\hfill
-	\vspace{1cm}
-	\begin{minipage}[b]{1 \linewidth}
-		\centering
-		\includegraphics[width=1\textwidth]{elevation_spruce_stand_vosge.png}
-		\caption{Répartition de la pessière vosgienne en fonction de l'altitude en 2018.}
-		\label{fig:rep_vosg}
-	\end{minipage}
-\end{figure}
+
 
 \begin{figure} [htbp] 
 	\centering

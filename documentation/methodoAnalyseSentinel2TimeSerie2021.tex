@@ -25,6 +25,8 @@
 \usepackage{xcolor}
 \usepackage{subcaption}
  \usepackage{natbib}
+ 
+  \usepackage{fixmath}
 
 \usepackage{listings}
 
@@ -155,15 +157,15 @@ L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR
 
 L'indice spectral permettant la détection précoce (stade vert du dépérissement) des dépérissements provoqués par l'attaque de Typographes est le CRSWIR :
 
-%\begin{equation*}
-\begin{align*} 
-CR_{SWRIR} &= \dfrac{SWIR1}{( NIRa + (\lambda_{SWIR1}-\lambda_{NIRa})* (\dfrac{SWIR2 - NIRa}{\lambda_{SWIR2}-\lambda_{NIRa}})} \\ 
-avec&\\ 
-\lambda_{NIRa} &=865\\ 
-\lambda_{SWIR1} &=1610\\ 
-\lambda_{SWIR2} &=2190
-%\end{equation*}
-\end{align*} 
+\begin{equation*}
+%\begin{align*} 
+\mathbold{SWIR_{CR} = \dfrac{SWIR1}{( NIRa + (\lambda_{SWIR1}-\lambda_{NIRa})* (\dfrac{SWIR2 - NIRa}{\lambda_{SWIR2}-\lambda_{NIRa}})}} %\\ 
+%avec&\\ 
+%\lambda_{NIRa} &=865\\ 
+%\lambda_{SWIR1} &=1610\\ 
+%\lambda_{SWIR2} &=2190
+\end{equation*}
+%\end{align*} 
 
 A noter que CR est l'acronyme de \textit{continuum removal}, technique qui consiste à maximiser le contraste spectral associé à des pics d’absorption, en normalisant la valeur de réflectance
 par rapport à la valeur d’une ‘enveloppe convexe’ calculée à partir de bandes spectrales voisines \citep{dutrieux_mise_2021}.
