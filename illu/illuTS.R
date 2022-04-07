@@ -74,8 +74,11 @@ m.dates <- as.Date(c("2016-01-01","2019-01-01"))
 
 pdf(paste0("scol_2.pdf"),width=9,height=5,colormodel='cmyk')
 par(mar = c(3,3,0.5,0.5), mgp = c(1.5,0.2,0), tck = 0.02, cex.lab = 1.2, cex.axis = 0.8,bty="n")
-plot(d$date[keep],d$CRSWIR[keep], col=etatcol[keep], xlab="time", ylab="Vegetation Indice (continuum removal SWIR)",pch=etatpch[keep], ylim=c(0.4,1.3), lwd=2, xlim=m.dates)
+plot(d$date[keep],d$CRSWIR[keep], col="grey20", xlab="time", ylab="Vegetation Indice (SWIR continuum removal)",pch=1, ylim=c(0.4,1.3), lwd=2, xlim=m.dates)
 dtheorique <- courbeCRSWIR(m.dates)
+# un point est sous la courbe
+points(d$date[keep],d$CRSWIR[keep], col="grey20", lwd=2,pch=1)
+
 lines(dtheorique, col="forestgreen", lwd=4)
 # le seuil à partir duquel on consière un stress
 lines(dtheorique$date[dtheorique$date>"2017-01-01"],dtheorique$CRWSIR[dtheorique$date>"2017-01-01"]*1.7, col="forestgreen", lty= "dashed", lwd=2)
