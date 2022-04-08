@@ -119,6 +119,7 @@ int main(int argc, char *argv[])
 
             // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
             // effectue le merge par année
+            wdRacine="/media/gef/Data2/S2Scolyte/";
             boost::filesystem::path dir(wdRacine+"merge/");
             boost::filesystem::path dir2(wdRacine+"merge/tmp/");
             boost::filesystem::create_directory(dir);
@@ -333,10 +334,9 @@ void readXML(std::string aXMLfile){
         if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("debug");
         if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
-        cur_node = root_node->first_node("pathRF");
         cur_node = root_node->first_node("mergeEPSG");
         if (cur_node){mergeEPSG=std::stoi(cur_node->value());} else {std::cout << " pas mergeEPSG dans fichier xml" << std::endl;}
-
+        cur_node = root_node->first_node("pathRF");
         if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("suffix");
         if (cur_node){globSuffix=cur_node->value();

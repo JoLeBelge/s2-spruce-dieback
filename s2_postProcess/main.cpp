@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
                     std::cout <<" recherche de fichier tif avec nom " << base << " + année"<< std::endl;
                     int lengthName =pIn.stem().string().size()-1; // -1 car 4 chiffre pour année mais code ANNEE est de longeur 5
 
-                    for (const std::filesystem::directory_entry & dirEntry : std::filesystem::recursive_directory_iterator(pIn.parent_path().string())){
+                    for (const std::filesystem::directory_entry & dirEntry : std::filesystem::directory_iterator(pIn.parent_path().string())){
 
                         found =dirEntry.path().stem().string().find(base);
                         // attention, j'ai aussi les fichiers résultats qui ont la même base de nom de fichier (ex _tmp.tif) qu'il ne faut pas prendre avec!!

@@ -361,6 +361,9 @@ void readXML(std::string aXMLfile){
         if (cur_node){debugDetail=std::stoi(cur_node->value());} else {std::cout << " pas debugDetail dans fichier xml" << std::endl;}
         mDebug=debugDetail;
 
+        cur_node = root_node->first_node("nbDaysStress");
+        if (cur_node){nbDaysStress=std::stoi(cur_node->value());
+        std::cout << "nombre de jour de stress premis : " << nbDaysStress << std::endl;} else {std::cout << " pas nbDaysStress dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("doDelaisCoupe");
         if (cur_node){doDelaisCoupe=std::stoi(cur_node->value());} else {std::cout << " pas doDelaisCoupe dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("doFirstDateSco");

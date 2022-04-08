@@ -97,6 +97,7 @@ void cPostProcess::masque(int seuilPP){
 }
 
 // alignement entre couche de masque et couche input (qui vient du merge de toutes les tuiles)
+/*
 void cPostProcess::checkAlign(std::string * aRaster, std::string * aRasterMasq){
     GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
     bool test(0);
@@ -115,7 +116,7 @@ void cPostProcess::checkAlign(std::string * aRaster, std::string * aRasterMasq){
         }
          *aRaster=nameTmp;
     }
-}
+}*/
 
 void cPostProcess::checkCompression(std::string * aRaster){
     GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);

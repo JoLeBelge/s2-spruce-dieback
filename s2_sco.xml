@@ -10,6 +10,8 @@
  <doDelaisCoupe>1</doDelaisCoupe>
  <doFirstDateSco>1</doFirstDateSco>
  
+ <nbDaysStress>150</nbDaysStress>
+ 
  <mergeEPSG>32631</mergeEPSG>
  <mergeEtatSan>1</mergeEtatSan>
  
