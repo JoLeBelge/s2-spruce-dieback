@@ -25,7 +25,8 @@ crswirTheorique <- function (date){
 # une fonction qui renvoie des dates jour par jour et le crswir théorique pour ces date
 courbeCRSWIR <- function (dates){
   date <-as.Date(min(dates):max(dates), origin="1970-01-01")
-  CRWSIR <- crswirTheorique(vAllDates) 
+  #CRWSIR <- crswirTheorique(vAllDates) 
+  CRWSIR <- crswirTheorique(date) 
   #plot(vAllDates,vAllCRWSIR)
   return( data.frame(date,CRWSIR))
 }
@@ -40,6 +41,11 @@ mypch <- c(1, 8 , 4, 4, 8, 2)
 d <- read.table("scol_1.txt", header=T)
 d$date <-  as.Date(paste0(substr(d$date, 7, 10),"-",substr(d$date, 4, 5),"-",substr(d$date, 1, 2)))
 
+# deuxième jeu de donnée
+./s2_timeSerie --xmlIn ./s2_scoTestT31UFR.xml --XYtest 659972 5516400 --nbJourStress 150
+Test pour une position : 659972,5.5164e+06 avec seuil ratio CRSWIR/CRSWIRtheorique(date) =1.7 et nombre de jours de stress après lesquel on interdit un retour à la normal de 150, tuile T31UFR
+d <- read.table("scol_2.txt", header=T, sep=";")
+d$date <-  as.Date(d$date)
 
 etatcol <- rep("forestgreen", nrow(d))
 etatpch <- rep(1, nrow(d))
@@ -60,6 +66,27 @@ legend(dtheorique$date[10], 1.7, legend=c("évolution saisonière du CRSWIR", "s
 legend(dtheorique$date[10], 1.5, legend=c("sain", "scolyté","coupé sans stress","coupé après stress", "stress temporaire", "stress temporaire hivernal"),
        col=mycol, pch=mypch, cex=0.8)
 dev.off()
+
+
+# deuxieme version pour papier
+keep <- d$date > "2017-01-01" & d$date< "2018-10-15"
+m.dates <- as.Date(c("2016-01-01","2019-01-01"))
+
+pdf(paste0("scol_2.pdf"),width=9,height=5,colormodel='cmyk')
+par(mar = c(3,3,0.5,0.5), mgp = c(1.5,0.2,0), tck = 0.02, cex.lab = 1.2, cex.axis = 0.8,bty="n")
+plot(d$date[keep],d$CRSWIR[keep], col="grey20", xlab="time", ylab="Vegetation Indice (SWIR continuum removal)",pch=1, ylim=c(0.4,1.3), lwd=2, xlim=m.dates)
+dtheorique <- courbeCRSWIR(m.dates)
+# un point est sous la courbe
+points(d$date[keep],d$CRSWIR[keep], col="grey20", lwd=2,pch=1)
+
+lines(dtheorique, col="forestgreen", lwd=4)
+# le seuil à partir duquel on consière un stress
+lines(dtheorique$date[dtheorique$date>"2017-01-01"],dtheorique$CRWSIR[dtheorique$date>"2017-01-01"]*1.7, col="forestgreen", lty= "dashed", lwd=2)
+dev.off()
+
+
+
+
 
 
 # calibration de la fct harmonique sur les points pessière saine en Ardenne pour voir la différence avec la courbe de l'INRAE
