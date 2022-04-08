@@ -167,6 +167,7 @@ void cataloguePeriodPheno::traitement(){
     }
 }
 
+
 std::vector<tuileS2OneDatePheno *> cataloguePeriodPheno::getTuileS2ForTri(int trimestre){
     std::vector<tuileS2OneDatePheno *> aRes;
     std::cout << " Sélection de prise de vue pour trimetre " << trimestre << std::endl;
@@ -629,7 +630,6 @@ bool cataloguePeriodPheno::openDS4RF(){
 }
 
 
-
 periodePhenoRasters::periodePhenoRasters(std::vector<std::string> aVBandsPath){
 
     //ouverture des bandes
@@ -730,5 +730,32 @@ Pt2di cataloguePeriodPheno::getUV(double x, double y){
         std::cout << "col =" << col << ", row " << row << std::endl;
         return Pt2di(0,0);
     }
+
+}
+
+void cataloguePeriodPheno::syntheseTempoRadiationTest(double X, double Y){
+
+      std::cout << "Test synthese radiation pour la position : " << X << "," << Y <<  std::endl;
+      pts pt(X,Y);
+
+      for (tuileS2OneDate * t : mVProduts){
+          if (t->mCloudCover<globSeuilCC && t->gety()<yMax) {
+              std::cout << "ajout tuile " <<  t->getDate() <<std::endl;
+              //if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
+              mVProdutsOK.push_back(new tuileS2OneDatePheno(t, getNameMasque(1), getNameMasque(2)));
+          }
+      }
+      std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+
+      int nb = mVProdutsOK.size();
+
+      TS1PosTest ts(&mYs,nb,pt);
+      for (tuileS2OneDate * t : mVProdutsOK){
+          int code=0;
+          ts.add1Date(code,t);
+      }
+      ts.nettoyer(); // nettoyage classic ; se base sur le masque. hors le masque (nuage, edge, sol nul) n'est pas calculé en dehors du masque épicéa..
+
+      // maintenant faire travailler le TS1PosTest
 
 }

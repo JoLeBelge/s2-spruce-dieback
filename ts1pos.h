@@ -77,6 +77,10 @@ public:
     void add1Date(int code, tuileS2OneDate * t);
     std::map<int, std::vector<double> > * summaryByTri();
 
+    // version plus récente qui permet de faire la synthese spectrale trimestrielle pour un point ET de donner les valeurs des bandes dates par dates, pour faire une figure du process.
+    // c'est récent 2022 04 car il y a toute les bandes, pas juste cette utilisée par s2_ts Scolyte
+    void summaryByTriTest();
+
     std::vector<int> getDateIndexForTri(int trimestre);
 private:
   std::vector<double> mVCRSWIR;

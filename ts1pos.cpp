@@ -663,6 +663,34 @@ std::map<int,std::vector<double>> * TS1PosTest::summaryByTri(){
     return aRes;
 }
 
+void TS1PosTest::summaryByTriTest(){
+
+    // on effectue une moyenne des radiations des bandes par trimestre
+    // en première approche, le plus simple ; sélection  pour chaques trimestres des dates qui tombent dans le trimestre puis moyenne de la radiation pour chaque bande
+    for (int tri(1);tri<5;tri++){
+        std::vector<int> vIndex=getDateIndexForTri(tri);
+        double b2(0),b3(0),b4(0),b8(0),b11(0),b12(0);
+        if (vIndex.size()>0){
+            for (int i : vIndex){
+                b2+=mVB2.at(i);
+                b3+=mVB3.at(i);
+                b4+=mVB4.at(i);
+                b8+=mVB8A.at(i);
+                b11+=mVB11.at(i);
+                b12+=mVB12.at(i);
+            }
+            // calculer la moyenne
+            b2=b2/vIndex.size();
+            b3=b3/vIndex.size();
+            b4=b4/vIndex.size();
+            b8=b8/vIndex.size();
+            b11=b11/vIndex.size();
+            b12=b12/vIndex.size();
+        }
+        //std::cout << "calcul moyenne trimestrielle sur " << vIndex.size() << " observations " << std::endl;
+    }
+}
+
 std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){
     std::vector<int> aRes;
     int c(0);
