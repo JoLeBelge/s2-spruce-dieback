@@ -318,6 +318,7 @@ int main(int argc, char *argv[])
                     }
                     out.close();
                     // attention, le merge ne fonction QUE si les nd sont définie dans les raster d'entrée. l'argument -n 255 ne fonctionne pas si pas déjà écrit dans les MTD des raster. voir exemple GE compo qui fusionne très bien.
+                    // donc fonctionne que si toutes les carte ES ont été reprojetée car durant l'appel à gdal je spécifie -dstnodata 255
                     std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+aBaseResult+"_"+std::to_string(kv.first)+globSuffix+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
                     std::cout << aCommand << std::endl;
                     system(aCommand.c_str());

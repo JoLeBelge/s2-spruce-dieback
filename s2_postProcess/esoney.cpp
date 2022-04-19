@@ -1,5 +1,5 @@
 #include "esoney.h"
-extern int cn,cs,sco, newSco,oldSco,newCS, oldCS;
+extern int cn,cs,sco, newSco,oldSco,newCS, oldCS,newCSoldSco;
 void esOney::createTmp(){
 
     // en fait mes inputs sont déjà décompressé et lourd donc je ne crée pas de raster temporaire.
@@ -51,7 +51,7 @@ void esOney::updateCoupeSanRetro(Im2D_U_INT1 * imNextYear){
 
 void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
     // attention, déjà il faut être sur que les Im2D_U_INT1 sont bien les cleans et non pas les images originale.
-    INT nbnSco, nboSco,nbnCS,nboCS;
+    INT nbnSco, nboSco,nbnCS,nboCS, nbnCSoldSco;
 
     // masque ND
     Im2D_U_INT1 nd(mIm->sz().x,mIm->sz().y,0);
@@ -68,10 +68,14 @@ void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
     ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()==cs)
                ,oldCS,mIm->oclip()| (sigma(nboCS)<< 1));
     // nouvelles coupe sanitaire
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs)
-               ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
-
-    std::cout << nbnSco/100 << ";" << nboSco/100 << ";" <<nbnCS/100 << ";" <<nboCS/100 << std::endl;
+  //  ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs)
+   //            ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
+    // distinction nouvelle coupe sanitaire de nouveau scolyte de nouvelle coupe sanitaire d'ancien scolyte.
+      ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs && imPrevYear->in()!=sco)
+                 ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
+      ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs && imPrevYear->in()==sco)
+                 ,newCSoldSco,mIm->oclip()| (sigma(nbnCSoldSco)<< 1));
+    std::cout << nboSco/100  << ";" <<  nbnSco/100<< ";" << nboCS/100 << ";" << nbnCS/100 << ";" << nbnCSoldSco/100 << std::endl;
 }
 
 
