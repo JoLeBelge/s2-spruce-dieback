@@ -67,6 +67,7 @@
 \definecolor{cl22}{RGB}{255,5,1}
 \definecolor{cl41}{RGB}{58,31,15}
 \definecolor{cl42}{RGB}{152,16,25}
+\definecolor{cl43}{RGB}{152,16,25}
 
 
 %\usepackage{listingsutf8}
@@ -129,6 +130,7 @@
 
 \maketitle
 
+\includegraphics[width=\linewidth]{../articleSco/images/fctHarmo.png}
 \tableofcontents
 
 \section{Introduction}
@@ -227,7 +229,7 @@ L'analyse commence par un premier filtre qui vise à retirer les valeurs aberran
 
 Ensuite, un deuxième filtre vise à classer les coupes (code 3) et les coupes sanitaires (code 4). On va pour se faire identifier toutes les occurrences d'au moins 3 détection de sol nu consécutifs, ou encore de 2 détections de sol nu mais dont les 2 dates sont séparées d'au moins 40 jours (pour considérer les situations de sols nus au dessus d'une zone fortement ennuagé et donc avec une densité temporelle d'observations assez faible). Lorsqu'une situation similaire est détectée, l'état de toutes les observations suivantes sont fixées à "coupé" ou à "coupe sanitaire" si un stress a été détecté à la date antérieure à la détection du sol nu. L'idée est bien d'éviter qu'une position détectée comme sol nu ne soit classée comme étant une pessière saine les mois et années suivant la coupe. Nous attirons l'attention que la méthodologie employée ici sur des images de 10m de résolution n'as pas pour objectif d'obtenir de bon résultats sur des jeunes plantations, pour lesquels la réponse spectrale est un mélange résultant de celle des petits houppiers et de la végétation environnante.
 
-La troisième partie de l'analyse vise à la détection des situations de peuplements scolytés. Si un stress est observé plusieurs fois d'affilé, on va modifier les états sanitaires postérieurs pour s'assurer que ceux-ci correspondent soit à un stress, soit à une coupe sanitaire. Néanmoins, un \textit{retour à une situation normale} est accepté dans le cas ou un état sanitaire sain est constaté plus de 3 fois consécutivement, pour une durée excédant 30 jours et seulement dans les cas ou le dépérissement observé précédemment n'as pas duré plus longtemps qu'un certain nombre de jours (par défaut 90 jours). Lorsqu'un \textbf{retour à la normale} est ainsi détecté, l'état sanitaire durant la période de stress est considéré comme étant un stress temporaire (code 5) et non pas une situation de présence de scolyte.
+La troisième partie de l'analyse vise à la détection des situations de peuplements scolytés. Si un stress est observé plusieurs fois d'affilé, on va modifier les états sanitaires postérieurs pour s'assurer que ceux-ci correspondent soit à un stress, soit à une coupe sanitaire. Néanmoins, un \textit{retour à une situation normale} est accepté dans le cas ou un état sanitaire sain est constaté plus de 3 fois consécutivement, pour une durée excédant 30 jours et seulement dans les cas ou le dépérissement observé précédemment n'as pas duré plus longtemps qu'un certain nombre de jours (par défaut 90 jours mais augmenté à 150 jours pour la version 2022 des cartes d'état sanitaire). Lorsqu'un \textbf{retour à la normale} est ainsi détecté, l'état sanitaire durant la période de stress est considéré comme étant un stress temporaire (code 5) et non pas une situation de présence de scolyte.
 
 Enfin, un dernier filtre permet d'appréhender la situation assez complexe mais marginale d'un pixel qui couvrirait une surface hétérogène du point de vue de la présence de l'épicéa, tels qu'un mélange épicéa-feuillus ou un mélange épicéa-sol nu. La détection de mélange vise à réduire le taux de faux positif pour les zones scolytés.
 
@@ -490,10 +492,11 @@ Les cartes de délais de coupe et de première apparition des scolytes peuvent �
 L'information ne sera pertinente que pour la première année d'attaque de scolyte. 
 Si un peuplement est attaqué en 2017, la carte de délais de coupe et de première date d'attaque pour l'année  2018 contiendra une valeur nulle.
 Ces cartes sont de format 8bits, avec des valeurs comprises entre 0 et 255.
-Affin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours.
+Affin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours, additionné de 100.
 
-Par ailleurs, la valeur spéciale 255 signifie que le pixel a été attaqué et/ou coupé l'année précédente. La valeur de 0, elle, est utilisée si le pixel n'est pas dans le masque forestier ou si aucune attaque de scolyte n'est à constater.
+%Par ailleurs, la valeur spéciale 255 signifie que le pixel a été attaqué et/ou coupé l'année précédente. La valeur de 0, elle, est utilisée si le pixel n'est pas dans le masque forestier ou si aucune attaque de scolyte n'est à constater.
 
+\iffalse
 \section{Le logiciel s2{\textunderscore}timeSerie}
 
 Bien que conceptuellement la méthode ne soit pas extrêmement compliquée, le volume de donnée est considérable et nécessite une organisation soigneuse ainsi qu'une méthode de calcul optimisée. C'est dans ce but qu'est développé l'application \textbf{s2{\textunderscore}timeSerie}, sous C++ et dans un environnement Linux.
@@ -612,6 +615,7 @@ Les objets \textbf{tuileS2OneDate} regroupent l'ensemble des images nécessaires
 \subsection{La classe \textbf{TS1Pos}}
 C'est la classe qui effectue l'analyse de la série temporelle (\textbf{TS} pour Time Serie) pour une position donnée (\textbf{Pos} pour Position, qui est rerpésenté par le centre de chaque pixels de l'image). C'est avec cette classe que l'on fait l'analyse de la succession de l'état sanitaire pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc. La classe \textbf{TS1Pos} n'effectue aucune opération cartographique, c'est strictement l'analyse du CRSWIR normalisé au fil du temps, combiné avec la détection ou non de sol nu, qui sert d'information. Outre l'analyse de la série temporelle pour une position, cette classe a une méthode pour exporter un résultat synthétique pour cette position, en l'occurence un état sanitaire \textit{synthétique} pour chaque année. En effet, disposer d'un état sanitaire pour chaque année est un compromis entre trop de détails et trop de synthèse.
 
+\fi
 
 \section{Les post-traitements avec s2{\textunderscore}postProcess}
 

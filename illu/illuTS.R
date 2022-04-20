@@ -86,9 +86,6 @@ dev.off()
 
 
 
-
-
-
 # calibration de la fct harmonique sur les points pessière saine en Ardenne pour voir la différence avec la courbe de l'INRAE
 setwd("/home/lisein/Documents/Scolyte/S2/build-s2_ts/ptSain")
 l.data <- list.files(path = ".")
@@ -152,4 +149,17 @@ plot(d$date,d$CRSWIR, xlab="Date", ylab="complex ratio SWIR", main="suivi de l'�
 dev.off()
 }
 
+##################### illustration synthèse radiométrique trimestrielle ###########
 
+setwd("/home/lisein/Documents/Scolyte/S2/illustration")
+
+d <- read.table("TestSynthesePheno.txt", header=T,sep=";")
+# un dataframe pour les moyennes, un autre pour les observations brutes
+dm <-  d[d$type=="m",]
+dm$date <- as.Date(paste("2000",c("02","05","08","11"),"15", sep="-"))
+do <-  d[d$type=="o",]
+do$date <- as.Date(do$date)
+do$date2 <- as.Date(paste("2000",format(do$date, "%m"),format(do$date, "%d"),sep="-"))
+
+plot(do$date2,do$b8A)
+points(dm$date,dm$b8A, col="blue")
