@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
             case 20:{
                 std::cout << "Test calcul des valeurs spectrales trimestrielles moyennes (2016-2017) pour une position" << std::endl;
                 cataloguePeriodPheno cata;
-                int x=1; int y=1;
+                int x=655441; int y=5545500;
                 cata.syntheseTempoRadiationTest(x,y);
                 break;
             }

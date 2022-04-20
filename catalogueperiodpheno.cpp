@@ -757,5 +757,6 @@ void cataloguePeriodPheno::syntheseTempoRadiationTest(double X, double Y){
       ts.nettoyer(); // nettoyage classic ; se base sur le masque. hors le masque (nuage, edge, sol nul) n'est pas calculé en dehors du masque épicéa..
 
       // maintenant faire travailler le TS1PosTest
+      ts.summaryByTriTest();
 
 }
