@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
                             boost::filesystem::path p(f);
                             std::string out= wdRacine+"merge/tmp/"+p.filename().string();
 
-                            std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -tr 10 10 "+ f+ " "+ out;
+                            std::string aCommand="gdalwarp -t_srs EPSG:"+std::to_string(mergeEPSG)+" -ot Byte -overwrite -dstnodata 255 -tr 10 10 "+ f+ " "+ out;
                             std::cout << aCommand << std::endl;
                             if (!boost::filesystem::exists(out) | overw){
                             system(aCommand.c_str());
@@ -317,7 +317,8 @@ int main(int argc, char *argv[])
                         out << "\n";
                     }
                     out.close();
-
+                    // attention, le merge ne fonction QUE si les nd sont définie dans les raster d'entrée. l'argument -n 255 ne fonctionne pas si pas déjà écrit dans les MTD des raster. voir exemple GE compo qui fusionne très bien.
+                    // donc fonctionne que si toutes les carte ES ont été reprojetée car durant l'appel à gdal je spécifie -dstnodata 255
                     std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+aBaseResult+"_"+std::to_string(kv.first)+globSuffix+".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
                     std::cout << aCommand << std::endl;
                     system(aCommand.c_str());
@@ -361,6 +362,9 @@ void readXML(std::string aXMLfile){
         if (cur_node){debugDetail=std::stoi(cur_node->value());} else {std::cout << " pas debugDetail dans fichier xml" << std::endl;}
         mDebug=debugDetail;
 
+        cur_node = root_node->first_node("nbDaysStress");
+        if (cur_node){nbDaysStress=std::stoi(cur_node->value());
+        std::cout << "nombre de jour de stress premis : " << nbDaysStress << std::endl;} else {std::cout << " pas nbDaysStress dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("doDelaisCoupe");
         if (cur_node){doDelaisCoupe=std::stoi(cur_node->value());} else {std::cout << " pas doDelaisCoupe dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("doFirstDateSco");

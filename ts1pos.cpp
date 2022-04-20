@@ -193,51 +193,51 @@ void TS1Pos::detectStresseEtRetour(){
         // check qu'il n'est pas détecté en coupe sanitaire, sinon pas de retour à la normale
         // std::vector<int>::iterator p3=std::find(mVEtatFin.begin(), mVEtatFin.end(), 4);
         if (std::find(mVEtatFin.begin(), mVEtatFin.end(), 4)==mVEtatFin.end()){
-        // retour à la normale. attention, je peux avoir un vrai retour à la normal suivi d'un vrai scolyte puis coupé
-        //p = std::find(aVE.begin(), aVE.end(), 2);
-        p=aVE.begin();
-        while ((p = std::find_if(p, aVE.end(), isScolyte)) != aVE.end())
-        {
+            // retour à la normale. attention, je peux avoir un vrai retour à la normal suivi d'un vrai scolyte puis coupé
+            //p = std::find(aVE.begin(), aVE.end(), 2);
+            p=aVE.begin();
+            while ((p = std::find_if(p, aVE.end(), isScolyte)) != aVE.end())
+            {
 
-        //while (p != aVE.end()) {
-            std::vector<int>::iterator p2;
-            p2 = std::find(p, aVE.end(), 1);
-            if (p2 != aVE.end()) {
-                int pos= p2 - aVE.begin();
-                // retour à la normale suite à un stress temporaire
-                if ((aVPosEtatFin.at(pos).size()>2) && (aVDuree.at(pos)>30) && (aVE.at(pos-1)==2) && (aVDuree.at(pos-1)<nbDaysStress)){
-
+                //while (p != aVE.end()) {
+                std::vector<int>::iterator p2;
+                p2 = std::find(p, aVE.end(), 1);
+                if (p2 != aVE.end()) {
+                    int pos= p2 - aVE.begin();
                     // retour à la normale suite à un stress temporaire
-                    // situation vicieuse ou jai 222 1111 (moins de 90j) 222 1111 (plus de 90 j)
-                    // donc je dois vérifier toutes les valeurs d'état d'avant pour déterminer si j'ai des stress
+                    if ((aVPosEtatFin.at(pos).size()>2) && (aVDuree.at(pos)>30) && (aVE.at(pos-1)==2) && (aVDuree.at(pos-1)<nbDaysStress)){
 
-                    if (pos-2==0 |  (pos-2>=0 && mVEtatFin.at(aVPosEtatFin.at(pos-2).at(0))!=2)){
-                        bool testStressAnterieur(0);
-                        for(int i(0) ; i < aVPosEtatFin.at(pos-2).at(0); i++){
-                            if (mVEtatFin.at(i)==2){testStressAnterieur=1;}
-                        }
+                        // retour à la normale suite à un stress temporaire
+                        // situation vicieuse ou jai 222 1111 (moins de 90j) 222 1111 (plus de 90 j)
+                        // donc je dois vérifier toutes les valeurs d'état d'avant pour déterminer si j'ai des stress
 
-                        if (!testStressAnterieur){
-                            // on change les valeurs de stress pour les mettre en stress temporaire
-                            for (int i : aVPosEtatFin.at(pos-1)){
-                                mVEtatFin.at(i)=5;
+                        if (pos-2==0 |  (pos-2>=0 && mVEtatFin.at(aVPosEtatFin.at(pos-2).at(0))!=2)){
+                            bool testStressAnterieur(0);
+                            for(int i(0) ; i < aVPosEtatFin.at(pos-2).at(0); i++){
+                                if (mVEtatFin.at(i)==2){testStressAnterieur=1;}
                             }
-                            // on remet les valeurs d'état comme avant qu'elles soient modifié par la détection du stress
-                            for (int po(pos); po<aVE.size();po++){
-                                for (int i : aVPosEtatFin.at(po)){
-                                    mVEtatFin.at(i)=aVE.at(po);
+
+                            if (!testStressAnterieur){
+                                // on change les valeurs de stress pour les mettre en stress temporaire
+                                for (int i : aVPosEtatFin.at(pos-1)){
+                                    mVEtatFin.at(i)=5;
+                                }
+                                // on remet les valeurs d'état comme avant qu'elles soient modifié par la détection du stress
+                                for (int po(pos); po<aVE.size();po++){
+                                    for (int i : aVPosEtatFin.at(po)){
+                                        mVEtatFin.at(i)=aVE.at(po);
+                                    }
                                 }
                             }
                         }
+
                     }
 
+
                 }
-
-
+                p++;
+                //p2++;
             }
-            p++;
-            //p2++;
-        }
         }
     }
 
@@ -539,6 +539,14 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
     rasterFiles r_b12(t->getOriginalRasterR2Name("12"));
     mVB12.at(c)=r_b12.getValue(pt_.X(),pt_.Y())/10000.0;
 
+    rasterFiles r_b8(t->getRasterR1Name("8"));
+    mVB8.at(c)=r_b8.getValue(pt_.X(),pt_.Y(),1)/10000.0;
+    rasterFiles r_b5(t->getOriginalRasterR2Name("5"));
+    mVB5.at(c)=r_b5.getValue(pt_.X(),pt_.Y())/10000.0;
+    rasterFiles r_b6(t->getOriginalRasterR2Name("6"));
+    mVB6.at(c)=r_b6.getValue(pt_.X(),pt_.Y())/10000.0;
+    rasterFiles r_b7(t->getOriginalRasterR2Name("7"));
+    mVB7.at(c)=r_b7.getValue(pt_.X(),pt_.Y())/10000.0;
 
     /* B2 bleu
  * B3 vert
@@ -661,6 +669,51 @@ std::map<int,std::vector<double>> * TS1PosTest::summaryByTri(){
         aRes->emplace(std::make_pair(tri,m));
     }
     return aRes;
+}
+
+void TS1PosTest::summaryByTriTest(){
+
+    std::cout << " TS1PosTest::summaryByTriTest() " << std::endl;
+    // on effectue une moyenne des radiations des bandes par trimestre
+    // en première approche, le plus simple ; sélection  pour chaques trimestres des dates qui tombent dans le trimestre puis moyenne de la radiation pour chaque bande
+    for (int tri(1);tri<5;tri++){
+        std::vector<int> vIndex=getDateIndexForTri(tri);
+        std::cout << "calcul moyenne trimestrielle " << tri << " sur " << vIndex.size() << " observations " << std::endl;
+        double b2(0),b3(0),b4(0),b8(0),b8A(0),b5(0),b6(0),b7(0),b11(0),b12(0);
+        if (vIndex.size()>0){
+            for (int i : vIndex){
+                // je voudrai aussi les valeurs initiales!
+                std::cout << * mVDates.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8.at(i)
+                          << ";" << mVB5.at(i) << ";" << mVB6.at(i) << ";" << mVB7.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) << std::endl;
+                b2+=mVB2.at(i);
+                b3+=mVB3.at(i);
+                b4+=mVB4.at(i);
+                b8+=mVB8.at(i);
+
+
+                b5+=mVB5.at(i);
+                b6+=mVB6.at(i);
+                b7+=mVB7.at(i);
+                b8A+=mVB8A.at(i);
+                b11+=mVB11.at(i);
+                b12+=mVB12.at(i);
+            }
+            // calculer la moyenne
+            b2=b2/vIndex.size();
+            b3=b3/vIndex.size();
+            b4=b4/vIndex.size();
+            b8=b8/vIndex.size();
+
+            b5=b5/vIndex.size();
+            b6=b6/vIndex.size();
+            b7=b7/vIndex.size();
+            b8A=b8A/vIndex.size();
+            b11=b11/vIndex.size();
+            b12=b12/vIndex.size();
+        }
+        // Maintenant j'affiche ça dans la console ou je le met dans un dataframe pour affichage après?
+        std::cout << tri << ";" << b2 << ";" << b3 << ";" << b4 << ";" << b8 << ";" << b5 << ";" << b6 << ";" << b7 << ";" << b8A<< ";" << b11 << ";" << b12 << std::endl ;
+    }
 }
 
 std::vector<int> TS1PosTest::getDateIndexForTri(int trimestre){

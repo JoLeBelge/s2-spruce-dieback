@@ -1,6 +1,6 @@
 #include "cpostprocess.h"
 
-int cn(3),cs(4),sco(2), newSco(22),oldSco(21),newCS(42), oldCS(41);
+int cn(3),cs(4),sco(2), newSco(22),oldSco(21),newCS(42), oldCS(41),newCSoldSco(43);
 extern std::string pathProbPres;
 
 std::string path_otb("/home/lisein/OTB/OTB-7.3.0-Linux64/bin/");
@@ -97,6 +97,7 @@ void cPostProcess::masque(int seuilPP){
 }
 
 // alignement entre couche de masque et couche input (qui vient du merge de toutes les tuiles)
+/*
 void cPostProcess::checkAlign(std::string * aRaster, std::string * aRasterMasq){
     GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
     bool test(0);
@@ -115,7 +116,7 @@ void cPostProcess::checkAlign(std::string * aRaster, std::string * aRasterMasq){
         }
          *aRaster=nameTmp;
     }
-}
+}*/
 
 void cPostProcess::checkCompression(std::string * aRaster){
     GDALDataset *pIn= (GDALDataset*) GDALOpen(aRaster->c_str(), GA_ReadOnly);
@@ -169,7 +170,7 @@ void cPostProcess::evol(){
     // première année ; que des nouveaux scolytes. on donne une image pour l'année précédente qui est vide
     std::shared_ptr<esOney> es0=mVES.at(0);
     Im2D_U_INT1 Im(es0->getImPtr()->sz().x,es0->getImPtr()->sz().y,0);
-     std::cout << "y;newSco;oldSco;newCS;oldCS \n" << std::endl;
+     std::cout << "y;oldSco;newSco;oldCS;newCSnewSco;newCSoldSco\n" << std::endl;
     es0->detectNewSco(&Im);
     es0->saveEvol();
     es0->loadClean();// j'ai modifié l'image de cette état san , je dois la recharger car j'en ai besoin pour la boucle ci-dessous

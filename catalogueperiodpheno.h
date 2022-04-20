@@ -54,6 +54,7 @@ public:
     // calcule les bandes moyennes par trimestre
     void traitement();
 
+
     // applique une forêt aléatoire pour chaque pixel
     void applyRF(std::string pathRFmodel);
     int callRF(std::vector<double> aV);
@@ -67,6 +68,10 @@ public:
     void getMeanRadByTriMultiPt(std::vector<mpt*> aVPt, std::string aOut);
 
     void syntheseTempoRadiation(std::vector<tuileS2OneDatePheno *> aVTuileS2, std::string aOutSuffix);
+
+    // calcule les bandes moyennes par trimestre : mode de Test pour une position donnée en u,v sinon trop de conflit src possible.
+    // le but est de faire une figure qui illustre le process
+    void syntheseTempoRadiationTest(double X, double Y);
 
     std::string getNameBandPeriodPheno(std::string aPrefix, std::string aBand){return wd+"output/"+aPrefix+"_"+aBand +"_"+globTuile+"_"+globSuffix+".tif";}
     std::string getNameOutputRF(){return wd+getNameOutputCompo(globTuile);}

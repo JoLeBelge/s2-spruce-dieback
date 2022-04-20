@@ -70,12 +70,16 @@ class TS1Pos{
 class TS1PosTest : public TS1Pos
 {
 public:
-    TS1PosTest(std::vector<int> * aVYears, int n, pts pt):TS1Pos(0,0,aVYears,n),mVCRSWIR(n,0),mVCRSWIRNorm(n,0),mVB2(n,0),mVB3(n,0),mVB4(n,0),mVB8A(n,0),mVB11(n,0),mVB12(n,0),mVMasq(n,0),pt_(pt){}
+    TS1PosTest(std::vector<int> * aVYears, int n, pts pt):TS1Pos(0,0,aVYears,n),mVCRSWIR(n,0),mVCRSWIRNorm(n,0),mVB2(n,0),mVB3(n,0),mVB4(n,0),mVB8A(n,0),mVB11(n,0),mVB12(n,0),mVMasq(n,0),pt_(pt),mVB8(n,0),mVB5(n,0),mVB6(n,0),mVB7(n,0){}
     void nettoyer();
     void printDetail(std::string aOut="toto");
     // overload add1Date
     void add1Date(int code, tuileS2OneDate * t);
     std::map<int, std::vector<double> > * summaryByTri();
+
+    // version plus récente qui permet de faire la synthese spectrale trimestrielle pour un point ET de donner les valeurs des bandes dates par dates, pour faire une figure du process.
+    // c'est récent 2022 04 car il y a toute les bandes, pas juste cette utilisée par s2_ts Scolyte
+    void summaryByTriTest();
 
     std::vector<int> getDateIndexForTri(int trimestre);
 private:
@@ -88,6 +92,12 @@ private:
   std::vector<double> mVB11;
   std::vector<double> mVB12;
   std::vector<double> mVMasq;
+
+  std::vector<double> mVB8;
+  std::vector<double> mVB5;
+  std::vector<double> mVB6;
+  std::vector<double> mVB7;
+
   pts pt_;
 };
 

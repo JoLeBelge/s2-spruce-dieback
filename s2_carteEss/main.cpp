@@ -92,6 +92,13 @@ int main(int argc, char *argv[])
             case 4:{
                 break;
             }
+            case 20:{
+                std::cout << "Test calcul des valeurs spectrales trimestrielles moyennes (2016-2017) pour une position" << std::endl;
+                cataloguePeriodPheno cata;
+                int x=655441; int y=5545500;
+                cata.syntheseTempoRadiationTest(x,y);
+                break;
+            }
             default:{
                 std::cout << " mode outils incorrect " << std::endl;
             }
@@ -119,6 +126,7 @@ int main(int argc, char *argv[])
 
             // il faut également faire un check des src qui ne sont pas les même pour toutes les tuiles depuis que je travaille sur le Grand-Est.
             // effectue le merge par année
+            wdRacine="/media/gef/Data2/S2Scolyte/";
             boost::filesystem::path dir(wdRacine+"merge/");
             boost::filesystem::path dir2(wdRacine+"merge/tmp/");
             boost::filesystem::create_directory(dir);
@@ -159,7 +167,7 @@ int main(int argc, char *argv[])
                 }
                 out.close();
 
-                std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+"/"+aMergeName +".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
+                std::string aCommand("gdal_merge.py -n 0 -n 255 -o "+dir.string()+aMergeName +".tif -of GTiff -co 'COMPRESS=DEFLATE' -v --optfile "+aMergeFile);
                 std::cout << aCommand << std::endl;
                 system(aCommand.c_str());
 
@@ -333,10 +341,9 @@ void readXML(std::string aXMLfile){
         if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("debug");
         if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
-        cur_node = root_node->first_node("pathRF");
         cur_node = root_node->first_node("mergeEPSG");
         if (cur_node){mergeEPSG=std::stoi(cur_node->value());} else {std::cout << " pas mergeEPSG dans fichier xml" << std::endl;}
-
+        cur_node = root_node->first_node("pathRF");
         if (cur_node){pathRF=cur_node->value();} else {std::cout << " pas pathRF dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("suffix");
         if (cur_node){globSuffix=cur_node->value();
