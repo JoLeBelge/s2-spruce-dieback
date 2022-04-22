@@ -297,7 +297,7 @@ Les différentes zones bioclimatiques de la Wallonie sont indiquées sur la figu
 \begin{figure} [htbp] 
     \centering
     \includegraphics[width=0.9\textwidth]{zbio.png}
-    \caption{Carte des zones bioclimatique de la Wallonie (Van den Perre,2015). }
+    \caption{Carte des zones bioclimatique de la Wallonie \citep{van_der_perre_carte_2015}.}
     \label{fig:zbio}
 \end{figure}
 
@@ -313,7 +313,7 @@ Les différents niveaux d'aptitude de cette carte pour l'épicéa commun sont:
 
 \newpage
 \subsection{Confrontation des cartes de risque BioClimSol et d'aptitude du Fichier Ecologique des Essences avec les estimations de dégâts de scolytes.}
-Afin d'estimer les dégâts causés par les scolytes de l'épicéa (typographe et chalcographes), des cartes d'états sanitaires de la pessière Wallonne ont été réalisées sur base de la méthodologie de l'INRAe (Dutrieux et al. [2021]). Ces cartes ont été développées grâce aux images sentinel 2 à l'aide d'un indice spectral.
+Afin d'estimer les dégâts causés par les scolytes de l'épicéa (typographe et chalcographes), des cartes d'états sanitaires de la pessière Wallonne ont été réalisées sur base de la méthodologie de l'INRAe \citep{dutrieux_mise_2021,dutrieux_package_2021}. Ces cartes ont été développées grâce aux images sentinel 2 à l'aide d'un indice spectral.
 L'indice spectral employé pour la détection des épicéas dépérissant (à partir du stade vert) est le CRSWIR:
 \begin{align*} 
 CR_{SWRIR} &= \dfrac{SWIR1}{( NIRa + (\lambda_{SWIR1}-\lambda_{NIRa})* (\dfrac{SWIR2 - NIRa}{\lambda_{SWIR2}-\lambda_{NIRa}})} \\ 
@@ -325,7 +325,7 @@ avec&\\
 \end{align*} 
 
 %bofbof
-L'ensemble de la méthodologie de calcul des cartes d'états sanitaires est présente dans le  Guide méthodologique: Analyse des séries temporelles d'image Sentinel-2 pour la détection des épicéas scolytés. %\cite{
+L'ensemble de la méthodologie de calcul des cartes d'états sanitaires est présente dans \cite{lisein_guide_2022}.
 
 Afin d'estimer les dégâts aux pessières de Wallonie et des Vosges, les probabilités de présence de scolyte  ont été calculées sur base des cartes d'état sanitaire annuelles et de une ou  plusieurs cartes de caractéristiques écologiques (altitude, sous-secteurs radiatif ou les deux en même temps).
 
@@ -491,7 +491,7 @@ La probabilité de présence de scolytes ne semble donc pas liée au gradient al
 
 
 \subsubsection{Topographie}
-Afin de comparer la probabilité de présence de scolyte selon les pentes des Vosges et en Wallonie, un raster sous-secteur a été calculé pour la tuile Sentinel 2 T32ULU. La méthodologie utilisée pour déterminer les sous-secteurs sur la tuile Sentinel 2 T32ULU est identique à celle employée pour le Fichier Écologique des essences (Wampach et al.,2017).
+Afin de comparer la probabilité de présence de scolyte selon les pentes des Vosges et en Wallonie, un raster sous-secteur a été calculé pour la tuile Sentinel 2 T32ULU. La méthodologie utilisée pour déterminer les sous-secteurs sur la tuile Sentinel 2 T32ULU est identique à celle employée pour le Fichier Écologique des essences \citep{wampach_cartographie_2017}.
 
 Concernant les pentes, le fichier écologique suggère une situation favorable pour l'épicéa dans les versant nord (sous-secteur froid) et un risque élevé dans les versants sud ( sous-secteur chaud). Les faibles pentes (< 20\%) et les plateaux sont considérés comme ayant un risque faible pour cette essence (figure \ref{fig:ficheco}).
 
