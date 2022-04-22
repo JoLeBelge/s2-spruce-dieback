@@ -1,0 +1,71 @@
+\expandafter\def\csname ver@fixltx2e.sty\endcsname{}%Fait disparaitre l'avertissement du package ltx2e inutile
+
+\documentclass[french,a4paper, 12pt, twoside]{article}
+\usepackage[utf8]{inputenc} %permet l'utilisation de syboles UTF8
+\usepackage[T1]{fontenc}
+\usepackage{natbib} %Gestion de la biblio
+\usepackage[french]{babel}
+\usepackage[top=2.5cm, bottom=2.5cm, inner=3.2cm, outer=2.5cm]{geometry} %gère la taille des marges
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}% gère les couleurs
+\usepackage{float}
+\usepackage{amsmath}%gère les environnement d'équation etc...
+\usepackage{diagbox}
+\usepackage{longtable}%Permet de faire des longs tableaux qui se coupent sur plusieurs pages
+\usepackage{colortbl}
+\usepackage{amsfonts}
+\usepackage{lscape}
+\usepackage{times}
+\usepackage{listings}
+\usepackage{tabu}%insertion de tableaux avec plus d'options de mise en page
+\usepackage{dblfloatfix} 
+\usepackage{setspace}
+\setstretch{1,2}
+\usepackage{fancyhdr}%Permet de faire des chouettes en-têtes et pieds de page
+\setlength{\headheight}{14pt} %ajustement de la taille de l'en-tête 
+\usepackage[gen]{eurosym}%Permet d'utiliser le symbole €
+\usepackage{afterpage}
+\usepackage{titlesec}
+\usepackage[hyphens]{url}
+\usepackage{subcaption}
+\usepackage[tablename=Tableau,labelfont={sc}]{caption}
+\usepackage{textcomp}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{appendix}
+\usepackage{pdfpages}
+\usepackage[hidelinks]{hyperref}%Permet de faire des hyperliens pour les figure, les titres, les url...
+\usepackage{indentfirst}
+\usepackage{ragged2e} %pour pouvoir centrer un paragraphe et justifier le suivant
+ \usepackage{xspace}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\graphicspath{{figureLR/}{figure/}}
+%for file in *.png; do convert $file -resize 800 ../figureLR/$file ; done
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+%\addbibresource{rapport_rw2.bib}
+%\title{Bibliography management: \texttt{rapport_rw2.bib} package}
+\author{Share\LaTeX}
+
+\begin{document}
+\newpage
+\restoregeometry
+\thispagestyle{empty}
+
+
+\includepdf[pages=-]{Rw2_pages_Degarde.pdf} % page de titre fait dans word, plus maniable
+\pagenumbering{arabic}
+\newpage
+\input{content}
+
+
+
+
+\newpage
+\input{Référence}
+
+\end{document}
