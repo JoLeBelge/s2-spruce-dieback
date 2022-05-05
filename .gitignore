@@ -8,7 +8,6 @@ illu/*
 documentation/*.aux
 documentation/*.bbl
 documentation/*.blg
-documentation/*.log
 documentation/*.out
 documentation/*.toc
 documentation/*.synctex.gz

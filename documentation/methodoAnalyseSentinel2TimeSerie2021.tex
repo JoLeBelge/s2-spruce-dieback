@@ -106,22 +106,13 @@
 \setlength{\parindent}{0mm}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 
-\title{Analyse des séries temporelles d'image Sentinel-2 pour la détection des épicéas scolytés.}
 
-%\author{Lisein J, Maus L et Claessens H}
-\date{%
-    UlG - Gembloux Agro-Bio Tech
-    \\
-    \today
-}
 
 \begin{document}
 \renewcommand{\contentsname}{Table des Matières}
 \renewcommand\bibname{Références bibliographiques}
+\includepdf[pages=-]{pages_Degarde_methodoAnalyseSentinel2.pdf} % page de titre fait dans word, plus maniable
 
-\maketitle
-
-\includegraphics[width=\linewidth]{../articleSco/images/fctHarmo.png}
 
 \pagebreak
 \tableofcontents
@@ -131,11 +122,11 @@
 
 Dans le cadre du projet InterReg RegioWood 2 et de l'Accord cadre de recherche et vulgarisation forestière, la crise du typographe qui touche les pessières wallonnes est étudiée au moyen de la télédétection. L'objectif est de dresser des cartes d'état sanitaire pour chaque année étudiée sur lesquelles on puisse distinguer les arbres sains des arbres dépérissant. L'utilisation de série temporelle d'images satellites dispose d'un potentiel très intéressant pour le suivi de la phénologie des arbres.
 
-Le présent document est un document interne de l'unité de Gestion des ressources forestières (Ulg). Pour toutes questions ou remarques, contactez Lisein Jonathan par courriel (\href{mailto:liseinjon@hotmail.com}{liseinjon@hotmail.com}).
+%Le présent document est un document interne de l'unité de Gestion des ressources forestières (Ulg). Pour toutes questions ou remarques, contactez Lisein Jonathan par courriel (\href{mailto:liseinjon@hotmail.com}{liseinjon@hotmail.com}).
 
 \subsection{Sentinel-2}
 
-L'imagerie multispectrale des deux satellites Sentinel-2 (A et B, mis en orbite en juin 2015 et mars 2017) du programme Copernicus est à la base de la méthodologie présenté dans ce document. La résolution des bandes spectrales de Sentinel-2 est de 10 mètres dans le meilleurs des cas (certaines fréquences utilisées pour le suivi sanitaire sont captées à 20 mètres). La fréquence de revisite à l'équateur est de 5 jours, mais on dispose en Belgique de l'ordre d'une 12aine de prises de vue par ans pour lesquelles la couverture nuageuse est suffisamment faible. Les prises de vue font l'objet de traitement et sont redécoupées selon un carroyage de tuiles carrées de 100km de côté (figure \ref{fig:tuileRW}). %Le shapefile des tuiles et des centroïdes sont disponible sous \url{https://github.com/justinelliotmeyers/Sentinel-2-Shapefile-Index}.
+L'imagerie multispectrale des deux satellites Sentinel-2 (A et B, mis en orbite en juin 2015 et mars 2017) du programme Copernicus est à la base de la méthodologie présenté dans ce document. La résolution des bandes spectrales de Sentinel-2 est de 10 mètres dans le meilleurs des cas (certaines fréquences utilisées pour le suivi sanitaire sont captées à 20 mètres). La fréquence de revisite à l'équateur est de 5 jours, mais on dispose en Belgique de l'ordre d'une 12aine de prises de vue par an pour lesquelles la couverture nuageuse est suffisamment faible. Les prises de vue font l'objet de traitement et sont redécoupées selon un carroyage de tuiles carrées de 100km de côté (figure \ref{fig:tuileRW}). %Le shapefile des tuiles et des centroïdes sont disponible sous \url{https://github.com/justinelliotmeyers/Sentinel-2-Shapefile-Index}.
 
 \begin{figure}[H]
 \centering
@@ -149,9 +140,9 @@ L'imagerie multispectrale des deux satellites Sentinel-2 (A et B, mis en orbite 
 \subsection{Suivi d'un indice spectral pour la détection précoce de stress}\label{subsec:methodo}
 
 
-L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret : voir \cite{dutrieux_package_2021,dutrieux_mise_2021}) développée depuis 2017. 
+L'idée générale est de se calquer sur la méthodologie de l'INRAE (INRAE, UMR TETIS, R. Dutrieux, K. Ose, J.-B. Féret : voir \citep{dutrieux_package_2021,dutrieux_mise_2021}) développée depuis 2017. 
 
-L'indice spectral permettant la détection précoce (stade vert du dépérissement) des dépérissements provoqués par l'attaque de Typographes est le CRSWIR :
+L'indice spectral permettant la détection précoce (stade vert du dépérissement) des dépérissements provoqués par l'attaque de typographes est le CRSWIR :
 
 %\begin{equation*}
 \begin{align*} 
@@ -172,7 +163,7 @@ Les valeurs d'un peuplements soumis à un stress physiologique voient leur CRSWI
  f(t) =   a_{1} + b_{1} \sin(\dfrac{2\pi}{T}t)+ b_{2} \cos(\dfrac{2\pi}{T}t)+ b_{3} \sin(\dfrac{2\pi}{T}2t)+ b_{4} \cos(\dfrac{2\pi}{T}2t)
 \end{equation} 
 
-L'équation \ref{eq:harmo} permet de modéliser les variations saisonnières de CRSWIR pour un peuplement d'épicéa sain. La constante T est égal à 365.25. Cette équation ajustée sur 300 pessières saines est illustrée pour 3 années sur la figure \ref{fig:harmo}. Pour un pixel donnée, l'étude de la série temporelle de valeurs de CRSWIR, correspondant donc à chaque date pour lesquelles une image Sentinel-2 peu ennuagée est disponible, permet de déterminer si le peuplement est soumis à un stress. Plusieurs situations existent en dehors de celle d'une pessière saine et de celle d'une pessières scolytées. En effet, il est également nécessaire de déterminer si le peuplement est coupé (détection de sol nu), ou si le peuplement présente un stress temporaire dû probablement à un déficit hydrique temporaire. Les pessières sur des sols à Régime Hydrique Alternatif sont fortement représentatif de cette dernière situation, avec typiquement un déficit hydrique estival entraînant un stress passager qui se manifestera par une augmentation de CRSWIR, mais qui se différentie d'une attaque de scolyte par un retour à un état sanitaire normal (diminution du CRSWIR) peu de temps après.
+L'équation \ref{eq:harmo} permet de modéliser les variations saisonnières de CRSWIR pour un peuplement d'épicéa sain. La constante T est égal à 365.25. Cette équation ajustée sur 300 pessières saines est illustrée pour 3 années sur la figure \ref{fig:harmo}. Pour un pixel donnée, l'étude de la série temporelle de valeurs de CRSWIR, correspondant donc à chaque date pour lesquelles une image Sentinel-2 peu ennuagée est disponible, permet de déterminer si le peuplement est soumis à un stress. Plusieurs situations existent en dehors de celle d'une pessière saine et de celle d'une pessières scolytées. En effet, il est également nécessaire de déterminer si le peuplement est coupé (détection de sol nu), ou si le peuplement présente un stress temporaire dû probablement à un déficit hydrique temporaire. Les pessières sur des sols à régime hydrique alternatif sont fortement représentatif de cette dernière situation, avec typiquement un déficit hydrique estival entraînant un stress passager qui se manifestera par une augmentation de CRSWIR, mais qui se différentie d'une attaque de scolyte par un retour à un état sanitaire normal (diminution du CRSWIR) peu de temps après.
 
 \begin{figure}[H]
 	\centering
@@ -181,7 +172,7 @@ L'équation \ref{eq:harmo} permet de modéliser les variations saisonnières de 
 	\label{fig:harmo}
 \end{figure}
 
-Afin de facilité la comparaison d'une valeur de CRSWIR pour une date donnée avec la valeur de référence, qui est la valeur de CRSWIR d'une pessière saine représenté par l'équation \ref{eq:harmo}, nous utilisons un ratio tels que défini ci-dessous :
+Afin de faciliter la comparaison d'une valeur de CRSWIR pour une date donnée avec la valeur de référence, qui est la valeur de CRSWIR d'une pessière saine représenté par l'équation \ref{eq:harmo}, nous utilisons un ratio tel que défini ci-dessous :
 
 \begin{equation}\label{eq:crswirnorm}
 CR_{SWRIR_{norm}}(t)=\dfrac{CRSWIR_{observe}}{CRSWIR_{theorique}(t)}
@@ -213,11 +204,11 @@ le $CRSWIR_{theorique}(t)$ représente bien entendu la valeur calculée au moyen
 	\item \crule[cl6]{1cm}{1cm} ; pixel qui est un mélange, détecté car présente un stress passager en hiver (feuillus sans photosynthèse) suivi d'un retour à la normale en été (résineux + feuillus en photosynthèse) 
 \end{enumerate}
 
-Les filtres et les règles de décisions permettant d'attribuer un état sanitaire à une observation d'une série temporelle sont brièvement présentés ici. On peux considérer que la série temporelle pour un pixel donné est synthétisée sous forme d'un tableau à 2 colonnes pour lequel chaque ligne constitue une date pour laquelle on dispose d'une information (prise de vue non ennuagée pour cette position). La première colonne est celle contenant l'information de la date de l'observation. La deuxième colonne contient un état sanitaire présumé, qui peut prendre la valeur de 1, 2 ou 3 avant de subir l'analyse présentée ici. La valeur de 1 signifie que la valeur de CRSWIR permet de supposer que le peuplement est sain. La valeur de 2 indique par contre que le peuplement semble en situation de stress, avec un $CRSWIR_{normalise}$ supérieur au seuil fixé (ex. 1.4, voir ligne en pointillé de la figure \ref{fig:harmo}).
+Les filtres et les règles de décisions permettant d'attribuer un état sanitaire à une observation d'une série temporelle sont brièvement présentés ici. On peut considérer que la série temporelle pour un pixel donné est synthétisée sous forme d'un tableau à 2 colonnes pour lequel chaque ligne constitue une date pour laquelle on dispose d'une information (prise de vue non ennuagée pour cette position). La première colonne est celle contenant l'information de la date de l'observation. La deuxième colonne contient un état sanitaire présumé, qui peut prendre la valeur de 1, 2 ou 3 avant de subir l'analyse présentée ici. La valeur de 1 signifie que la valeur de CRSWIR permet de supposer que le peuplement est sain. La valeur de 2 indique par contre que le peuplement semble en situation de stress, avec un $CRSWIR_{normalise}$ supérieur au seuil fixé (ex. 1.4, voir ligne en pointillé de la figure \ref{fig:harmo}).
 
-L'analyse commence par un premier filtre qui vise à retirer les valeurs aberrantes de la série temporelle. On va pour ce faire contrôler que aucune valeur de 2 (stress) ou 3 (coupé) n'apparaît de manière isolée. L'hypothèse est simplement qu'un pixel détecté comme stressé à une date mais considéré comme sain à la date précédente à la date suivante correspond à une observation aberrantes qui sera donc retiré ici.
+L'analyse commence par un premier filtre qui vise à retirer les valeurs aberrantes de la série temporelle. On va pour ce faire contrôler que aucune valeur de 2 (stress) ou 3 (coupé) n'apparaît de manière isolée. L'hypothèse est simplement qu'un pixel détecté comme stressé à une date mais considéré comme sain à la date précédente à la date suivante correspond à une observation aberrante qui sera donc retiré ici.
 
-Ensuite, un deuxième filtre vise à classer les coupes (code 3) et les coupes sanitaires (code 4). On va pour se faire identifier toutes les occurrences d'au moins 3 détection de sol nu consécutifs, ou encore de 2 détections de sol nu mais dont les 2 dates sont séparées d'au moins 40 jours (pour considérer les situations de sols nus au dessus d'une zone fortement ennuagé et donc avec une densité temporelle d'observations assez faible). Lorsqu'une situation similaire est détectée, l'état de toutes les observations suivantes sont fixées à "coupé" ou à "coupe sanitaire" si un stress a été détecté à la date antérieure à la détection du sol nu. L'idée est bien d'éviter qu'une position détectée comme sol nu ne soit classée comme étant une pessière saine les mois et années suivant la coupe. Nous attirons l'attention que la méthodologie employée ici sur des images de 10m de résolution n'as pas pour objectif d'obtenir de bon résultats sur des jeunes plantations, pour lesquels la réponse spectrale est un mélange résultant de celle des petits houppiers et de la végétation environnante.
+Ensuite, un deuxième filtre vise à classer les coupes (code 3) et les coupes sanitaires (code 4). On va pour se faire identifier toutes les occurrences d'au moins 3 détection de sol nu consécutifs, ou encore de 2 détections de sol nu mais dont les 2 dates sont séparées d'au moins 40 jours (pour considérer les situations de sols nus au dessus d'une zone fortement ennuagé et donc avec une densité temporelle d'observations assez faible). Lorsqu'une situation similaire est détectée, l'état de toutes les observations suivantes sont fixées à "coupé" ou à "coupe sanitaire" si un stress a été détecté à la date antérieure à la détection du sol nu. L'idée est bien d'éviter qu'une position détectée comme sol nu ne soit classée comme étant une pessière saine les mois et années suivant la coupe. Nous attirons l'attention que la méthodologie employée ici sur des images de 10m de résolution n'a pas pour objectif d'obtenir de bons résultats sur des jeunes plantations, pour lesquels la réponse spectrale est un mélange résultant de celle des petits houppiers et de la végétation environnante.
 
 La troisième partie de l'analyse vise à la détection des situations de peuplements scolytés. Si un stress est observé plusieurs fois d'affilé, on va modifier les états sanitaires postérieurs pour s'assurer que ceux-ci correspondent soit à un stress, soit à une coupe sanitaire. Néanmoins, un \textit{retour à une situation normale} est accepté dans le cas ou un état sanitaire sain est constaté plus de 3 fois consécutivement, pour une durée excédant 30 jours et seulement dans les cas ou le dépérissement observé précédemment n'as pas duré plus longtemps qu'un certain nombre de jours (par défaut 90 jours mais augmenté à 150 jours pour la version 2022 des cartes d'état sanitaire). Lorsqu'un \textbf{retour à la normale} est ainsi détecté, l'état sanitaire durant la période de stress est considéré comme étant un stress temporaire (code 5) et non pas une situation de présence de scolyte.
 
@@ -225,7 +216,7 @@ Enfin, un dernier filtre permet d'appréhender la situation assez complexe mais 
 
 \subsection{Illustrations des cartes d'état sanitaire}
 
-Les illustrations suivantes montrent à quoi ressemble les cartes d'état sanitaire sur de petites zones, celles-ci étant accompagnés des prises de vues aériennes de la Région Wallonne affin de donner un visuel du peuplement.
+Les illustrations suivantes montrent à quoi ressemble les cartes d'état sanitaire sur de petites zones, celles-ci étant accompagnés des prises de vues aériennes de la Région Wallonne afin de donner un visuel du peuplement.
 
 \begin{figure}
 	\begin{minipage}[b]{.32\linewidth}
@@ -477,12 +468,12 @@ Les illustrations suivantes montrent à quoi ressemble les cartes d'état sanita
 \fi
 \subsection{Délais de coupe et première date de détection de scolyte}
 
-Les résultats de la détection des scolytes par analyse de série temporelle est résumée sous forme de carte d'états sanitaires annuelles. Disposer d'un état sanitaire par année est un compromis de synthèse, affin de simplifier l'information tout en disposant de suffisamment de détails. Néanmoins, il peut s'avérer nécessaire d'utiliser d'autre informations, tels que, pour un peuplement en éclaircie sanitaire, le délais de coupe. Egalement, la première date de détection d'une attaque de scolyte est aussi intéressante, d'une part pour un suivi plus fin des foyers de scolyte, d'autre part pour la validation de la carte d'état sanitaire par photointerprétation des orthophotomosaiques annuelles de la région Wallonne.
+Les résultats de la détection des scolytes par analyse de série temporelle sont résumés sous forme de carte d'état sanitaire annuelle. Disposer d'un état sanitaire par année est un compromis de synthèse, afin de simplifier l'information tout en disposant de suffisamment de détails. Néanmoins, il peut s'avérer nécessaire d'utiliser d'autres informations, tels que, pour un peuplement en éclaircie sanitaire, le délais de coupe. Egalement, la première date de détection d'une attaque de scolyte est aussi intéressante, d'une part pour un suivi plus fin des foyers de scolyte, d'autre part pour la validation de la carte d'état sanitaire par photointerprétation des orthophotomosaiques annuelles de la région Wallonne.
 Les cartes de délais de coupe et de première apparition des scolytes peuvent être exportées de manière optionnelle. Il s'agit, comme pour les cartes d'état sanitaire, d'une série temporelle de carte à raison de une par année.
 L'information ne sera pertinente que pour la première année d'attaque de scolyte. 
 Si un peuplement est attaqué en 2017, la carte de délais de coupe et de première date d'attaque pour l'année  2018 contiendra une valeur nulle.
 Ces cartes sont de format 8bits, avec des valeurs comprises entre 0 et 255.
-Affin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours, additionné de 100.
+Afin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours, additionné de 100.
 
 %Par ailleurs, la valeur spéciale 255 signifie que le pixel a été attaqué et/ou coupé l'année précédente. La valeur de 0, elle, est utilisée si le pixel n'est pas dans le masque forestier ou si aucune attaque de scolyte n'est à constater.
 
@@ -570,7 +561,7 @@ Le fichier xml est passé en argument lors de l'appel à l'outil \textbf{s2{\tex
 
 L'appli utilise OTB comme calculatrice raster, pour tout ce qui concerne les éléments ci-dessous :
 \begin{itemize}
-	\item calcul de carte de masques (no data et nuage)
+	\item calcul de cartes de masques (no data et nuage)
 	\item rééchantillonnage des bandes spectrales de Sentinel-2 de 20m vers 10m de résolution
 	\item calcul de carte pour la détection du sol nu
 	\item le calcul des cartes de CRSWIR
@@ -581,7 +572,7 @@ L'ensemble de ces opérations sont effectuées date par date de manière indépe
  
 \subsection{Organisation du code source}
 
-Trois classes d'objets sont définies dans le projet C++ et permettent d'effectuer toutes les opérations nécessaires. Ces classes sont présentées brièvement ci-dessous. Ces informations sont une aide destiné à l'utilisateur qui souhaite lire le code source pour le comprendre et/ou le modifier. La figure \ref{fig:classes} schématise le fonctionnement des 3 classes d'objets les unes par rapports aux autres.
+Trois classes d'objets sont définies dans le projet C++ et permettent d'effectuer toutes les opérations nécessaires. Ces classes sont présentées brièvement ci-dessous. Ces informations sont une aide destinée à l'utilisateur qui souhaite lire le code source pour le comprendre et/ou le modifier. La figure \ref{fig:classes} schématise le fonctionnement des 3 classes d'objets les unes par rapports aux autres.
 
 \begin{figure}
 	\centering
@@ -590,20 +581,20 @@ Trois classes d'objets sont définies dans le projet C++ et permettent d'effectu
 	\label{fig:classes}
 \end{figure}
 
-Afin de pouvoir utiliser ces classes dans différentes applications, des classes de bases sont développées pour \textbf{catalogue} et \textbf{tuileS2OneDate}. Des classes plus spécialisées héritent ensuite de ces trois classes de bases en fonction des objectifs poursuivit. Ainsi, pour la détection des scolytes, les classes \textbf{catalogueSco} et \textbf{tuileS2OneDateSco}  sont spécialisées.
+Afin de pouvoir utiliser ces classes dans différentes applications, des classes de bases sont développées pour \textbf{catalogue} et \textbf{tuileS2OneDate}. Des classes plus spécialisées héritent ensuite de ces trois classes de bases en fonction des objectifs poursuivis. Ainsi, pour la détection des scolytes, les classes \textbf{catalogueSco} et \textbf{tuileS2OneDateSco}  sont spécialisées.
 
 
 \subsection{La classe \textbf{catalogue}}
 
-C'est la classe qui contient toutes la série temporelle sur l'emprise d'une tuile. La série temporelle est consituée par l'ensemble des prises de vue sur cette tuile. Les prises de vue retenues sont celles qui présentent un taux d'ennuagement inférieur à un seuil fixé à 35\%. C'est au niveau de cette classe que sont défini les dates de début et de fin de la série temporelle, mais aussi que la zone d'intérêt pour laquelle on souhaite effectuer les calculs est définie. En effet, l'analyse n'est pas effectuée sur l'ensemble du territoire mais uniquement sur les zones considérées comme étant des pessières. Le masque épicéa est donc utilisé comme donnée d'entrée et ce masque, qui couvre toute la Région Wallonne, est découpée par la classe catalogue afin d'épouser l'emprise de la tuile.
+C'est la classe qui contient toute la série temporelle sur l'emprise d'une tuile. La série temporelle est consituée par l'ensemble des prises de vue sur cette tuile. Les prises de vue retenues sont celles qui présentent un taux d'ennuagement inférieur à un seuil fixé à 35\%. C'est au niveau de cette classe que sont défini les dates de début et de fin de la série temporelle, mais aussi que la zone d'intérêt pour laquelle on souhaite effectuer les calculs est définie. En effet, l'analyse n'est pas effectuée sur l'ensemble du territoire mais uniquement sur les zones considérées comme étant des pessières. Le masque épicéa est donc utilisé comme donnée d'entrée et ce masque, qui couvre toute la Wallonie, est découpée par la classe catalogue afin d'épouser l'emprise de la tuile.
 
 \subsection{La classe \textbf{tuileS2OneDate}}
-C'est la classe qui contient toutes les informations relatives à une tuile pour une date données ; archive compressée, décompressée, métadonnées (date, nuage, nom du produit, répertoire ou j'ai mis les images, ect). Cette classe effectue la lecture de nombreuses informations depuis le fichier XML de métadonnées du produit Sentinel-2A pour cette date. Plus d'information sont disponibles sous le lien \url{https://labo.obs-mip.fr/multitemp/sentinel-2/theias-sentinel-2-l2a-product-format/} à propos du format de données des produits 2A de Sentinel-2.
+C'est la classe qui contient toutes les informations relatives à une tuile pour une date donnée ; archive compressée, décompressée, métadonnées (date, nuage, nom du produit, répertoire ou j'ai mis les images, ect). Cette classe effectue la lecture de nombreuses informations depuis le fichier XML de métadonnées du produit Sentinel-2A pour cette date. Plus d'informations sont disponibles sous le lien \url{https://labo.obs-mip.fr/multitemp/sentinel-2/theias-sentinel-2-l2a-product-format/} à propos du format de données des produits 2A de Sentinel-2.
 
 Les objets \textbf{tuileS2OneDate} regroupent l'ensemble des images nécessaires à l'analyse temporelle pour la détection de stress provoqué par les scolytes. En plus des images de chaque bande spectrale du capteur de Sentinel-2, les images calculés par OTB listées précédemment dans ce document sont gérées par la classe \textbf{tuileS2OneDate}.
 
 \subsection{La classe \textbf{TS1Pos}}
-C'est la classe qui effectue l'analyse de la série temporelle (\textbf{TS} pour Time Serie) pour une position donnée (\textbf{Pos} pour Position, qui est rerpésenté par le centre de chaque pixels de l'image). C'est avec cette classe que l'on fait l'analyse de la succession de l'état sanitaire pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc. La classe \textbf{TS1Pos} n'effectue aucune opération cartographique, c'est strictement l'analyse du CRSWIR normalisé au fil du temps, combiné avec la détection ou non de sol nu, qui sert d'information. Outre l'analyse de la série temporelle pour une position, cette classe a une méthode pour exporter un résultat synthétique pour cette position, en l'occurence un état sanitaire \textit{synthétique} pour chaque année. En effet, disposer d'un état sanitaire pour chaque année est un compromis entre trop de détails et trop de synthèse.
+C'est la classe qui effectue l'analyse de la série temporelle (\textbf{TS} pour Time Serie) pour une position donnée (\textbf{Pos} pour Position, qui est représenté par le centre de chaque pixels de l'image). C'est avec cette classe que l'on fait l'analyse de la succession de l'état sanitaire pour déterminer si la pessière en ce point est scolytée, coupée, saine, etc. La classe \textbf{TS1Pos} n'effectue aucune opération cartographique, c'est strictement l'analyse du CRSWIR normalisé au fil du temps, combiné avec la détection ou non de sol nu, qui sert d'information. Outre l'analyse de la série temporelle pour une position, cette classe a une méthode pour exporter un résultat synthétique pour cette position, en l'occurence un état sanitaire \textit{synthétique} pour chaque année. En effet, disposer d'un état sanitaire pour chaque année est un compromis entre trop de détails et trop de synthèse.
 
 \fi
 
@@ -611,12 +602,12 @@ C'est la classe qui effectue l'analyse de la série temporelle (\textbf{TS} pour
 
 \subsection{Les post-traitements}
 
-Les traitements illustrés jusqu'à présent sont des calculs qui s'effectuent sur base de la série temporelle, mais sans prendre en compte les effets de voisinage. On peut dire que la dimension spatiale n'est pas prise en compte. Pour assurer une certaine cohérence dans les classes d'état sanitaires assignées à chaque pixel dans les cartes annuelles, un certain nombre de post traitements sont effectué et développé dans une seconde application. Cette application est assez polyvalente, avec un nombre d'outils assez élevés. Les outils permettent les actions suivantes ;
+Les traitements illustrés jusqu'à présent sont des calculs qui s'effectuent sur base de la série temporelle, mais sans prendre en compte les effets de voisinage. On peut dire que la dimension spatiale n'est pas prise en compte. Pour assurer une certaine cohérence dans les classes d'état sanitaire assignées à chaque pixel dans les cartes annuelles, un certain nombre de post traitement sont effectués et développés dans une seconde application. Cette application est assez polyvalente, avec un nombre d'outils assez élevés. Les outils permettent les actions suivantes ;
 \begin{enumerate}\addtocounter{enumi}{-1}
 	
-	\item masquer les cartes d'états sanitaires avec la carte de pourcentage de GHA de l'épicéa (travaux de \citep{bolyn_forest_2018}), en utilisant un seuil de présence spécifié. Pour rappel, l'analyse de la série temporelle est effectué sur une zone définie sur base d'un pourcentage de GHA de l'épicéa de plus de 50\%. On peux donc avec cet outil se montrer plus restrictif en augmentant ce seuil, par exemple avec un seuil de 70\%.
-	\item nettoyage des cartes d'états sanitaires. Pour le moment, il s'agit uniquement de localiser les zones de coupe non-sanitaire de petites dimensions qui sont entourées d'une coupe sanitaire. On met l'hypothèse que ces épicéas ont également été attaqué par le scolyte avant d'être abattu, comme leur voisins direct, et on change la classe pour les mettre en coupe sanitaire.
-	\item calcul des cartes d'évolutions de l'états sanitaires. Chaque carte d'état sanitaire est comparée avec celle de l'année précédente afin de classer les zones de scolyte en nouveau scolyte ou ancien scolyte, et les zones de coupe sanitaire en nouvelle ou ancienne coupe sanitaire. On distingue les nouvelles coupes sanitaires pour les peuplements scolytés durant l'année en cours des nouvelles coupes sanitaires pour les peuplement qui étaient déjà scolyté l'année précédente.
+	\item masquer les cartes d'états sanitaires avec la carte de pourcentage de GHA de l'épicéa (travaux de \citep{bolyn_forest_2018}), en utilisant un seuil de présence spécifié. Pour rappel, l'analyse de la série temporelle est effectué sur une zone définie sur base d'un pourcentage de GHA de l'épicéa de plus de 50\%. On peut donc avec cet outil se montrer plus restrictif en augmentant ce seuil, par exemple avec un seuil de 70\%.
+	\item nettoyage des cartes d'état sanitaire. Pour le moment, il s'agit uniquement de localiser les zones de coupe non-sanitaire de petites dimensions qui sont entourées d'une coupe sanitaire. On met l'hypothèse que ces épicéas ont également été attaqué par le scolyte avant d'être abattu, comme leurs voisins directs, et on change la classe pour les mettre en coupe sanitaire.
+	\item calcul des cartes d'évolutions de l'état sanitaire. Chaque carte d'état sanitaire est comparée avec celle de l'année précédente afin de classer les zones de scolyte en nouveau scolyte ou ancien scolyte, et les zones de coupe sanitaire en nouvelle ou ancienne coupe sanitaire. On distingue les nouvelles coupes sanitaires pour les peuplements scolytés durant l'année en cours des nouvelles coupes sanitaires pour les peuplement qui étaient déjà scolyté l'année précédente.
 	\item  compression des cartes geotiff
 	\item calcul de statistique (surface) pour chaque classe d'état sanitaire.
 	\item projection des cartes vers le SRC 31370 Belge Lambert 72.
@@ -655,11 +646,11 @@ La méthode de détection des scolytes sera validée selon plusieurs méthodes, 
 
 \subsection{Validation terrain}
 
-L'équipe du CRPF Grand-est a effectué des mesures sur le terrain en 2021 (projet RégioWood II) pour un total de 127 placettes en pessière. L'échantillonnage est stratifié pour disposer de relevés en pessières scolytées et non-scolytées représentant de manière équilibrée les 3 classes d'altitudes choisies : 0-600 mètres, 600-800 mètres et 800-1000 mètres et plus. Le protocole de mesure vise à décrire le peuplement en place au niveau dendrométrique (diamètre, statut social, essence, hauteur) et sanitaire (évaluation selon protocole DEPERISS). La station est décrite au moyen d'un sondage pédologique et via la position topographique. L'exposition, la pente et l'apport en eau sont également évalué.
+L'équipe du CRPF Grand-est a effectué des mesures sur le terrain en 2021 (projet RégioWood II) pour un total de 127 placettes en pessière. L'échantillonnage est stratifié pour disposer de relevés en pessières scolytées et non-scolytées représentant de manière équilibrée les 3 classes d'altitudes choisies : 0-600 mètres, 600-800 mètres et 800-1000 mètres et plus. Le protocole de mesure vise à décrire le peuplement en place au niveau dendrométrique (diamètre, statut social, essence, hauteur) et sanitaire (évaluation selon protocole DEPERISS). La station est décrite au moyen d'un sondage pédologique et via la position topographique. L'exposition, la pente et l'apport en eau sont également évalués.
 
-Nous utilisons ces données pour valider la méthode de détection des scolytes par analyse de série temporelle d'image sentinel-2, bien que la méthode aie été adaptée pour un fonctionnement optimal sur les pessières Wallonnes. En effet, les fluctuations normales de l'indice spectral utilisé ont été calibrées sur des pessières Wallonnes (voir \ref{subsec:methodo}).
+Nous utilisons ces données pour valider la méthode de détection des scolytes par analyse de série temporelle d'image sentinel-2, bien que la méthode aie été adaptée pour un fonctionnement optimal sur les pessières wallonnes. En effet, les fluctuations normales de l'indice spectral utilisé ont été calibrées sur des pessières wallonnes (voir \ref{subsec:methodo}).
 
-Les 127 placettes du CRPF sont passées en revue de manière minutieuse pour appréhender les données et corriger certaines incohérences. En effet, il est dans certains cas difficile de distinguer une situation de dépérissement dû à des conditions stationnelle et climatique contraignante d'un dépérissement dû à une attaque de scolyte. Par exemple,un examen attentif de la platte numéro 92, pour laquelle le commentaire relevé sur le terrain indique "non scolyte mais stressé", nous à permis de confirmer que cette placette ne présente pas de symptome du au scolyte. Par ailleurs, une placette d'épicéa sain peut-être installée juste à coté d'un peuplement scolyté (ex placette numéro 43). C'est une situation ambigue, étant donné que la position du centre de placette est relevée sur le terrain au moyen d'un GPS doté d'une précision de l'ordre de 10 à 20 mètres. La probabilité de localiser la placette saine numéro 43 sur un pixel scolyté étant grande, cette placette est retirée du jeu de donnée. Seul les placettes situées dans la tuile T32ULU sont utilisées pour la validation, ce qui nous amène à retirer 6 placettes. Enfin, les pessières sont localisées au moyen de la classe "sapin-épicéa" de la BD forêt de l'inventaire forestier Français (IGN France). Certaines placettes sont en dehors de cette classe "sapin-épicéa" et sont donc également mise de coté.
+Les 127 placettes du CRPF sont passées en revue de manière minutieuse pour appréhender les données et corriger certaines incohérences. En effet, il est dans certains cas difficile de distinguer une situation de dépérissement dû à des conditions stationnelle et climatique contraignante d'un dépérissement dû à une attaque de scolyte. Par exemple,un examen attentif de la platte numéro 92, pour laquelle le commentaire relevé sur le terrain indique "non scolyte mais stressé", nous à permis de confirmer que cette placette ne présente pas de symptome du au scolyte. Par ailleurs, une placette d'épicéa sain peut-être installée juste à coté d'un peuplement scolyté (ex placette numéro 43). C'est une situation ambigue, étant donné que la position du centre de placette est relevée sur le terrain au moyen d'un GPS doté d'une précision de l'ordre de 10 à 20 mètres. La probabilité de localiser la placette saine numéro 43 sur un pixel scolyté étant grande, cette placette est retirée du jeu de donnée. Seul les placettes situées dans la tuile T32ULU sont utilisées pour la validation, ce qui nous amène à retirer 6 placettes. Enfin, les pessières sont localisées au moyen de la classe "sapin-épicéa" de la BD forêt de l'inventaire forestier Français (IGN France). Certaines placettes sont en dehors de cette classe "sapin-épicéa" et sont donc également mises de coté.
 
 Un total de 109 placette sont utilisées pour la validation. Elles comprennent 58 placettes de pessières saines et 54 pessières scolytées. Les pessières scolytées ayant subies une coupe sanitaire se voient attribuer la classe numéro 4, alors que les autres sont classées avec le code 2 (voir \ref{subsec:ES}). Ces classes étant dérivées de l'observation de terrain, nous les renseignons sous la terminologie \textit{état sanitaire terrain}. L'état sanitaire en 2020 est extrait de la carte d'état sanitaire : il s'agit à contrario de \textit{l'état sanitaire SIG}. De plus, la distance au foyer de scolyte le plus proche est également calculé, ainsi que les proportion de surface scolyté, coupée et en coupe sanitaire sur une vignette de 7 pixels de large (soit 70 mètres de coté, donc 35 mètres de distance du centre de placette dans toutes les directions). La distance au foyer le plus proche est utilisé pour changer l'état sanitaire de certaines placettes ; en effet, une placette située à une distance de maximum 20 mètres d'un foyer de scolytes se voit attribuer une classe d'état sanitaire 2 ou 4, en fonction de la majorité en surface des pixels du voisinage.
 
@@ -683,12 +674,12 @@ Enfin, la matrice de confusion met en lumière le fait qu'une proportion consid�
 \section{Classification des essences avec des séries temporelles Sentinel-2}
 
 Il est évident que la méthodologie de détection des scolytes fonctionne exclusivement pour des peuplements d'épicéa. 
-Un prérequis indispensable est donc de disposer de carte des pessières, permettant ainsi de restreindre l'analyse sur cette zone. 
-En région Wallonne, les travaux de \citep{bolyn_forest_2018} ont aboutis à la création de carte de composition qui ont été judicieusement utilisée pour la création d'une couche de masque "pessière".
+Un prérequis indispensable est donc de disposer de cartes des pessières, permettant ainsi de restreindre l'analyse sur cette zone. 
+En Wallonie, les travaux de \citep{bolyn_forest_2018} ont aboutis à la création de carte de composition qui ont été judicieusement utilisée pour la création d'une couche de masque "pessière".
 Dans la région du Grand-Est de France,nous avons utilisé la BD Forêt V2 pour sélectionner les peuplements photo-interprétés comme "sapin ou épicéa" et "mélange de conifères".
 Cependant, les parcelles sélectionnées contiennent une proportion importante d'essences qui ne sont pas de l'épicéa, et pour lesquelles la méthode de détection de scolytes abouti forcément à une réponse erronée. 
 Les séries temporelles nous permettent un suivi des changements de phénologie au cours de l'année.
-Ces trajectoires phénologiques sont spécifiques à chaque essences, et peuvent être utilisée pour la discrimination des essences \citep{grabska_forest_2019,ma_tree_2021}.
+Ces trajectoires phénologiques sont spécifiques à chaque essence, et peuvent être utilisée pour la discrimination des essences \citep{grabska_forest_2019,ma_tree_2021}.
 
 Nous avons mis en oeuvre une méthode originale qui nous permet d'affiner le masque épicéa sur le Grand-Est. 
 Premièrement, les 11 bandes spectrales Sentinel-2 de 10 et 20 mètres de résolution ont fait l'objet d'une synthèse trimestrielle. 

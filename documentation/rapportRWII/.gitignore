@@ -1,8 +1,7 @@
 *.blg
 *.bbl
 *.aux
-*.log
 *.spl
 *.out
 *.synctex.gz
-texput.log
+*.log
