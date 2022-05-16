@@ -8,13 +8,13 @@ Dans la seconde partie, il  teste le modèle BioClimSol et le compare avec la ca
 
 La dernière partie compare l'intensité des attaques de scolytes entre les Vosges et la Wallonie selon des caractéristiques écologiques de sous-secteurs radiatifs et d'altitudes. Afin de détecter les attaques de scolytes, des cartes d'états sanitaires ont été réalisées à l'aide de l'imagerie satellite.
 
-
+\newpage
 
  \section{Matériel et méthode}
  
  \subsection{Zone d'étude}
  
-La zone d'étude de cette analyse est dans un premier la temps la Wallonie afin de réaliser une comparaison entre le modèle de risque BioClimSol et le Fichier Écologique des Essences. Les attaques de scolytes ont été détectées par imagerie satellitaire sur les tuiles T31UER, T31UES, T31UFQ, T31UFR, T31UFS, T31UGR des satellites Sentinel2 (voir figure \ref{fig:T31}).
+La zone d'étude de cette analyse est dans un premier la temps la Wallonie afin de réaliser une comparaison entre le modèle de risque BioClimSol et le Fichier Écologique des Essences. Les attaques de scolytes ont été détectées par imagerie satellitaire sur les tuiles T31UER, T31UES, T31UFQ, T31UFR, T31UFS, T31UGR des satellites Sentinel2 (voir figure \ref{tuiles}).
 
 
 
@@ -25,7 +25,7 @@ Dans un second temps, une tuile Sentinel 2 (T32ULU) couvrant une partie du massi
     \centering
     \includegraphics[width=1\textwidth]{waql_2.png}
     \caption{Zones d'étude de ce rapport}
-    \label{fig:T31}
+    \label{tuiles}
 \end{figure}
  
 
@@ -75,61 +75,41 @@ IKR de Becker                & ikdb                 &                & [-1.01 ; 
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 \textbf{Indice climatique}                                                                                                                                                                                                      & \textbf{Abreviation} & \textbf{Unité} & \textbf{Valeurs} & \textbf{Résolution} \\ \hline
-\begin{tabular}[c]{@{}l@{}}Somme de la \\différence des précipitations\\  mensuelles et de l'évapotranspiration \\ mensuelles de Turc entre le 1er mai \\ et 30 septembre pour la moyenne\\  trentenaire.\end{tabular} & PETP30               & mm             & [134.10 ; 157.10]   & 5km                 \\ \hline
-\begin{tabular}[c]{@{}l@{}}Somme de la différence\\ des précipitations \\ et de l'évapotranspiration de Turc mensuelle\\  entre le 1er mai et le  30 septembre pour 2018.\end{tabular}                                 & PETP2018             & mm             & [-464.21 ; 600.40]  & 5km                 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Somme de la différence \\ des précipitations  mensuelles \\et de l'évapotranspiration \\ mensuelles de Turc \\entre le 1er mai et\\ 30 septembre pour la moyenne\\  trentenaire.\end{tabular} & PETP30               & mm             & [134.10 ; 157.10]   & 5km                 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Somme de la différence\\ des précipitations \\ et de l'évapotranspiration\\ de Turc mensuelle\\ entre le 1er mai et \\ le  30 septembre pour 2018.\end{tabular}                                 & PETP2018             & mm             & [-464.21 ; 600.40]  & 5km                 \\ \hline
 Degrés Jour                                                                                                                                                                                                          & DJ                   & °C             & [-557 ; 1284.9]      & 5km                 \\ \hline
-\begin{tabular}[c]{@{}l@{}}Température maximum du jour\\ le plus chaud entre mai et septembre\end{tabular}                                                                                                           & XTX 2018             & °C             & [31.9 ; 38.09]       & 5km                 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Température maximum du jour\\ le plus chaud \\ entre mai et septembre\end{tabular}                                                                                                           & XTX 2018             & °C             & [31.9 ; 38.09]       & 5km                 \\ \hline
 \end{tabular}
 \end{table}
 \newpage
 \subsubsection{Équations du modèle de risque BioClimSol pour l'épicéa}
 
-Le modèle BioClimSol emploie deux sous modèles: un modèle climatique et un modèle topographique. Le modèle climatique ($Logit\_clim$) est ensuite inséré dans le modèle topographique ($Logit\_Topo$). 
+Le modèle BioClimSol emploie deux sous modèles: un modèle climatique et un modèle topographique. Le modèle climatique (\ref{eq:Eq_mode_clim}) est ensuite inséré dans le modèle topographique (\ref{eq:Eq_mode_topo}). 
 
- 
- \paragraph{Équation modèle climatique}
- \begin{quote}
-
-\texttt{\textbf{Logit\textunderscore clim} = \textit{a} - (\textit{b} \times PETP30) - (c\times PETP2018) + (d\times XTX) + (e\times DJ)}
-
-\texttt{a = -14.3}
-
-\texttt{b = 0.00557}
-
-\texttt {c = 0.00608}
-
-\texttt{d = 0.265}
-
-\texttt{e = 0.00212}
-  \end{quote}
+\paragraph{Équation modèle climatique}
 
 
-
-
-
-     
+\begin{equation}\label{eq:Eq_mode_clim}
+Logit_{clim} = a - (b* PETP_{30}) -(c*PETP_{2018})+ (d*XTX_{2018}) + (e* DJ)
+a = -14.3\\ 
+b = 0.00557\\ 
+c = 0.00608\\
+d = 0.265\\
+e = 0.00212\\
+\end{equation}
+   
 \paragraph{Équation modèle topographique}
-\begin{quote}
-    
-
-\texttt{\textbf{Logit\textunderscore Topo} = a - (b \times pente\textunderscore p) + (c \times tpi) + (d \times ikdb) + (e \times vs)+ (f \times swi) + (g \times lc)} 
-
-\texttt{a = - 12.9}
-
-\texttt{b = 0.0302}
-
-\texttt{c = 0.035}
-
-\texttt{d =  0.230}
-
-\texttt{e = 0.111}
-
-\texttt{f = 0.224}
-
-\texttt{g = 0.443}
-\end{quote}
-
-
+ 
+\begin{equation}\label{eq:Eq_mode_topo}
+Logit_{TOPO} = a - (b* PENTE_{p}) -(c*TPI)+ (d*IKDB) + (e* VS) + (f*SWI) + (g*LC)
+a =  - 12.9\\ 
+b = 0.0302\\ 
+c = 0.035\\
+d =  0.230\\
+e =  0.111\\
+f = 0.224\\
+g = 0.443\\
+\end{equation}    
 
 \subsubsection{Code sous R de calculs des variables et indices}
 
@@ -210,16 +190,16 @@ Input : Altitude [m] \\
 
 
 L’indice de climat lumineux défini par Becker exprime l’énergie lumineuse reçue sur une station, en pourcentage de l’énergie reçue par un plan de référence de même surface mais parfaitement horizontal. Il se calcule par la formule suivante : 
-\begin{quote}
-    
-\texttt{IKR = \sin(C-\atan((pente)\times \cos(exposition)))/ \sin(C) }
-
-\end{quote}
+\begin{align*}
+IKR=\frac{\sin(C-\arctan((pente)*\cos(exposition)))}{\sin(C)}
+\end{align*}
 
 avec C étant une constante calculée ci-dessous sur base de la latitude et peut se calculer avec l'équation :
 
 \begin{equation}
-C= -0.0146* latitude + 1.5192 
+
+$C = -0.0146* latitude + 1.5192$ 
+
 \end{equation}
 
 Ci-dessous se trouve les différentes étapes afin de calculer cet indice:
@@ -241,7 +221,7 @@ Note : reporter l’emprise du raster en input  dans l’entrée Emprise de la r
  \texttt{otbcli\textunderscore BandMath --il [latitude.sdat] --out [constante\textunderscore C.tif] \; uint8 \; --exp " -0.0146\times im1b1 + 1.5192 "} 
    \end{quote}
   
-        \item \textbf {Calcul de l’IKR de becker} \\
+        \item \textbf {Calcul de l’IKR de Becker} \\
 
 
 \textbf{Ligne de commande employée:}
@@ -340,7 +320,7 @@ L'équation suivante est un exemple de calcul de la probabilité de présence de
    
     \label{fig:eq}
 \end{figure}
-
+\nexpage
 \section{Résultats}
 
 \subsection{Cartes de risque BioClimSol et d'aptitude Fichier Écologique des Essences.}
@@ -430,10 +410,10 @@ Pour comparer les deux méthodes, les niveaux de risque de BioClimSol ont été 
 	\begin{tabular}{|l|l|}
 		\hline
 		Niveau d'aptitude & Niveau BioClimSol \\ \hline
-		Optimum           & < 2            \\ \hline
+		Optimum           & $<2$            \\ \hline
 		Tolérance         & 2 à 4          \\ \hline
 		
-		Exclusion         &  > 4   \\ \hline
+		Exclusion         &  $>4$   \\ \hline
 	\end{tabular}
 	
 \end{table}
@@ -627,7 +607,7 @@ On peut faire différentes hypothèses quant à la faible capacité de ces modè
 	\item Les paramètres de BioClimSol étant essentiellement liés au scolyte et ceux du Fichier Écologique des Essences essentiellement liés à l'épicéa, aucun de ces deux modèles ne peut rendre compte correctement du comportement du couple    scolyte/épicéa.
 \end{itemize}
 
-
+\newpage
 \section{Conclusion}
 
 Tant le modèle BioClimSol que celui du Fichier Ecologique des Essences sont peu efficaces pour prévoir les attaques de scolytes.
