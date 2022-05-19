@@ -91,26 +91,33 @@ Le modèle BioClimSol emploie deux sous modèles: un modèle climatique et un mo
 
 \begin{equation}\label{eq:Eq_mode_clim}
 Logit_{clim} = a - (b* PETP_{30}) -(c*PETP_{2018})+ (d*XTX_{2018}) + (e* DJ)
-a = -14.3\\ 
-b = 0.00557\\ 
-c = 0.00608\\
-d = 0.265\\
-e = 0.00212\\
 \end{equation}
-   
+  
+\begin{itemize}
+
+\item a = -14.3
+\item b = 0.00557 
+\item c = 0.00608
+\item d = 0.265
+\item e = 0.00212
+
+\end{itemize}  
 \paragraph{Équation modèle topographique}
  
 \begin{equation}\label{eq:Eq_mode_topo}
 Logit_{TOPO} = a - (b* PENTE_{p}) -(c*TPI)+ (d*IKDB) + (e* VS) + (f*SWI) + (g*LC)
-a =  - 12.9\\ 
-b = 0.0302\\ 
-c = 0.035\\
-d =  0.230\\
-e =  0.111\\
-f = 0.224\\
-g = 0.443\\
 \end{equation}    
+\begin{itemize}
 
+\item a =  - 12.9 
+\item b = 0.0302 
+\item c = 0.035
+\item d =  0.230
+\item e =  0.111
+\item f = 0.224
+\item g = 0.443
+
+\end{itemize}
 \subsubsection{Code sous R de calculs des variables et indices}
 
 Le modèle BioClimSol emploie deux types de variables, variables topographiques et variables climatiques.
