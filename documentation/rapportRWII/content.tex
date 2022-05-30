@@ -446,8 +446,11 @@ La comparaison de la probabilité de présence de scolyte en fonction des classe
 \subsubsection{Analyses complémentaires}
 Les différences de comportement des modèles en fonction de la position topographique nous ont menés à analyser plus en détail les attaques de scolytes selon l'altitude et l'orientation des versants, et à élargir l'analyse aux Vosges. L'estimation de la probabilité d'attaques de scolytes a été menée selon la même méthodologie dans les Vosges, puis mise en relation avec l'altitude et la position topographique.\\
 
-Pour l'année 2020, l'augmentation de la probabilité de présence de scolyte continue encore dans les pessières présentes en dessous de 400 m d'altitude alors qu'elle reste en dessous de cinq pourcent au dessus de 400m d'altitude.\\
-
+\paragraph{Altitude}
+En Région wallonne, les premières attaques importantes de typographes ont été signalées en 2016. La qualité des images satellites pour 2016 n'étant pas suffisante, nous avons décidé d'étudier l'évolution temporelle de la crise du typographe en fonction de l'altitude des pessières à partir de l'année 2017 (figure \ref{fig: alti_rw}). 
+Durant la période étudiée, les surfaces touchées par le scolyte ont augmenté jusqu'en 2020. En effet, la probabilité de présence de scolyte diminue pour 2021.
+Les pessières poussant à des altitudes comprises entre 100 et 300m sont nettement plus touchées que les peuplements d'épicéas se trouvant à des altitudes supérieures à 300m. 
+Il est bon de noter que la majorité des peuplements d'épicéas wallons se situe à des altitudes supérieures à 300m.\\ 
 En Wallonie, l'altitude influence donc fortement les attaques de scolytes. Plus l'altitude augmente, plus la probabilité de présence de scolyte diminue. \\
 
 \begin{figure}[htbp]
@@ -477,7 +480,7 @@ La figure \ref{fig: alti_vosges} montre que la probabilité de présence de scol
 La probabilité de présence de scolytes ne semble donc pas liée au gradient altitudinal dans les Vosges.
 
 
-\subsubsection{Topographie}
+\paragraph{Topographie}
 Afin de comparer la probabilité de présence de scolyte selon les pentes des Vosges et en Wallonie, un raster sous-secteur a été calculé pour la tuile Sentinel 2 T32ULU. La méthodologie utilisée pour déterminer les sous-secteurs sur la tuile Sentinel 2 T32ULU est identique à celle employée pour le Fichier Écologique des essences \citep{wampach_cartographie_2017}.
 
 Concernant les pentes, le fichier écologique suggère une situation favorable pour l'épicéa dans les versant nord (sous-secteur froid) et un risque élevé dans les versants sud ( sous-secteur chaud). Les faibles pentes (< 20\%) et les plateaux sont considérés comme ayant un risque faible pour cette essence (figure \ref{fig:ficheco}).
@@ -499,14 +502,18 @@ D'après le Fichier Ecologique des Essences, l'épicéa court un risque élevé 
 \end{figure}
 
 Le modèle de risque BioClimSol indique que l'épicéa risque moins de se faire attaquer par le typographe  dans les pentes.
-Cependant, les premiers résultats des cartes de scolytes de 2016 à 2020 (Figure \ref{fig:topo}) montrent que pour la Wallonie, les épicéas sont significativement plus atteints (d'après un test de Student) dans les pentes (que ce soit les pentes nord ou les pentes sud ce qui diverge du Fichier Écologique) que sur les plateaux, ce qui ne se confirme pas significativement dans les Vosges.
+Cependant, les premiers résultats des cartes de scolytes de 2017 à 2021 (Figure \ref{fig:topo}) montrent que pour la Wallonie, les épicéas sont significativement plus atteints (d'après un test de Student) dans les pentes (que ce soit les pentes nord ou les pentes sud ce qui diverge du Fichier Écologique) que sur les plateaux, ce qui ne se confirme pas significativement dans les Vosges(Figure \ref{fig:ss_vosges}).
 Les versants nord de Wallonie sont significativement plus touchés que les versants sud de cette région. 
+
+Le pic de la crise est atteint en 2019 en Wallonie. La surface d'épicéa scolyté diminue après 2019 sur l'ensemble des sous-secteurs.
+
+Dans les Vosges, le pic ne semble pas encore être atteint et les surfaces scolytées continuent encore d'augmenter.
 
 \begin{figure}[htbp]
 	\begin{minipage}[b]{1 \linewidth}
 		\centering
 		\includegraphics[width=1\textwidth]{evol_ss_wal.png}
-		\caption{Évolution de la crise du typographe en région wallonne en fonction des sous-secteurs}
+		\caption{Évolution de la crise du typographe en région wallonne en fonction des sous-secteurs.La surface de pessière est indiquée l'année 2017}
 		\label{fig:topo}
 		%\caption sert à insérer une légende
 	\end{minipage}\hfill
@@ -514,7 +521,7 @@ Les versants nord de Wallonie sont significativement plus touchés que les versa
 	\begin{minipage}[b]{1 \linewidth}
 		\centering
 		\includegraphics[width=1\textwidth]{evol_ss_vosges.png}
-		\caption{Évolution de la crise du typographe dans les Vosges en fonction des sous-secteurs.}
+		\caption{Évolution de la crise du typographe dans les Vosges en fonction des sous-secteurs. La surface de pessière est indiquée l'année 2017}
 		\label{fig:ss_vosges}
 	\end{minipage}
 \end{figure}
@@ -522,7 +529,6 @@ Les versants nord de Wallonie sont significativement plus touchés que les versa
 
 
 
-Ensuite, la probabilité de présence a été ventilée par année en fonction de chaque sous-secteur (figure \ref{fig:ss_vosges}). 
 %Le code R employé est présent en Annexe. Le fichier d'input pour produire le raster Sous-secteur est le MNT.
 %\begin{figure} [htbp] 
 %  \centering

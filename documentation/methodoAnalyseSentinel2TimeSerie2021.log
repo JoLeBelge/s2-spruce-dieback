@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.3) (preloaded format=pdflatex 2022.4.22)  16 MAY 2022 09:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.3) (preloaded format=pdflatex 2022.4.22)  20 MAY 2022 16:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -655,14 +655,6 @@ Overfull \hbox (0.53954pt too wide) in paragraph at lines 140--140
 ce
  []
 
-
-Package natbib Warning: Citation `dutrieux_package_2021' on page 3 undefined on
- input line 143.
-
-
-Package natbib Warning: Citation `dutrieux_mise_2021' on page 3 undefined on in
-put line 143.
-
 [3 <../theia_d/tuileS2Nom.png>]
 Overfull \hbox (6.9806pt too wide) in paragraph at lines 145--146
 []\OT1/cmr/m/n/12 L'indice spec-tral per-me-t-tant la d^^Setection pr^^Secoce (
@@ -674,626 +666,622 @@ Overfull \hbox (6.92271pt too wide) detected at line 156
 []
  []
 
-
-Package natbib Warning: Citation `dutrieux_mise_2021' on page 4 undefined on in
-put line 160.
-
 [4]
-<Images//fctHarmo.png, id=124, 844.28365pt x 596.86517pt>
+<Images//fctHarmo.png, id=131, 766.5438pt x 542.025pt>
 File: Images//fctHarmo.png Graphic file (type png)
 <use Images//fctHarmo.png>
-Package pdftex.def Info: Images//fctHarmo.png  used on input line 171.
-(pdftex.def)             Requested size: 350.99762pt x 248.13159pt.
+Package pdftex.def Info: Images//fctHarmo.png  used on input line 170.
+(pdftex.def)             Requested size: 350.99762pt x 248.19318pt.
  [5 <./Images//fctHarmo.png>]
-<Images//illuArbreCoupe.png, id=134, 622.9674pt x 413.3844pt>
+<Images//illuArbreCoupe.png, id=141, 622.9674pt x 413.3844pt>
 File: Images//illuArbreCoupe.png Graphic file (type png)
 <use Images//illuArbreCoupe.png>
-Package pdftex.def Info: Images//illuArbreCoupe.png  used on input line 186.
+Package pdftex.def Info: Images//illuArbreCoupe.png  used on input line 185.
 (pdftex.def)             Requested size: 350.99762pt x 232.91922pt.
  [6 <./Images//illuArbreCoupe.png>] [7]
-<Images//etatSan/1/ortho_2018.png_LR.png, id=153, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ortho_2018.png_LR.png, id=160, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2018.png_LR.png  used on input
- line 225.
+ line 224.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2018.png_LR.png  used on input
- line 225.
+ line 224.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 225--225
+Underfull \hbox (badness 10000) in paragraph at lines 224--224
 []\OT1/cmr/m/n/10.95 (a)
  []
 
-<Images//etatSan/1/IR_2018.png_LR.png, id=154, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/IR_2018.png_LR.png, id=161, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2018.png_LR.png  used on input li
-ne 229.
+ne 228.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2018.png_LR.png  used on input li
-ne 229.
+ne 228.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 228--228
 []\OT1/cmr/m/n/10.95 (b)
  []
 
-<Images//etatSan/1/ES_2018.png_LR.png, id=155, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ES_2018.png_LR.png, id=162, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2018.png_LR.png  used on input li
-ne 233.
+ne 232.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2018.png_LR.png  used on input li
-ne 233.
+ne 232.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 233--233
+Underfull \hbox (badness 10000) in paragraph at lines 232--232
 []\OT1/cmr/m/n/10.95 (c)
  []
 
-<Images//etatSan/1/ortho_2019.png_LR.png, id=156, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ortho_2019.png_LR.png, id=163, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2019.png_LR.png  used on input
- line 237.
+ line 236.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2019.png_LR.png  used on input
- line 237.
+ line 236.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--237
+Underfull \hbox (badness 10000) in paragraph at lines 236--236
 []\OT1/cmr/m/n/10.95 (d)
  []
 
-<Images//etatSan/1/IR_2019.png_LR.png, id=157, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/IR_2019.png_LR.png, id=164, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2019.png_LR.png  used on input li
-ne 241.
+ne 240.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2019.png_LR.png  used on input li
-ne 241.
+ne 240.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 241--241
+Underfull \hbox (badness 10000) in paragraph at lines 240--240
 []\OT1/cmr/m/n/10.95 (e)
  []
 
-<Images//etatSan/1/ES_2019.png_LR.png, id=158, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ES_2019.png_LR.png, id=165, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2019.png_LR.png  used on input li
-ne 245.
+ne 244.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2019.png_LR.png  used on input li
-ne 245.
+ne 244.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 245--245
+Underfull \hbox (badness 10000) in paragraph at lines 244--244
 []\OT1/cmr/m/n/10.95 (f)
  []
 
-<Images//etatSan/1/ortho_2020.png_LR.png, id=159, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ortho_2020.png_LR.png, id=166, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2020.png_LR.png  used on input
- line 249.
+ line 248.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ortho_2020.png_LR.png  used on input
- line 249.
+ line 248.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 249--249
+Underfull \hbox (badness 10000) in paragraph at lines 248--248
 []\OT1/cmr/m/n/10.95 (g)
  []
 
-<Images//etatSan/1/IR_2020.png_LR.png, id=160, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/IR_2020.png_LR.png, id=167, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2020.png_LR.png  used on input li
-ne 253.
+ne 252.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/IR_2020.png_LR.png  used on input li
-ne 253.
+ne 252.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 253--253
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []\OT1/cmr/m/n/10.95 (h)
  []
 
-<Images//etatSan/1/ES_2020.png_LR.png, id=161, 168.06976pt x 119.32953pt>
+<Images//etatSan/1/ES_2020.png_LR.png, id=168, 168.06976pt x 119.32953pt>
 File: Images//etatSan/1/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2020.png_LR.png  used on input li
-ne 257.
+ne 256.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/1/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/1/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/1/ES_2020.png_LR.png  used on input li
-ne 257.
+ne 256.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []\OT1/cmr/m/n/10.95 (i)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 223--259
+Underfull \hbox (badness 10000) in paragraph at lines 222--258
 [][][] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 223--259
+Underfull \hbox (badness 10000) in paragraph at lines 222--258
 [][] []
  []
 
-<Images//etatSan/2/ortho_2018.png_LR.png, id=162, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ortho_2018.png_LR.png, id=169, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2018.png_LR.png  used on input
- line 266.
+ line 265.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2018.png_LR.png  used on input
- line 266.
+ line 265.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 266--266
+Underfull \hbox (badness 10000) in paragraph at lines 265--265
 []\OT1/cmr/m/n/10.95 (a)
  []
 
-<Images//etatSan/2/IR_2018.png_LR.png, id=163, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/IR_2018.png_LR.png, id=170, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2018.png_LR.png  used on input li
-ne 270.
+ne 269.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2018.png_LR.png  used on input li
-ne 270.
+ne 269.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--270
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
 []\OT1/cmr/m/n/10.95 (b)
  []
 
-<Images//etatSan/2/ES_2018.png_LR.png, id=164, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ES_2018.png_LR.png, id=171, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2018.png_LR.png  used on input li
-ne 274.
+ne 273.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2018.png_LR.png  used on input li
-ne 274.
+ne 273.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--274
+Underfull \hbox (badness 10000) in paragraph at lines 273--273
 []\OT1/cmr/m/n/10.95 (c)
  []
 
-<Images//etatSan/2/ortho_2019.png_LR.png, id=165, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ortho_2019.png_LR.png, id=172, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2019.png_LR.png  used on input
- line 278.
+ line 277.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2019.png_LR.png  used on input
- line 278.
+ line 277.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 278--278
+Underfull \hbox (badness 10000) in paragraph at lines 277--277
 []\OT1/cmr/m/n/10.95 (d)
  []
 
-<Images//etatSan/2/IR_2019.png_LR.png, id=166, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/IR_2019.png_LR.png, id=173, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2019.png_LR.png  used on input li
-ne 282.
+ne 281.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2019.png_LR.png  used on input li
-ne 282.
+ne 281.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 282--282
+Underfull \hbox (badness 10000) in paragraph at lines 281--281
 []\OT1/cmr/m/n/10.95 (e)
  []
 
-<Images//etatSan/2/ES_2019.png_LR.png, id=167, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ES_2019.png_LR.png, id=174, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2019.png_LR.png  used on input li
-ne 286.
+ne 285.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2019.png_LR.png  used on input li
-ne 286.
+ne 285.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 286--286
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []\OT1/cmr/m/n/10.95 (f)
  []
 
-<Images//etatSan/2/ortho_2020.png_LR.png, id=168, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ortho_2020.png_LR.png, id=175, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2020.png_LR.png  used on input
- line 290.
+ line 289.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ortho_2020.png_LR.png  used on input
- line 290.
+ line 289.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 290--290
+Underfull \hbox (badness 10000) in paragraph at lines 289--289
 []\OT1/cmr/m/n/10.95 (g)
  []
 
-<Images//etatSan/2/IR_2020.png_LR.png, id=169, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/IR_2020.png_LR.png, id=176, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2020.png_LR.png  used on input li
-ne 294.
+ne 293.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/IR_2020.png_LR.png  used on input li
-ne 294.
+ne 293.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
+Underfull \hbox (badness 10000) in paragraph at lines 293--293
 []\OT1/cmr/m/n/10.95 (h)
  []
 
-<Images//etatSan/2/ES_2020.png_LR.png, id=170, 168.06976pt x 119.32953pt>
+<Images//etatSan/2/ES_2020.png_LR.png, id=177, 168.06976pt x 119.32953pt>
 File: Images//etatSan/2/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2020.png_LR.png  used on input li
-ne 298.
+ne 297.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/2/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/2/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/2/ES_2020.png_LR.png  used on input li
-ne 298.
+ne 297.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 298--298
+Underfull \hbox (badness 10000) in paragraph at lines 297--297
 []\OT1/cmr/m/n/10.95 (i)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 264--300
+Underfull \hbox (badness 10000) in paragraph at lines 263--299
 [][][] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 264--300
+Underfull \hbox (badness 10000) in paragraph at lines 263--299
 [][] []
  []
 
-<Images//etatSan/3/ortho_2018.png_LR.png, id=171, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ortho_2018.png_LR.png, id=178, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2018.png_LR.png  used on input
- line 306.
+ line 305.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2018.png_LR.png  used on input
- line 306.
+ line 305.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 306--306
+Underfull \hbox (badness 10000) in paragraph at lines 305--305
 []\OT1/cmr/m/n/10.95 (a)
  []
 
-<Images//etatSan/3/IR_2018.png_LR.png, id=172, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/IR_2018.png_LR.png, id=179, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2018.png_LR.png  used on input li
-ne 310.
+ne 309.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2018.png_LR.png  used on input li
-ne 310.
+ne 309.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 310--310
+Underfull \hbox (badness 10000) in paragraph at lines 309--309
 []\OT1/cmr/m/n/10.95 (b)
  []
 
-<Images//etatSan/3/ES_2018.png_LR.png, id=173, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ES_2018.png_LR.png, id=180, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2018.png_LR.png  used on input li
-ne 314.
+ne 313.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2018.png_LR.png  used on input li
-ne 314.
+ne 313.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 314--314
+Underfull \hbox (badness 10000) in paragraph at lines 313--313
 []\OT1/cmr/m/n/10.95 (c)
  []
 
-<Images//etatSan/3/ortho_2019.png_LR.png, id=174, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ortho_2019.png_LR.png, id=181, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2019.png_LR.png  used on input
- line 318.
+ line 317.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2019.png_LR.png  used on input
- line 318.
+ line 317.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 318--318
+Underfull \hbox (badness 10000) in paragraph at lines 317--317
 []\OT1/cmr/m/n/10.95 (d)
  []
 
-<Images//etatSan/3/IR_2019.png_LR.png, id=175, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/IR_2019.png_LR.png, id=182, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2019.png_LR.png  used on input li
-ne 322.
+ne 321.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2019.png_LR.png  used on input li
-ne 322.
+ne 321.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 322--322
+Underfull \hbox (badness 10000) in paragraph at lines 321--321
 []\OT1/cmr/m/n/10.95 (e)
  []
 
-<Images//etatSan/3/ES_2019.png_LR.png, id=176, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ES_2019.png_LR.png, id=183, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2019.png_LR.png  used on input li
-ne 326.
+ne 325.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2019.png_LR.png  used on input li
-ne 326.
+ne 325.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 326--326
+Underfull \hbox (badness 10000) in paragraph at lines 325--325
 []\OT1/cmr/m/n/10.95 (f)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 304--328
+Underfull \hbox (badness 10000) in paragraph at lines 303--327
 [][][] []
  []
 
-<Images//etatSan/3/ortho_2020.png_LR.png, id=177, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ortho_2020.png_LR.png, id=184, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2020.png_LR.png  used on input
- line 331.
+ line 330.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ortho_2020.png_LR.png  used on input
- line 331.
+ line 330.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 331--331
+Underfull \hbox (badness 10000) in paragraph at lines 330--330
 []\OT1/cmr/m/n/10.95 (g)
  []
 
-<Images//etatSan/3/IR_2020.png_LR.png, id=178, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/IR_2020.png_LR.png, id=185, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2020.png_LR.png  used on input li
-ne 335.
+ne 334.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/IR_2020.png_LR.png  used on input li
-ne 335.
+ne 334.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 335--335
+Underfull \hbox (badness 10000) in paragraph at lines 334--334
 []\OT1/cmr/m/n/10.95 (h)
  []
 
-<Images//etatSan/3/ES_2020.png_LR.png, id=179, 56.46094pt x 40.08727pt>
+<Images//etatSan/3/ES_2020.png_LR.png, id=186, 56.46094pt x 40.08727pt>
 File: Images//etatSan/3/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2020.png_LR.png  used on input li
-ne 339.
+ne 338.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/3/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/3/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/3/ES_2020.png_LR.png  used on input li
-ne 339.
+ne 338.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 339--339
+Underfull \hbox (badness 10000) in paragraph at lines 338--338
 []\OT1/cmr/m/n/10.95 (i)
  []
 
-<Images//etatSan/4/ortho_2018.png_LR.png, id=180, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/ortho_2018.png_LR.png, id=187, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2018.png_LR.png  used on input
- line 347.
+ line 346.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/ortho_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2018.png_LR.png  used on input
- line 347.
+ line 346.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 347--347
+Underfull \hbox (badness 10000) in paragraph at lines 346--346
 []\OT1/cmr/m/n/10.95 (a)
  []
 
-<Images//etatSan/4/IR_2018.png_LR.png, id=181, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/IR_2018.png_LR.png, id=188, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2018.png_LR.png  used on input li
-ne 351.
+ne 350.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/IR_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2018.png_LR.png  used on input li
-ne 351.
+ne 350.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
+Underfull \hbox (badness 10000) in paragraph at lines 350--350
 []\OT1/cmr/m/n/10.95 (b)
  []
 
-<Images//etatSan/4/ES_2018.png_LR.png, id=182, 168.06976pt x 119.32953pt>
+<Images//etatSan/4/ES_2018.png_LR.png, id=189, 168.06976pt x 119.32953pt>
 File: Images//etatSan/4/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2018.png_LR.png  used on input li
-ne 355.
+ne 354.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/4/ES_2018.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2018.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2018.png_LR.png  used on input li
-ne 355.
+ne 354.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 355--355
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []\OT1/cmr/m/n/10.95 (c)
  []
 
-<Images//etatSan/4/ortho_2019.png_LR.png, id=183, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/ortho_2019.png_LR.png, id=190, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2019.png_LR.png  used on input
- line 359.
+ line 358.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/ortho_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2019.png_LR.png  used on input
- line 359.
+ line 358.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 359--359
+Underfull \hbox (badness 10000) in paragraph at lines 358--358
 []\OT1/cmr/m/n/10.95 (d)
  []
 
-<Images//etatSan/4/IR_2019.png_LR.png, id=184, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/IR_2019.png_LR.png, id=191, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2019.png_LR.png  used on input li
-ne 363.
+ne 362.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/IR_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2019.png_LR.png  used on input li
-ne 363.
+ne 362.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 363--363
+Underfull \hbox (badness 10000) in paragraph at lines 362--362
 []\OT1/cmr/m/n/10.95 (e)
  []
 
-<Images//etatSan/4/ES_2019.png_LR.png, id=185, 168.06976pt x 119.32953pt>
+<Images//etatSan/4/ES_2019.png_LR.png, id=192, 168.06976pt x 119.32953pt>
 File: Images//etatSan/4/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2019.png_LR.png  used on input li
-ne 367.
+ne 366.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/4/ES_2019.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2019.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2019.png_LR.png  used on input li
-ne 367.
+ne 366.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 367--367
+Underfull \hbox (badness 10000) in paragraph at lines 366--366
 []\OT1/cmr/m/n/10.95 (f)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 345--369
+Underfull \hbox (badness 10000) in paragraph at lines 344--368
 [][][] []
  []
 
-<Images//etatSan/4/ortho_2020.png_LR.png, id=186, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/ortho_2020.png_LR.png, id=193, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2020.png_LR.png  used on input
- line 372.
+ line 371.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/ortho_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ortho_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ortho_2020.png_LR.png  used on input
- line 372.
+ line 371.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 372--372
+Underfull \hbox (badness 10000) in paragraph at lines 371--371
 []\OT1/cmr/m/n/10.95 (g)
  []
 
-<Images//etatSan/4/IR_2020.png_LR.png, id=187, 56.46094pt x 40.08727pt>
+<Images//etatSan/4/IR_2020.png_LR.png, id=194, 56.46094pt x 40.08727pt>
 File: Images//etatSan/4/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2020.png_LR.png  used on input li
-ne 376.
+ne 375.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 File: Images//etatSan/4/IR_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/IR_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/IR_2020.png_LR.png  used on input li
-ne 376.
+ne 375.
 (pdftex.def)             Requested size: 124.80286pt x 88.62163pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 376--376
+Underfull \hbox (badness 10000) in paragraph at lines 375--375
 []\OT1/cmr/m/n/10.95 (h)
  []
 
-<Images//etatSan/4/ES_2020.png_LR.png, id=188, 168.06976pt x 119.32953pt>
+<Images//etatSan/4/ES_2020.png_LR.png, id=195, 168.06976pt x 119.32953pt>
 File: Images//etatSan/4/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2020.png_LR.png  used on input li
-ne 380.
+ne 379.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 File: Images//etatSan/4/ES_2020.png_LR.png Graphic file (type png)
 <use Images//etatSan/4/ES_2020.png_LR.png>
 Package pdftex.def Info: Images//etatSan/4/ES_2020.png_LR.png  used on input li
-ne 380.
+ne 379.
 (pdftex.def)             Requested size: 124.80286pt x 88.61198pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
+Underfull \hbox (badness 10000) in paragraph at lines 379--379
 []\OT1/cmr/m/n/10.95 (i)
  []
 
@@ -1316,104 +1304,80 @@ ng> <./Images//etatSan/3/ES_2020.png_LR.png>] [12 <./Images//etatSan/4/ortho_20
 _2018.png_LR.png> <./Images//etatSan/4/ortho_2019.png_LR.png> <./Images//etatSa
 n/4/IR_2019.png_LR.png> <./Images//etatSan/4/ES_2019.png_LR.png> <./Images//eta
 tSan/4/ortho_2020.png_LR.png> <./Images//etatSan/4/IR_2020.png_LR.png> <./Image
-s//etatSan/4/ES_2020.png_LR.png>]
-
-Package natbib Warning: Citation `bolyn_forest_2018' on page 13 undefined on in
-put line 609.
-
-[13]
-<Images//esAvantClean.png, id=257, 840.13875pt x 822.07124pt>
+s//etatSan/4/ES_2020.png_LR.png>] [13]
+<Images//esAvantClean.png, id=267, 840.13875pt x 822.07124pt>
 File: Images//esAvantClean.png Graphic file (type png)
 <use Images//esAvantClean.png>
-Package pdftex.def Info: Images//esAvantClean.png  used on input line 632.
+Package pdftex.def Info: Images//esAvantClean.png  used on input line 631.
 (pdftex.def)             Requested size: 191.10214pt x 186.99013pt.
 File: Images//esAvantClean.png Graphic file (type png)
 <use Images//esAvantClean.png>
-Package pdftex.def Info: Images//esAvantClean.png  used on input line 632.
+Package pdftex.def Info: Images//esAvantClean.png  used on input line 631.
 (pdftex.def)             Requested size: 191.10214pt x 186.99013pt.
 
-Overfull \hbox (16.42503pt too wide) in paragraph at lines 632--632
+Overfull \hbox (16.42503pt too wide) in paragraph at lines 631--631
 []\OT1/cmr/m/n/10.95 (a) |[]| 
  []
 
-<Images//esApresClean.png, id=258, 847.165pt x 824.07875pt>
+<Images//esApresClean.png, id=268, 847.165pt x 824.07875pt>
 File: Images//esApresClean.png Graphic file (type png)
 <use Images//esApresClean.png>
-Package pdftex.def Info: Images//esApresClean.png  used on input line 636.
+Package pdftex.def Info: Images//esApresClean.png  used on input line 635.
 (pdftex.def)             Requested size: 191.10214pt x 185.88754pt.
 File: Images//esApresClean.png Graphic file (type png)
 <use Images//esApresClean.png>
-Package pdftex.def Info: Images//esApresClean.png  used on input line 636.
+Package pdftex.def Info: Images//esApresClean.png  used on input line 635.
 (pdftex.def)             Requested size: 191.10214pt x 185.88754pt.
 
-Overfull \hbox (17.03337pt too wide) in paragraph at lines 636--636
+Overfull \hbox (17.03337pt too wide) in paragraph at lines 635--635
 []\OT1/cmr/m/n/10.95 (b) |[]| 
  []
 
 
-Overfull \hbox (28.4953pt too wide) in paragraph at lines 650--651
+Overfull \hbox (28.4953pt too wide) in paragraph at lines 649--650
 \OT1/cmr/m/n/12 (pro-jet R^^SegioWood II) pour un to-tal de 127 placettes en pe
 ssi^^Rere. L'^^Sechantillonnage
  []
 
 [14] [15 <./Images//esAvantClean.png> <./Images//esApresClean.png>] [16]
-<Images//confusionMat.png, id=287, 383.4325pt x 277.035pt>
+<Images//confusionMat.png, id=297, 383.4325pt x 277.035pt>
 File: Images//confusionMat.png Graphic file (type png)
 <use Images//confusionMat.png>
-Package pdftex.def Info: Images//confusionMat.png  used on input line 670.
+Package pdftex.def Info: Images//confusionMat.png  used on input line 669.
 (pdftex.def)             Requested size: 390.0pt x 281.79837pt.
 
-
-Package natbib Warning: Citation `bolyn_forest_2018' on page 17 undefined on in
-put line 679.
-
-
-Package natbib Warning: Citation `grabska_forest_2019' on page 17 undefined on 
-input line 683.
-
-
-Package natbib Warning: Citation `ma_tree_2021' on page 17 undefined on input l
-ine 683.
-
 [17] [18 <./Images//confusionMat.png>]
-<Images//synthesTrimestre.png, id=298, 597.432pt x 342.5598pt>
+<Images//synthesTrimestre.png, id=317, 597.432pt x 342.5598pt>
 File: Images//synthesTrimestre.png Graphic file (type png)
 <use Images//synthesTrimestre.png>
-Package pdftex.def Info: Images//synthesTrimestre.png  used on input line 692.
+Package pdftex.def Info: Images//synthesTrimestre.png  used on input line 691.
 (pdftex.def)             Requested size: 390.0pt x 223.62822pt.
  [19 <./Images//synthesTrimestre.png>]
-<Images//compoEPorS.pdf, id=307, 650.43pt x 505.89pt>
+<Images//compoEPorS.pdf, id=326, 650.43pt x 505.89pt>
 File: Images//compoEPorS.pdf Graphic file (type pdf)
 <use Images//compoEPorS.pdf>
-Package pdftex.def Info: Images//compoEPorS.pdf  used on input line 709.
+Package pdftex.def Info: Images//compoEPorS.pdf  used on input line 708.
 (pdftex.def)             Requested size: 191.10214pt x 148.63414pt.
-<Images//compoResineux.pdf, id=308, 650.43pt x 505.89pt>
+<Images//compoResineux.pdf, id=327, 650.43pt x 505.89pt>
 File: Images//compoResineux.pdf Graphic file (type pdf)
 <use Images//compoResineux.pdf>
-Package pdftex.def Info: Images//compoResineux.pdf  used on input line 710.
+Package pdftex.def Info: Images//compoResineux.pdf  used on input line 709.
 (pdftex.def)             Requested size: 191.10214pt x 148.63414pt.
 
-No file methodoAnalyseSentinel2TimeSerie2021.bbl.
-
-Package natbib Warning: There were undefined citations.
-
-[20 <./Images//compoEPorS.pdf> <./Images//compoResineux.pdf>]
-(methodoAnalyseSentinel2TimeSerie2021.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+(methodoAnalyseSentinel2TimeSerie2021.bbl [20 <./Images//compoEPorS.pdf> <./Ima
+ges//compoResineux.pdf>]) [21] (methodoAnalyseSentinel2TimeSerie2021.aux)
 Package rerunfilecheck Info: File `methodoAnalyseSentinel2TimeSerie2021.out' ha
 s not changed.
 (rerunfilecheck)             Checksum: FB9638C58DA1E64BEB35339EB35275F4;2919.
  ) 
 Here is how much of TeX's memory you used:
- 15714 strings out of 478582
- 257357 string characters out of 2854150
- 564959 words of memory out of 3000000
- 33582 multiletter control sequences out of 15000+600000
- 477142 words of font info for 56 fonts, out of 8000000 for 9000
+ 15746 strings out of 478582
+ 258079 string characters out of 2854150
+ 565300 words of memory out of 3000000
+ 33604 multiletter control sequences out of 15000+600000
+ 477311 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 67i,17n,77p,1481b,648s stack positions out of 10000i,1000n,20000p,200000b,80000s
+ 67i,17n,77p,1484b,648s stack positions out of 10000i,1000n,20000p,200000b,80000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Progra
 m Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKT
 eX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/type
@@ -1423,11 +1387,12 @@ a/cmmib8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb>
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program F
 iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmti12.pfb>
-Output written on methodoAnalyseSentinel2TimeSerie2021.pdf (20 pages, 1188109 b
+blic/amsfonts/cm/cmti12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmtt12.pfb>
+Output written on methodoAnalyseSentinel2TimeSerie2021.pdf (21 pages, 1325533 b
 ytes).
 PDF statistics:
- 384 PDF objects out of 1000 (max. 8388607)
- 65 named destinations out of 1000 (max. 500000)
+ 415 PDF objects out of 1000 (max. 8388607)
+ 72 named destinations out of 1000 (max. 500000)
  350 words of extra memory for PDF output out of 10000 (max. 10000000)
 
