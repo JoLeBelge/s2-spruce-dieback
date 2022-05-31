@@ -103,35 +103,35 @@
 The study area was located in the south of Belgium and in the north east of France. We study 2 regions: Wallonia and Vosges.
 This two regions are covered by 7 Sentinel-2 tiles (6 tiles for the Wallonia and 1 for the Vosges).
 
-In Wallonia, the altitude varies between 100 and 700m. The walloon forest covers 554 600 Ha. The norway spruce stand occuped 139 600 Ha \citep{alderwerield_2015}. For this study, we selected only spruce trees over 15 m and we have worked on %nombre Ha total 
+In Wallonia, the altitude varies between 100 and 700m. The walloon forest covers 554 600 Ha. The norway spruce stand occuped 139 600 Ha \citep{Alderweireld_2015}. For this study, we selected only spruce trees over 15 m and we have worked on %nombre Ha total 
 Ha. Two thirds of the Walloon spruce forest is located above 400m altitude
-The Wallon climate is continental(\citep{Metzger 2005}. %integrer figure climat
-Over the 1989-2020 period, the average temperature was 9,7°C et the average sum of rainfall was 1118mm. During 2018, the average temperature was 9.6°C et the average sum of rainfall was 919 mm (data of Institut Royal Métérologique. (fig %%%)
-The month of july 2018 is considered as a arid month. 
+The Wallon climate is continental(\citep{Metzger_2005}. %integrer figure climat
+Over the 1989-2020 period, the average temperature was 9,7°C et the average sum of rainfall was 1118mm. During 2018, the average temperature was 9.6°C et the average sum of rainfall was 919 mm (data of Institut Royal Métérologique). (fig %%%)
+%The month of july 2018 is considered as a arid month. 
 
-In the Vosges, the elevation is between 200m and 1300m. The vosgian forest occupies 291 000 Ha. The norway spruce forest covers 39 000 Ha (\citep{Inventaire France}.
+In the Vosges, the elevation is between 200m and 1300m. The vosgian forest occupies 291 000 Ha. The norway spruce forest covers 39 000 Ha (\citep{IGN_inv}).
 The majority of norway spruce stand of this region grow between 400m and 900m.
 During the 2012-2020 period, the average temperature was 9,6°C et the average sum of rainfall was 1347mm. During the year 2018, the average temperature was 10,2°C et the average sum of rainfall was 1233 mm.
 
 
 \subsection{Description zone de la Zone d'étude}
 
-\begin{itemize}
-	\item Description zone d'étude générale + tuile S2 traitées (figure: %\ref{fig:rep_vosg}) 
-	\item Description générale de la forêt wallonne 
-	\item Description de la pessière wallonne 
-	\item Description générale de la foret vosgienne 
-	\item Description de la pessière vosgienne
-	\item Comparaison Température et précipitation vosges et Wallonie entre moyenne trentenaire et données pour l'année 2018 (figure reffig:diagOT)
+%\begin{itemize}
+%	\item Description zone d'étude générale + tuile S2 traitées (figure: %\ref{fig:rep_vosg}) 
+%	\item Description générale de la forêt wallonne 
+%	\item Description de la pessière wallonne 
+%	\item Description générale de la foret vosgienne 
+%	\item Description de la pessière vosgienne
+	%\item Comparaison Température et précipitation vosges et Wallonie entre moyenne trentenaire et données pour l'année 2018 (figure reffig:diagOT)
 	
-\end{itemize}
+%\end{itemize}
 
 
 
 \subsection{DEM and Slope orientation}
 
 
-We used digital surface model (DEM) data from the Copernicus Land Monitoring Service (XX cite DEM)  at a resolution of 20mX20m for all elevation data and slope calculations
+We have used the digital surface model (DEM) data from the Copernicus Land Monitoring Service \citep{DEM_copernicus}  at a resolution of 20mX20m for all elevation data and slope calculations
 
  %European Union, Copernicus Land Monitoring Service <year>, European Environment Agency (EEA)
 \begin{itemize}
@@ -139,13 +139,13 @@ We used digital surface model (DEM) data from the Copernicus Land Monitoring Ser
 	\item Méthodologie de calcul des sous-secteur radiatif.
 \end{itemize}
 
-
-For the three sub-sectors (cold slope, plateau, hot slope), we applied the definition of Delvaux and Galoux (1962):
+Solar orientation influences bark beetle capture in pheromone traps (\citep{AFR64}). We determined this solar orientation using the Delvaux and Galoux definition of the 3 radiative sub-sectors  (\citep{Delvaux_galoux}):
+%For the three sub-sectors (cold slope, plateau, hot slope), we applied the definition of Delvaux and Galoux (1962):
 \begin{itemize} 
 \item Plateau: plateau and low slope (slope less than 12° or 20%) that does not create a particular microclimate.
 \item cold slope: slope greater than 12° or 20% facing north and valley bottom. These are shady, cool and humid areas.
 \item warm slope: slope greater than 12° or 20% facing south. In this sub-sector the air is warmer and drier and the temperature difference between day and night is greater.
-
+\end{itemize}
 Based on this definition and on the DEM, we produced radiative sub-sector maps for Wallonia and the Vosges.
 
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
@@ -205,7 +205,7 @@ Eventually, this Random Forest classifier was applied on "spruce and fir" area o
 \subsection{Analyse stat}
 \begin{itemize}
 	\item test de student
-	\the probability of presence of bark beetles
+	\item the probability of presence of bark beetles
 The probability of bark beetle presence is the area affected by bark beetle attacks on the total spruce area. 
 %Equation 
 \end{itemize}
@@ -213,13 +213,13 @@ The probability of bark beetle presence is the area affected by bark beetle atta
 \section{résultats}
 
 \subsection{ Altitude vs probabilité de présence de scolyte}
-The variation of the probability of presence of bark beetles for Wallonia and Vosges for the period 2017-2021 is described in the figure \ref{fig:alti_sco}. The altitude has been subdivided into the same 12 elevation classes for both regions. The graphs corresponding to the variation of the probability of presence in Wallonia are in the upper part of the figure and those for the Vosges in the lower part.
+The variation of the probability of presence of bark beetles for Wallonia and Vosges for the period 2017-2021 is described in the figure \ref{alti_sco}. The altitude has been subdivided into the same 12 elevation classes for both regions. The graphs corresponding to the variation of the probability of presence in Wallonia are in the upper part of the figure and those for the Vosges in the lower part.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{Wall_vs_vosges.png}
-	\caption{XXXXAPragraphe_precedent???.}
-	\label{fig:alti_sco}
+	%\caption{XXXXAPragraphe_precedent.}
+	\label{alti_sco}
 \end{figure}
 
  
