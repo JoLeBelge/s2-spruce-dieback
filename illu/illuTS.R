@@ -32,7 +32,7 @@ courbeCRSWIR <- function (dates){
 }
 
 # input ; détails pour un point
-setwd("/home/lisein/Documents/Scolyte/S2/illustration")
+setwd("//home/jo/Documents/Scolyte/S2/illustration")
 # mes couleurs attribuées à chaque état pour une date
 mycol <- c("forestgreen", "red" , "black", "purple", "yellow", "royalblue1")
 # le type de point (étoile, rond) attribué en fonction de l'état pour une date
@@ -163,3 +163,49 @@ do$date2 <- as.Date(paste("2000",format(do$date, "%m"),format(do$date, "%d"),sep
 
 plot(do$date2,do$b8A)
 points(dm$date,dm$b8A, col="blue")
+
+
+# création d'une ligne du temps qui suit la fonction harmonique pour l'animation vidéo de RWII
+setwd("/home/jo/Documents/Scolyte/planetScope/Scolyte_1/mosaic_period")
+source("/home/jo/app/s2/illu/textBox.R")
+d1 <- lubridate::ymd( "2018-01-01" ) + lubridate::weeks( 39 - 1 )
+d2 <- lubridate::ymd( "2022-01-01" ) + lubridate::weeks( 22 - 1 )
+m.dates <- as.Date(c(d1,d2))
+dtheorique <- courbeCRSWIR(m.dates)
+nbw <- round(difftime(d2,d1,units="weeks"))
+
+#for (y in c(2017:2021)){
+  # en fait je fonctionne plutôt avec un pas d'une semaine..
+  #week
+  #for (m in c("01","02","03","04","05","06","07","08","09","10","11","12")){
+    #d <- as.Date(paste0(y,"-",m,"-01"))
+for (w in c(1:nbw+1)){
+    d <- d1 + lubridate::weeks( w )
+    dy <- lubridate::ymd( paste0(year(d),"-01-01"))
+    dtheoriqueCurrent <- courbeCRSWIR(c(m.dates[1],d))
+    nbWa <- round(difftime(d,dy,units="weeks")) 
+    cat(paste0("week nb ",w, "  , soit ", year(d), " semaine ", nbWa, " , ",difftime(d,dy,units="weeks"),"\n"))
+    tifName <- paste0(getwd(),"/",year(d),"_",sprintf("%02d",nbWa),".tif")
+    if (file.exists(tifName)){
+      cat(paste0("process date",tifName))
+    if (0){
+    png(paste0(year(d),"_",sprintf("%02d",nbWa),".tif.fct.png"),width = 1920,height    = 1080,units     = "px",pointsize = 30,bg = "transparent")
+    par(mar = c(0,3,0.5,0.5), mgp = c(1.5,0.2,0), tck = 0.02, cex.lab = 1.2, cex.axis = 0.8,bty="n")
+    plot(d,0, col="grey20", xlab="",pch=1, ylim=c(0.4,1.7),ylab="", lwd=2, xlim=m.dates,, xaxt = "n", yaxt = "n")
+    lines(dtheorique, col="yellow", lwd=10)
+    textBox(as.numeric(max(dy,lubridate::ymd( "2019-01-01" ))), 0.8,as.character(year(d)),cex=2,col="forestgreen",fill ="white")
+    # ajout d'une ligne en plus gros trait pour montrer ou on en est dans la série temporelle
+    lines(dtheoriqueCurrent, col="red", lwd=15)
+    dev.off()
+    }
+    
+    if(1){
+    esy <- year(d)
+    if (nbWa<30){esy <- max(2018,year(d)-1)}
+    ES.path <-paste0("/home/jo/Documents/Scolyte/planetScope/Scolyte_1/ES_GE/etatSanitaire_",esy,"GE_tmp_masq_evol_co.tif.jpg")
+    ES.out <- paste0(tifName,".ES.jpg")
+    command <- paste0("cp ",ES.path, " ", ES.out)
+    system(command)
+    }
+    }
+}
