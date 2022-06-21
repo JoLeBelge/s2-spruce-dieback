@@ -174,12 +174,15 @@ m.dates <- as.Date(c(d1,d2))
 dtheorique <- courbeCRSWIR(m.dates)
 nbw <- round(difftime(d2,d1,units="weeks"))
 
+library("terra")
+require(lubridate)
+
 #for (y in c(2017:2021)){
   # en fait je fonctionne plutôt avec un pas d'une semaine..
   #week
   #for (m in c("01","02","03","04","05","06","07","08","09","10","11","12")){
     #d <- as.Date(paste0(y,"-",m,"-01"))
-for (w in c(1:nbw+1)){
+for (w in c(0:nbw+1)){
     d <- d1 + lubridate::weeks( w )
     dy <- lubridate::ymd( paste0(year(d),"-01-01"))
     dtheoriqueCurrent <- courbeCRSWIR(c(m.dates[1],d))
@@ -199,7 +202,21 @@ for (w in c(1:nbw+1)){
     dev.off()
     }
     
-    if(1){
+   if(1){
+    #Philippe n'aime pas les couleurs de la vidéo et il a raison.
+     #1 ouverture du raster
+     r <- rast(tifName)
+     #setMinMax(r)
+     #stat <- minmax(r)
+     #stat[1,1]# min band 1
+     #stat[2,1]#max band 1
+     stat <- global(r, fun=quantile, na.rm=T, probs=c(0.05,0.95,0.01))
+     #cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*255.0/",stat[2,1]-stat[1,1],";(im1b2-",stat[1,2],")*255.0/",stat[2,2]-stat[1,2],";(im1b3-",stat[1,3],")*255.0/",stat[2,3]-stat[1,3],"' -ram 4000 -progress 0")
+     cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*255.0/",stat[1,2]-stat[1,1],";(im1b2-",stat[2,3],")*255.0/",stat[2,2]-stat[2,3],";(im1b3-",stat[3,1],")*255.0/",stat[3,2]-stat[3,1],"' -ram 4000 -progress 0")
+     system(cmd)
+   }
+    
+    if(0){
     esy <- year(d)
     if (nbWa<30){esy <- max(2018,year(d)-1)}
     ES.path <-paste0("/home/jo/Documents/Scolyte/planetScope/Scolyte_1/ES_GE/etatSanitaire_",esy,"GE_tmp_masq_evol_co.tif.jpg")
