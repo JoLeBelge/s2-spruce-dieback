@@ -76,6 +76,12 @@
 \title{Bark beetle infection of spruce differs between Belgium and north France : a remote sensing analysis of 2016-2021 dieback}
 
 \begin{abstract}
+Following the droughts of 2018 to 2020, numerous norway spruce diebacks were caused by bark beetles (Ips typographus/ Pityogenes chalcographus) outbreaks in Wallonia and in the Vosges.
+ A methodology for detection the health status of spruce was developed based on satellite imagery from the European Union's Earth Observation Programme. The time series of satellite images allowed the modelling of the spectral response of healthy spruce forests over the seasons.\\
+Deviations from this seasonal vegetation index trajectory for a healthy spruce stand are caused by a decrease in photosynthetic activity of the forest canopy. This decrease in photosynthesis is caused by a bark beetle attack and is detected automatically. This technique, inspired by the work of INRAe, is robust because of the redundancy of the information from the spatial images, which are repeated every 3-4 weeks. The method results in the production of annual maps of the health status of the Walloon and Vosges spruce forests.\\
+The most important damage occurred in the years 2018-2019, affecting 2.8\% of the total area of spruce stands in Wallonia. Although the main part of the crisis seems to be behind us, it remains to draw the necessary conclusions. The relationship between climatic conditions and the presence of the bark beetle has proven to be complex in Wallonia. Nevertheless, a very strong relationship between altitude and the presence of bark beetle damage could be demonstrated. Stands below 300m in altitude were indeed much more affected. Moreover, forest sites located on steep slopes (>20\%), whether on cold or warm slopes, are more affected than sites located on low slopes (plateaus).\\
+In the Grand-Est, the peak of the crisis has been reached in 2019-2020. Altitude and slopes are not strongly influencing factors for spruce dieback. 
+Forest sites attacked by bark beetles are different in these two nearby regions
 
 \end{abstract}
 
@@ -89,6 +95,15 @@
 
 \pagebreak
 \section{Introduction}
+
+%L'épicéa est une essence naturellement présente dans une partie du Grand-Est et intoduite en Wallonie. Cette espece présente dans toute l'Europe de l'est et du nord. Cette essence résineuse importante pour l'industrie du bois mondiale 
+Norway spruce (\textit{Picea abies L. Karst})occurs widespread throughout central and western Europe. Since the beginning of the 19 \textsuperscript{th} century, this species has been used to reforest European forests (\citep{3PresentDistributionofSecondaryNorwaySpruceinEurope}).These massive reforestations have generally led to the formation of pure stands. The spruce is one of the most important economic plant species in europe (\citep{nystedt_norway_2013}).
+The spruce is a species that is naturally present in part of the Grand-Est  and artificially  in Wallonia. 
+
+Cette essence resineuse a besoin d'eau et supporte mal les secheresse. Dans le cadre des changements globaux, 
+
+
+
 
 \begin{itemize}
 	\item Aire de répartition de l'épicéa
@@ -106,7 +121,7 @@ This two regions are covered by 7 Sentinel-2 tiles (6 tiles for the Wallonia and
 In Wallonia, the altitude varies between 100 and 700m. The walloon forest covers 554 600 Ha. The norway spruce stand occuped 139 600 Ha \citep{Alderweireld_2015}. For this study, we selected only spruce trees over 15 m and we have worked on %nombre Ha total 
 Ha. Two thirds of the Walloon spruce forest is located above 400m altitude
 The Wallon climate is continental(\citep{Metzger_2005}. %integrer figure climat
-Over the 1989-2020 period, the average temperature was 9,7°C et the average sum of rainfall was 1118mm. During 2018, the average temperature was 9.6°C et the average sum of rainfall was 919 mm (data of Institut Royal Métérologique). (fig %%%)
+Over the 1989-2020 period, the average temperature was 9,7°C et the average sum of rainfall was 1118mm. During 2018, the average temperature was 9.6°C et the average sum of rainfall was 919 mm (data of Institut Royal Métérologique). 
 %The month of july 2018 is considered as a arid month. 
 
 In the Grand-Est, the elevation is between 100m and 1300m. The Grand-est forest occupies 1 939 000 ha. The norway spruce forest covers 136 000 Ha (\citep{francais_donnees_2022}).
@@ -115,6 +130,19 @@ n this study, we worked on 125,000 ha of spruce in this region.
 %nous en detecte 125 000 ha
 The majority of norway spruce stand of this region grow between 400m and 900m.
 During the 2012-2020 period, the average temperature was 9,6°C et the average sum of rainfall was 1347mm. During the year 2018, the average temperature was 10,2°C et the average sum of rainfall was 1233 mm.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{clim_region_nat_GE_Wal_en.jpg}
+	\caption{	}
+	
+	\label{fig:clim}
+\end{figure}
+
+For the growing season, the temperature and precipitation averages show that 2018 was drier and warmer than the 30-year average (Figure \ref{fig:clim}). 
+
+%Pour la saison de vegetation, les moyennes de températures et des précipitations montre que l'année 2018 fut plus séche et plus chaude que la moyenne trentenaire. 
 
 
 %\subsection{Description zone de la Zone d'étude}
@@ -381,20 +409,9 @@ Dépérissement différents pour les Vosges et la Wallonie.
 \end{figure}
 
 
-\begin{figure} [htbp] 
-	\centering
-	\includegraphics[width=1\textwidth]{diagrammeOT-page001.png}
-	\caption{Walter and Lieth climatic diagram comparison for Ardenne (up) and Vosges (down). Left diagram show the average recent climate, and rigth one illustrates the year of 2018.}
-	\label{fig:diagOT}
-\end{figure}
 
 
-\begin{figure} [htbp] 
-		\centering
-		\includegraphics[width=1\textwidth]{Wall_vs_vosges.png}
-		\caption{Probabilité de présence de scolyte en fonction de l'altitude pour la Wallonie et les Vosges}
-		\label{fig:sco_alti}
-\end{figure}
+
 	
 
 %\begin{figure}[htbp]
