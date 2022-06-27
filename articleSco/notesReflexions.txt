@@ -102,12 +102,16 @@ interactions between host tree, phloem feeders, and their natural enemies are in
 se and difficult to analyze. Such multitrophic interactions have been identified
 as important gaps in process-based ecosystem models
 
+-voir piedallu et ses conclusions ; les changements de climat sont un moteur de dépérissement. Le changement en sous-secteur sud est moins important que le changement en sous-secteur nord. Et en plus les peuplements au sud sont habitué au stress.
+
 -peuplement SS nord plus mélangé et donc plus de faux positif pour la méthode de détection du scolyte (masque EP pas parfait)
 
 -composition peuplement SS nord dans les Vosges ; plus mélangés.
 
--sol en pente pas pareil que sol en plateau? tester la profondeur?
+-sol en pente pas pareil que sol en plateau? tester la profondeur--> urgent.
+
+Selon Pascal Balleux (centre agroforesterie Chimay), les sols versant sud sont plus caillouteux, et les précipitations sont plus fréquentes qu'en versant nord pour la Région Wallonne. mais selon Claessens, ça ne tiens pas debout ; les précipitations pour lesquelles les gouttes de pluies tombent à la vertical sont les mêmes sur tout les versants, car on n'est pas comme en montagne dans des scénarios ou la topo bloque les nuages. Par contre, HC précise que la pronfeur des sols qui est supérieur en versant nord est due aux apport de limon élolien pendant la dernière ère glacière. Puis les SS nord sont moins sujet au cycle de gel-déget qui augmentent l'érosion.
 
 
-
-
+mail juliette Cansell, le 20/06/2022
+Sinon, pour les questions des pentes et des attaques de scolytes, quelque chose qui peut peut être expliquer les résultats : chez nous, les attaques ont commencé par la plaine, passé le stade épidémique avant de conquérir de façon assez inexplicable (sans toujours de relation station-attaque) les collines et les montagnes. Je ne sais pas si en Wallonie la différence entre plaine et montagne est autant marqué, et si il y a autant d'épicéa en plaine mais c'est peut-être une différence dans la propagation et l'ampleur de l'épidémie qui explique ces variations...?

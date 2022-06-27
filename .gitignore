@@ -10,6 +10,7 @@ documentation/*.bbl
 documentation/*.blg
 documentation/*.out
 documentation/*.toc
+documentation/*.log
 documentation/*.synctex.gz
 documentation/Images/smiley*
 build-s2_postProcess/*
