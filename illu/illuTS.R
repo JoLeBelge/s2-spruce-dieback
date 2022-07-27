@@ -212,7 +212,7 @@ for (w in c(0:nbw+1)){
      #stat[2,1]#max band 1
      stat <- global(r, fun=quantile, na.rm=T, probs=c(0.05,0.95,0.01))
      #cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*255.0/",stat[2,1]-stat[1,1],";(im1b2-",stat[1,2],")*255.0/",stat[2,2]-stat[1,2],";(im1b3-",stat[1,3],")*255.0/",stat[2,3]-stat[1,3],"' -ram 4000 -progress 0")
-     cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*255.0/",stat[1,2]-stat[1,1],";(im1b2-",stat[2,3],")*255.0/",stat[2,2]-stat[2,3],";(im1b3-",stat[3,1],")*255.0/",stat[3,2]-stat[3,1],"' -ram 4000 -progress 0")
+     cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*205.0/",stat[1,2]-stat[1,1],";(im1b2-",stat[2,3],")*255.0/",stat[2,2]-stat[2,3],";(im1b3-",stat[3,1],")*255.0/",stat[3,2]-stat[3,1],"' -ram 4000 -progress 0")
      system(cmd)
    }
     

@@ -129,7 +129,8 @@
 \newdimen\dummylogowidth
 \dummylogowidth=87pt
 
-\jnltitlelogo{Journal Logo}
+%\jnltitlelogo{Journal Logo}
+\jnltitlelogo{}
 
 \def\TopRule{\rule{\dummylogowidth}{1.85pt}\\[-9.6pt]
              \rule{\dummylogowidth}{1pt}}
@@ -142,14 +143,16 @@
                 {\fontsize{18pt}{20pt}\sffamily\selectfont
                 \centering\@jnltitlelogo}}
 
-\def\dummyjnllogo{%
-      \parbox[c][61pt][c]{\dummylogowidth}%
-      {\TopRule%
-       \vfill%
-        \jnltitlebox%
-       \vfill%
-       \BottomRule%
-}}
+%\def\dummyjnllogo{%
+%      \parbox[c][61pt][c]{\dummylogowidth}%
+%      {\TopRule%
+%       \vfill%
+%        \jnltitlebox%
+%       \vfill%
+%       \BottomRule%
+%}}
+
+\def\dummyjnllogo{}
 
 \def\elslogo{\includegraphics{elsevier-logo-\jtype p}}
 \def\sdlogo{\includegraphics{SDlogo-\jtype p}}
