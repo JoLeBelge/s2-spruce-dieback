@@ -132,6 +132,8 @@ The forest site conditions are important for the good growth and health of the t
 The forest site varies with topography and climate \citep{brethes_typologie_1989}.
 The non suitability of the tree species for the forest site increase the vulnerability \citep{jandl_climate-induced_2020}.
 
+Since 2018, massive bark beetle attacks killing spruce trees have been occurring in Wallonia and in the Grand-Est. Following these events, foresters have asked themselves about certain topographical factors that seem to have strongly influenced bark beetle attacks. 
+The spruce forests located at low altitude seem to have been more affected as well as the stands located on southern slopes.
 The aim of this paper is to describe bark beetle attacks between 2017 and 2021 and give silvicultural advice to limit damage in the future norway crisis.  
 
 %Epidemic phasis
@@ -165,8 +167,8 @@ The aim of this paper is to describe bark beetle attacks between 2017 and 2021 a
 The study area was located in the south of Belgium and in the north east of France. We study 2 regions: Wallonia and Grand-Est (Figure \ref{fig:situ}).
 \begin{figure} [htbp] 
 	\centering
-	\includegraphics[width=0.7\textwidth]{gde.jpeg}
-	\caption{Study area: Grand-est(hashed) and Wallonia (black dot), tile Sentinel 2 (red square)!!!è§}
+	\includegraphics[width=0.8\textwidth]{gde.jpeg}
+	\caption{Study area: Grand-est(hashed) and Wallonia (black dot), tile Sentinel 2 (red square)}
 	\label{fig:situ}
 \end{figure}
 In Wallonia, the altitude varies between 100 and 700m.
@@ -184,10 +186,22 @@ The norway spruce forest covers 136 000 Ha \citep{IGN2022}.
 %In this study, we worked on 125 800 ha of spruce in this region.
 The majority of norway spruce stand of this region grow between 400m and 900m. 
 The Grand-est is included in the temperate oceanic bioclimatic zone\citep{lindner_climate_2010}. 
-During the 1989-2020 period, the average temperature was between  8,4°C and 11,2°C et the average sum of rainfall range from 720 mm and 1475 mm. During the year 2018, the average temperature vary between 10,16°C and 12,4°C et the average sum of rainfall was 640 mm and 1362mm.
+During the 1989-2020 period, the average temperature was between  8,4°C and 11,2°C et the average sum of rainfall range from 720 mm and 1475 mm. 
+During the year 2018, the average temperature vary between 10,16°C and 12,4°C et the average sum of rainfall was 640 mm and 1362mm.
+
+This two  regions have been divided with natural regions. We form three group in fonction de precipitation and temperature of this natural regions (Figure \ref{fig:clim}).
+
+The Ardennes group wich temperature of the growing season varies from 14 °C to 15,5°C and average precipitation between 400m and 450 mm. 
+The growing season  temperature varies 15.5°C and 17 °C and the growing season  precipitation between 425mm and 600mm for the Vosges group.
+The Plaines group are natural region with  growing season  temperature between 15.5°C and 18°C and with growing season  precipitation between 300mm and 400mm.
+
+ 
+ 
+% tableau 
+
 \begin{figure}
 	\centering
-	\includegraphics[width= 0.8\textwidth]{clim_region_nat_GE_Wal_en.jpg}
+	\includegraphics[width= 0.8\textwidth]{clim_region_nat_GE_Wal_en.png}
 	\caption{	}
 	
 	\label{fig:clim}
@@ -332,8 +346,7 @@ For this study, we selected only spruce trees over 15 m and we have worked on 90
 %\end{align*}
 
 
-Since 2018, massive bark beetle attacks killing spruce trees have been occurring in Wallonia and in the Grand-Est. Following these events, foresters have asked themselves about certain topographical factors that seem to have strongly influenced bark beetle attacks. 
-The spruce forests located at low altitude seem to have been more affected as well as the stands located on southern slopes.
+
 %However, other factors such as degres day data could influence bark beetle attacks 
 %We made a selection of factors influencing bark beetles favourably and norway spruce unfavourably using the random forest method. The factors emerging from this analysis show that altitude and radiative topography orientation are the most important factors influencing spruce dieback  
 To characterise the bark beetle attacks, we applied the random forest method to select the two topographic factors that most influenced the bark beetle attacks.
@@ -363,11 +376,67 @@ Then, in order to determine the classes of these factors most impacted by the ba
 
 \subsection{Choice of environmental variable}
 
+\subsection{Evolution et importance}
+The evolution of the crisis differs between these three regions.
+
+In the Ardennes, the peak of attack is reached in 2019.
+The maximum of the ratio of area touched by bark beetles is 4\%. 
+A begin of decrease is started in 2021.
+
+In the Vosges, the peak is not yet reached.
+However, the maximum ratio of area affected by bark beetlmes is inferior of 2,5\%.
+This group is the less impacted.
+
+
+The Plains group is the group with the most  proportion of area affected by this beetle.
+The Plains region reached the maximum of area affected by bark beetles in 2020. 
+The peak is 28\%.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%The evolution of the crisis differs between these two neighbouring regions.
+
+%In Wallonia, during the year 2017 and 2018, there are already norway spruce affected by bark beetle in low elevation but the probability of presence is under 10\%. 
+%In 2019, the peak is reached in all of classe of elevation. During this year, the percentage of area of the Wallon norway spruce stand affected by bark beetle is 2.8\%.
+%In 2020, there a  little diminution of attack. 
+%During 2021, there are important diminution of area impacted by bark beetle. The probability of bark beetle presence returns to the same level as begin the crisis.
+
+%In Grand-Est, during 2017, the attack of bark beetle are weak. 
+%In 2018, there are first attack at low elevation but always below 5\%.
+%In 2019, the increasing of attack at low altitude continues.
+%In 2020, in all altitude classes are impacted by bark beetle. 
+%Between 100m an 400m of altitude there are a important augmentation of the probability of presence. 
+%The maximum of area affected is reached. % indiqué pourcentage max atteint
+%During 2020, there is 4\% of the total area of spruce stand of Grand-est that area affected by bark beetle during 2020.
+\begin{figure}
+\centering
+   \includegraphics[width=\textwidth]{Annual_evol_Ardennes_vosges_plaines.jpeg}
+     \caption{}
+	\label{evol_gen}
+\end{figure}
+
+    
 
 
 
 \subsection{ Elevation vs bark beetle presence}
-The variation of the probability of presence of bark beetles for Wallonia and Grand-Est for the period 2017-2021 is described in the figure 
+The variation of the probability of presence of bark beetles in the three groups naturals regions for the period 2017-2021 is described in the figure 
 \ref{alti_sco}.
 %The altitude has been subdivided into the same 12 elevation classes for both regions. 
 %The graphs corresponding to the variation of the probability of presence in Wallonia are in the upper part of the figure and those for the Grand-Est in the lower part.
@@ -381,23 +450,35 @@ The graphs corresponding to the variation of the probability of presence in Wall
 	\label{alti_sco}
 \end{figure}
 
-In Wallonia, in the begin of the crisis, the low altitude classes are more affect than hight altitude classes.
+In Ardennes group, in the begin of the crisis, the low altitude classes are more affect than hight altitude classes.
 The dieback of norway spruce occur along a altitudinal  gradient.
 This gradient is confirmed over the 5 years of the study.
-%Indeed, during this year a strong increase in the 100-200m and 200-300m altitude classes is observed. 
-%These two altitude classes are more affected during this crisis.
+Indeed, during this year a strong increase in the 100-200m and 200-300m altitude classes is observed. 
+These two altitude classes are more affected during this crisis.
+The stand located above 400m are weakly attacked with maximum 2,5\% of presence.
+
+
+In Vosges group, there are not altitude classes more affected than other. 
+The low altitude are poorly represent. There are no impact of elevation on the presence of bark beetle. 
+The probability of presence of this insect is inferior of 5 \% during the study period.
+
+
+The Plains group are affected mainly in low elevation with a hight probability of presence of bark beetle. 
+During the crisis the class of elevation 100m-200m et 200m-300m are strongly affected with a probability of presence exceeding 20\%.
+There is also like in the Ardenne group, a diminution of bark beetle attack along altitudinal gradient.
 The low altitude stand are the more affected stand and are disappearing.
- 
+
+
 %The decrease the probabilty of bark beetle presence follow an altitudinal gradient.
 %The higher the norway spruce stand grows at an altitude, the lower the probabilty of bark beetle presence. 
 %For the Grand-Est region, there is an increase in the probability of bark beetle presence between 2019 and 2021. 
 
-In the Grand-Est stand, the situation differs than is neighbour region. In 2017, there is low presence of bark beetle  at all altitude.
-The crisis begin weakly in 2018 with attack at low altitude.
-However the probability of presence of bark beetle increase until 2020 to reach more than 20\% of norway spruce killed at altitude below 300m.
-Above 400m, the decreasing didn't follow a altitudinal gradient.
-The probability of presence of bark beetle is relatively constant with a little increase between 700-800m.
-Above 400m, the altitude didn't protect spruce against bark beetle attack in the Grand-Est.
+%In the Grand-Est stand, the situation differs than is neighbour region. In 2017, there is low presence of bark beetle  at all altitude.
+%The crisis begin weakly in 2018 with attack at low altitude.
+%However the probability of presence of bark beetle increase until 2020 to reach more than 20\% of norway spruce killed at altitude below 300m.
+%Above 400m, the decreasing didn't follow a altitudinal gradient.
+%The probability of presence of bark beetle is relatively constant with a little increase between 700-800m.
+%Above 400m, the altitude didn't protect spruce against bark beetle attack in the Grand-Est.
 
 %Unlike the Walloon spruce forest, there is no clear altitudinal gradient in the Vosges. 
 %As in Wallonia, the 200-300m altitude class is strongly affected by the bark beetle. The probability of presence decreases along an altitudinal gradient between the altitude classes 200-300 and 400-500m. However, above 500m the probability of bark beetle increases up to the altitude class 700-800m.
@@ -412,6 +493,19 @@ Above 400m, the altitude didn't protect spruce against bark beetle attack in the
 
 \subsection{topography orientation vs bark beetle presence}
 
+In Ardennes, from the beginning of the period to the end, the trend is the same slope are more affected by bark beetles. 
+The north and south slope are similarly affected. 
+The maximum of attack is reached in 2019 with 4 \% in the two orientations slopes.
+
+The Plains group is the most affected. 
+There are not clear trend. Before 2020, the north slope are the most touched by bark beetles.
+From 2020,the attack in the south slopes exceed the attack in north slope. 
+The peak of attack is reached during this year.
+
+The Vosges group is the group of natural region that are the less infested by bark beetle. 
+Before the peak in 2020, there is no trend. However in 2020, the plateaus are more affected than slopes.
+The trend seem decrease in 2021.
+  
 %Le scolyte se develloppant plus rapidement dans les zones plus chaudes \citep{annila_influence_1969}, nous %avons étudié l'évolution de la surface d'épicéa imapactée par les scolytes en fonction des sous-secteur %radiatif.
 
 % Le pic de surface touchée par les scolytes est atteint en 2019 pour la Wallonie et en 2020 pour le Grand-Est.
@@ -423,15 +517,15 @@ Above 400m, the altitude didn't protect spruce against bark beetle attack in the
 
 
 % As the bark beetle develops more rapidly in warmer areas \citep{annila_influence_1969}, we studied the evolution of the surface area of spruce affected by bark beetles as a function of the topography orientation.
-The second environmental factor emerging from our analysis is topography orientation. 
-The peak of bark beetle affected area is reached in 2019 for Wallonia and in 2020 for the Grand-Est (Figure \ref{ss_sco}).
-This graph also shows that proportionally the spruce forests of the plains of the Great East were more affected than the other topography orientation in both the Grand-Est and Wallonia. 
-In Wallonia, the most significantly affected topography orientation are the slopes, and there is also a significant difference between the southern and northern slopes. 
-Conversely, in the Grand Est it is the plateaus that are significantly more affected than the slopes.
+%The second environmental factor emerging from our analysis is topography orientation. 
+%The peak of bark beetle affected area is reached in 2019 for Wallonia and in 2020 for the Grand-Est (Figure \ref{ss_sco}).
+%This graph also shows that proportionally the spruce forests of the plains of the Great East were more affected than the other topography orientation in both the Grand-Est and Wallonia. 
+%In Wallonia, the most significantly affected topography orientation are the slopes, and there is also a significant difference between the southern and northern slopes. 
+%Conversely, in the Grand Est it is the plateaus that are significantly more affected than the slopes.
 \begin{figure}
 \centering
-	\includegraphics[width=\textwidth]{evol_ss_GDE_wall.png}
-     \caption{Proportion area affected by bark beetle attacks in relation to topography orientation. Dotted line: Wallonia , line : Grand-Est }
+	\includegraphics[width=\textwidth]{SS_ardenne_vosges_plaines.png}
+    % \caption{Proportion area affected by bark beetle attacks in relation to topography orientation. Dotted line: Wallonia , line : Grand-Est }
 	\label{ss_sco}
 \end{figure}
 
@@ -471,6 +565,9 @@ During 2020, there is 4\% of the total area of spruce stand of Grand-est that ar
 \section{Discussion}
 
 \subsection{Différence entre Vosges et Wallonie}
+
+
+
 \begin{itemize}
 	\item Différence climat (Climat semicontinental/montagnard vs climat tempéré océanique)
 	\item Différence sylvicole ( Wallonie futaie régulière exploitable vs Vosges peuplement + mélangé et moins exploitable en haute altitude)
