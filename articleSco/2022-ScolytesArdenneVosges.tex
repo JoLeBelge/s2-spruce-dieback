@@ -196,18 +196,18 @@ The growing season  temperature varies 15.5°C and 17 °C and the growing season
 The Plaines group are natural region with  growing season  temperature between 15.5°C and 18°C and with growing season  precipitation between 300mm and 400mm.
 
  
- 
+ % rajouté surface
 % tableau 
 
 \begin{figure}
 	\centering
 	\includegraphics[width= 0.8\textwidth]{clim_region_nat_GE_Wal_en.png}
-	\caption{	}
+	\caption{Grouping of natural regions according to the temperature and precipitation of the growing season to form three groups: Ardennes (blue), Plains (red) and Vosges (orange). }
 	
 	\label{fig:clim}
 \end{figure}
 %The 3 primary regions of production of norway spruce in Wallonia are the "Basse et Moyenne Ardenne", "Ardenne centro oriental" and the "Haute ardenne" \citep{van_der_perre_carte_2015}. 
-%In the Grand-Est, the major part of the norway spruce stand is located in the 3 naturals regions of the Vosges (Vosges Gréseuses, Vosges cristallines, les collines sous-vosgiennes).
+%In the Grand-Est, the major part of the norway spruce stand is located in the 3 naturals regions of the Vosges (Vosges Gréseuses, Vosges crstallines, les collines sous-vosgiennes).
 %For the growing season, in this 2 primary regions of production of noraway spruce, there are a lack of 100 mm of water for 2018 and there is a increasing of 1,7 °C compared to 30-year temperatures.(Figure \ref{fig:clim}). 
 
 %Pour la saison de vegetation, les moyennes de températures et des précipitations montre que l'année 2018 fut plus séche et plus chaude que la moyenne trentenaire. 
@@ -377,31 +377,37 @@ Then, in order to determine the classes of these factors most impacted by the ba
 \subsection{Choice of environmental variable}
 
 \subsection{Evolution et importance}
-The evolution of the crisis differs between these three regions.
+The evolution of the crisis differs between these three regions \ref{evol_gen}.
 
 In the Ardennes, the peak of attack is reached in 2019.
-The maximum of the ratio of area touched by bark beetles is 4\%. 
+The maximum of the ratio of area touched by bark beetles is 3,4\%. 
 A begin of decrease is started in 2021.
 
 In the Vosges, the peak is not yet reached.
-However, the maximum ratio of area affected by bark beetlmes is inferior of 2,5\%.
+However, the maximum ratio of area affected by bark beetlmes is inferior of 1,8\%.
 This group is the less impacted.
 
 
 The Plains group is the group with the most  proportion of area affected by this beetle.
 The Plains region reached the maximum of area affected by bark beetles in 2020. 
-The peak is 28\%.
+The peak is 23,7\%.
 
  
 
+% add syrface
 
 
-
-
-
-
-
-
+\begin{table}[]
+ \caption{Summary table of the crisis }
+ \label{tab_recap}
+\begin{tabular}{|l|l|l|}
+\hline
+Region   & \begin{tabular}[c]{@{}l@{}}Total norway spruce \\ area killed by bark beetle (2016-2021)\end{tabular} & \begin{tabular}[c]{@{}l@{}}Total norway spruce \\ area before crisis\end{tabular} \\ \hline
+Plaines  & 13665 Ha                                                                                              & 25 552 Ha                                                                         \\ \hline
+Ardennes & 13435 Ha                                                                                              & 101 600 Ha                                                                        \\ \hline
+Vosges   & 4540 Ha                                                                                               & 101 065 Ha                                                                        \\ \hline
+\end{tabular}
+\end{table}
 
 
 
@@ -425,10 +431,10 @@ The peak is 28\%.
 %The maximum of area affected is reached. % indiqué pourcentage max atteint
 %During 2020, there is 4\% of the total area of spruce stand of Grand-est that area affected by bark beetle during 2020.
 \begin{figure}
-\centering
-   \includegraphics[width=\textwidth]{Annual_evol_Ardennes_vosges_plaines.jpeg}
-     \caption{}
-	\label{evol_gen}
+   \centering
+   \includegraphics[width=\textwidth]{Annual_evol_Ardennes_vosges_plaines.png}
+    \caption{Proportion of norway spruce area affected by bark beetle. Plaines region in red, Ardennes in blue and Vosges in }
+    \label{evol_gen}
 \end{figure}
 
     
@@ -443,9 +449,9 @@ The variation of the probability of presence of bark beetles in the three groups
 
 \begin{figure}
 \centering
-	\includegraphics[width=\textwidth]{graphe_wall_GDE.png}
+	\includegraphics[width=\textwidth]{synthese_color_06_2022.png}
      \caption{The altitude has been subdivided into the same 12 elevation classes for both regions. 
-The graphs corresponding to the variation of the probability of presence in Wallonia are in the upper part of the figure and those for the Grand-Est in the lower part.
+The graphs corresponding to the variation of the probability of presence in Ardennes are in the upper part of the figure,the Vosges in middle part and for the Plaines in the lower part.
 }
 	\label{alti_sco}
 \end{figure}
@@ -524,8 +530,8 @@ The trend seem decrease in 2021.
 %Conversely, in the Grand Est it is the plateaus that are significantly more affected than the slopes.
 \begin{figure}
 \centering
-	\includegraphics[width=\textwidth]{SS_ardenne_vosges_plaines.png}
-    % \caption{Proportion area affected by bark beetle attacks in relation to topography orientation. Dotted line: Wallonia , line : Grand-Est }
+	\includegraphics[width=\textwidth]{SS_ardenne_vosges_plaines.jpeg}
+    \caption{Proportion area affected by bark beetle attacks in relation to topography orientation. The north slope and south slope are affected similarly by bark beetle in Ardennes and in the Vosges}
 	\label{ss_sco}
 \end{figure}
 
@@ -564,7 +570,62 @@ During 2020, there is 4\% of the total area of spruce stand of Grand-est that ar
 
 \section{Discussion}
 
-\subsection{Différence entre Vosges et Wallonie}
+
+\subsection{Limit and weakness of methodology}
+The detection of bark beetle attack is based on Sentinel 2 satellite imagery.
+The methodology use norway spruce mask. 
+In pure even aged norway spruce, the method works well. 
+However, in mixed forest, the norway spruce mask is less accurate than in pure even aged.
+In fact, our sanitary map resolution is 10m and if there somme deciduous tree or others resinous in the norway spruce mask, there is a risk of error.
+In Ardennes and in the Plaines, there is principally pure even aged stand of norway spruce but in the Vosges the stand are more mixed.
+In this region, there is more risk of presence of beech and silver fir in our norway spruce mask.
+
+We overestimated probably the norway spruce area in the Vosges region.
+
+
+
+\subsection{Global trend}
+In the current study, we found that the plains natural region is most sensible at the attack of bark beetles.
+
+In this natural region , the proportion of attack in 2017 is already over 4 \%. 
+This proportion is superior at all maximum of two others regions. 
+The bark beetle is already present in this region because the climate in 2016 was favourable for the development of bark beetle. 
+In fact, the sales data of Department of nature and forest of Wallonia show a increasing volume of Norway spruce infested by bark beetle.
+The plains region is more hot and with less precipitation than the 2 others regions.
+The climate condition are suitable for the multiplication of generation of bark beetle during the year (\citep{baier_phenipscomprehensive_2007} and \citep{annila_influence_1969}).
+
+The first major attack of bark beetle have started in the plains in 2018 but the majority of the damage occurred in 2019. 
+The explosion of the ratio of area impacted by bark beetle can be also explain by a non-proactive management of forest in this area. The sanitation felling allow to limit explosion of bark beetle \citep{stadelmann_effects_2013}.
+The plains region is not a resinuous region and the resinous sawmill are far the forest. 
+The time between the infestation of the stand and the sanitation felling is probably to long and allow more easily a pullulation of bark beetle.
+%According to \citep{dobor_spatial_2020}, a salvaging intensity below 80 \% impact the bark beetle disturbance.  
+
+In Ardennes, the peak is reached in 2019. The maximum is 4 \%. The climate of ardenne is more suitable for norway spruce. This climate is nearby mountain climate. 
+The climate can explain a the limitation of damage in region. 
+
+Les masses d'air viennent se caller sur le massif ardennais et des precipitations importantes se créent suite à un effe foehn, permettant à l'épicéa de moins souffrir de la sécheresse dans cette regions à des altitudes faibles par rapport au massif vosgiens. 
+
+A des altitudes similaires, cet effet de foehn permet aux épicéas ardennais d'être moins impactés par la secherresse que les épicéas des plaines. 
+
+In the Vosges, the increasing of area impacted by bark beetles is relatively weak.
+The norway spruce os a endemic species in the Vosges mountain. 
+The moutain climate protect this resinous species. 
+Besides the vosgian forest is generally mixed with beech (\textit{Fagus sylvatica}) and  silver fir (\textit{Abies alba}). Mixed forest are significantly more resitant to pest attack \citep{jactel_2021}. 
+
+The difference of proportion affected by bark beetle in Ardenne and Vosges can be expained by type of forest.
+In Ardennes, the even aged pure stand is predominantly whereas in the Vosges  the forest are more mixed. 
+
+\subsection{Altitude}
+
+
+In the plaines, all classes of elevation are touched more than 10 \% during the crisis except for the classe 500-600m. 
+The altitude didn't protect the tree during the drought. 
+All of this stand are artificial stand plant in area not adapted for mountain tree. In the Ardennes from 300m to 700m the forest have been affected to a maximum of 5\%. 
+
+
+
+
+
 
 
 
@@ -578,6 +639,15 @@ During 2020, there is 4\% of the total area of spruce stand of Grand-est that ar
 \item meilleur surveillance des forestiers sur versant sud que nord 
 	
 \end{itemize}
+
+\subsection{Topography orientation}
+
+%citer auteur versant sud + touché
+explain that the bark beetle attack more in south slope.
+However, our result show that there is no more attack on south slope than in north slope.
+Bark beetle attack norway spruce with same proportion south slope and north slope in the Ardennes and in the Vosges.
+In the Plaines, there is no tendance of topography orientation.
+
 
 \subsection{Facteur déterminant l'attaque par l'épicéa ou le scolyte}
 
