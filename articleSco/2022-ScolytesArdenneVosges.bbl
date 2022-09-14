@@ -1,0 +1,310 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Alderweireld et~al.(2015)Alderweireld, Burnay, Pitchugin, and
+  Lecomte]{Alderweireld_2015}
+Alderweireld, M., Burnay, F., Pitchugin, M., and Lecomte, H., 2015.
+\newblock \emph{Inventaire Forestier Wallon - Résultats 1994 - 2012}.
+\newblock Bilans et perspectives - Ressources naturelles. SPW.
+\newblock ISBN 978-2-8056-0171-2.
+
+\bibitem[Ali et~al.(2021)Ali, Abdullah, Darvishzadeh, Skidmore, Heurich,
+  Roeoesli, Paganini, Heiden, and Marshall]{ali_canopy_2021}
+Ali, A.~M., Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Heurich, M.,
+  Roeoesli, C., Paganini, M., Heiden, U., and Marshall, D., 2021.
+\newblock Canopy chlorophyll content retrieved from time series remote sensing
+  data as a proxy for detecting bark beetle infestation.
+\newblock \emph{Remote Sensing Applications: Society and Environment},
+  22:\penalty0 100524.
+
+\bibitem[Annila(1969)]{annila_influence_1969}
+Annila, E., 1969.
+\newblock Influence of temperature upon the development and voltinism of {Ips}
+  typographus {L}.({Coleoptera}, {Scolytidae}).
+\newblock In \emph{Annales {Zoologici} {Fennici}}, pages 161--208. JSTOR.
+
+\bibitem[Baier et~al.(2007)Baier, Pennerstorfer, and
+  Schopf]{baier_phenipscomprehensive_2007}
+Baier, P., Pennerstorfer, J., and Schopf, A., September 2007.
+\newblock {PHENIPS}—{A} comprehensive phenology model of {Ips} typographus
+  ({L}.) ({Col}., {Scolytinae}) as a tool for hazard rating of bark beetle
+  infestation.
+\newblock \emph{Forest Ecology and Management}, 249\penalty0 (3):\penalty0
+  171--186.
+\newblock ISSN 03781127.
+\newblock \doi{10.1016/j.foreco.2007.05.020}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S0378112707004057}.
+
+\bibitem[Bolyn et~al.(2018)Bolyn, Michez, Gaucher, Lejeune, and
+  Bonnet]{bolyn_forest_2018}
+Bolyn, C., Michez, A., Gaucher, P., Lejeune, P., and Bonnet, S., 2018.
+\newblock Forest mapping and species composition using supervised per pixel
+  classification of {Sentinel}-2 imagery.
+\newblock \emph{Biotechnologie, Agronomie, Société et Environnement},
+  22\penalty0 (3):\penalty0 16.
+
+\bibitem[Brethes(1989)]{brethes_typologie_1989}
+Brethes, A., 1989.
+\newblock La typologie des stations forestières. {Recommandations}
+  méthodologiques.
+\newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 7.
+\newblock ISSN 1951-6827, 0035-2829.
+\newblock \doi{10.4267/2042/25949}.
+\newblock URL \url{https://hal.archives-ouvertes.fr/hal-03424651}.
+
+\bibitem[Bárta et~al.(2021)Bárta, Lukeš, and Homolová]{barta_early_2021}
+Bárta, V., Lukeš, P., and Homolová, L., 2021.
+\newblock Early detection of bark beetle infestation in {Norway} spruce forests
+  of {Central} {Europe} using {Sentinel}-2.
+\newblock \emph{International Journal of Applied Earth Observation and
+  Geoinformation}, 100:\penalty0 102335.
+
+\bibitem[Delvaux and Galoux(1962)]{Delvaux_galoux}
+Delvaux, J. and Galoux, A., 1962.
+\newblock \emph{Les territoires écologiques du Sud-Est belge}.
+\newblock Centre d’écologie générale.
+
+\bibitem[DUTRIEUX et~al.(2021)DUTRIEUX, FERET, OSE, and
+  DE~BOISSIEU]{dutrieux_package_2021}
+DUTRIEUX, R., FERET, J.-B., OSE, K., and DE~BOISSIEU, F., 2021.
+\newblock Package {Fordead}.
+\newblock URL \url{https://doi.org/10.15454/4TEO6H}.
+
+\bibitem[Genuer et~al.(2015)Genuer, Poggi, and Tuleau-Malot]{genuer_vsurf_2015}
+Genuer, R., Poggi, J.-M., and Tuleau-Malot, C., 2015.
+\newblock {VSURF}: {An} {R} {Package} for {Variable} {Selection} {Using}
+  {Random} {Forests}.
+\newblock \emph{The R Journal}, 7\penalty0 (2):\penalty0 19.
+\newblock ISSN 2073-4859.
+\newblock \doi{10.32614/RJ-2015-018}.
+\newblock URL
+  \url{https://journal.r-project.org/archive/2015/RJ-2015-018/index.html}.
+
+\bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
+  Ostapowicz]{grabska_forest_2019}
+Grabska, E., Hostert, P., Pflugmacher, D., and Ostapowicz, K., 2019.
+\newblock Forest stand species mapping using the {Sentinel}-2 time series.
+\newblock \emph{Remote Sensing}, 11\penalty0 (10):\penalty0 1197.
+
+\bibitem[Hanewinkel et~al.(2013)Hanewinkel, Cullmann, Schelhaas, Nabuurs, and
+  Zimmermann]{hanewinkel2013climate}
+Hanewinkel, M., Cullmann, D.~A., Schelhaas, M.-J., Nabuurs, G.-J., and
+  Zimmermann, N.~E., 2013.
+\newblock Climate change may cause severe loss in the economic value of
+  european forest land.
+\newblock \emph{Nature climate change}, 3\penalty0 (3):\penalty0 203--207.
+
+\bibitem[Hlásny et~al.(2021)Hlásny, König, Krokene, Lindner, Montagné-Huck,
+  Müller, Qin, Raffa, Schelhaas, Svoboda, Viiri, and Seidl]{hlasny_bark_2021}
+Hlásny, T., König, L., Krokene, P., Lindner, M., Montagné-Huck, C., Müller,
+  J., Qin, H., Raffa, K.~F., Schelhaas, M.-J., Svoboda, M., Viiri, H., and
+  Seidl, R., September 2021.
+\newblock Bark {Beetle} {Outbreaks} in {Europe}: {State} of {Knowledge} and
+  {Ways} {Forward} for {Management}.
+\newblock \emph{Current Forestry Reports}, 7\penalty0 (3):\penalty0 138--165.
+\newblock ISSN 2198-6436.
+\newblock \doi{10.1007/s40725-021-00142-x}.
+\newblock URL \url{https://link.springer.com/10.1007/s40725-021-00142-x}.
+
+\bibitem[{Inventaire forestier national français}(2022)]{IGN2022}
+{Inventaire forestier national français}, 2022.
+\newblock Données brutes, {Campagnes} annuelles 2005 et suivantes.
+\newblock URL \url{https://inventaire-forestier.ign.fr/dataIFN/}.
+
+\bibitem[Jactel et~al.(2021)Jactel, Moreira, and Castagneyrol]{jactel_2021}
+Jactel, H., Moreira, X., and Castagneyrol, B., 2021.
+\newblock Tree diversity and forest resistance to insect pests: Patterns,
+  mechanisms, and prospects.
+\newblock \emph{Annual Review of Entomology}, 66\penalty0 (1):\penalty0
+  277--296.
+\newblock \doi{10.1146/annurev-ento-041720-075234}.
+\newblock URL \url{https://doi.org/10.1146/annurev-ento-041720-075234}.
+\newblock PMID: 32903046.
+
+\bibitem[Jandl(2020)]{jandl_climate-induced_2020}
+Jandl, R., June 2020.
+\newblock Climate-induced challenges of {Norway} spruce in {Northern}
+  {Austria}.
+\newblock \emph{Trees, Forests and People}, 1:\penalty0 100008.
+\newblock ISSN 26667193.
+\newblock \doi{10.1016/j.tfp.2020.100008}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S266671932030008X}.
+
+\bibitem[Kautz et~al.(2014)Kautz, Schopf, and Imron]{kautz_individual_2014}
+Kautz, M., Schopf, R., and Imron, M.~A., February 2014.
+\newblock Individual traits as drivers of spatial dispersal and infestation
+  patterns in a host–bark beetle system.
+\newblock \emph{Ecological Modelling}, 273:\penalty0 264--276.
+\newblock ISSN 03043800.
+\newblock \doi{10.1016/j.ecolmodel.2013.11.022}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S030438001300570X}.
+
+\bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
+  Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and
+  Marchetti]{lindner_climate_2010}
+Lindner, M., Maroschek, M., Netherer, S., Kremer, A., Barbati, A.,
+  Garcia-Gonzalo, J., Seidl, R., Delzon, S., Corona, P., Kolström, M., Lexer,
+  M.~J., and Marchetti, M., 2010.
+\newblock Climate change impacts, adaptive capacity, and vulnerability of
+  {European} forest ecosystems.
+\newblock \emph{Forest Ecology and Management}, 259\penalty0 (4):\penalty0
+  698--709.
+\newblock ISSN 0378-1127.
+\newblock \doi{https://doi.org/10.1016/j.foreco.2009.09.023}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S0378112709006604}.
+
+\bibitem[Lisein et~al.(2015)Lisein, Michez, Claessens, and
+  Lejeune]{lisein_discrimination_2015}
+Lisein, J., Michez, A., Claessens, H., and Lejeune, P., 2015.
+\newblock Discrimination of deciduous tree species from time series of unmanned
+  aerial system imagery.
+\newblock \emph{PLoS One}, 10\penalty0 (11):\penalty0 e0141006.
+
+\bibitem[Löw and Koukal(2020)]{low_phenology_2020}
+Löw, M. and Koukal, T., 2020.
+\newblock Phenology {Modelling} and {Forest} {Disturbance} {Mapping} with
+  {Sentinel}-2 {Time} {Series} in {Austria}.
+\newblock \emph{Remote Sensing}, 12\penalty0 (4191).
+
+\bibitem[Ma et~al.(2021)Ma, Liu, Liu, Zeng, and Li]{ma_tree_2021}
+Ma, M., Liu, J., Liu, M., Zeng, J., and Li, Y., 2021.
+\newblock Tree {Species} {Classification} {Based} on {Sentinel}-2 {Imagery} and
+  {Random} {Forest} {Classifier} in the {Eastern} {Regions} of the {Qilian}
+  {Mountains}.
+\newblock \emph{Forests}, 12\penalty0 (12):\penalty0 1736.
+
+\bibitem[Mezei et~al.(2012)Mezei, Jakuš, Blaženec, Belánová, and
+  Šmídt]{AFR64}
+Mezei, P., Jakuš, R., Blaženec, M., Belánová, S., and Šmídt, J., 2012.
+\newblock The relationship between potential solar radiation and spruce bark
+  beetle catches in pheromone traps.
+\newblock \emph{Annals of Forest Research}, 55\penalty0 (2).
+\newblock ISSN 20652445.
+\newblock URL \url{https://afrjournal.org/index.php/afr/article/view/64}.
+
+\bibitem[Netherer et~al.(2015)Netherer, Matthews, Katzensteiner, Blackwell,
+  Henschke, Hietz, Pennerstorfer, Rosner, Kikuta, Schume, and
+  Schopf]{netherer_waterlimiting_2015}
+Netherer, S., Matthews, B., Katzensteiner, K., Blackwell, E., Henschke, P.,
+  Hietz, P., Pennerstorfer, J., Rosner, S., Kikuta, S., Schume, H., and Schopf,
+  A., February 2015.
+\newblock Do water‐limiting conditions predispose
+  {\textbackslash}textlessspan
+  style="font-variant:small-caps;"{\textbackslash}{textgreaterN}{\textbackslash}textless/span{\textbackslash}textgreater
+  orway spruce to bark beetle attack?
+\newblock \emph{New Phytologist}, 205\penalty0 (3):\penalty0 1128--1141.
+\newblock ISSN 0028-646X, 1469-8137.
+\newblock \doi{10.1111/nph.13166}.
+\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/nph.13166}.
+
+\bibitem[Netherer et~al.(2021)Netherer, Kandasamy, Jirosová, Kalinová,
+  Schebeck, and Schlyter]{netherer_interactions_2021}
+Netherer, S., Kandasamy, D., Jirosová, A., Kalinová, B., Schebeck, M., and
+  Schlyter, F., June 2021.
+\newblock Interactions among {Norway} spruce, the bark beetle {Ips} typographus
+  and its fungal symbionts in times of drought.
+\newblock \emph{Journal of Pest Science}, 94\penalty0 (3):\penalty0 591--614.
+\newblock ISSN 1612-4758, 1612-4766.
+\newblock \doi{10.1007/s10340-021-01341-y}.
+\newblock URL \url{https://link.springer.com/10.1007/s10340-021-01341-y}.
+
+\bibitem[Noirfalise and Thill(1975)]{Noirfalise_1975}
+Noirfalise, A. and Thill, A., 1975.
+\newblock Spruce woods and their pedobotanical types in ardenne (belgium).
+\newblock \emph{Beiträge zur naturkundlichen Forschung in
+  Südwestdeutschland}, 34:\penalty0 251--257.
+
+\bibitem[Nystedt et~al.(2013)Nystedt, Street, and
+  Wetterbom]{nystedt_norway_2013}
+Nystedt, B., Street, N.~R., and Wetterbom, May 2013.
+\newblock The {Norway} spruce genome sequence and conifer genome evolution.
+\newblock \emph{Nature}, 497\penalty0 (7451):\penalty0 579--584.
+\newblock ISSN 0028-0836, 1476-4687.
+\newblock \doi{10.1038/nature12211}.
+\newblock URL \url{http://www.nature.com/articles/nature12211}.
+
+\bibitem[Piedallu et~al.(2014)Piedallu, Perez, Seynave, Gasparotto, and
+  Gégout]{piedallu_presentation_2014}
+Piedallu, C., Perez, V., Seynave, I., Gasparotto, D., and Gégout, J.-C., 2014.
+\newblock {PRÉSENTATION} {DU} {PORTAIL} {WEB} {SILVAE} : {SYSTÈME}
+  {D}’{INFORMATIONS} {LOCALISÉES} {SUR} {LA} {VÉGÉTATION}, {LES} {ARBRES}
+  {ET} {LEUR} {ENVIRONNEMENT}.
+\newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 41.
+\newblock ISSN 1951-6827, 0035-2829.
+\newblock \doi{10.4267/2042/54051}.
+\newblock URL \url{https://hal.archives-ouvertes.fr/hal-01598653}.
+
+\bibitem[Raffa et~al.(2015)Raffa, Grégoire, and
+  Staffan~Lindgren]{raffa_natural_2015}
+Raffa, K.~F., Grégoire, J.-C., and Staffan~Lindgren, B., 2015.
+\newblock Natural {History} and {Ecology} of {Bark} {Beetles}.
+\newblock In \emph{Bark {Beetles}}, pages 1--40. Elsevier.
+\newblock ISBN 978-0-12-417156-5.
+\newblock \doi{10.1016/B978-0-12-417156-5.00001-0}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/B9780124171565000010}.
+
+\bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
+  Bigler]{stadelmann_effects_2013}
+Stadelmann, G., Bugmann, H., Meier, F., Wermelinger, B., and Bigler, C.,
+  October 2013.
+\newblock Effects of salvage logging and sanitation felling on bark beetle
+  ({Ips} typographus {L}.) infestations.
+\newblock \emph{Forest Ecology and Management}, 305:\penalty0 273--281.
+\newblock ISSN 03781127.
+\newblock \doi{10.1016/j.foreco.2013.06.003}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S037811271300371X}.
+
+\bibitem[{Theia Team}(2022)]{theia_team}
+{Theia Team}, 2022.
+\newblock Value-added data processed by {CNES} for the {Theia} data cluster
+  www.theia.land.fr from {Copernicus} data. {The} processing uses algorithms
+  developed by {Theia}'s {Scientific} {Expertise} {Centers}.
+
+\bibitem[Tjoeker and Boratynski()]{tjoeker_biology_nodate}
+Tjoeker, M.~G. and Boratynski, A.
+\newblock \emph{Biology and ecology of {Norway} {Spruce}}.
+
+\bibitem[Union(2022)]{DEM_copernicus}
+Union, E., 2022.
+\newblock Copernicus land monitoring service.
+\newblock URL
+  \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
+
+\bibitem[von Teuffel et~al.(2004)von Teuffel, Heinrich, and
+  Baumgarten]{vonTeuffel_2004}
+von Teuffel, K., Heinrich, B., and Baumgarten, M., 2004.
+\newblock \emph{3 Present Distribution of Secondary Norway Spruce in Europe},
+  pages 63 -- 96.
+\newblock Brill, Leiden, The Netherlands.
+\newblock ISBN 9789047412908.
+\newblock \doi{https://doi.org/10.1163/9789047412908_007}.
+\newblock URL
+  \url{https://brill.com/view/book/edcoll/9789047412908/B9789047412908_s007.xml}.
+
+\bibitem[Weihe(1984)]{weihe_1984}
+Weihe, J., 1984.
+\newblock \emph{Benetzung und Interzeption von Buchen- und
+  Fichtenbeständen.IV. Die verteilung des Regen unter Fichtenkronen.}, volume
+  155, page 241–252.
+
+\bibitem[Zolubas and Byers(1995)]{zolubas_1995}
+Zolubas, P. and Byers, J.~A., 1995.
+\newblock Recapture of dispersing bark beetle ips typographus l. (col.,
+  scolytidae) in pheromone-baited traps: regression models.
+\newblock \emph{Journal of Applied Entomology}, 119\penalty0 (1-5):\penalty0
+  285--289.
+\newblock \doi{https://doi.org/10.1111/j.1439-0418.1995.tb01287.x}.
+\newblock URL
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1439-0418.1995.tb01287.x}.
+
+\end{thebibliography}
