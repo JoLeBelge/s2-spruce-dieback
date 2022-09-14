@@ -124,3 +124,24 @@ more intensively damaged by I. typographus compared to flatter areas
 For example, Mezei et al. (2014) observed that I.
 typographus host tree preferences may change with the out-
 break phase.
+
+-------------
+Hypothèse que les arbres stressés toutes leur vie sont moins sensibles aux scolytes ; tenter de trouver des pessières en conditions de stress chronique et voir si les dégats de scolytes y sont comparables au reste de la pessière
+
+----------------------------
+Muller 2022:
+Observations recorded in May or earlier each year were treated as attacks from the previous year
+Attack risk dependency on aspect (upper panels) shows that the highest risk of attack appears on north and northeast facing slopes both in the drought model
+and in the normal model with a stronger influence of aspect in the drought year
+
+Previous modelling efforts have shown a correlation between increased abundance of bark beetles and northeastern aspect (Jurc et al., 2006), linking shady ex­posures to higher soil water table level, which trees tolerate by devel­oping shallower root system, possibly leading to lower drought resilience (Christiansen & Bakke, 1988; Puhe, 2003). Additionally, Blomqvist et al. (2018) suggested that trees on southwestern facing slopes may receive insolation beyond the optimal range for bark beetles
+
+during the hot drought the bark beetles might have preferred the more shaded north-east facing slopes.
+-------
+
+Puhe 2003
+adverse growing conditions result in an increased frequency of adventitious root formation
+The work illustrates that root palameters are good indicators of the sustainability of forest sites
+
+Drought stress would direct roots to deeper, moister soil layers.
+----
