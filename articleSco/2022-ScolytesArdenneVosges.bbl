@@ -1,4 +1,4 @@
-\begin{thebibliography}{35}
+\begin{thebibliography}{40}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -69,9 +69,9 @@ Delvaux, J. and Galoux, A., 1962.
 \newblock \emph{Les territoires écologiques du Sud-Est belge}.
 \newblock Centre d’écologie générale.
 
-\bibitem[DUTRIEUX et~al.(2021)DUTRIEUX, FERET, OSE, and
-  DE~BOISSIEU]{dutrieux_package_2021}
-DUTRIEUX, R., FERET, J.-B., OSE, K., and DE~BOISSIEU, F., 2021.
+\bibitem[Dutrieux et~al.(2021)Dutrieux, Feret, Ose, and
+  De~Boissieu]{dutrieux_package_2021}
+Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
 \newblock Package {Fordead}.
 \newblock URL \url{https://doi.org/10.15454/4TEO6H}.
 
@@ -136,6 +136,17 @@ Jandl, R., June 2020.
 \newblock URL
   \url{https://linkinghub.elsevier.com/retrieve/pii/S266671932030008X}.
 
+\bibitem[Kasumović et~al.(2019)Kasumović, Lindelöw, and
+  Hrašovec]{kasumovic_overwintering_2019}
+Kasumović, L., Lindelöw, A., and Hrašovec, B., February 2019.
+\newblock Overwintering strategy of \textit{{Ips} typographus} {L}.
+  ({Coleoptera}, {Curculionidae}, {Scolytinae}) in {Croatian} spruce forests on
+  lowest elevation.
+\newblock \emph{Šumarski list}, 143\penalty0 (1-2):\penalty0 19--24.
+\newblock ISSN 18469140, 03731332.
+\newblock \doi{10.31298/sl.143.1-2.2}.
+\newblock URL \url{https://hrcak.srce.hr/217770}.
+
 \bibitem[Kautz et~al.(2014)Kautz, Schopf, and Imron]{kautz_individual_2014}
 Kautz, M., Schopf, R., and Imron, M.~A., February 2014.
 \newblock Individual traits as drivers of spatial dispersal and infestation
@@ -145,6 +156,30 @@ Kautz, M., Schopf, R., and Imron, M.~A., February 2014.
 \newblock \doi{10.1016/j.ecolmodel.2013.11.022}.
 \newblock URL
   \url{https://linkinghub.elsevier.com/retrieve/pii/S030438001300570X}.
+
+\bibitem[Kotlarski et~al.(2012)Kotlarski, Bosshard, Lüthi, Pall, and
+  Schär]{kotlarski_elevation_2012}
+Kotlarski, S., Bosshard, T., Lüthi, D., Pall, P., and Schär, C., May 2012.
+\newblock Elevation gradients of {European} climate change in the regional
+  climate model {COSMO}-{CLM}.
+\newblock \emph{Climatic Change}, 112\penalty0 (2):\penalty0 189--215.
+\newblock ISSN 0165-0009, 1573-1480.
+\newblock \doi{10.1007/s10584-011-0195-5}.
+\newblock URL \url{http://link.springer.com/10.1007/s10584-011-0195-5}.
+
+\bibitem[Koštál et~al.(2011)Koštál, Doležal, Rozsypal, Moravcová,
+  Zahradníčková, and Šimek]{kostal_physiological_2011}
+Koštál, V., Doležal, P., Rozsypal, J., Moravcová, M., Zahradníčková, H.,
+  and Šimek, P., August 2011.
+\newblock Physiological and biochemical analysis of overwintering and cold
+  tolerance in two {Central} {European} populations of the spruce bark beetle,
+  {Ips} typographus.
+\newblock \emph{Journal of Insect Physiology}, 57\penalty0 (8):\penalty0
+  1136--1146.
+\newblock ISSN 00221910.
+\newblock \doi{10.1016/j.jinsphys.2011.03.011}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S0022191011000795}.
 
 \bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
   Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and
@@ -167,6 +202,17 @@ Lisein, J., Michez, A., Claessens, H., and Lejeune, P., 2015.
 \newblock Discrimination of deciduous tree species from time series of unmanned
   aerial system imagery.
 \newblock \emph{PLoS One}, 10\penalty0 (11):\penalty0 e0141006.
+
+\bibitem[Lombardero et~al.(2000)Lombardero, Ayres, Ayres, and
+  Reeve]{lombardero_cold_2000}
+Lombardero, M.~J., Ayres, M.~P., Ayres, B.~D., and Reeve, J.~D., June 2000.
+\newblock Cold {Tolerance} of {Four} {Species} of {Bark} {Beetle}
+  ({Coleoptera}: {Scolytidae}) in {North} {America}.
+\newblock \emph{Environmental Entomology}, 29\penalty0 (3):\penalty0 421--432.
+\newblock ISSN 0046-225X, 1938-2936.
+\newblock \doi{10.1603/0046-225X-29.3.421}.
+\newblock URL
+  \url{https://academic.oup.com/ee/article-lookup/doi/10.1603/0046-225X-29.3.421}.
 
 \bibitem[Löw and Koukal(2020)]{low_phenology_2020}
 Löw, M. and Koukal, T., 2020.
@@ -251,6 +297,14 @@ Raffa, K.~F., Grégoire, J.-C., and Staffan~Lindgren, B., 2015.
 \newblock \doi{10.1016/B978-0-12-417156-5.00001-0}.
 \newblock URL
   \url{https://linkinghub.elsevier.com/retrieve/pii/B9780124171565000010}.
+
+\bibitem[Roe(2005)]{Roe_orographic_preicpitation_2005}
+Roe, G.~H., 2005.
+\newblock Orographic precipitation.
+\newblock \emph{Annual Review of Earth and Planetary Sciences}, 33\penalty0
+  (1):\penalty0 645--671.
+\newblock \doi{10.1146/annurev.earth.33.092203.122541}.
+\newblock URL \url{https://doi.org/10.1146/annurev.earth.33.092203.122541}.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
