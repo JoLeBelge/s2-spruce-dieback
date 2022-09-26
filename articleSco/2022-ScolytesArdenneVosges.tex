@@ -1,36 +1,24 @@
-%% The '3p' and 'times' class options of elsarticle are used for Elsevier CRC
-%% Add the 'procedia' option to approximate to the Word template
-%\documentclass[3p,times,procedia]{elsarticle}
-\documentclass[3p,procedia]{elsarticle}
 
-%% The `ecrc' package must be called to make the CRC functionality available
+%% Add the 'procedia' option to approximate to the Word template
+\documentclass[3p,procedia]{elsarticle}
 \usepackage{ecrc}
 \usepackage{color,soul}
 \usepackage{multirow}
 \usepackage{booktabs}
 \graphicspath{{images/}}
-
 \usepackage{lscape}
+\usepackage{amssymb}
+\usepackage{lineno}
+\usepackage{hyperref}
+\usepackage{subfig}
+\usepackage[export]{adjustbox}
 
 \volume{00}
 \firstpage{1}
 %\journalname{Forest ecology and management}
 \runauth{Gilles A. et al.}
 
-%% Give the abbreviation of the Journal. %% A user-supplied logo with the name <\jid>logo.pdf will be inserted if present.
-%\jid{feam}
-%\jnltitlelogo{Forest ecology and management}
-%\CopyrightLine{2022}{Published by Elsevier Ltd.}
-
-\usepackage{amssymb}
-\usepackage{lineno}
-
-\usepackage{hyperref}
-\usepackage{subfig}
-\usepackage[export]{adjustbox}
-
 \DeclareUnicodeCharacter{00E4}{\"a}% pour -niittyla
-
 
 \begin{document}
 
@@ -52,6 +40,8 @@
 \title{Topographic position effects on Bark beetle damages on spruce differs between Belgium and north France : a remote sensing analysis of 2016-2021 dieback}
 
 \begin{abstract}
+	
+	\iffalse
 Following the droughts of 2018 to 2020, numerous norway spruce diebacks were caused by bark beetles 
 %(Ips typographus/ Pityogenes chalcographus)
 outbreaks in Wallonia and in the Grand-Est. 
@@ -68,42 +58,41 @@ Stands below 300m in altitude were indeed much more affected.
 Moreover, forest sites located on steep slopes ( $\ge$  20 \%), whether on cold or warm slopes, are more affected than sites located on low slopes (plateaus).
 In the Grand-Est, the peak of the crisis has been reached in 2019-2020. Altitude and slopes are not strongly influencing factors for spruce dieback. 
 
-
+\fi
 \end{abstract}
 
 \begin{keyword}
-% nutrient regime \sep moisture regime
+Bark Beetle \sep Norway spuce \sep forest management \sep forest site \sep topographic condition \sep time series Sentinel-2
 \end{keyword}
 
 \end{frontmatter}
 
 \linenumbers
 
-\pagebreak
 \section{Introduction}
 
+Global changes are increasing the risk of disturbances in forest environment: frequency and intensity of abiotic (fire, storm, drough) and biotic (pest invasion) will be more recurrent \citep{lindner_climate_2010}.
+In Western Europe, we expect a decrease of precipitation and a increase of drought events during the vegetation period, which will impact the actual geographic distribution of tree species \citep{hanewinkel2013climate}.
+Due to the long time required to complete a forest revolutions, forest managers have to anticipate likely changes in climate conditions by modifying the forest tree species they used to plant at a particular location, in a way that the future environmental conditions of the forest site still meet the species requirements.
+Norway spruce (\textit{Picea abies L. Karst}) is one of the most important economic plant species in Europe \citep{nystedt_norway_2013}.
+Its productivity comes with a demanding amount of precipitation, thus making it sensitive to climate changes.
+Plus, its major pest are two bark beetles (\textit{Ips typographus} and \textit{Pityogenes chalcographus}) that cause important outbreak after storm, which provide breeding material (windfalls), or after severe drougth that weaken trees.
+A recent bark beetle crisis, triggered by the exeptionnaly hot and dry wheater of 2018, occured in Western Europe and lasted until 2021. 
+It has urged the need of adapting forest management practice. 
+Indeed, forest practitionners have to decide now which species will replace Norway spruce in the thousands of clear-cutted hectares decimated by bark beetle attack. 
+The decision-making of replanting spruce requires a proper understanding of both norway spruce and bark beetle autecology.
+This paper aims at studying the dynamic of 2018-2021 bark beetle outbreak in Wallonia (Belgium) and in the Grand-Est (France) in order to analyse the relationship between spruce, bark beetle and environmental conditions and, thus, detminining the most sensitive forest site where spruce sould not be replanted.
 
-%Les changements globaux impliquent une augmentation des perturbations dans le milieu forestier.
-Global changes imply an increase of disturbances in the forest environment.
-Frequency and intensity of abiotic (fire, wind, drough) and biotic (pest invasion) will be more and more recurrent \citep{lindner_climate_2010}. 
-Since one decade, principals timber species are affected by sanitary crisis.
-%L'épicéa est une essence naturellement présente dans une partie du Grand-Est et intoduite en Wallonie. Cette espece présente dans toute l'Europe de l'est et du nord. Cette essence résineuse importante pour l'industrie du bois mondiale 
-Norway spruce (\textit{Picea abies L. Karst}) occurs widespread throughout central and western Europe and is one of the most important economic plant species in Europe \citep{nystedt_norway_2013}.
-Since the beginning of the 19 \textsuperscript{th} century, this species has been used to reforest European forests
-\citep{vonTeuffel_2004}.
-These massive reforestations have generally led to the formation of pure even-aged stands. 
+% ici, intro plus conséquente sur épicéa (autecologie, système racinaire, sol)
 
-The norway spruce is a species that is naturally present in part of the Grand-Est (Vosges moutains)  and artificially  in Wallonia. 
-The norway spruce was introduced into Wallonia in the second half of the 19th century \citep{Noirfalise_1975}.
-This resinous species has taproot sytem with fine roots in shallow depth adapted to intercept rainfall. 
-The precipitation are its primary water source (\cite{weihe_1984} in \cite{tjoeker_biology_nodate}).
-In the context of global change, this two regions will suffer in the future of a diminution of precipitation and a increase of drought period in summer. 
-This climate impact the range of tree species in Europe  \citep{hanewinkel2013climate}.
-%This climate evolution is unfavorable for the norway spruce in summer that assimilates the major part of his need of water by intercepting precipitation.
-The lack of water for norway spruce involves stress. When this species is stressed, it produces volatile compounds (\cite{netherer_interactions_2021}). % like (XXXX mettre différents composé volatiles qui attire les scolytes). 
-%This very important species for wood industry surfer of drought. 
-This extreme event impact the growth and the health of the tree.
-In condition of stress, the tree is more susceptible to pest attack (\cite{netherer_waterlimiting_2015}).
+The norway spruce is a species that is naturally present in part of the Grand-Est (Vosges moutains) and artificially in Wallonia, where it was introduced during the second half of the 19th century \citep{Noirfalise_1975}.
+The massive reforestations occuring at this time have generally led to the formation of large pure even-aged stands.
+This resinous species has taproot sytem with fine roots in shallow depth, adapted to intercept rainfall. 
+The precipitation are its primary water source (\cite{weihe_1984} in \cite{tjoeker_biology_nodate}) and the lack of water induces stress that affect growth and health of the tree. 
+When this species is stressed, it produces volatile compounds which attract bark beetles that are ubiquitous in the forest, making himself more susceptible to pest attack \citep{netherer_waterlimiting_2015,netherer_interactions_2021}.
+
+% ici intro scolyte
+
 The two most important pest for this species are two  bark beetles species: \textit{Ips typographus} and \textit{Pityogenes chalcographus}. 
 \textit{Ips typographus} cause the most part of damage. Generally the outbreak of bark beetle are linked with windthrow but also with drougth. 
 There are 6 000 species of bark beetle. 
@@ -124,44 +113,25 @@ can progress in a epidemic phasis\citep{kautz_individual_2014}.
 %when droughts or winthrows happen. 
 During epidemic phases all health levels of trees can be attacked.
  
- 
+
+
 %In North Europe, \textit{Ips typographus} is univoltine \cite{annila_influence_1969} and multivoltine in western and central Europe 
 %parler univolitne/ bivoltine
-
 
 The forest site conditions are important for the good growth and health of the tree.
 The forest site varies with topography and climate \citep{brethes_typologie_1989}.
 The non suitability of the tree species for the forest site increase the vulnerability \citep{jandl_climate-induced_2020}.
-
 Since 2018, massive bark beetle attacks killing spruce trees have been occurring in Wallonia and in the Grand-Est. Following these events, foresters have asked themselves about certain topographical factors that seem to have strongly influenced bark beetle attacks. 
+% ça c'est dans les conclusion qu'il faut l'écrire, pas dans l'into
 The spruce forests located at low altitude seem to have been more affected as well as the stands located on southern facing slopes.
 The aim of this paper is to describe bark beetle attacks between 2017 and 2021 and give silvicultural advice to limit damage in the future norway crisis.  
 
-%Epidemic phasis
-
-
-%reproduction
-
-%Mort de l'arbre
-%Envol 
-%Nombre de generation + génération soeur 
-%+ degat 
-%+ champignons
 
 %WEIHE (1984) suggère que la profondeur d'enracinement étendue et peu profonde et le grand nombre de racines fines de l'épicéa commun sont bien adaptés à l'utilisation des précipitations comme principale source d'eau. En revanche, de nombreuses autres espèces d'arbres forestiers sont mieux adaptées à l'acquisition d'eau souterraine. MITSCHERLICH (1971) souligne le fait qu'en montagne, les peuplements d'épicéas de Norvège obtiennent une grande partie de l'eau par interception de la canopée, y compris le brouillard et le givre.
 
 %Scolyte condition propice plusieurs génération (citer baier et annila)
 %condition defavorable aux scolytes et predateurs (JC gregoire)
 
-
-
-%\begin{itemize}
-%	\item Aire de répartition de l'épicéa
-%	\item Scolyte description générale, plus précision typographe chalcographe
-%	\item Evolution des dégats lié au scolyte dans le monde
-%	\item Début de la crise en Wallonie + Vosges en 2018
-%	\item Objectif de l'article: caractérisation des attaque de scolytes en Wallonie et dans les Vosges selon deux     variables environnementales +paramètres macro 
-%\end{itemize}
 
 \section{Material and methods}
 \subsection{Study area}
