@@ -1,4 +1,4 @@
-\begin{thebibliography}{40}
+\begin{thebibliography}{41}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -235,6 +235,16 @@ Mezei, P., Jakuš, R., Blaženec, M., Belánová, S., and Šmídt, J., 2012.
 \newblock \emph{Annals of Forest Research}, 55\penalty0 (2).
 \newblock ISSN 20652445.
 \newblock URL \url{https://afrjournal.org/index.php/afr/article/view/64}.
+
+\bibitem[Nardi et~al.(2022)Nardi, Jactel, Pagot, Samalens, and
+  Marini]{nardi_drought_2022}
+Nardi, D., Jactel, H., Pagot, E., Samalens, J., and Marini, L., September 2022.
+\newblock Drought and stand susceptibility to attacks by the {European} spruce
+  bark beetle: {A} remote sensing approach.
+\newblock \emph{Agricultural and Forest Entomology}, page afe.12536.
+\newblock ISSN 1461-9555, 1461-9563.
+\newblock \doi{10.1111/afe.12536}.
+\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/afe.12536}.
 
 \bibitem[Netherer et~al.(2015)Netherer, Matthews, Katzensteiner, Blackwell,
   Henschke, Hietz, Pennerstorfer, Rosner, Kikuta, Schume, and
