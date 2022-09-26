@@ -1,4 +1,4 @@
-\begin{thebibliography}{41}
+\begin{thebibliography}{40}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -343,17 +343,6 @@ Union, E., 2022.
 \newblock Copernicus land monitoring service.
 \newblock URL
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
-
-\bibitem[von Teuffel et~al.(2004)von Teuffel, Heinrich, and
-  Baumgarten]{vonTeuffel_2004}
-von Teuffel, K., Heinrich, B., and Baumgarten, M., 2004.
-\newblock \emph{3 Present Distribution of Secondary Norway Spruce in Europe},
-  pages 63 -- 96.
-\newblock Brill, Leiden, The Netherlands.
-\newblock ISBN 9789047412908.
-\newblock \doi{https://doi.org/10.1163/9789047412908_007}.
-\newblock URL
-  \url{https://brill.com/view/book/edcoll/9789047412908/B9789047412908_s007.xml}.
 
 \bibitem[Weihe(1984)]{weihe_1984}
 Weihe, J., 1984.
