@@ -5,6 +5,15 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Abdullah et~al.(2018)Abdullah, Darvishzadeh, Skidmore, Groen, and
+  Heurich]{abdullah_european_2018}
+Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Groen, T.~A., and Heurich, M.,
+  2018.
+\newblock European spruce bark beetle ({Ips} typographus, {L}.) green attack
+  affects foliar reflectance and biochemical properties.
+\newblock \emph{International journal of applied earth observation and
+  geoinformation}, 64:\penalty0 199--209.
+
 \bibitem[Alderweireld et~al.(2015)Alderweireld, Burnay, Pitchugin, and
   Lecomte]{Alderweireld_2015}
 Alderweireld, M., Burnay, F., Pitchugin, M., and Lecomte, H., 2015.
@@ -47,15 +56,6 @@ Bolyn, C., Michez, A., Gaucher, P., Lejeune, P., and Bonnet, S., 2018.
   classification of {Sentinel}-2 imagery.
 \newblock \emph{Biotechnologie, Agronomie, Société et Environnement},
   22\penalty0 (3):\penalty0 16.
-
-\bibitem[Brethes(1989)]{brethes_typologie_1989}
-Brethes, A., 1989.
-\newblock La typologie des stations forestières. {Recommandations}
-  méthodologiques.
-\newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 7.
-\newblock ISSN 1951-6827, 0035-2829.
-\newblock \doi{10.4267/2042/25949}.
-\newblock URL \url{https://hal.archives-ouvertes.fr/hal-03424651}.
 
 \bibitem[Bárta et~al.(2021)Bárta, Lukeš, and Homolová]{barta_early_2021}
 Bárta, V., Lukeš, P., and Homolová, L., 2021.
@@ -111,6 +111,13 @@ Hlásny, T., König, L., Krokene, P., Lindner, M., Montagné-Huck, C., Müller,
 \newblock \doi{10.1007/s40725-021-00142-x}.
 \newblock URL \url{https://link.springer.com/10.1007/s40725-021-00142-x}.
 
+\bibitem[Horgan et~al.(2003)Horgan, Keane, McCarthy, Lally, and
+  Thompson]{horgan_guide_2003}
+Horgan, T., Keane, M., McCarthy, R., Lally, M., and Thompson, D., 2003.
+\newblock A {Guide} to {Forest} {Tree} {Species} {Selection} and {Silviculture}
+  in {Ireland}.
+\newblock \penalty0 (3).
+
 \bibitem[{Inventaire forestier national français}(2022)]{IGN2022}
 {Inventaire forestier national français}, 2022.
 \newblock Données brutes, {Campagnes} annuelles 2005 et suivantes.
@@ -125,16 +132,6 @@ Jactel, H., Moreira, X., and Castagneyrol, B., 2021.
 \newblock \doi{10.1146/annurev-ento-041720-075234}.
 \newblock URL \url{https://doi.org/10.1146/annurev-ento-041720-075234}.
 \newblock PMID: 32903046.
-
-\bibitem[Jandl(2020)]{jandl_climate-induced_2020}
-Jandl, R., June 2020.
-\newblock Climate-induced challenges of {Norway} spruce in {Northern}
-  {Austria}.
-\newblock \emph{Trees, Forests and People}, 1:\penalty0 100008.
-\newblock ISSN 26667193.
-\newblock \doi{10.1016/j.tfp.2020.100008}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S266671932030008X}.
 
 \bibitem[Kasumović et~al.(2019)Kasumović, Lindelöw, and
   Hrašovec]{kasumovic_overwintering_2019}
@@ -180,6 +177,15 @@ Koštál, V., Doležal, P., Rozsypal, J., Moravcová, M., Zahradníčková, H.,
 \newblock \doi{10.1016/j.jinsphys.2011.03.011}.
 \newblock URL
   \url{https://linkinghub.elsevier.com/retrieve/pii/S0022191011000795}.
+
+\bibitem[Kuhn et~al.(2022)Kuhn, Hautier, and San~Martin]{kuhn_pheromone_2022}
+Kuhn, A., Hautier, L., and San~Martin, G., September 2022.
+\newblock Do pheromone traps help to reduce new attacks of \textit{{Ips}
+  typographus} at the local scale after a sanitary cut?
+\newblock \emph{PeerJ}, 10:\penalty0 e14093.
+\newblock ISSN 2167-8359.
+\newblock \doi{10.7717/peerj.14093}.
+\newblock URL \url{https://peerj.com/articles/14093}.
 
 \bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
   Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and
@@ -235,6 +241,17 @@ Mezei, P., Jakuš, R., Blaženec, M., Belánová, S., and Šmídt, J., 2012.
 \newblock \emph{Annals of Forest Research}, 55\penalty0 (2).
 \newblock ISSN 20652445.
 \newblock URL \url{https://afrjournal.org/index.php/afr/article/view/64}.
+
+\bibitem[Modrzyński(2007)]{tjoelker_outline_2007}
+Modrzyński, J., 2007.
+\newblock Outline of {Ecology}.
+\newblock In Tjoelker, M.~G., Boratyński, A., and Bugała, W., editors,
+  \emph{Biology and {Ecology} of {Norway} {Spruce}}, volume~78, pages 195--253.
+  Springer Netherlands, Dordrecht.
+\newblock ISBN 978-1-4020-4840-1.
+\newblock \doi{10.1007/978-1-4020-4841-8_11}.
+\newblock URL \url{http://link.springer.com/10.1007/978-1-4020-4841-8_11}.
+\newblock Series Title: Forestry Sciences.
 
 \bibitem[Nardi et~al.(2022)Nardi, Jactel, Pagot, Samalens, and
   Marini]{nardi_drought_2022}
@@ -298,15 +315,11 @@ Piedallu, C., Perez, V., Seynave, I., Gasparotto, D., and Gégout, J.-C., 2014.
 \newblock \doi{10.4267/2042/54051}.
 \newblock URL \url{https://hal.archives-ouvertes.fr/hal-01598653}.
 
-\bibitem[Raffa et~al.(2015)Raffa, Grégoire, and
-  Staffan~Lindgren]{raffa_natural_2015}
-Raffa, K.~F., Grégoire, J.-C., and Staffan~Lindgren, B., 2015.
-\newblock Natural {History} and {Ecology} of {Bark} {Beetles}.
-\newblock In \emph{Bark {Beetles}}, pages 1--40. Elsevier.
-\newblock ISBN 978-0-12-417156-5.
-\newblock \doi{10.1016/B978-0-12-417156-5.00001-0}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/B9780124171565000010}.
+\bibitem[Puhe(2003)]{puhe_roots_2003}
+Puhe, J., 2003.
+\newblock Growth and development of the root systern of {Norway} spruce
+  ({Picea} abies) in forest stands-a review.
+\newblock \emph{Forest Ecoiogy and Management}, 175:\penalty0 253--273.
 
 \bibitem[Roe(2005)]{Roe_orographic_preicpitation_2005}
 Roe, G.~H., 2005.
@@ -334,21 +347,11 @@ Stadelmann, G., Bugmann, H., Meier, F., Wermelinger, B., and Bigler, C.,
   www.theia.land.fr from {Copernicus} data. {The} processing uses algorithms
   developed by {Theia}'s {Scientific} {Expertise} {Centers}.
 
-\bibitem[Tjoeker and Boratynski()]{tjoeker_biology_nodate}
-Tjoeker, M.~G. and Boratynski, A.
-\newblock \emph{Biology and ecology of {Norway} {Spruce}}.
-
 \bibitem[Union(2022)]{DEM_copernicus}
 Union, E., 2022.
 \newblock Copernicus land monitoring service.
 \newblock URL
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
-
-\bibitem[Weihe(1984)]{weihe_1984}
-Weihe, J., 1984.
-\newblock \emph{Benetzung und Interzeption von Buchen- und
-  Fichtenbeständen.IV. Die verteilung des Regen unter Fichtenkronen.}, volume
-  155, page 241–252.
 
 \bibitem[Zolubas and Byers(1995)]{zolubas_1995}
 Zolubas, P. and Byers, J.~A., 1995.
