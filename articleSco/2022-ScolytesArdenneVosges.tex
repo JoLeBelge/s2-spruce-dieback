@@ -153,11 +153,18 @@ The Grand-est is included in the temperate oceanic bioclimatic zone\citep{lindne
 %During the 1989-2020 period, the average temperature was between  8,4°C and 11,2°C et the average sum of rainfall range from 720 mm and 1475 mm. 
 %During the year 2018, the average temperature vary between 10,16°C and 12,4°C et the average sum of rainfall was 640 mm and 1362mm.
 
-These two  regions have been divided with natural regions. We form three group in fonction de precipitation and temperature of this natural regions (Figure \ref{fig:clim}).
 
-The Ardenne group wich temperature of the growing season varies from 14 °C to 15,5°C and average precipitation between 400m and 450 mm. 
-The growing season  temperature varies 15.5°C and 17 °C and the growing season  precipitation between 425mm and 600mm for the Vosges group.
-The Plains group are natural region with  growing season  temperature between 15.5°C and 18°C and with growing season  precipitation between 300mm and 400mm.
+The French natural region and the Bioclimatic area of Wallonia have been grouped by average temperature and precipitation during the growing season  in three areas: Ardenne, Plains and Vosges(Figure \ref{fig:clim}).
+
+
+
+
+The Ardenne is defined a set of natural regions with a temperature of the growing season between 14°C and 15,5°C and a average precipitation during the growing season between 400m and 450 mm.
+ 
+The Plains is a  with growing season temperature between 15.5°C and 18°C and with growing season  precipitation between 300mm and 400mm.
+ 
+The growing season temperature varies 15.5°C and 17 °C and the growing season precipitation between 425mm and 600mm for the Vosges group.
+
 
  
  % rajouté surface
@@ -274,11 +281,11 @@ Eventually, this Random Forest classifier was applied on "spruce and fir" area o
 
 \subsubsection{Choice of important variables}
 
-We try to choice the two most important environmental variable that influence the attack of bark beetle.
-We make a resample spruce mask in tile of 50mX50m (the minimum area to make productive silviculture). Each tile corresponds to a productive stand. 
-We extract for all of stand the value of environmental variables.  
-To select the important variables influenced the attack of bark beetle, the random forest algorithm is used \citep{genuer_vsurf_2015}.
-Individual classification trees are trained on a 1000 samples of spruce stand of 0,25 Ha by randomly selecting a subset of explanatory variables.
+To select important variables that influence the norway spruce dieback, we use the the random forest algorithm \citep{genuer_vsurf_2015} in Wallonia.
+We apply the random forest only in Wallonia.
+Individual classification trees are trained on a 1000 samples of spruce stand of 0,25 Ha by randomly selecting a subset of explanatory variables (topographic and  climate variable).
+
+
 
 
 
