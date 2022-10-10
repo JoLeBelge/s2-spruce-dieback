@@ -111,24 +111,12 @@ The use of phytosanitary product is forbidden in Belgian and French forest.
 There is a pheromone trap system but it is not efficient to limit the damage in case of bark beetle outbreak \citep{kuhn_pheromone_2022}.
 At present the only solution to limit the outbreak, its to remove felled tree before the swarming and realize sanitary cutting when the tree is attacked by bark beetle at the green stage.
 
-The sentinel 2 satellites launched since 2015 were developed in particular to monitor the environment.
-The rapid change in the attack stage of spruce trees makes it possible to detect dieback areas using satellite images. The mapping of dieback stand allow to evaluate the loss of norway spruce area and to better understand which forest site influence the attack of bark beetle. 
-This paper aims at studying the dynamic of 2017-2021 bark beetle outbreak in Wallonia (Belgium) and in the Grand-Est (France).
-We analyse the relationship between spruce, bark beetle and environmental conditions in order to determine the most sensitive forest sites where spruce should not be replanted.
-
-
-
-%Since the launch of Copernicus project satellites, the are a increasing of development of the vegetation indices.
-% stade gris et rouge de l'attaque - sanitary cutting pour endiger l'épidémie
-% enlever toute référence à chalcographe - plus simple dans un premier temps. enlever ips typographus et remplacer par bark beetle pour homogenéiser le texte
-% The forest site conditions are important for the good growth and health of the tree.
-% The forest site varies with topography and climate \citep{brethes_typologie_1989}.
-% The non suitability of the tree species for the forest site increase the vulnerability \citep{jandl_climate-induced_2020}.
-%Since 2018, massive bark beetle attacks killing spruce trees have been occurring in Wallonia and in the Grand-Est.
-%  Following these events, foresters have asked themselves about certain topographical factors that seem to have strongly influenced bark beetle attacks. 
-% ça c'est dans les conclusion qu'il faut l'écrire, pas dans l'into
-%The spruce forests located at low altitude seem to have been more affected as well as the stands located on southern facing slopes.
-%The aim of this paper is to describe bark beetle attacks between 2017 and 2021 and give silvicultural advice to limit damage in the future norway spruce sanitary crisis.  
+The European Union’s earth observation programme, with its satellite twin constellation Sentinel-2A and Sentinel-2B, provides free earth imagery with a high revisit time that have been intensively used for forestry purpose. 
+Time series of Sentinel-2 (S2) images enable to model the phenology courses of vegetation indices in order to detect forest disturbances \citep{low_phenology_2020}, like the one caused by bark beetle outbreaks.
+Infestation maps of the last sanitary crisis have been generated for Germany \citep{ali_canopy_2021,thonfeld_first_2022}, Czech Republic \citep{barta_early_2021}, Italy \citep{dalponte_mapping_2022} and France \citep{nardi_drought_2022}. 
+This paper aims at studying the extent and the dynamic of the 2017-2021 bark beetle outbreak in Wallonia (Belgium) and in the Grand-Est (France).
+To this end, we map Norway spruce dieback using S2 time series.
+Then, we analyse the relationship between forest stands, bark beetle and environmental conditions in order to determine the most sensitive forest sites where Norway spruce should not be regenerated.
 
 
 \section{Material and methods}
@@ -228,17 +216,8 @@ Climate data for Wallonia have been provided by the Institut Royal Météorologi
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
 
 
-The European Union’s earth observation programme, with its satellite twin constellation Sentinel-2A and Sentinel-2B, provides free earth imagery with a high revisit time. 
-Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m. 
-S2 imagery have been intensively used recently for forestry purpose, including for the monitoring of bark beetle outbreaks. 
-Low and Koukal \citep{low_phenology_2020} have modelled phenology courses of vegetation indices to detect forest disturbances. 
-They have properly mapped Bark beetle infestation in Austrian spruce stands.
-\cite{ali_canopy_2021} have used multi-years time series remote sensing data in order to detect early bark beetle infestation in Germany. 
-They have highlighted the potential of S2 data for the production of reliable infestation maps.
-\cite{barta_early_2021} have studied spectral trajectories of nine bands and six vegetation indices from S2 imagery for the 2018 vegetation season. 
-They have confirmed the superiority of multi-date data for the classification by Random Forest of infested stands in the Czech Republic.
-
 In this present research, the detection of bark beetle infestation is realized by using dense time series of S2 imagery following the methodology developped by \cite{dutrieux_package_2021}.
+Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m.
 The two regions  studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
 Vegetation changes are tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} ($SWIR_{CR}$) indice.
 All S2 acquisitions are used in the analyses, provided that the cloud couver do not excess 35 percent. 
@@ -265,7 +244,7 @@ The health status is summarized in annual health maps by means of four classes ;
 
 Our approach of bark beetle detection is only suitable for spruce, as it is closely related to the phenological course of healthy spruce forest.
 An essential prerequisite is thus to have a proper mapping of spruce stands.
-For the south of Belgium, we use existing reliable composition maps \citep{bolyn_forest_2018} computed from remote sensing data in order to restrict our analysis to spruces.
+For the south of Belgium, we use existing reliable composition maps \citep{bolyn_mapping_2022} computed from remote sensing data in order to restrict our analysis to spruces.
 
 In the Grand-est, the composition map comes from the French Mapping agency (Forest BD version 2). 
 Composition of forest stand is determined by photointerpretation and forest stands identifyed as "spruce or fir" serve as starting point to limit our analysis.
@@ -598,7 +577,7 @@ In Ardenne, the even aged pure stand is predominantly whereas in the Vosges  the
 \subsection{Altitude}
 
 
-The norway spruce is a tree species naturally present on the top of the Vosges mountain \citep{guinier_trois_1959). 
+The norway spruce is a tree species naturally present on the top of the Vosges mountain \citep{guinier_trois_1959}. 
 It was introduced in the low elevation Vosges and in  all part of the Ardenne and the Plains. 
 
 

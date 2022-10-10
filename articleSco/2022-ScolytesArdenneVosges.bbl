@@ -1,4 +1,4 @@
-\begin{thebibliography}{40}
+\begin{thebibliography}{44}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -57,12 +57,31 @@ Bolyn, C., Michez, A., Gaucher, P., Lejeune, P., and Bonnet, S., 2018.
 \newblock \emph{Biotechnologie, Agronomie, Société et Environnement},
   22\penalty0 (3):\penalty0 16.
 
+\bibitem[Bolyn et~al.(2022)Bolyn, Lejeune, Michez, and
+  Latte]{bolyn_mapping_2022}
+Bolyn, C., Lejeune, P., Michez, A., and Latte, N., 2022.
+\newblock Mapping tree species proportions from satellite imagery using
+  spectral–spatial deep learning.
+\newblock \emph{Remote Sensing of Environment}, 280:\penalty0 113205.
+\newblock ISSN 0034-4257.
+\newblock \doi{https://doi.org/10.1016/j.rse.2022.113205}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S0034425722003145}.
+
 \bibitem[Bárta et~al.(2021)Bárta, Lukeš, and Homolová]{barta_early_2021}
 Bárta, V., Lukeš, P., and Homolová, L., 2021.
 \newblock Early detection of bark beetle infestation in {Norway} spruce forests
   of {Central} {Europe} using {Sentinel}-2.
 \newblock \emph{International Journal of Applied Earth Observation and
   Geoinformation}, 100:\penalty0 102335.
+
+\bibitem[Dalponte et~al.(2022)Dalponte, Solano-Correa, Frizzera, and
+  Gianelle]{dalponte_mapping_2022}
+Dalponte, M., Solano-Correa, Y.~T., Frizzera, L., and Gianelle, D., 2022.
+\newblock Mapping a {European} {Spruce} {Bark} {Beetle} {Outbreak} {Using}
+  {Sentinel}-2 {Remote} {Sensing} {Data}.
+\newblock \emph{Remote Sensing}, 14\penalty0 (13):\penalty0 3135.
+\newblock Publisher: MDPI.
 
 \bibitem[Delvaux and Galoux(1962)]{Delvaux_galoux}
 Delvaux, J. and Galoux, A., 1962.
@@ -90,6 +109,16 @@ Genuer, R., Poggi, J.-M., and Tuleau-Malot, C., 2015.
 Grabska, E., Hostert, P., Pflugmacher, D., and Ostapowicz, K., 2019.
 \newblock Forest stand species mapping using the {Sentinel}-2 time series.
 \newblock \emph{Remote Sensing}, 11\penalty0 (10):\penalty0 1197.
+
+\bibitem[Guinier(1959)]{guinier_trois_1959}
+Guinier, P., January 1959.
+\newblock Trois {Conifères} de la flore vosgienne.
+\newblock \emph{Bulletin de la Société Botanique de France}, 106\penalty0
+  (sup2):\penalty0 168--183.
+\newblock ISSN 0037-8941.
+\newblock \doi{10.1080/00378941.1959.10835321}.
+\newblock URL
+  \url{http://www.tandfonline.com/doi/abs/10.1080/00378941.1959.10835321}.
 
 \bibitem[Hanewinkel et~al.(2013)Hanewinkel, Cullmann, Schelhaas, Nabuurs, and
   Zimmermann]{hanewinkel2013climate}
@@ -346,6 +375,15 @@ Stadelmann, G., Bugmann, H., Meier, F., Wermelinger, B., and Bigler, C.,
 \newblock Value-added data processed by {CNES} for the {Theia} data cluster
   www.theia.land.fr from {Copernicus} data. {The} processing uses algorithms
   developed by {Theia}'s {Scientific} {Expertise} {Centers}.
+
+\bibitem[Thonfeld et~al.(2022)Thonfeld, Gessner, Holzwarth, Kriese, Da~Ponte,
+  Huth, and Kuenzer]{thonfeld_first_2022}
+Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
+  and Kuenzer, C., 2022.
+\newblock A {First} {Assessment} of {Canopy} {Cover} {Loss} in {Germany}’s
+  {Forests} after the 2018–2020 {Drought} {Years}.
+\newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
+\newblock Publisher: MDPI.
 
 \bibitem[Union(2022)]{DEM_copernicus}
 Union, E., 2022.
