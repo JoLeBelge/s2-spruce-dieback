@@ -1,4 +1,4 @@
-\begin{thebibliography}{44}
+\begin{thebibliography}{43}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -93,6 +93,12 @@ Delvaux, J. and Galoux, A., 1962.
 Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
 \newblock Package {Fordead}.
 \newblock URL \url{https://doi.org/10.15454/4TEO6H}.
+
+\bibitem[{European Union}(2022)]{DEM_copernicus}
+{European Union}, 2022.
+\newblock Copernicus land monitoring service.
+\newblock URL
+  \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
 
 \bibitem[Genuer et~al.(2015)Genuer, Poggi, and Tuleau-Malot]{genuer_vsurf_2015}
 Genuer, R., Poggi, J.-M., and Tuleau-Malot, C., 2015.
@@ -262,15 +268,6 @@ Ma, M., Liu, J., Liu, M., Zeng, J., and Li, Y., 2021.
   {Mountains}.
 \newblock \emph{Forests}, 12\penalty0 (12):\penalty0 1736.
 
-\bibitem[Mezei et~al.(2012)Mezei, Jakuš, Blaženec, Belánová, and
-  Šmídt]{AFR64}
-Mezei, P., Jakuš, R., Blaženec, M., Belánová, S., and Šmídt, J., 2012.
-\newblock The relationship between potential solar radiation and spruce bark
-  beetle catches in pheromone traps.
-\newblock \emph{Annals of Forest Research}, 55\penalty0 (2).
-\newblock ISSN 20652445.
-\newblock URL \url{https://afrjournal.org/index.php/afr/article/view/64}.
-
 \bibitem[Modrzyński(2007)]{tjoelker_outline_2007}
 Modrzyński, J., 2007.
 \newblock Outline of {Ecology}.
@@ -384,12 +381,6 @@ Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
   {Forests} after the 2018–2020 {Drought} {Years}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
 \newblock Publisher: MDPI.
-
-\bibitem[Union(2022)]{DEM_copernicus}
-Union, E., 2022.
-\newblock Copernicus land monitoring service.
-\newblock URL
-  \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
 
 \bibitem[Zolubas and Byers(1995)]{zolubas_1995}
 Zolubas, P. and Byers, J.~A., 1995.
