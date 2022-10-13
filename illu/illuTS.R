@@ -32,7 +32,7 @@ courbeCRSWIR <- function (dates){
 }
 
 # input ; détails pour un point
-setwd("/home/lisein/Documents/Scolyte/S2/illustration")
+setwd("//home/jo/Documents/Scolyte/S2/illustration")
 # mes couleurs attribuées à chaque état pour une date
 mycol <- c("forestgreen", "red" , "black", "purple", "yellow", "royalblue1")
 # le type de point (étoile, rond) attribué en fonction de l'état pour une date
@@ -83,9 +83,6 @@ lines(dtheorique, col="forestgreen", lwd=4)
 # le seuil à partir duquel on consière un stress
 lines(dtheorique$date[dtheorique$date>"2017-01-01"],dtheorique$CRWSIR[dtheorique$date>"2017-01-01"]*1.7, col="forestgreen", lty= "dashed", lwd=2)
 dev.off()
-
-
-
 
 
 
@@ -152,4 +149,80 @@ plot(d$date,d$CRSWIR, xlab="Date", ylab="complex ratio SWIR", main="suivi de l'�
 dev.off()
 }
 
+##################### illustration synthèse radiométrique trimestrielle ###########
 
+setwd("/home/lisein/Documents/Scolyte/S2/illustration")
+
+d <- read.table("TestSynthesePheno.txt", header=T,sep=";")
+# un dataframe pour les moyennes, un autre pour les observations brutes
+dm <-  d[d$type=="m",]
+dm$date <- as.Date(paste("2000",c("02","05","08","11"),"15", sep="-"))
+do <-  d[d$type=="o",]
+do$date <- as.Date(do$date)
+do$date2 <- as.Date(paste("2000",format(do$date, "%m"),format(do$date, "%d"),sep="-"))
+
+plot(do$date2,do$b8A)
+points(dm$date,dm$b8A, col="blue")
+
+
+# création d'une ligne du temps qui suit la fonction harmonique pour l'animation vidéo de RWII
+setwd("/home/jo/Documents/Scolyte/planetScope/Scolyte_1/mosaic_period")
+source("/home/jo/app/s2/illu/textBox.R")
+d1 <- lubridate::ymd( "2018-01-01" ) + lubridate::weeks( 39 - 1 )
+d2 <- lubridate::ymd( "2022-01-01" ) + lubridate::weeks( 22 - 1 )
+m.dates <- as.Date(c(d1,d2))
+dtheorique <- courbeCRSWIR(m.dates)
+nbw <- round(difftime(d2,d1,units="weeks"))
+
+library("terra")
+require(lubridate)
+
+#for (y in c(2017:2021)){
+  # en fait je fonctionne plutôt avec un pas d'une semaine..
+  #week
+  #for (m in c("01","02","03","04","05","06","07","08","09","10","11","12")){
+    #d <- as.Date(paste0(y,"-",m,"-01"))
+for (w in c(0:nbw+1)){
+    d <- d1 + lubridate::weeks( w )
+    dy <- lubridate::ymd( paste0(year(d),"-01-01"))
+    dtheoriqueCurrent <- courbeCRSWIR(c(m.dates[1],d))
+    nbWa <- round(difftime(d,dy,units="weeks")) 
+    cat(paste0("week nb ",w, "  , soit ", year(d), " semaine ", nbWa, " , ",difftime(d,dy,units="weeks"),"\n"))
+    tifName <- paste0(getwd(),"/",year(d),"_",sprintf("%02d",nbWa),".tif")
+    if (file.exists(tifName)){
+      cat(paste0("process date",tifName))
+    if (0){
+    png(paste0(year(d),"_",sprintf("%02d",nbWa),".tif.fct.png"),width = 1920,height    = 1080,units     = "px",pointsize = 30,bg = "transparent")
+    par(mar = c(0,3,0.5,0.5), mgp = c(1.5,0.2,0), tck = 0.02, cex.lab = 1.2, cex.axis = 0.8,bty="n")
+    plot(d,0, col="grey20", xlab="",pch=1, ylim=c(0.4,1.7),ylab="", lwd=2, xlim=m.dates,, xaxt = "n", yaxt = "n")
+    lines(dtheorique, col="yellow", lwd=10)
+    textBox(as.numeric(max(dy,lubridate::ymd( "2019-01-01" ))), 0.8,as.character(year(d)),cex=2,col="forestgreen",fill ="white")
+    # ajout d'une ligne en plus gros trait pour montrer ou on en est dans la série temporelle
+    lines(dtheoriqueCurrent, col="red", lwd=15)
+    dev.off()
+    }
+    
+   if(1){
+    #Philippe n'aime pas les couleurs de la vidéo et il a raison.
+     #1 ouverture du raster
+     r <- rast(tifName)
+     #setMinMax(r)
+     #stat <- minmax(r)
+     #stat[1,1]# min band 1
+     #stat[2,1]#max band 1
+     stat <- global(r, fun=quantile, na.rm=T, probs=c(0.05,0.95,0.01))
+     #cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*255.0/",stat[2,1]-stat[1,1],";(im1b2-",stat[1,2],")*255.0/",stat[2,2]-stat[1,2],";(im1b3-",stat[1,3],")*255.0/",stat[2,3]-stat[1,3],"' -ram 4000 -progress 0")
+     cmd <- paste0("otbcli_BandMathX -il ",tifName," -out ",tifName,".rgb.jpg uint8 -exp '(im1b1-",stat[1,1],")*205.0/",stat[1,2]-stat[1,1],";(im1b2-",stat[2,3],")*255.0/",stat[2,2]-stat[2,3],";(im1b3-",stat[3,1],")*255.0/",stat[3,2]-stat[3,1],"' -ram 4000 -progress 0")
+     system(cmd)
+   }
+    
+    if(0){
+    esy <- year(d)
+    if (nbWa<30){esy <- max(2018,year(d)-1)}
+    ES.path <-paste0("/home/jo/Documents/Scolyte/planetScope/Scolyte_1/ES_GE/etatSanitaire_",esy,"GE_tmp_masq_evol_co.tif.jpg")
+    ES.out <- paste0(tifName,".ES.jpg")
+    command <- paste0("cp ",ES.path, " ", ES.out)
+    system(command)
+    }
+    }
+}

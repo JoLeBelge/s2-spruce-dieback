@@ -1,0 +1,40 @@
+\documentclass[a4paper, 12pt]{article} % classe de base
+\usepackage[utf8]{inputenc} % générer .bib avec zotero, encodage europe centrale 8859 2
+\usepackage[american]{babel}	%
+\usepackage{amsfonts,amssymb}
+\usepackage{url}	
+\usepackage{fancyhdr} 
+\usepackage{multirow}
+\usepackage{appendix}                                      
+\usepackage{perpage}			
+\usepackage[pdftex]{color,graphicx,graphics,epsfig}
+\usepackage[square]{natbib} 
+\usepackage{float}
+\usepackage{amsmath} 
+%\usepackage[hyper=true,toc=true,number=none,style=list]{glossary}
+\usepackage[colorlinks=true]{hyperref} 
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=red} 
+\usepackage{setspace}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\graphicspath{{figureLR/}{figure/}}
+%for file in *.png; do convert $file -resize 800 ../figureLR/$file ; done
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+\begin{document}
+\renewcommand\bibname{Références bibliographiques}
+
+\includepdf[pages=-]{Rw2_pages_Degarde.pdf} % page de titre fait dans word, plus maniable
+\pagenumbering{arabic}
+\newpage
+\input{content}
+
+\bibliography{../../articleSco/Scolyte.bib}
+
+\bibliographystyle{../s2_ts}
+
+\end{document}
