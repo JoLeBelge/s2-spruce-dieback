@@ -21,6 +21,9 @@ extern std::string globSuffix;
 
 int mergeEPSG(0);
 
+extern double Xdebug;
+extern double Ydebug;
+
 std::string d1("2016-01-01"),d2("2021-07-11");
 
 // key ; nom de tuile. Val ; working directory
@@ -53,6 +56,9 @@ int main(int argc, char *argv[])
 
     year_month_day today = year_month_day{floor<days>(system_clock::now())};
     d2 = format("%F",today);
+
+    // point hetraie
+    Xdebug=655440; Ydebug=5545500;
 
     int mode(vm["outils"].as<int>());
     // lecture des paramètres pour cet utilitaire
@@ -95,8 +101,8 @@ int main(int argc, char *argv[])
             case 20:{
                 std::cout << "Test calcul des valeurs spectrales trimestrielles moyennes (2016-2017) pour une position" << std::endl;
                 cataloguePeriodPheno cata;
-                int x=655441; int y=5545500;
-                cata.syntheseTempoRadiationTest(x,y);
+
+                cata.syntheseTempoRadiationTest(Xdebug,Ydebug);
                 break;
             }
             default:{
@@ -339,6 +345,10 @@ void readXML(std::string aXMLfile){
         //if (cur_node){globTuile=cur_node->value();} else {std::cout << " pas globTuile dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("yMax");
         if (cur_node){yMax=std::stoi(cur_node->value());} else {std::cout << " pas ymax dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("Xdebug");
+        if (cur_node){Xdebug=std::stoi(cur_node->value());} else {std::cout << " pas Xdebug dans fichier xml" << std::endl;}
+        cur_node = root_node->first_node("Ydebug");
+        if (cur_node){Ydebug=std::stoi(cur_node->value());} else {std::cout << " pas Ydebug dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("debug");
         if (cur_node){mDebug=std::stoi(cur_node->value());} else {std::cout << " pas debug dans fichier xml" << std::endl;}
         cur_node = root_node->first_node("mergeEPSG");

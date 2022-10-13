@@ -4,7 +4,7 @@
  <EP_mask_path>/home/gef/Documents/input/masque_EP.tif</EP_mask_path>
  <suffix></suffix>
  <catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
- <doAnaTS> 1 </doAnaTS>
+ <doAnaTS> 0 </doAnaTS>
  <debugDetail>0</debugDetail>
  
  <doDelaisCoupe>1</doDelaisCoupe>
@@ -17,7 +17,7 @@
  
   <date1>2016-01-01</date1>
  <!-- <date2>2018-01-01</date2>  -->
-  <date2>2022-03-30</date2>   <!-- pour prendre en compte toutes les mortalités de 2021, il faut analyser l'état san jusqu'en mars 2022 -->
+  <date2>2022-09-12</date2>   <!-- pour prendre en compte toutes les mortalités de 2021, il faut analyser l'état san jusqu'en mars 2022 -->
  
  <Tuiles>
         <Tuile name="T31UER">
