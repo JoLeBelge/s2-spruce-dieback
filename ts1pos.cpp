@@ -676,14 +676,15 @@ void TS1PosTest::summaryByTriTest(){
     std::cout << " TS1PosTest::summaryByTriTest() " << std::endl;
     // on effectue une moyenne des radiations des bandes par trimestre
     // en première approche, le plus simple ; sélection  pour chaques trimestres des dates qui tombent dans le trimestre puis moyenne de la radiation pour chaque bande
+    std::cout << "type;date;b2;b3;b4;b8;b5;b6;b7;b8A;b11;b12" << std::endl;
     for (int tri(1);tri<5;tri++){
         std::vector<int> vIndex=getDateIndexForTri(tri);
-        std::cout << "calcul moyenne trimestrielle " << tri << " sur " << vIndex.size() << " observations " << std::endl;
+        //std::cout << "calcul moyenne trimestrielle " << tri << " sur " << vIndex.size() << " observations " << std::endl;
         double b2(0),b3(0),b4(0),b8(0),b8A(0),b5(0),b6(0),b7(0),b11(0),b12(0);
         if (vIndex.size()>0){
             for (int i : vIndex){
                 // je voudrai aussi les valeurs initiales!
-                std::cout << * mVDates.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8.at(i)
+                std::cout << "o" << ";" << * mVDates.at(i) << ";" << mVB2.at(i) << ";" << mVB3.at(i) << ";" << mVB4.at(i) << ";" << mVB8.at(i)
                           << ";" << mVB5.at(i) << ";" << mVB6.at(i) << ";" << mVB7.at(i) << ";" << mVB8A.at(i) << ";" << mVB11.at(i) << ";" << mVB12.at(i) << std::endl;
                 b2+=mVB2.at(i);
                 b3+=mVB3.at(i);
@@ -712,7 +713,7 @@ void TS1PosTest::summaryByTriTest(){
             b12=b12/vIndex.size();
         }
         // Maintenant j'affiche ça dans la console ou je le met dans un dataframe pour affichage après?
-        std::cout << tri << ";" << b2 << ";" << b3 << ";" << b4 << ";" << b8 << ";" << b5 << ";" << b6 << ";" << b7 << ";" << b8A<< ";" << b11 << ";" << b12 << std::endl ;
+        std::cout << "m" << ";" << tri << ";" << b2 << ";" << b3 << ";" << b4 << ";" << b8 << ";" << b5 << ";" << b6 << ";" << b7 << ";" << b8A<< ";" << b11 << ";" << b12 << std::endl ;
     }
 }
 

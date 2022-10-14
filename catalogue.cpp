@@ -118,6 +118,7 @@ void catalogue::init(){
         } else if (mDebug){ std::cout << "prise de vue " << t->getDate() << " pas prise en compte , date1  " << dfirst <<" , date 2 " << dlast<< std::endl;}
     }
     // change le nombre de fichiers que l'appli peut ouvrir simultanément
+    // fonctionne pas , je dois lancer manuellement la commande ulimit -n 65536 avant d'utiliser l'appli
 
     struct rlimit lim = {65536, 65536};
     if (setrlimit(RLIMIT_STACK, &lim) == -1) {
