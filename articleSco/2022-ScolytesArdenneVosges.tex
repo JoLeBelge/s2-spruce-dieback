@@ -122,30 +122,23 @@ Then, we analyse the relationship between forest stands, bark beetle and environ
 
 \section{Material and methods}
 \subsection{Study area}
-The study area was located in the south of Belgium and in the north east of France. We study 2 regions: Wallonia and Grand-Est (Figure \ref{fig:situ}).
+The study area was located in Wallonia (south of Belgium) and in the Grand-Est (north-east of France).
+
 \begin{figure} [htbp] 
 	\centering
 	\includegraphics[width=0.8\textwidth]{gde.jpeg}
-	\caption{Study area : Plains (hashed, altitude varying between 100 and 500 meters above see level), Ardenne (black dot, altitude between 100 and 700 m) and Vosges (cross, altitude ranging from 300 to 1300 m). Red squares illustrates the extend of Sentinel satellite 2 tiles which are used for the detection of bark beetle attack.}
+	\caption{Study area: Plains (hashed, altitude varying between 100 and 500 meters above see level), Ardenne (black dot, altitude between 100 and 700 m) and Vosges (cross, altitude ranging from 300 to 1300 m). Red squares illustrates the extend of Sentinel satellite 2 tiles which are used for the detection of bark beetle attack.}
 	\label{fig:situ}
 \end{figure}
 
 The walloon forest covers 554 600 Ha. 
 The Norway spruce stand occuped a quarter of Walloon forest \citep{Alderweireld_2015}. 
-%For this study, we selected only spruce trees over 15 m and we have worked on 90 500 Ha in Wallonia. 
 Two thirds of the Walloon spruce forest is located above 400m altitude. 
-The Walloon climate is located in the temperate oceanic bioclimatic zone \citep{lindner_climate_2010}. 
-%Over the 1989-2020 period, the average temperature vary between 8,7°C and 10,7°C and the average sum of rainfall range from 800m and 1120mm. 
-%During 2018, the average temperature was 9°C between 11,7°C and the average sum of rainfall varie between 605 mm and 1015 mm (data of Institut Royal Métérologique). 
-%The month of july 2018 is considered as a arid month. 
-
+The Walloon climate is included in the temperate oceanic bioclimatic zone \citep{lindner_climate_2010}. 
 The Grand-est forest occupies 1 939 000 ha. 
 The Norway spruce covers seven percent of the forest of this region  \citep{IGN2022}. 
-%In this study, we worked on 125 800 ha of spruce in this region.
 The majority of Norway spruce stand of this region grow between 400m and 900m. 
 The Grand-est is included in the temperate oceanic bioclimatic zone\citep{lindner_climate_2010}. 
-%During the 1989-2020 period, the average temperature was between  8,4°C and 11,2°C et the average sum of rainfall range from 720 mm and 1475 mm. 
-%During the year 2018, the average temperature vary between 10,16°C and 12,4°C et the average sum of rainfall was 640 mm and 1362mm.
 
 We have used the digital surface model data from the Copernicus Land Monitoring Service \citep{DEM_copernicus}  at a resolution of 25mX25m for all altitude data and slope calculations.
 We determined the solar orientation using the \cite{Delvaux_galoux} definition of the three topography orientations.
@@ -160,16 +153,13 @@ Based on this definition and on the DEM, we produced topography orientation  map
 
 Climate data for Wallonia have been provided by the Institut Royal Météorologique(IRM). The resolution of the data is 5km X 5km. Climate data of  Grand-est come from the data base Digitalis \citep{piedallu_presentation_2014}. The resolution of this data is 1km X 1km.
 
-The French natural region and the Bioclimatic area of Wallonia have been grouped by average temperature and precipitation during the growing season  in three climatic areas: 
+The French natural region and the Bioclimatic area of Wallonia have been grouped by average temperature and precipitation during the growing season  in three climatic areas: Ardenne, Plains and Vosges (Figure \ref{fig:clim}).
 The Plains is a group of natural region with growing season temperature between 15.5°C and 18°C and with growing season  precipitation between 300mm and 400mm.
-Ardenne, Plains and Vosges(Figure \ref{fig:clim}).
+
 The Ardenne is defined a set of natural regions with a temperature of the growing season between 14°C and 15,5°C and a average precipitation during the growing season between 400m and 450 mm.
 Vosges are natural regions with growing season temperature varies between 15.5°C and 17 °C and the growing season precipitation between 425mm and 600mm.
+The figure \ref{fig:situ} show localisation of the three climatic areas in function of the altitude. 
 
-
- 
- % rajouté surface
-% tableau 
 
 \begin{figure}
 	\centering
@@ -177,15 +167,6 @@ Vosges are natural regions with growing season temperature varies between 15.5°
 \caption{Grouping of French natural regions according to the temperature and precipitation of the growing season to form three groups: Ardenne (blue), Plains (red) and Vosges (orange). Wallonia natural regions are depicted with diamond-shaped points, and Grand-Est regions are illustrated by rounded points.}
 	\label{fig:clim}
 \end{figure}
-
-
-
-
-
-
-
-\subsection{Description of environmental description}
-
 
 
 %MNH
@@ -279,7 +260,7 @@ For this study, we selected only spruce trees over 15 m and we have worked on 90
 %We made a selection of factors influencing bark beetles favourably and norway spruce unfavourably using the random forest method. The factors emerging from this analysis show that altitude and radiative topography orientation are the most important factors influencing spruce dieback  
 To characterise the bark beetle attacks, we applied the random forest method to select the two topographic factors that most influenced the bark beetle attacks.
 These two factors are altitude and topography orientation. We broke down the altitude by 100m classes and kept the three topography orientations classes defined by \cite{Delvaux_galoux}.
-Then, in order to determine the classes of these factors most impacted by the bark beetle, we estimated the bark beetle areas for each class of each factor based on the sanitary status maps for each year of the period 2016-2021.
+Then, in order to determine the classes of these factors most impacted by the bark beetle, we estimated the bark beetle areas for each class of each factor based on the sanitary status maps for each year of the period 2017-2021.
 
 %The spruce health map was subdivided into 50*50m tiles (25 pixels of 10X10m) comprising at least 17 pixels of 10mX10m spruce. A tile is considered to be barked when at least 3 out of 25 pixels are barked.For each tile, elevation class, topography orientation and the sanitary status were extracted. We calculated the ratio of the number of tiles attacked by bark beetle in a class divided by the total number of tiles in the class (probability of occurrence) for each of the elevation and topography orientation classes.
 
@@ -454,41 +435,24 @@ The plateau are always the topographic orientation the most impacted with a prop
 The trend for slopes has reversed. 
 The south-facing slope are more affected. 
 
-
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Climatic area  & Thermal sector     & \begin{tabular}[c]{@{}l@{}}Cumulative area affected \\ by bark beetle (Ha).\end{tabular} & \begin{tabular}[c]{@{}l@{}}Norway spruce area\\ before crisis (Ha).\end{tabular} & Probability of presence (\%) \\ \hline
+Plains  & North-facing slope & 1592                                                                                     & 2660                                                                             & 59,8                         \\ \hline
+Plains  & Plateau            & 11337                                                                                    & 21450                                                                            & 52,8                         \\ \hline
+Plains  & South-facing slope & 738                                                                                      & 1442                                                                             & 51,1                         \\ \hline
+Ardenne & North-facing slope & 2396                                                                                     & 14862                                                                            & 16,1                         \\ \hline
+Ardenne & Plateau            & 9877                                                                                     & 79260                                                                            & 12,4                         \\ \hline
+Ardenne & South-facing slope & 1165                                                                                     & 7475                                                                             & 15,6                         \\ \hline
+Vosges  & North-facing slope & 1392                                                                                     & 35690                                                                            & 3,9                          \\ \hline
+Vosges  & Plateau            & 1280                                                                                     & 25052                                                                            & 5,1                          \\ \hline
+Vosges  & South-facing slope & 546                                                                                      & 12975                                                                            & 4,2                          \\ \hline
+\end{tabular}
+\end{table}
 
   
-%Le scolyte se develloppant plus rapidement dans les zones plus chaudes \citep{annila_influence_1969}, nous %avons étudié l'évolution de la surface d'épicéa imapactée par les scolytes en fonction des sous-secteur %radiatif.
 
-% Le pic de surface touchée par les scolytes est atteint en 2019 pour la Wallonie et en 2020 pour le Grand-Est.
-%Ce graphe montre aussi que proportionelemnt parlant les pessières des plaines du grand-est ont été plus touchée que les autres sous-secteurs aussi bien du grand-est que de Wallonie.
- 
-% En Wallonie, les sous secteurs les plus touchés significativement sont les versants.On observe aussi une différence significative entre versant sud et nord. 
- 
-%A l'inverse, dans le grand-est ce sont les plateaux qui sont significativement plus touchés que les versants.
-
-
-% As the bark beetle develops more rapidly in warmer areas \citep{annila_influence_1969}, we studied the evolution of the surface area of spruce affected by bark beetles as a function of the topography orientation.
-%The second environmental factor emerging from our analysis is topography orientation. 
-%The peak of bark beetle affected area is reached in 2019 for Wallonia and in 2020 for the Grand-Est (Figure \ref{ss_sco}).
-%This graph also shows that proportionally the spruce forests of the plains of the Great East were more affected than the other topography orientation in both the Grand-Est and Wallonia. 
-%In Wallonia, the most significantly affected topography orientation are the slopes, and there is also a significant difference between the southern and northern slopes. 
-%Conversely, in the Grand Est it is the plateaus that are significantly more affected than the slopes.
-\begin{figure}
-\centering
-	\includegraphics[width=0.8\textwidth]{SS_ardenne_vosges_plaines.png}
-    \caption{Proportion area affected by bark beetle attacks in relation to topography orientation. The north facing slope and south facing slope are affected similarly by bark beetle in Ardenne and in the Vosges}
-	\label{ss_sco}
-\end{figure}
-
-%\begin{itemize}
-%	\item Description figure \ref{fig:ss_wall} 
-%	\item Wallonie: Différences significative entre les différents sous secteurs. Les sous secteur froid sont  plus touchés que les sous secteur chaud et les plateaux. Les plateaux sont moins touché en Wallonie.
-%	\item Vosges: pas de différence significative entre les sous secteurs ( \ref{fig:ss_vosg})
-	
-%\end{itemize}
-
-%sous-secteur
-%graphe + descruipton
 
 
 \iffalse\subsection{Evolution et importance}
