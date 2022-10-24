@@ -123,6 +123,9 @@ bool tuileS2OneDateSco::openDS(){
         mDScrnom= (GDALDataset *) GDALOpen( getRasterCRnormName().c_str(), GA_ReadOnly );
         mDSsolnu= (GDALDataset *) GDALOpen( getRasterMasqSecName().c_str(), GA_ReadOnly );
 
+        mDSetatInit= (GDALDataset *) GDALOpen( getRasterEtatIName().c_str(), GA_Update );
+        mDSetatFinal= (GDALDataset *) GDALOpen( getRasterEtatFName().c_str(), GA_Update );
+
         // tout ça c'est uniquement pour s2_carteEss
         // fonctionne uniquement si j'augmente le nombre de fichiers descriptors, limitation du systèmes
         //https://askubuntu.com/questions/1049058/how-to-increase-max-open-files-limit-on-ubuntu-18-04
@@ -161,7 +164,8 @@ void tuileS2OneDateSco::closeDS(){
     if (scanLineSolNu!=NULL){ CPLFree(scanLineSolNu);}
     if (scanLineCR!=NULL){ CPLFree(scanLineCR);}
     if (scanLineCode!=NULL){ CPLFree(scanLineCode);}
-
+    if (mDSetatInit != NULL){GDALClose( mDSetatInit );}
+    if (mDSetatFinal != NULL){GDALClose( mDSetatFinal );}
     for (auto kv : vDS){
         GDALDataset * DSpt=kv.second;
         if (DSpt != NULL){GDALClose( DSpt );}
@@ -233,16 +237,29 @@ void tuileS2OneDateSco::masqueSpecifique(){
     //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if  (boost::filesystem::exists(m) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(r)&& boost::filesystem::exists(v)){
-        if ((!boost::filesystem::exists(out) | overw) ){
+       bool test(0);
+       if (boost::filesystem::exists(out)){
+             std::time_t t = boost::filesystem::last_write_time(out) ;
+
+             tm local_tm = *gmtime(&t);
+             year_month_day ymd(year{local_tm.tm_year+1900},month{local_tm.tm_mon+1}, day{local_tm.tm_mday});
+             if (ymd.year() != year{2022} | ymd.month() < month{10}){test=1;
+             std::cout << " last_write_time " << t << ", " << ymd.year() << " -" << ymd.month() << std::endl;
+             }
+       }
+
+        if ((test | !boost::filesystem::exists(out) | overw) ){
             //im 1 = masque général
             //im 2 = swir1
             //im 3 = r
             //im 4 = v
 
-            std::string exp("im1b1!=1 ? 0 : im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.08 ? 1 : im1b1==1 and im2b1/10000.0>0.125 ? 2 : im1b1==1 and ((im3b1+im4b1)/10000.0)>0.08 ? 3 : 0");
+            //std::string exp("im1b1!=1 ? 0 : im2b1/10000<0.125 and ((im3b1+im4b1)/10000)<0.08 ? 1 : im1b1==1 and im2b1/10000.0>0.125 ? 2 : im1b1==1 and ((im3b1+im4b1)/10000.0)>0.08 ? 3 : 0");
+            std::string exp("im1b1!=1 ? 0 : im2b1>1250 and im5b1 < 600 and (im3b1+im4b1)>800 ? 2 : 1");
 
             // valeur 1 : ok - 2 : sol nu détection swir - 3 sol nul détection r+v
-            std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
+            // nouvelle méthode ; je me base sur la formule du code de fordead
+            std::string aCommand(path_otb+"otbcli_BandMathX -il "+m+ " " + SWIR1 + " " + v + " " + r + " " + b + " -out '"+ out + compr_otb+"' uint8 -exp '"+exp+"' -ram 5000 -progress 0");
             //std::cout << aCommand << std::endl;
             system(aCommand.c_str());
         }
@@ -274,12 +291,20 @@ void tuileS2OneDateSco::masqueSpecifique(){
     }
 }
 
+std::string tuileS2OneDateSco::getRasterCRnormName() const{
+    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm"+mSuffix+".tif";
+}
+
 std::string tuileS2OneDateSco::getRasterCRName(){
     return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIR"+mSuffix+".tif";
 }
 
-std::string tuileS2OneDateSco::getRasterCRnormName() const{
-    return outputDirName +mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_CRSWIRnorm"+mSuffix+".tif";
+std::string tuileS2OneDateSco::getRasterEtatIName(){
+    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_EtatI"+mSuffix+".tif";
+}
+
+std::string tuileS2OneDateSco::getRasterEtatFName(){
+    return outputDirName + mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2)+ "_EtatF"+mSuffix+".tif";
 }
 
 // applique le masque EP et le masque nuage et le masque edge (no data)
@@ -309,4 +334,24 @@ void tuileS2OneDateSco::masque(){
             }
         } else { std::cout << "fichiers masques introuvables " << edg << " , " << clm << std::endl;}
     }
+}
+
+
+void tuileS2OneDateSco::createRastEtat(){
+     if (mDebug){std::cout << "crée les bandes raster pour stoquer les états .." ;}
+     std::string out=getRasterEtatIName();
+     std::string in=wd+"/raw/"+decompressDirName+"/MASKS/"+decompressDirName+"_CLM_R1.tif";
+     if (boost::filesystem::exists(in)) {
+         if ((!boost::filesystem::exists(out) | overw )) {
+              std::string aCommand("gdal_create -if "+in+" "+ out);
+             // std::cout << aCommand << std::endl;
+              system(aCommand.c_str());
+         }
+         out=getRasterEtatFName();
+         if ((!boost::filesystem::exists(out) | overw )) {
+              std::string aCommand("gdal_create -if "+in+" "+ out);
+             // std::cout << aCommand << std::endl;
+              system(aCommand.c_str());
+         }
+     }
 }

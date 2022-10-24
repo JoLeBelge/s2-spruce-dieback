@@ -4,6 +4,7 @@
 #include <iostream>
 #include "map"
 #include "tuiles2OneDate.h"
+#include "tuiles2onedatesco.h"
 #include "algorithm"
 using namespace date;
 
@@ -12,6 +13,7 @@ extern bool mDebug;
 bool isScolyte(int x);
 
 class tuileS2OneDate;
+class tuileS2OneDateSco;
 class pts;
 
 class TS1Pos;// contient un vecteur de valeur individuelle, un vecteur de date, un vecteur pour stoquer l'analyse temporelle
@@ -21,18 +23,21 @@ class TS1PosTest;// beaucoup plus complêt que TS1Pos, car contient les valeurs 
 // série temporelle pour une position donnée (un pixel)
 class TS1Pos{
     public:
-    TS1Pos(int aU, int aV, std::vector<int> * aVYears, int n):mU(aU),mV(aV),mVDates(n,NULL),mVEtat(n,0),mVEtatFin(n,0),c(0){//,mVYs(aVYears)
+    TS1Pos(int aU, int aV, std::vector<int> * aVYears, int n, std::vector<tuileS2OneDateSco*> aVTuiles):mU(aU),mV(aV),mVDates(n,NULL),mVEtat(n,0),mVEtatFin(n,0),c(0),mVPtrTS2(aVTuiles){//,mVYs(aVYears)
         for (int y : * aVYears){
             mVRes.emplace(std::make_pair(y,0));
         }
     }
 
     void add1Date(year_month_day * ymd,int code){
-        if (mDebug){std::cout << "TS1Pos::add1Date" << std::endl;}
+       // if (mDebug){std::cout << "TS1Pos::add1Date" << std::endl;}
         mVDates.at(c)=ymd;
         mVEtat.at(c)=code;
         c++;
     }
+
+    void writeIntermediateRes1pos();
+
     // effectue l'analyse ; détection de plusieurs dates consécutives avec état dépérissant ou sol nu
     void analyse();
     // enlève les code 0
@@ -62,6 +67,9 @@ class TS1Pos{
     std::vector<year_month_day *> mVDates;
     // analyse temporelle ; vecteur de mm dimension
     std::vector<int> mVEtat;
+
+    std::vector<tuileS2OneDateSco*> mVPtrTS2;
+
     // état final ; déterminé par comparaison des dates successives (enlever le bruit de mVEtat)
     std::vector<int> mVEtatFin;
     int c;// compteur pour savoir quantiemme date on ajoute
@@ -70,7 +78,7 @@ class TS1Pos{
 class TS1PosTest : public TS1Pos
 {
 public:
-    TS1PosTest(std::vector<int> * aVYears, int n, pts pt):TS1Pos(0,0,aVYears,n),mVCRSWIR(n,0),mVCRSWIRNorm(n,0),mVB2(n,0),mVB3(n,0),mVB4(n,0),mVB8A(n,0),mVB11(n,0),mVB12(n,0),mVMasq(n,0),pt_(pt),mVB8(n,0),mVB5(n,0),mVB6(n,0),mVB7(n,0){}
+    TS1PosTest(std::vector<int> * aVYears, int n,std::vector<tuileS2OneDateSco*> aVTuiles, pts pt):TS1Pos(0,0,aVYears,n,aVTuiles),mVCRSWIR(n,0),mVCRSWIRNorm(n,0),mVB2(n,0),mVB3(n,0),mVB4(n,0),mVB8A(n,0),mVB11(n,0),mVB12(n,0),mVMasq(n,0),pt_(pt),mVB8(n,0),mVB5(n,0),mVB6(n,0),mVB7(n,0){}
     void nettoyer();
     void printDetail(std::string aOut="toto");
     // overload add1Date

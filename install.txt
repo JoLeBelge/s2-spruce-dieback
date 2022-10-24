@@ -1,29 +1,36 @@
 Portage de l'appli sur pc traitement SentinelleJo;
 
-sudo apt install git qt5-default qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev python
+sudo apt install git cmake qtcreator qt5-default qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev python
+# pour la visu des résultats
+sudo apt install gdal-bin qgis
 
-plus compilation de libzip-1.7.3
+
+attention, sous ubuntu 22.04, je n'ai pas le qt5-default!!
+sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+
+sudo apt install git cmake qtcreator qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev
+
+sudo apt-get install libomp-dev python-is-python3 python3-pip
+python 3 c'est aussi nécessaire à gdal_merge.py
+
+
+plus compilation de libzip-1.7.3 depuis source
 
 sudo apt install python3-numpy pour otb
 
 télécharger otb puis
 chmod +x OTB-7.2.0-Linux64.run
 ./OTB-7.2.0-Linux64.run
+A faire directement dans le bon répertoire!
 
-# pour la visu des résultats
-sudo apt install gdal-bin qgis
+sur machine ubuntu 22.04 , je met la 8.1
 
 sous ma machine ; ajout des bin et lib de OTB dans mes var envi;
-
-
 
 export PATH=$PATH:/home/lisein/OTB/OTB-7.2.0-Linux64/bin
 export LD_LIBRARY_PATH=/home/lisein/OTB/OTB-7.2.0-Linux64/lib:$LD_LIBRARY_PATH
 dans ~/.bashrc 
-
-bof je recommence l'install car j'ai des souci avec otb
-
-https://www.orfeo-toolbox.org/CookBook/CompilingOTBFromSource.html
+NON!! pas exporter les librairies otb sinon conflict avec librairie de gdal et problèmes sous-jacents
 
 problème de l'erreur too many opened file:
 ulimit -n
@@ -38,5 +45,8 @@ ulimit -n
 
 https://stackoverflow.com/questions/4076848/how-to-do-the-equivalent-of-ulimit-n-400-from-within-c
 
---> j'ai intégré le changement de limite de nombre de fichiers à ouvrir directement dans le code C++
-mais ça ne fonctionne plus on dirait...
+j'ai intégré le changement de limite de nombre de fichiers à ouvrir directement dans le code C++
+mais ça ne fonctionne pas on dirait...
+
+Installation de micmac pour utiliser s2_postProcess -> voir fichier readme de micmac
+

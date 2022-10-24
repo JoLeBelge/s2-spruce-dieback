@@ -121,7 +121,7 @@ void catalogue::init(){
     // fonctionne pas , je dois lancer manuellement la commande ulimit -n 65536 avant d'utiliser l'appli
 
     struct rlimit lim = {65536, 65536};
-    if (setrlimit(RLIMIT_STACK, &lim) == -1) {
+    if (setrlimit(RLIMIT_STACK, &lim) != 0) {
                            printf("rlimit failed\n");
                    }
     std::cout << " done .." << std::endl;

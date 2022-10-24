@@ -19,6 +19,8 @@ private:
     void analyseTSinit();
     void analyseTSTest1pixel(double X, double Y, std::string aFileOut);
     void writeRes1pos(TS1Pos * ts) const;// boh c'est pas const mais je triche
+
+    void writeIntermediateRes1pos(TS1Pos * ts);
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
     std::vector<tuileS2OneDateSco *>  mVProdutsOK;
@@ -47,6 +49,9 @@ private:
     // ouvre tout les raster dataset
     bool openDS();
     void closeDS();
+
+
+    std::map<int,float *> mSL;
 };
 
 

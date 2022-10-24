@@ -2,9 +2,13 @@ TO DO s2_timeSerie;
 
 -option catalogue "clean" pour effacer tout les résultats intermédiaires pour un suffix donné
 
--générer résultats tout les 6 mois plutôt que une fois par an.--> pour Philippe ça avais de l'intérêt, voir définition des objectifs de recherche "Cartophor"
--mettre à jours cartes en ligne sur Forestimator vu que 2021 est fini
+-sauver résultats intermédiaire (état i, état f) --> j'ai testé, mais en fait c'est très très long à sauver! forcément, il y a des centaines de cartes. Tester à nouveau! 
 
--développement d'un outil de monitoring pour les coupes de sauvetage = detection de nouveau foyer pour l'année en cours. Pour ce faire, il faudrait mettre au point une méthode ou je ne dois pas relancer toute mon analyse ts, mais plutôt avoir un systeme de mise à jours qui fonctionnerai tout seul.
+-ouvrir résultats intermédiaire (comment choisir quand les ouvrir?) en suspens
+-mettre à jours résultats intermédiaires (en effectuant l'analyse uniquement sur les dernières dates ?? oui ça serait bien évidemment)
+
+--> en modifiant le calcul en //, j'ai diminué le temps de calcul. peut-être alors que je ne devrais pas me fatiguer avec les résultats intermédiaires?
+
+-développement d'un outil de monitoring pour les coupes de sauvetage = detection de nouveau foyer pour l'année en cours: c'est très bien, mais pour cela à nouveau il faut sauver les résultats intermédiaires (état final pour chaque date). Je pourrais intégrer un pointeur vers les t2OneDate dans la classe tsOnePos pour rendre leur relations plus intime.
 
 

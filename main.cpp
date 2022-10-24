@@ -64,24 +64,23 @@ int main(int argc, char *argv[])
     }
 
     GDALAllRegister();
+
+    system("ulimit -n 65536");
     // Declare the supported options.
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "affiche l'aide ci-dessous")
             ("xmlIn", po::value< std::string>()->required(), "Fichier xml contenant les paramètres pour l'application s2 time serie")
-            //("catalogue", po::value<int>(), "création d'un catalogue d'image Sentinel 2 sur base de ; option (1) fichier json résultant d'une requête theia. option (2) dossiers déjà présent dans dossier intermediate/")
-            //("tuile",  po::value<std::vector<std::string> >()->multitoken(), "nom de la tuile ou liste de tuile. sert pour prendre le masque input, nommer le dossier de travail (wd) et les output finaux (carte etatSanitaire).")
             ("dates",  po::value<std::vector<std::string> >()->multitoken(), "date 1 et date 2 pour le téléchargement de la série temporelle. Default; début 2016-01-01 et fin =date d'aujourd'hui" )
             ("srCR", po::value<double>(), "seuil ratio CRswir à partir duquel on détecte un stress. Defaut 1.4")
             ("nbJourStress", po::value<int>(), "nombre du jours seuil à partir dusquel on n'envisage plus un retour à la normal pour un stress temporaire pronlongé. Default 90")
             ("XYtest", po::value<std::vector<double> >()->multitoken(), "coordonnée d'un point pour lequel on va faire tourner l'analyse temporelle avec de nombreuses information écrite dans la console qui serviront à améliorer les filtres sur les valeurs d'état sanitaire de la TS. Attention, EPSG est 32631 (UTM 31N)")
             ("XYtestIn", po::value< std::string>(), "Fichier texte séparateur virgule avec col 1 = id col 2=X et col3=3, epsg 32631 (UTM 31N), on effectue l'analyse en mode Test sur tout ces points là")
             ("XYtestOut", po::value< std::string>(), "fichier texte ou sauver les résultats de XYTest sur un point.")
-            //("Overwrite", po::value<bool>(), "Overwrite tout les résultats (prétraitement compris), défaut =0")
             ("testDetail", po::value<bool>(), "pour le test sur une position, affichage ou non des valeurs de toutes les bandes ou juste les valeurs d'état, def true")
             ("testClean", po::value<bool>(), "pour le test sur une position, nettoyage ou pas, def true")
-            //("mergeES", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
-            //("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
+            ("mergeES", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
+            ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
             ("debug", po::value<bool>(), "si true, le logiciel est plus bavard, ça aide pour débugger")
             ;
 
@@ -99,6 +98,9 @@ int main(int argc, char *argv[])
     //il faut également pouvoir changer le chemin d'accès pour chaque tuiles, vu que je ne peux plus les laisser sur un seul et mm disque dur car cela dépassera les 2TB
 
     readXML(vm["xmlIn"].as<std::string>());
+    // overwrite de ces deux arguments
+    if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
+    if (vm.count("mergeES")) {mergeEtatSan=vm["mergeES"].as<bool>();}
 
     std::vector<std::string> aVTuiles;
     if (!vm["tuile"].empty() | mapTuiles.size()>0){
@@ -139,8 +141,7 @@ int main(int argc, char *argv[])
             if (vm.count("catalogue")) {catalogueMode=vm["catalogue"].as<int>();}
             if (vm.count("annee")) {year_analyse=vm["annee"].as<int>();}
             if (vm.count("debug")) {mDebug=vm["debug"].as<bool>();}
-            if (vm.count("anaTS")) {doAnaTS=vm["anaTS"].as<bool>();}
-            if (vm.count("mergeES")) {mergeEtatSan=vm["mergeES"].as<bool>();}
+
 
 
 
@@ -188,7 +189,7 @@ int main(int argc, char *argv[])
 
                 switch (catalogueMode) {
                 case 1:{
-                    std::cout << "\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
+                    std::cout << "----------- Création du catalogue pour tuile " << t  <<std::endl;
                     // lancer la requete theia avant de créer le catalogue
                     std::string aCommand="curl -k  -o "+wd+"search.json 'https://theia.cnes.fr/atdistrib/resto2/api/collections/SENTINEL2/search.json?completionDate="+d2+"&startDate="+d1+"&maxRecords=500&location="+globTuile+"&processingLevel=LEVEL2A'";
                     if (mDebug){std::cout << aCommand << "\n" << std::endl;}
@@ -196,16 +197,16 @@ int main(int argc, char *argv[])
                     std::string inputJson=wd+"search.json";
                     catalogueSco cata(inputJson);
                     cata.traitement();
-                    std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
+                    std::cout << "Tuile " << t << " faite" <<std::endl;
 
                     break;
                 }
                 case 2:{
                     // ne pas mettre de parenthèse !.
-                    std::cout <<"\n\n Création du catalogue pour tuile " << t << "\n\n" <<std::endl;
+                    std::cout <<"----------- Création du catalogue pour tuile " << t <<std::endl;
                     catalogueSco cata;
                     cata.traitement();
-                    std::cout << "Tuile " << t << " faite \n\n" <<std::endl;
+                    std::cout << "Tuile " << t << " faite" <<std::endl;
 
                     break;
                 }

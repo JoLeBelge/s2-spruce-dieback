@@ -368,9 +368,28 @@ void TS1Pos::nettoyer(){
             mVEtat.erase(mVEtat.begin() + i);
             mVEtatFin.erase(mVEtatFin.begin() + i);
             mVDates.erase(mVDates.begin() + i);
+            mVPtrTS2.erase(mVPtrTS2.begin() + i);
             i--;
         }
     }
+}
+
+// fait ç'est très long de faire ça, en toute logique. car il y a beaucoup d'année..
+void TS1Pos::writeIntermediateRes1pos(){
+    // boucle sur les tuileOneDate
+    // un scanpix qui est redéfini à chaque fois car sinon il sera partagé durant le calcul en parallèle et ça va provoquer des merdes par moment
+    float * scanPix2=(float *) CPLMalloc( sizeof( float ) * 1 );
+
+    int c(0);
+
+    for (tuileS2OneDateSco * t : mVPtrTS2){
+        //scanPix2[0]=mVEtat.at(c);
+        //t->mDSetatInit->GetRasterBand(1)->RasterIO( GF_Write,  mV,mU,1,1,scanPix2, 1, 1,GDT_Float32, 0, 0 );
+        scanPix2[0]=mVEtatFin.at(c);
+        t->mDSetatFinal->GetRasterBand(1)->RasterIO( GF_Write,  mV,mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+    c++;
+    }
+    CPLFree(scanPix2);
 }
 
 // rendre plus rapide. Comparaison des voisins direct d'abor?
@@ -428,12 +447,18 @@ int TS1Pos::filtreVoisinDirect(int i, int val){
 int TS1Pos::getEtatPourAnnee(int y){
     int aRes(1);
     // récupère un vecteur de code d'état qui correspond à cette année
-    year ay{y};
+    year ay{y}, ayP1{y+1};
+    month mai{5}, avril{4};
+      if (mDebug){std::cout << " get Etat pour Année " << y << std::endl;}
+
     std::vector<int> etat;
     int i(0);
     for (const year_month_day * ymd : mVDates){
-        if (ymd->year()==ay){
+
+        if ( (ymd->year()==ay && ymd->month()>avril ) | (ymd->year()==ayP1 && ymd->month()<mai) ){
             etat.push_back(mVEtatFin.at(i));
+
+          // if (mDebug){std::cout << " ajout date " << *ymd << std::endl;}
             // on rajoute deux dates car si on observe un stress scolyte en décembre, suivi de deux autres l'année d'après, on veux le savoir.
             /*if (i+1<mVDates.size() && mVDates.at(i+1)->year()>ay && mVEtatFin.at(i)==2){
                 etat.push_back(mVEtatFin.at(i+1));
@@ -571,6 +596,7 @@ void TS1PosTest::add1Date(int code, tuileS2OneDate * t){
 
     c++;
 }
+
 
 void TS1PosTest::nettoyer(){
     // retirer les no data et noter combien on en a eu

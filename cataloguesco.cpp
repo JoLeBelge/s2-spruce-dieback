@@ -32,7 +32,8 @@ void catalogueSco::analyseTS(){
 
         int nb = mVProdutsOK.size();
         int c(0);
-        int step=mY/20;
+        int nbStep=10;
+        int step=mY/nbStep;
         int count(0);
 
         // Le calcul parallèle pixel par pixel nécessite de charger toute les cartes en Mémoire. fonctionne pour une année, mais pas pour la série tempo complête --> pas assez de mémoire vive. FAUX en fait c'est une erreur du système à propos du nombre max de fichier descriptor que l'on peut ouvrir en une fois
@@ -40,8 +41,10 @@ void catalogueSco::analyseTS(){
         for ( int row = 0; row < mY; row++ ){
             // lecture masque ep
             readMasqLine(row);
-omp_set_dynamic(0); // pour lui imposer le nombre de thread à utiliser, sinon le "dynamic teams " choisi moins de threads si trop de dates dans ma ts
-#pragma omp parallel num_threads(8)
+            //omp_set_dynamic(0); // pour lui imposer le nombre de thread à utiliser, sinon le "dynamic teams " choisi moins de threads si trop de dates dans ma ts
+            //This will create one parallel region (aka one fork/join, which is expensive and therefore you don't want to do it for every loop) and run multiple loops in parallel within that region.
+
+#pragma omp parallel //num_threads(8)
             {
 #pragma omp for
                 for (tuileS2OneDateSco * t : mVProdutsOK){
@@ -50,22 +53,22 @@ omp_set_dynamic(0); // pour lui imposer le nombre de thread à utiliser, sinon l
                     t->readMasqLine(row);
                     t->computeCodeLine();
                 }
-            }
+                //}
 
-            std::vector<int> aVCol;
-            for (int col=0 ; col<mX;col++){
-                if (scanLineR1[col]==1){aVCol.push_back(col);}
-            }
+                std::vector<int> aVCol;
+                for (int col=0 ; col<mX;col++){
+                    if (scanLineR1[col]==1){aVCol.push_back(col);}
+                }
 
-            //num_threads(8) shared(row,mYs,seuilCR,scanLine,mVProdutsOK)
-#pragma omp parallel num_threads(12)
-            {
+                //num_threads(8) shared(row,mYs,seuilCR,scanLine,mVProdutsOK)
+                //#pragma omp parallel //num_threads(12)
+                //           {
 #pragma omp for
                 for (int col : aVCol){
                     //int tid = omp_get_thread_num();
                     //printf("Hello world from omp thread %d\n", tid);
                     //std::cout << "row " << row << " , " << col << std::endl;
-                    TS1Pos ts(row,col,&mYs,nb);
+                    TS1Pos ts(row,col,&mYs,nb, mVProdutsOK);
 
                     for (const tuileS2OneDateSco * t : mVProdutsOK){
                         ts.add1Date(t->getymdPt(),t->getCodeLine(col));
@@ -74,20 +77,39 @@ omp_set_dynamic(0); // pour lui imposer le nombre de thread à utiliser, sinon l
                     ts.nettoyer();
                     ts.analyse();
                     //#pragma omp critical
-                    //                         {
+
+                    ts.writeIntermediateRes1pos(); //lui il prend beaucoup trop de temps. mais il n'y a pas mille solution?
                     writeRes1pos(&ts);
-                    //                   }
+                    /*    j'avais fait un test chiant et non concluant décriture d'une ligne entière à la place de l'écriture pixel par pixel, mais en terme de temps de calcul ça ne change rien !!           }
+                    for (int y : mYs){
+                        mSL.at(y)[col] = ts.mVRes.at(y);
+                    }*/
+                    // end col
                 }
-            } // end pragma
+            }// end pragma
+
+            /*for (int y : mYs){
+                //std::cout << "ts res pour y " << y << " est " << scanPix[0] << ", écriture à la position " << ts->mU << " , " << ts->mV << std::endl;
+                mMapResults.at(y)->GetRasterBand(1)->RasterIO(GF_Write, 0,row,mX,1,mSL.at(y), mX, 1,GDT_Float32, 0, 0 );
+                // pour réinitialiser les valeurs d'une ligne à l'autre
+                for (int x(0) ; x < mY; x++){
+                    mSL.at(y)[x]=0;
+                }
+
+                //CPLFree(mSL.at(y));
+                //mSL.at(y)= (float *) CPLMalloc( sizeof( float ) * mY );
+            }*/
             c++;
             if (c%step==0){
                 count++;
-                std::cout << count*5 << "%..." << std::endl;
+                std::cout << count*nbStep << "%..." << std::endl;
+             //   break;
             }
         }
 
-        closeDS();
     }
+    closeDS();
+
 }
 
 
@@ -98,41 +120,42 @@ void catalogueSco::traitement(){
     // check que le masque a bien été crée:
     if (boost::filesystem::exists(getNameMasque())){
 
-    for (tuileS2OneDate * t : mVProduts){
-        if (t->mCloudCover<globSeuilCC){
-            if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
-            mVProdutsOK.push_back(new tuileS2OneDateSco(t));
+        for (tuileS2OneDate * t : mVProduts){
+            if (t->mCloudCover<globSeuilCC){
+                if (std::find(mYs.begin(), mYs.end(), t->gety()) == mYs.end()){mYs.push_back(t->gety());}
+                mVProdutsOK.push_back(new tuileS2OneDateSco(t));
+            }
         }
-    }
-    std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
+        std::sort(mVProdutsOK.begin(), mVProdutsOK.end(), PointerCompare());
 
 
-    // boucle sans multithread pour les traitements d'image
-    std::for_each(
-                std::execution::seq,
-                mVProdutsOK.begin(),
-                mVProdutsOK.end(),
-                [](tuileS2OneDateSco * t)
-    {
-        // check que cloudcover est en dessous de notre seuil
-       // if (t->mCloudCover<globSeuilCC){
+        // boucle sans multithread pour les traitements d'image
+        std::for_each(
+                    std::execution::seq,
+                    mVProdutsOK.begin(),
+                    mVProdutsOK.end(),
+                    [](tuileS2OneDateSco * t)
+        {
+            // check que cloudcover est en dessous de notre seuil
+            // if (t->mCloudCover<globSeuilCC){
             t->masque();
             t->resample();
             t->computeCR();
             t->masqueSpecifique();
             t->normaliseCR();
+            t->createRastEtat();
             if (mDebug){std::cout << std::endl ;}
-       // }
-    });
-    //std::cout << " boucle sur les tuiles done" << std::endl;
+            // }
+        });
+        //std::cout << " boucle sur les tuiles done" << std::endl;
 
-    // points pour visu de la série tempo et pour vérifier la fct harmonique
-    if (XYtestFile!="toto"){
-         if (globResXYTest=="toto"){
-             globResXYTest=XYtestFile.substr(0,XYtestFile.size()-4);}
-        globVPts=readPtsFile(XYtestFile);
-    }
-    analyseTSinit();
+        // points pour visu de la série tempo et pour vérifier la fct harmonique
+        if (XYtestFile!="toto"){
+            if (globResXYTest=="toto"){
+                globResXYTest=XYtestFile.substr(0,XYtestFile.size()-4);}
+            globVPts=readPtsFile(XYtestFile);
+        }
+        analyseTSinit();
 
     } else {
         std::cout << "erreur, masque tuile pas créé : je ne fait pas les traitements " << std::endl;
@@ -146,7 +169,7 @@ void catalogueSco::analyseTSTest1pixel(double X, double Y, std::string aFileOut)
     int nb = mVProdutsOK.size();
     pts pt(X,Y);
 
-    TS1PosTest ts(&mYs,nb,pt);
+    TS1PosTest ts(&mYs,nb,mVProdutsOK,pt);
     //std::cout << "TS1PosTest créé." << std::endl;
     for (tuileS2OneDateSco * t : mVProdutsOK){
         //std::cout << " date " << t->getDate() << std::endl;
@@ -169,9 +192,9 @@ void catalogueSco::analyseTSTest1pixel(double X, double Y, std::string aFileOut)
 
         ts.add1Date(code,t);
     }
-     // ça risque d'impacter le résultat de ne pas nettoyer tout ca.. ben oui formément
+    // ça risque d'impacter le résultat de ne pas nettoyer tout ca.. ben oui formément
     if (docleanTS1pos){ts.nettoyer();
-    ts.analyse();
+        ts.analyse();
     }
 
     ts.printDetail(aFileOut);
@@ -199,6 +222,7 @@ bool catalogueSco::openDS(){
         scanPix=(float *) CPLMalloc( sizeof( float ) * 1 );
         //std::cout << "create scanline catalogue pour masq ep, longeur Y est " << mY << std::endl;
         scanLineR1=(float *) CPLMalloc( sizeof( float ) * mY );
+        //sLR1=(float *) CPLMalloc( sizeof( float ) * mY );
         if( mDSmaskR1 == NULL){
             std::cout << "masque EP pas chargé correctement" << std::endl;
             //GDALClose( mDSmaskEP );
@@ -239,17 +263,19 @@ bool catalogueSco::openDS(){
                 const char *out=output.c_str();
                 GDALDataset  * ds = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
                 mMapResults.emplace(std::make_pair(y,ds));
+
+                mSL.emplace(std::make_pair(y,(float *) CPLMalloc( sizeof( float ) * mY )));
                 // même chose pour les délais de coupe et la première date de détection d'un problème (cf besoin de Arthur)
                 if (doDelaisCoupe){
-                if (debugDetail){std::cout << " delais de coupe année " << y << std::endl;}
-                GDALDataset  * ds2 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
-                ds2->GetRasterBand(1)->SetNoDataValue(255);
-                mMapDelaisCoupe.emplace(std::make_pair(y,ds2));
+                    if (debugDetail){std::cout << " delais de coupe année " << y << std::endl;}
+                    GDALDataset  * ds2 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
+                    ds2->GetRasterBand(1)->SetNoDataValue(255);
+                    mMapDelaisCoupe.emplace(std::make_pair(y,ds2));
                 }
                 if (doFirstDateSco){
-                GDALDataset  * ds3 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
-                ds3->GetRasterBand(1)->SetNoDataValue(255);
-                mMapFirstDateSco.emplace(std::make_pair(y,ds3));
+                    GDALDataset  * ds3 = pDriver->CreateCopy(out,mDSmaskR1,FALSE, NULL,NULL, NULL );
+                    ds3->GetRasterBand(1)->SetNoDataValue(255);
+                    mMapFirstDateSco.emplace(std::make_pair(y,ds3));
                 }
             }
         }
@@ -267,12 +293,12 @@ void catalogueSco::writeRes1pos(TS1Pos * ts) const{
         mMapResults.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
         // délais de coupe
         if (doDelaisCoupe){
-        scanPix2[0]=ts->getDelaisCoupe(y);
-        mMapDelaisCoupe.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+            scanPix2[0]=ts->getDelaisCoupe(y);
+            mMapDelaisCoupe.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
         }
         if (doFirstDateSco){
-        scanPix2[0]=ts->getDelaisCoupe(y,1);
-        mMapFirstDateSco.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
+            scanPix2[0]=ts->getDelaisCoupe(y,1);
+            mMapFirstDateSco.at(y)->GetRasterBand(1)->RasterIO( GF_Write,  ts->mV,ts->mU,1,1,scanPix2 , 1, 1,GDT_Float32, 0, 0 );
         }
     }
     CPLFree(scanPix2);
@@ -337,9 +363,9 @@ void copyStyleES(std::string tifPath){
 
     std::string aOut=tifPath.substr(0,tifPath.size()-3)+"qml";
     if (boost::filesystem::exists(aOut)){boost::filesystem::remove(aOut);}
-    std::string aIn("../documentation/etatSanitaire_.qml");
+    std::string aIn("/home/gef/app/s2/documentation/etatSanitaire_.qml");
     if (boost::filesystem::exists(aIn)){
-        boost::filesystem::copy_file(aIn,aOut);
+        // boost::filesystem::copy_file(aIn,aOut);
     }
 }
 
@@ -353,7 +379,7 @@ void catalogueSco::closeDS(){
 
     const char *pszFormat = "GTiff";
     GDALDriver * pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-   // c'est à ce moment qu'on sauve au format tif nos résultats
+    // c'est à ce moment qu'on sauve au format tif nos résultats
     for (auto kv : mMapResults){
         GDALDataset  * ds = pDriver->CreateCopy(getNameES(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
         // on va également copier le fichier de style qml
@@ -362,23 +388,27 @@ void catalogueSco::closeDS(){
         GDALClose(ds);
     }
     if (doDelaisCoupe){
-    for (auto kv : mMapDelaisCoupe){
-        //const char *out2=getNameDelaisCoupe(kv.first).c_str(); // cette ligne est erronée ; le string retourné par la fonction est une variables temporaire, et donc un pointeur vers cette variable va être déréférencé
-        std::cout << "export date délais coupe " << getNameDelaisCoupe(kv.first) << std::endl;
-        GDALDataset  * ds = pDriver->CreateCopy(getNameDelaisCoupe(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
-        GDALClose(kv.second);
-        GDALClose(ds);
-    }
+        for (auto kv : mMapDelaisCoupe){
+            //const char *out2=getNameDelaisCoupe(kv.first).c_str(); // cette ligne est erronée ; le string retourné par la fonction est une variables temporaire, et donc un pointeur vers cette variable va être déréférencé
+            //std::cout << "export date délais coupe " << getNameDelaisCoupe(kv.first) << std::endl;
+            GDALDataset  * ds = pDriver->CreateCopy(getNameDelaisCoupe(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
+            GDALClose(kv.second);
+            GDALClose(ds);
+        }
     }
     if (doFirstDateSco){
-    for (auto kv : mMapFirstDateSco){
-        std::cout << "export date première attaque " << getNameFirstDateSco(kv.first) << std::endl;
-        GDALDataset  * ds = pDriver->CreateCopy(getNameFirstDateSco(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
-        GDALClose(kv.second);
-        GDALClose(ds);
-    }
+        for (auto kv : mMapFirstDateSco){
+            //std::cout << "export date première attaque " << getNameFirstDateSco(kv.first) << std::endl;
+            GDALDataset  * ds = pDriver->CreateCopy(getNameFirstDateSco(kv.first).c_str(),kv.second,FALSE, NULL,NULL, NULL );
+            GDALClose(kv.second);
+            GDALClose(ds);
+        }
     }
     CPLFree(scanLineR1);
+    // CPLFree(sLR1);
+    for (auto kv : mSL){
+        CPLFree(kv.second);
+    }
 }
 // copier le fichier de style QML pour Etat Sanitaire
 void copyStyleES(std::string tifPath);

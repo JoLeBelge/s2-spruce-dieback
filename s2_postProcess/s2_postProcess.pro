@@ -11,19 +11,10 @@ SOURCES += \
         main.cpp\
         ../rasterfile.cpp
 
-# un paramétrage différent pour l'ordi de traitement et le mien
-contains(pl,s2jo) {
-LIBS += -L$$OUT_PWD/../../micmac/lib/ -lelise
-LIBS += -L$$OUT_PWD/../../micmac/lib/ -lANN
-PRE_TARGETDEPS += $$OUT_PWD/../../micmac/lib/libelise.a
-PRE_TARGETDEPS += $$OUT_PWD/../../micmac/lib/libANN.a
-
-} else {
-LIBS += -L$$OUT_PWD/../../../../../micmac/lib/ -lelise
-LIBS += -L$$OUT_PWD/../../../../../micmac/lib/ -lANN
-PRE_TARGETDEPS += $$OUT_PWD/../../../../../micmac/lib/libelise.a
-PRE_TARGETDEPS += $$OUT_PWD/../../../../../micmac/lib/libANN.a
-}
+LIBS += -L/home/gef/app/micmac/lib/ -lelise
+LIBS += -L/home/gef/app/micmac/lib/ -lANN
+PRE_TARGETDEPS += /home/gef/app/micmac/lib/libelise.a
+PRE_TARGETDEPS += /home/gef/app/micmac/lib/libANN.a
 
 LIBS += -lX11 -lboost_program_options -lboost_filesystem
 
