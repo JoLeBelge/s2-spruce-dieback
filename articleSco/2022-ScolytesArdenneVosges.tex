@@ -172,24 +172,24 @@ Based on this definition and on the DEM, we produced topography orientation  map
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
 
 
-The detection of bark beetle infestation is realized by using dense time series of S2 imagery following the methodology developped by \cite{dutrieux_package_2021}.
+The detection of bark beetle infestation was realized by using dense time series of S2 imagery following the methodology developped by \cite{dutrieux_package_2021}.
 Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m.
-The two regions  studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
-Vegetation changes are tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} ($SWIR_{CR}$) indice.
-All S2 acquisitions are used in the analyses, provided that the cloud couver do not excess 35 percent. 
-Bottom Of Atmosphere reflectance images (L2A product) are downloaded from the Theia data cluster \citep{theia_team} for all the 6 granules, which are tiles of 100km x 100km, that covers Wallonia. 
-For north France, 10 granules cover the Grand-Est.
+The three climatic areas studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
+Vegetation changes were tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} ($SWIR_{CR}$) indice.
+All S2 acquisitions were used in the analyses, provided that the cloud couver do not excess 35 percent. 
+Bottom Of Atmosphere reflectance images (L2A product) were downloaded from the Theia data cluster \citep{theia_team} for all the 14 granules, which are tiles of 100km x 100km.
 The $SWIR_{CR}$ is based on three spectral bands, the near-infrared, the shortwave infrared 1 band and the shortwave infrared 2, and is sensitive to the foliage water content (Figure \ref{fig:harmo}).
-Seasonal variation of $SWIR_{CR}$ for healthy stand is modelled and a bark beetle attack is detected if the observations deviates from the healthy phenology trajectory. 
+Seasonal variation of $SWIR_{CR}$ for healthy stand was modelled and a bark beetle attack were detected if the observations deviates from the healthy phenology trajectory. 
 Figure \ref{fig:harmo} illustrates a time-serie of $SWIR_{CR}$ observations (grey dots) for one pixel. 
-In 2018, the observations goes beyond the threshold represented by the purple-dashed line, which shows that the spruce stand suffer from a serious stress induced by a bark beetle attack.
-A bark beetle outbreak is confirmed as soon as $SWIR_{CR}$ vegetation indice show a stress for at least three consecutive times.
-In parallel to the detection of bark beetle stress, stand cutting and thinning are subject of particular attention. 
-Bare soil is detected by using a combination of red, green and shortwave infrared reflectance values.
-Cutting are thus taken into account and are classified either as normal harvest cutting or as sanitary thinning based on the health status prior to the cutting.
-The analysis of image time-serie is thus quite straightforward and is performed individually pixel per pixel starting from the 2016 year, which is the beginning of S2 acquisitions. 
-The dense time-serie covers the 2016-2021 period and count a minimum of 180 acquistion dates. 
-The health status is summarized in annual health maps by means of four classes ; healthy, bark beetle attached, cutted and sanitary thinning.
+In 2018, the observations went beyond the threshold represented by the purple-dashed line, which shows that the spruce stand suffer from a serious stress induced by a bark beetle attack.
+A bark beetle outbreak is confirmed as soon as $SWIR_{CR}$ vegetation indice shows a stress for at least three consecutive times \cite{dutrieux_package_2021}.
+In parallel to the detection of bark beetle stress, stand cutting and thinning were subject of particular attention. 
+Bare soil was detected by using a combination of thresholds for red, green, blue and shortwave infrared reflectance values.
+Cutting are thus taken into account and were classified either as normal harvest cutting or as sanitary thinning based on the health status prior to the cutting.
+The analysis of image time-serie was thus quite straightforward and has been performed individually pixel per pixel starting from the 2016 year, which is the beginning of S2 acquisitions. 
+Although \cite{dutrieux_package_2021} have published their methodology as a open-source python package, named \textit{FORDEAD}, we have adapted the pipeline in C++ in order to comply with our specific requirements.
+The dense time-serie covers the 2016-2021 period and count a minimum of 180 acquisition dates. 
+The health status was summarized in annual health maps (in raster format) by means of four classes ; healthy, bark beetle attached, cutted and sanitary thinning.
 
 \begin{figure}
 	\centering
@@ -199,23 +199,18 @@ The health status is summarized in annual health maps by means of four classes ;
 \end{figure}
 
 Our approach of bark beetle detection is only suitable for spruce, as it is closely related to the phenological course of healthy spruce forest.
-An essential prerequisite is thus to have a proper mapping of spruce stands.
-For the south of Belgium, we use existing reliable composition maps \citep{bolyn_mapping_2022} computed from remote sensing data in order to restrict our analysis to spruces.
+An essential prerequisite was thus to have a proper mapping of spruce stands.
+For the south of Belgium, we used existing reliable composition maps \citep{bolyn_mapping_2022} computed from remote sensing data in order to restrict our analysis to spruces.
 
 In the Grand-Est, the composition map comes from the French Mapping agency (Forest BD version 2). 
-Composition of forest stand is determined by photointerpretation and forest stands identifyed as "spruce or fir" serve as starting point to limit our analysis.
+Composition of forest stand is determined by photointerpretation and forest stands identifyed as "spruce or fir" served as starting point to limit our analysis.
 Time series are a convenient means to track phenology changes. 
 More broadly than the dectection of bark beetle infestion, phenology courses are highly suitable for forest tree species discrimination \citep{lisein_discrimination_2015,grabska_forest_2019,ma_tree_2021}.
 We have used S2 spectral bands courses along the vegetation season to refine the determination of species present in the area interpreted as "spruce or fir" in Vosges.
-The objective is to identify and remove every area that are not spruce stand, as pixels located on others species than spruce are likely to be wrongly detected as a bark beetle attack.
+The objective was to identify and remove every area that did not correspond to spruce stand, as pixels located on others species than spruce were likely to be wrongly detected as a bark beetle attack.
 All S2 spectral bands were first summarized for each of the four trimesters of the year, by simply averaging all observations occuring during the trimester.
 Then, a Random Forest algorithm was trained on these synthetic intra-annual time serie to discriminate spruce from non-spruce pixels, based on a training set of observation from Belgium \citep{bolyn_forest_2018}.
 Eventually, this Random Forest classifier was applied on "spruce and fir" area of Vosges and bark beetle detection was carried on only for pixels detected as spruce. 
-
-
-%modif vosges by grand est
-
-
 
 \subsection{Relation between bark beetle attack and environmental condition}
 
