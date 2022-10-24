@@ -1,0 +1,64 @@
+<params>
+
+ <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
+ <EP_mask_path>/home/gef/Documents/input/grandEst_maskEP.tif</EP_mask_path>
+ <suffix>GE</suffix> <!-- GE pour Grand Est. Obligé car j'ai au moins une tuile en commun avec la Belgique -->
+ <catalogueMode> 1 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
+ <doAnaTS> 1 </doAnaTS>
+ <debugDetail>0</debugDetail>
+ 
+ <doDelaisCoupe>0</doDelaisCoupe>
+ <doFirstDateSco>0</doFirstDateSco>
+ 
+ <!-- pour le grand est, on veux fusionner des tuiles qui n'ont pas le même src. Donc j'en spécifie un ici -->
+ <mergeEPSG>2154</mergeEPSG>
+ <mergeEtatSan>0</mergeEtatSan>
+ 
+  <date1>2016-01-01</date1>
+  <date2>2022-10-10</date2> 
+  
+  <nbDaysStress>150</nbDaysStress>
+ 
+ <Tuiles>
+ 
+    <wdRacine></wdRacine>
+        <Tuile name="T32ULU">
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+           <doTuile>1</doTuile>
+        </Tuile>
+        <Tuile name="T32ULV"> 
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+        
+<!-- colonne 1 UTM 31 : 3 tuiles -->
+        <Tuile name="T31UFR">
+          <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+        
+        <Tuile name="T31UFQ">
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+        <Tuile name="T31UFP">
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>  
+<!-- colonne 2 UTM 31 : 3 tuiles -->        
+        
+         <Tuile name="T31UGR">
+          <wd>/media/gef/Data2/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+        <Tuile name="T31UGQ">
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+       <Tuile name="T31UGP">
+          <wd>/media/gef/Datas/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>
+ </Tuiles>
+
+</params>
