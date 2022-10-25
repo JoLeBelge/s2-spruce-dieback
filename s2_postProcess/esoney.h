@@ -53,6 +53,9 @@ public:
     std::string getNameProj(){
        return mRasterName.substr(0,mRasterName.size()-4)+"_BL72.tif";
     }
+    std::string getNameSurveillance(){
+       return mRasterName.substr(0,mRasterName.size()-4)+"_surv.tif";
+    }
     std::string getNameRaster(){return mRasterName;}
     std::string getY(){return std::to_string(mAn);}
 private:

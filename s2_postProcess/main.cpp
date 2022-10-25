@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72, 6 extract value to points pour validation)")
+            ("outils", po::value<int>()->required(), "choix de l'outil à utiliser (0: masquer les cartes es avec probabilité de présence : 1 : nettoyage des cartes, 2 : calcul des cartes d'évolutions du scolyte, 3 compress tif clean et evol,4 statistique, 5 projet BL72, 6 extract value to points pour validation, 7: carte de surveillance à une résolution de 5km )")
             ("rasterIn", po::value<std::string>()->required(), "raster unique d'état san ou pattern de nom de la série tempo de raster avec ANNEE à la place de l'année, ex: etatSanitaire_ANNEE.tif")
             ("probPres", po::value<std::string>(), "raster de probabilité de présence avec mm résolution et mm extend que Etat San, pour seuiller sur la valeur OU alors pour calcul statistique sur zbio")
             ("seuilPP", po::value<int>(), "seuil de probabilité de présence, utilisé pour masquer la carte d'état sanitaire, défaut 70")
@@ -144,6 +144,12 @@ int main(int argc, char *argv[])
                     app.extractValToPt(shp);
                 }else{ std::cout << " use shp in argument please " << std::endl;}
 
+                break;
+            }
+            case 7:{
+                std::cout << " générer des cartes de surveillance pour " << vIn.size() << " cartes " << std::endl;
+                cPostProcess app(vIn,1);
+                app.surveillance();
                 break;
             }
             default:{

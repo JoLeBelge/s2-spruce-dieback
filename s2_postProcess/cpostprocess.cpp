@@ -197,6 +197,35 @@ void  cPostProcess::extractValToPt(std::string aShpIn){
 
 }
 
+
+void cPostProcess::surveillance(){
+    // pour la dernière année, je calcul un pourcentage de nouveau scolyte pour une résolution de 5km
+    std::shared_ptr<esOney> es = mVES.back();
+    int dezoom=500;
+
+    Pt2di aSzR = round_up(Pt2dr(es->getImPtr()->sz())/dezoom);
+    Im2D_U_INT1 Im(aSzR.x,aSzR.y,0);
+
+
+    for (int anY=0 ; anY<aSzR.y ; anY++)
+    {
+       for (int anX=0 ; anX<aSzR.x ; anX++)
+       {
+           int nbPix(0);
+            Pt2di pos(anX*dezoom,anY*dezoom);
+           ELISE_COPY(
+                       select(rectangle(pos,pos+dezoom),es->getImPtr()->in()==newSco),
+                       1,
+                       sigma(nbPix)
+                       );
+
+           Im.SetI(Pt2di(anX,anY),nbPix);
+       }
+    }
+       Tiff_Im::CreateFromIm(Im,es->getNameSurveillance());
+       es->copyTifMTD(es->getNameSurveillance());
+}
+
 /*
 void cPostProcess::cleanVoisinage(Im2D_U_INT1 * aIn,int Val2Clean, int ValConflict1, int seuilVois){
 

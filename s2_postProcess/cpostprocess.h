@@ -38,9 +38,11 @@ public:
     void checkCompression(std::string * aRaster);
 
     void masque(int seuilPP);
-     void statistique();
+    void statistique();
      // évolution de la crise ventilée par zone bioclimatique
       void statWithStation();
+
+    void surveillance();
 
     void  extractValToPt(std::string aShpIn);
 

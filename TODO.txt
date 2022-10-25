@@ -1,5 +1,9 @@
 TO DO s2_timeSerie;
 
+-exporter un rapport de synthèse lors de l'analyse de la TS ; avec les dates utilisées pour chaque tuile. Le mieux serait d'avoir un grand tableau unique pour toute les tuiles de la RW? certainement, mais il faudrait alors le mettre à jours d'une tuile à l'autre.
+
+-utiliser s2_postProcess pour faire une carte de surveillance, càd mettre les nouveaux scolytes en évidence à une autre échelle spatiale (résolution de 5km? ça me semble bien)
+
 -option catalogue "clean" pour effacer tout les résultats intermédiaires pour un suffix donné
 
 -sauver résultats intermédiaire (état i, état f) --> j'ai testé, mais en fait c'est très très long à sauver! forcément, il y a des centaines de cartes.
