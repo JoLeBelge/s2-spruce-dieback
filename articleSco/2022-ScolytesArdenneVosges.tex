@@ -175,7 +175,7 @@ Based on this definition and on the DEM, we produced topography orientation  map
 The detection of bark beetle infestation was realized by using dense time series of S2 imagery following the methodology developped by \cite{dutrieux_package_2021}.
 Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m.
 The three climatic areas studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
-Vegetation changes were tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} ($SWIR_{CR}$) indice.
+Vegetation changes were tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} vegetation indice ($SWIR_{CR}$).
 All S2 acquisitions were used in the analyses, provided that the cloud couver do not excess 35 percent. 
 Bottom Of Atmosphere reflectance images (L2A product) were downloaded from the Theia data cluster \citep{theia_team} for all the 14 tiles, which size are 100km x 100km.
 The $SWIR_{CR}$ is based on three spectral bands, the near-infrared, the shortwave infrared 1 band and the shortwave infrared 2, and is sensitive to the foliage water content: it is appropriated to detect spruce dieback during the green stage of bark beetle attack (Figure \ref{fig:harmo}).
@@ -201,12 +201,11 @@ The dense time-serie covers the 2016-2021 period and count a minimum of 180 acqu
 	\label{fig:harmo}
 \end{figure}
 
-Our approach of bark beetle detection is only suitable for spruce, as it is closely related to the phenological course of healthy spruce forest.
+Our approach of dieback detection is only suitable for Norway spruce, as it is closely related to the phenological course of healthy spruce forest.
 An essential prerequisite was thus to have a proper mapping of spruce stands.
-For the south of Belgium, we used existing reliable composition maps \citep{bolyn_mapping_2022} computed from remote sensing data in order to restrict our analysis to spruces.
-
-In the Grand-Est, the composition map comes from the French Mapping agency (Forest BD version 2). 
-Composition of forest stand is determined by photointerpretation and forest stands identifyed as "spruce or fir" served as starting point to limit our analysis.
+For the south of Belgium, we used existing reliable composition maps from \cite{bolyn_mapping_2022}, computed from remote sensing data, in order to restrict our analysis to Norway spruces.
+In the Grand-Est, the composition map came from the French mapping agency \citep{IGN_bd_2018}. 
+Composition of forest stand was determined by photointerpretation and forest stands identifyed as "spruce or fir" served as starting point to restrict the dieback analysis.
 Time series are a convenient means to track phenology changes. 
 More broadly than the dectection of bark beetle infestion, phenology courses are highly suitable for forest tree species discrimination \citep{lisein_discrimination_2015,grabska_forest_2019,ma_tree_2021}.
 We have used S2 spectral bands courses along the vegetation season to refine the determination of species present in the area interpreted as "spruce or fir" in Vosges.

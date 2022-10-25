@@ -1,4 +1,4 @@
-\begin{thebibliography}{45}
+\begin{thebibliography}{46}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -160,6 +160,11 @@ Horgan, T., Keane, M., McCarthy, R., Lally, M., and Thompson, D., 2003.
 \newblock A {Guide} to {Forest} {Tree} {Species} {Selection} and {Silviculture}
   in {Ireland}.
 \newblock \penalty0 (3).
+
+\bibitem[{Institut National de l’Information Géographique et
+  Forestière}(2018)]{IGN_bd_2018}
+{Institut National de l’Information Géographique et Forestière}, 2018.
+\newblock {BD} {Forêt} - version 2.0.
 
 \bibitem[{Inventaire forestier national français}(2022)]{IGN2022}
 {Inventaire forestier national français}, 2022.
