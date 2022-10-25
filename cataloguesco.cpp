@@ -78,7 +78,7 @@ void catalogueSco::analyseTS(){
                     ts.analyse();
                     //#pragma omp critical
 
-                    ts.writeIntermediateRes1pos(); //lui il prend beaucoup trop de temps. mais il n'y a pas mille solution?
+                    //ts.writeIntermediateRes1pos(); //lui il prend beaucoup trop de temps. mais il n'y a pas mille solution?
                     writeRes1pos(&ts);
                     /*    j'avais fait un test chiant et non concluant décriture d'une ligne entière à la place de l'écriture pixel par pixel, mais en terme de temps de calcul ça ne change rien !!           }
                     for (int y : mYs){

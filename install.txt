@@ -1,6 +1,7 @@
 Portage de l'appli sur pc traitement SentinelleJo;
 
-sudo apt install git cmake qtcreator qt5-default qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev python
+sudo apt install git cmake qtcreator qt5-default qtcreator cmake lzip libboost-all-dev libtbb-dev sqlite3 libsqlite3-dev libgdal-dev python curl
+
 # pour la visu des résultats
 sudo apt install gdal-bin qgis
 

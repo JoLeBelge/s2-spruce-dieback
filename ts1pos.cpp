@@ -7,7 +7,7 @@ std::string globResXYTest("toto");
 
 void TS1Pos::analyse(){
 
-
+    //printDetail();
     // filtre  pour retirer les valeurs abbérantes de la série temporelle.
     for (int i(0);i<mVDates.size();i++){
         //std::cout << "date " << mVDates.at(i) << ", état " << mVEtat.at(i) << std::endl;
@@ -77,10 +77,8 @@ void TS1Pos::analyse(){
     }
 
     // etat des lieux après ce filtre ;
-    /*std::cout << "après filtre sol nu" << std::endl;
-    for (int e : mVEtatFin){
-        std::cout << e << std::endl;
-    }*/
+   // std::cout << "après filtre sol nu" << std::endl;
+    //printDetail();
 
     // pour la détection des pixels stressé, on le fait en 2 itérations ; une première avec retour à la normale possible, une deuxième sans retour possible. Sinon ça peux yoyoter.
     detectStresseEtRetour();
@@ -458,7 +456,7 @@ int TS1Pos::getEtatPourAnnee(int y){
         if ( (ymd->year()==ay && ymd->month()>avril ) | (ymd->year()==ayP1 && ymd->month()<mai) ){
             etat.push_back(mVEtatFin.at(i));
 
-          // if (mDebug){std::cout << " ajout date " << *ymd << std::endl;}
+           if (mDebug){std::cout << " ajout date " << *ymd << std::endl;}
             // on rajoute deux dates car si on observe un stress scolyte en décembre, suivi de deux autres l'année d'après, on veux le savoir.
             /*if (i+1<mVDates.size() && mVDates.at(i+1)->year()>ay && mVEtatFin.at(i)==2){
                 etat.push_back(mVEtatFin.at(i+1));
@@ -468,7 +466,7 @@ int TS1Pos::getEtatPourAnnee(int y){
         i++;
     }
 
-    // il faut vérifier que j'ai 3 dates consécutives avec code 2.
+    // il faut vérifier que j'ai 3 dates consécutives avec code 2. Sauf si je n'ai que 2 dates!!
     // je pourrais être moins restrictif car des fois j'ai 1 code 2 en décembre et puis 2 autres en janvier de l'année d'après, ça fonctionne pas alors.
     if (etat.size()>0){
 
@@ -485,14 +483,14 @@ int TS1Pos::getEtatPourAnnee(int y){
                     if (c>2){conseq=1; aRes=2; break;}
                 }
             }
-            // pas stressé 3 fois d'affilé ; je teste si état =coupé 3 fois d'affilé
+            // pas stressé 2 fois d'affilé ; je teste si état =coupé 3 fois d'affilé. Seulement deux fois car sinon j'ai des cas ou la dernière année je n'ai que deux dates mais coupé, donc ça dois être coupé!
             if (!conseq){
                 p =std::find(etat.begin(), etat.end(), 3);
                 if (p != etat.end()){
                     c=0;
                     for (it = p; it != etat.end(); it++){
                         if (*it==3){c++;} else{c=0;}
-                        if (c>2){conseq=1; aRes=3; break;}
+                        if (c>1){conseq=1; aRes=3; break;}
                     }
                 }
             }

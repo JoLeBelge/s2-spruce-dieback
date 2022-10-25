@@ -1,6 +1,6 @@
 #! /bin/bash
 
-/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn ../s2/xml/s2_sco.xml
+/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn ../s2/xml/s2_sco.xml --mode 1
 /home/gef/app/build-s2_ts/s2_timeSerie --xmlIn ../s2/xml/s2_sco.xml --mergeES 1 --anaTS 0
 
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 5 --rasterIn /media/gef/Data2/S2Scolyte/merge/etatSanitaire_ANNEE.tif
