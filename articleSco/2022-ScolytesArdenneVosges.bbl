@@ -1,4 +1,4 @@
-\begin{thebibliography}{43}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -115,6 +115,14 @@ Genuer, R., Poggi, J.-M., and Tuleau-Malot, C., 2015.
 Grabska, E., Hostert, P., Pflugmacher, D., and Ostapowicz, K., 2019.
 \newblock Forest stand species mapping using the {Sentinel}-2 time series.
 \newblock \emph{Remote Sensing}, 11\penalty0 (10):\penalty0 1197.
+
+\bibitem[Grizonnet et~al.(2017)Grizonnet, Michel, Poughon, Inglada, Savinaud,
+  and Cresson]{grizonnet_2017_OTB}
+Grizonnet, M., Michel, J., Poughon, V., Inglada, J., Savinaud, M., and Cresson,
+  R., 2017.
+\newblock Orfeo toolbox: Open source processing of remote sensing images.
+\newblock \emph{Open Geospatial Data, Software and Standards}, 2\penalty0
+  (1):\penalty0 15.
 
 \bibitem[Guinier(1959)]{guinier_trois_1959}
 Guinier, P., January 1959.
@@ -278,6 +286,14 @@ Modrzyński, J., 2007.
 \newblock \doi{10.1007/978-1-4020-4841-8_11}.
 \newblock URL \url{http://link.springer.com/10.1007/978-1-4020-4841-8_11}.
 \newblock Series Title: Forestry Sciences.
+
+\bibitem[Müller et~al.(2022)Müller, Olsson, Eklundh, Jamali, and
+  Ardö]{muller_features_2022}
+Müller, M., Olsson, P.-O., Eklundh, L., Jamali, S., and Ardö, J., 2022.
+\newblock Features predisposing forest to bark beetle outbreaks and their
+  dynamics during drought.
+\newblock \emph{Forest Ecology and Management}, 523:\penalty0 120480.
+\newblock Publisher: Elsevier.
 
 \bibitem[Nardi et~al.(2022)Nardi, Jactel, Pagot, Samalens, and
   Marini]{nardi_drought_2022}
