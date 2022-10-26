@@ -200,8 +200,11 @@ void  cPostProcess::extractValToPt(std::string aShpIn){
 
 void cPostProcess::surveillance(){
     // pour la dernière année, je calcul un pourcentage de nouveau scolyte pour une résolution de 5km
-    std::shared_ptr<esOney> es = mVES.back();
-    int dezoom=500;
+        int dezoom=500;
+    for (int c(0);c<mVES.size();c++){
+        std::shared_ptr<esOney> es=mVES.at(c);
+   // std::shared_ptr<esOney> es = mVES.back();
+
 
     Pt2di aSzR = round_up(Pt2dr(es->getImPtr()->sz())/dezoom);
     Im2D_U_INT1 Im(aSzR.x,aSzR.y,0);
@@ -211,19 +214,26 @@ void cPostProcess::surveillance(){
     {
        for (int anX=0 ; anX<aSzR.x ; anX++)
        {
-           int nbPix(0);
-            Pt2di pos(anX*dezoom,anY*dezoom);
+           int nbSco(0), nbEP(0);
+            Pt2di pos(anX*dezoom,anY*dezoom), pos2((anX+1)*dezoom,(anY+1)*dezoom);
            ELISE_COPY(
-                       select(rectangle(pos,pos+dezoom),es->getImPtr()->in()==newSco),
+                       select(rectangle(pos,pos2),es->getImPtr()->in_proj()==newSco |es->getImPtr()->in_proj()==newCS ),
                        1,
-                       sigma(nbPix)
+                       sigma(nbSco)
+                       );
+           ELISE_COPY(
+                       select(rectangle(pos,pos2),es->getImPtr()->in_proj()==1),
+                       1,
+                       sigma(nbEP)
                        );
 
-           Im.SetI(Pt2di(anX,anY),nbPix);
+           //Im.SetI(Pt2di(anX,anY),((1000.0*nbSco)/nbEP));
+           Im.SetI(Pt2di(anX,anY),(nbSco/100.0));
        }
     }
        Tiff_Im::CreateFromIm(Im,es->getNameSurveillance());
-       es->copyTifMTD(es->getNameSurveillance());
+       es->copyTifMTD(es->getNameSurveillance(),dezoom);
+    }
 }
 
 /*

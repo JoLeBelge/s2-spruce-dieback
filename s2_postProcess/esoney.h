@@ -24,7 +24,7 @@ public:
     void updateCoupeSanRetro(Im2D_U_INT1 * imNextYear);
     void detectNewSco(Im2D_U_INT1 * imPrevYear);
     void clean();
-    void copyTifMTD(std::string aRasterOut);
+    void copyTifMTD(std::string aRasterOut, int dz=1);
     void saveClean();
     void saveEvol();
      void saveMasq();
