@@ -1,4 +1,4 @@
-\begin{thebibliography}{46}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -99,16 +99,6 @@ Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
 \newblock Copernicus land monitoring service.
 \newblock URL
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
-
-\bibitem[Genuer et~al.(2015)Genuer, Poggi, and Tuleau-Malot]{genuer_vsurf_2015}
-Genuer, R., Poggi, J.-M., and Tuleau-Malot, C., 2015.
-\newblock {VSURF}: {An} {R} {Package} for {Variable} {Selection} {Using}
-  {Random} {Forests}.
-\newblock \emph{The R Journal}, 7\penalty0 (2):\penalty0 19.
-\newblock ISSN 2073-4859.
-\newblock \doi{10.32614/RJ-2015-018}.
-\newblock URL
-  \url{https://journal.r-project.org/archive/2015/RJ-2015-018/index.html}.
 
 \bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
   Ostapowicz]{grabska_forest_2019}

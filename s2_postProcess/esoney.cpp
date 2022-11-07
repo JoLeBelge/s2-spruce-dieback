@@ -229,7 +229,7 @@ void esOney::clean(){
 }
 
 
-void esOney::copyTifMTD(std::string aRasterOut){
+void esOney::copyTifMTD(std::string aRasterOut, int dz){
     // copy projection et src dans gdal
     GDALDataset *pIn, *pOut;
     GDALDriver *pDriver;
@@ -240,6 +240,10 @@ void esOney::copyTifMTD(std::string aRasterOut){
     pOut->SetProjection( pIn->GetProjectionRef() );
     double tr[6];
     pIn->GetGeoTransform(tr);
+    if (dz!=1){std::cout << "changement de résolution de " << tr[1] ;}
+    tr[1]=tr[1]*dz;
+    tr[5]=tr[5]*dz;
+     if (dz!=1){std::cout << " à " << tr[1] <<std::endl;}
     pOut->SetGeoTransform(tr);
     GDALClose(pIn);
     GDALClose(pOut);
