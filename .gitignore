@@ -6,13 +6,13 @@ illu/*
 !illu/*.R
 *.autosave
 documentation/*.aux
-documentation/*.bbl
 documentation/*.blg
 documentation/*.out
 documentation/*.toc
 documentation/*.log
 documentation/*.synctex.gz
 documentation/Images/smiley*
+build-*/*
 build-s2_postProcess/*
 build-s2_carteEss/*
 build-s2_ts/*
