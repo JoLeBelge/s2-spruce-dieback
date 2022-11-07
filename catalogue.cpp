@@ -16,7 +16,7 @@ extern std::string globSuffix;
 
 bool mDebug(0);
 
-catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
+catalogue::catalogue(std::string aJsonFile):mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL),mTuileName(globTuile){
     // parse le json de la requete
     if ( !boost::filesystem::exists( aJsonFile ) )
     {
@@ -127,7 +127,7 @@ void catalogue::init(){
     std::cout << " done .." << std::endl;
 }
 
-catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL){
+catalogue::catalogue():mDSmaskR1(NULL),mDSmaskR2(NULL),scanLineR1(NULL),scanLineR2(NULL),scanPix(NULL),mTuileName(globTuile){
     init();
 }
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "cataloguesco.h"
+#include "reportings2.h"
 #include <execution>
 #include <boost/filesystem.hpp>
 #include "date.h"
@@ -169,6 +170,8 @@ int main(int argc, char *argv[])
         }
 
         if (!mergeEtatSan){
+
+            reportingS2 r;
         for (auto kv : mapTuiles){
 
             if (mapDoTuiles.find(kv.first)!=mapDoTuiles.end() && mapDoTuiles.at(kv.first)){
@@ -201,7 +204,7 @@ int main(int argc, char *argv[])
                     catalogueSco cata(inputJson);
                     cata.traitement();
                     std::cout << "Tuile " << t << " faite" <<std::endl;
-
+                    r.add1Tuile(&cata);
                     break;
                 }
                 case 2:{
@@ -210,12 +213,13 @@ int main(int argc, char *argv[])
                     catalogueSco cata;
                     cata.traitement();
                     std::cout << "Tuile " << t << " faite" <<std::endl;
-
+                    r.add1Tuile(&cata);
                     break;
                 }
                 }
             }
         }
+         r.genReport("toto.txt");
         }
 
 

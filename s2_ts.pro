@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     catalogue.cpp \
     cataloguesco.cpp \
     rasterfile.cpp \
+    reportings2.cpp \
     ts1pos.cpp \
     libzippp/src/libzippp.cpp \
     tuiles2OneDate.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     rapidxml/rapidxml.hpp \
     rapidxml/rapidxml_iterators.hpp \
     rasterfile.h \
+    reportings2.h \
     ts1pos.h \
     libzippp/src/libzippp.h \
     date.h\

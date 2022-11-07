@@ -226,7 +226,6 @@ void cPostProcess::surveillance(){
                        1,
                        sigma(nbEP)
                        );
-
            //Im.SetI(Pt2di(anX,anY),((1000.0*nbSco)/nbEP));
            Im.SetI(Pt2di(anX,anY),(nbSco/100.0));
        }

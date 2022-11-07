@@ -12,6 +12,8 @@ public:
     catalogueSco(){}
     catalogueSco(std::string aJsonFile):catalogue(aJsonFile){}
     void traitement();
+
+    std::vector<year_month_day> getAllDates();
 private:
 
     void createMaskForTuile();
@@ -24,6 +26,7 @@ private:
     //void anaTSOnePosition(std::vector<pDateEtat> * aVTS);
     // produit OK ; sont tous téléchargé, pas trop de nuage, vecteur ordonné par date d'acquisition
     std::vector<tuileS2OneDateSco *>  mVProdutsOK;
+
 
     // extrait valeur de crswir et masque sol nu pour toute les dates pour une liste de points. Sert pour la calibration du modèle harmonique OLD OLD pas utilisé
     //void extractRatioForPts(std::vector<pts> * aVpts);

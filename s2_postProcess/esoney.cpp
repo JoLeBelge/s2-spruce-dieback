@@ -40,13 +40,13 @@ void esOney::createTmp(){
 
 
 void esOney::updateCoupeSan(Im2D_U_INT1 * imPrevYear){
-    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in()==cs),cs,mIm->oclip());
+    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in_proj()==cs),cs,mIm->oclip());
     // j'en profite pour bloquer les pixels scolytés que j'avais pas bien bloqué dans s2_timeS aout 2021
-    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in()==sco && mIm->in()!=cs),sco,mIm->oclip());
+    ELISE_COPY(select(imPrevYear->all_pts(),imPrevYear->in_proj()==sco && mIm->in_proj()!=cs),sco,mIm->oclip());
 }
 
 void esOney::updateCoupeSanRetro(Im2D_U_INT1 * imNextYear){
-    ELISE_COPY(select(imNextYear->all_pts(),imNextYear->in()==cs && mIm->in()==cn),cs,mIm->oclip());
+    ELISE_COPY(select(imNextYear->all_pts(),imNextYear->in_proj()==cs && mIm->in_proj()==cn),cs,mIm->oclip());
 }
 
 void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
@@ -56,24 +56,24 @@ void esOney::detectNewSco(Im2D_U_INT1 * imPrevYear){
     // masque ND
     Im2D_U_INT1 nd(mIm->sz().x,mIm->sz().y,0);
     // en fait c'est 255 les no data..
-    ELISE_COPY(select(mIm->all_pts(),mIm->in()!=0 && mIm->in()!=255),1,nd.out());
+    ELISE_COPY(select(mIm->all_pts(),mIm->in_proj()!=0 && mIm->in_proj()!=255),1,nd.out());
 
     // ancien scolyte
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()==sco && mIm->in()!=cs && mIm->in()!=cn)
+    ELISE_COPY(select(mIm->all_pts(),nd.in_proj()==1 && imPrevYear->in_proj()==sco && mIm->in_proj()!=cs && mIm->in_proj()!=cn)
                ,oldSco,mIm->oclip() | (sigma(nboSco)<< 1));
     //nouveau scolyte
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()!=sco && mIm->in()==sco)
+    ELISE_COPY(select(mIm->all_pts(),nd.in_proj()==1 && imPrevYear->in_proj()!=sco && mIm->in_proj()==sco)
                ,newSco,mIm->oclip()| (sigma(nbnSco)<< 1));
     // ancienne coupe sanitaire
-    ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && imPrevYear->in()==cs)
+    ELISE_COPY(select(mIm->all_pts(),nd.in_proj()==1 && imPrevYear->in_proj()==cs)
                ,oldCS,mIm->oclip()| (sigma(nboCS)<< 1));
     // nouvelles coupe sanitaire
   //  ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs)
    //            ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
     // distinction nouvelle coupe sanitaire de nouveau scolyte de nouvelle coupe sanitaire d'ancien scolyte.
-      ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs && imPrevYear->in()!=sco)
+      ELISE_COPY(select(mIm->all_pts(),nd.in_proj()==1 && mIm->in_proj()==cs && imPrevYear->in_proj()!=cs && imPrevYear->in_proj()!=sco)
                  ,newCS,mIm->oclip()| (sigma(nbnCS)<< 1));
-      ELISE_COPY(select(mIm->all_pts(),nd.in()==1 && mIm->in()==cs && imPrevYear->in()!=cs && imPrevYear->in()==sco)
+      ELISE_COPY(select(mIm->all_pts(),nd.in_proj()==1 && mIm->in_proj()==cs && imPrevYear->in_proj()!=cs && imPrevYear->in_proj()==sco)
                  ,newCSoldSco,mIm->oclip()| (sigma(nbnCSoldSco)<< 1));
     std::cout << nboSco/100  << ";" <<  nbnSco/100<< ";" << nboCS/100 << ";" << nbnCS/100 << ";" << nbnCSoldSco/100 << std::endl;
 }

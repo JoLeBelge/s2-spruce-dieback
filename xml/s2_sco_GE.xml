@@ -1,9 +1,9 @@
 <params>
 
- <path_otb>/home/gef/Documents/OTB-7.2.0-Linux64/bin/</path_otb>
+ <path_otb>/home/gef/app/OTB-8.1.0-Linux64/bin/</path_otb>
  <EP_mask_path>/home/gef/Documents/input/grandEst_maskEP.tif</EP_mask_path>
  <suffix>GE</suffix> <!-- GE pour Grand Est. Obligé car j'ai au moins une tuile en commun avec la Belgique -->
- <catalogueMode> 1 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
+ <catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
  <doAnaTS> 1 </doAnaTS>
  <debugDetail>0</debugDetail>
  
@@ -15,7 +15,7 @@
  <mergeEtatSan>0</mergeEtatSan>
  
   <date1>2016-01-01</date1>
-  <date2>2022-10-10</date2> 
+  <date2>2022-12-10</date2> 
   
   <nbDaysStress>150</nbDaysStress>
  
