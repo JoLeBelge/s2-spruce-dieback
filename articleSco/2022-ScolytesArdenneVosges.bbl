@@ -1,4 +1,4 @@
-\begin{thebibliography}{45}
+\begin{thebibliography}{48}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -171,6 +171,16 @@ Jactel, H., Moreira, X., and Castagneyrol, B., 2021.
 \newblock URL \url{https://doi.org/10.1146/annurev-ento-041720-075234}.
 \newblock PMID: 32903046.
 
+\bibitem[JÖNSSON et~al.(2009)JÖNSSON, APPELBERG, HARDING, and
+  BÄRRING]{jonsson_2009}
+JÖNSSON, A.~M., APPELBERG, G., HARDING, S., and BÄRRING, L., 2009.
+\newblock Spatio-temporal impact of climate change on the activity and
+  voltinism of the spruce bark beetle, ips typographus.
+\newblock \emph{Global Change Biology}, 15\penalty0 (2):\penalty0 486--499.
+\newblock \doi{https://doi.org/10.1111/j.1365-2486.2008.01742.x}.
+\newblock URL
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2486.2008.01742.x}.
+
 \bibitem[Kasumović et~al.(2019)Kasumović, Lindelöw, and
   Hrašovec]{kasumovic_overwintering_2019}
 Kasumović, L., Lindelöw, A., and Hrašovec, B., February 2019.
@@ -270,6 +280,16 @@ Ma, M., Liu, J., Liu, M., Zeng, J., and Li, Y., 2021.
   {Random} {Forest} {Classifier} in the {Eastern} {Regions} of the {Qilian}
   {Mountains}.
 \newblock \emph{Forests}, 12\penalty0 (12):\penalty0 1736.
+
+\bibitem[Marini et~al.(2012)Marini, Ayres, Battisti, and
+  Faccoli]{marini_climate_2012}
+Marini, L., Ayres, M.~P., Battisti, A., and Faccoli, M., November 2012.
+\newblock Climate affects severity and altitudinal distribution of outbreaks in
+  an eruptive bark beetle.
+\newblock \emph{Climatic Change}, 115\penalty0 (2):\penalty0 327--341.
+\newblock ISSN 0165-0009, 1573-1480.
+\newblock \doi{10.1007/s10584-012-0463-z}.
+\newblock URL \url{http://link.springer.com/10.1007/s10584-012-0463-z}.
 
 \bibitem[Modrzyński(2007)]{tjoelker_outline_2007}
 Modrzyński, J., 2007.
@@ -392,6 +412,17 @@ Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
   {Forests} after the 2018–2020 {Drought} {Years}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
 \newblock Publisher: MDPI.
+
+\bibitem[Wermelinger(2004)]{wermelinger_ecology_2004}
+Wermelinger, B., December 2004.
+\newblock Ecology and management of the spruce bark beetle {Ips}
+  typographus—a review of recent research.
+\newblock \emph{Forest Ecology and Management}, 202\penalty0 (1-3):\penalty0
+  67--82.
+\newblock ISSN 03781127.
+\newblock \doi{10.1016/j.foreco.2004.07.018}.
+\newblock URL
+  \url{https://linkinghub.elsevier.com/retrieve/pii/S0378112704005353}.
 
 \bibitem[Zolubas and Byers(1995)]{zolubas_1995}
 Zolubas, P. and Byers, J.~A., 1995.

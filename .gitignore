@@ -6,7 +6,6 @@ illu/*
 !illu/*.R
 *.autosave
 documentation/*.aux
-documentation/*.bbl
 documentation/*.blg
 documentation/*.out
 documentation/*.toc
