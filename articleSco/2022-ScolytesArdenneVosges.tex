@@ -112,7 +112,6 @@ Pheromone trap systems are commercialized to fight bark beetle
  but they failed to limit the economic loss in case of large outbreak \citep{kuhn_pheromone_2022}.
 The only solution to decrease the damage cause by outbreak is to remove felled tree before the swarming to take out the ideal breeding material of the forest and to realize sanitary cutting when the tree is attacked by bark beetle at the green stage to decrease the bark beetle population. 
 
-
 The European Union’s earth observation programme, with its satellite twin constellation Sentinel-2A and Sentinel-2B, provides free earth imagery with a high revisit time, which have been intensively used for forestry purpose. 
 Time series of Sentinel-2 (S2) images enable to model the phenology courses of vegetation indices in order to detect forest disturbances \citep{low_phenology_2020}, like the one caused by bark beetle outbreaks.
 Infestation maps of the last sanitary crisis have been generated for Germany \citep{ali_canopy_2021,thonfeld_first_2022}, Czech Republic \citep{barta_early_2021}, Italy \citep{dalponte_mapping_2022} and France \citep{nardi_drought_2022}. 
@@ -129,16 +128,19 @@ The Walloon forest covers 554,600 ha and  Norway spruce stand occupies a quarter
 %Two thirds of the Walloon spruce forest is located above 400 m altitude. 
 The Norway spruce covers seven percent of the 1939,000 ha the Grand-Est forest \citep{IGN2022}. 
 %The majority of Norway spruce stand of this region grow between 400m and 900m. 
+
+The both neighbour countries share some similar environmental conditions.
 The Grand-Est and Wallonia are included in the temperate oceanic bioclimatic zone \citep{lindner_climate_2010}.
-In order to provide consistent silvicultural advice, Wallonia and Grand-Est have been divided into three climatically homogeneous zones.
-The climate variables for Wallonia have been provided by the Institut Royal Météorologique and come from the climate map Digitalis \citep{piedallu_presentation_2014} for the Grand-Est.
-%The resolution of this data is 1km.
-The French and Walloon natural regions have been grouped by average temperature and precipitation during the growing season in three climatic areas: Ardenne, Plains and Vosges (Figure \ref{fig:clim}).
-The Plains is all of natural regions with a temperature between 15.5°C and 18°C and with precipitation between 300 mm and 400 mm.
+The Ardenne massif extends over both countries. 
+The 24 natural regions of Wallonia and Grand-Est depend of the climate.
+The climate influence the tree species repartition. 
+The Norway spruce of central Europe need a moutain climate.
+To better understand the dieback of Norway spruce, the French and Walloon natural regions have been grouped by average temperature and precipitation during the growing season in three homogeneous climatic areas: Ardenne, Plains and Vosges (Figure \ref{fig:clim}).
+The Plains is characterized by a temperature between 15.5°C and 18°C and by precipitations between 300 mm and 400 mm.
 Natural regions with a temperature between 14°C and 15.5°C and a average precipitation between 400 mm and 450 mm correspond to climatic area of Ardenne.
 Vosges are natural regions with temperature varies between 15.5°C and 17 °C and the precipitation between 425 mm and 600 mm.
 The Figure \ref{fig:situ} shows localisation of the three climatic areas. 
-
+The climate variables for Wallonia have been provided by the Institut Royal Météorologique and come from the climate map Digitalis \citep{piedallu_presentation_2014} for the Grand-Est.
 \begin{figure}[htbp] 
 	\centering
 	\includegraphics[width=0.8\linewidth]{climat/climat_region.png}
@@ -212,7 +214,7 @@ Eventually, this Random Forest classifier was applied on "spruce and fir" area o
 
 \subsection{Relation between bark beetle attack and environmental condition}
 
-}
+
 
 %To select important variables that influence the Norway spruce dieback, we use the the random forest algorithm \citep{genuer_vsurf_2015} in Wallonia.
 %We apply the random forest only in Wallonia.
@@ -220,8 +222,7 @@ Eventually, this Random Forest classifier was applied on "spruce and fir" area o
 
 The forest practitioners of the two countries drew our attention to the variables that seemed to influence spruce dieback.
 According to them, the south-facing slope and altitude influence the dieback.
-In Western Europe, altitude is a reflect of the climate.
-Precipitation increase with altitude. 
+In Western Europe, altitude reflects of the climate. Precipitation increase with altitude and temperature decrease this variable. 
 The Norway spruce spruce need  amount precipitation to grow correctly.
 The south- facing slope are warmer than other topographic orientations, the bark beetle 
 population develop favorably with heat \citep{annila_influence_1969, baier_phenipscomprehensive_2007, jonsson_2009, marini_climate_2012} and increase the susceptibility of Norway spruce to the attack of bark beetle \citep{wermelinger_ecology_2004, netherer_waterlimiting_2015}.
@@ -234,7 +235,15 @@ We analyse the result of sanitary map in function of the altitude and the topogr
 % Sous secteur chaud 
 The altitude has been broke down  by 100 m classes and kept the three topographic orientation classes.
 Then, in order to determine the classes of these factors most impacted by the bark beetle, we estimated the bark beetle areas for each class of each factor based on the health status maps for each year of the period 2017-2021.
-The Probability of dieback is the the dieback area of a class during one year divide by the total area of Norway spruce of this class at the beginning of the same year. 
+
+The dieback ratio is  the dieback area of a class during one year divide by the total area of Norway spruce of this class at the beginning of the same year. 
+Dieback area is the surface of Norway spruce attacked by bark beetle and the area of sanitary cutting during the year. 
+The total area of spruce at the beginning of the years is composed of the area of healthy spruce area at the beginning of the year. 
+
+
+%mettre equation 
+%\[
+%\frac{\sum dead\, spruce\, area\, of\, the\, year }{\sum spruce\, area\, at\, the\, beginning\, of\, the\, year\,}\]
 
 The spruce area studied is 101,600 ha in Ardenne, 26,327 ha in the Vosges and 25,552 ha in the Plains in the Grand-Est region.
 
@@ -545,7 +554,7 @@ However, the metabolism of bark beetle need energy from 5°C  \citep{kostal_phys
 %	Seuil letal ou the letargie atteint en versant sud?
 %\item meilleur surveillance des forestiers sur versant sud que nord 
 	
-\end{itemize}
+
 
 \subsection{Topographic orientation}
 
