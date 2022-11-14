@@ -1,4 +1,4 @@
-\begin{thebibliography}{48}
+\begin{thebibliography}{50}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -92,6 +92,22 @@ Dalponte, M., Solano-Correa, Y.~T., Frizzera, L., and Gianelle, D., 2022.
   {Sentinel}-2 {Remote} {Sensing} {Data}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (13):\penalty0 3135.
 \newblock Publisher: MDPI.
+
+\bibitem[De~Frenne et~al.(2021)De~Frenne, Lenoir, Luoto, Scheffers, Zellweger,
+  Aalto, Ashcroft, Christiansen, Decocq, De~Pauw, Govaert, Greiser, Gril,
+  Hampe, Jucker, Klinges, Koelemeijer, Lembrechts, Marrec, Meeussen, Ogée,
+  Tyystjärvi, Vangansbeke, and Hylander]{de_frenne_forest_2021}
+De~Frenne, P., Lenoir, J., Luoto, M., Scheffers, B.~R., Zellweger, F., Aalto,
+  J., Ashcroft, M.~B., Christiansen, D.~M., Decocq, G., De~Pauw, K., Govaert,
+  S., Greiser, C., Gril, E., Hampe, A., Jucker, T., Klinges, D.~H.,
+  Koelemeijer, I.~A., Lembrechts, J.~J., Marrec, R., Meeussen, C., Ogée, J.,
+  Tyystjärvi, V., Vangansbeke, P., and Hylander, K., June 2021.
+\newblock Forest microclimates and climate change: Importance drivers and
+  future research agenda.
+\newblock \emph{Global Change Biology}, 27\penalty0 (11):\penalty0 2279--2297.
+\newblock ISSN 1354-1013, 1365-2486.
+\newblock \doi{10.1111/gcb.15569}.
+\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/gcb.15569}.
 
 \bibitem[Delvaux and Galoux(1962)]{Delvaux_galoux}
 Delvaux, J. and Galoux, A., 1962.
@@ -411,6 +427,15 @@ Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
   {Forests} after the 2018–2020 {Drought} {Years}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
 \newblock Publisher: MDPI.
+
+\bibitem[Walthert and Meier(2017)]{walthert_tree_2017}
+Walthert, L. and Meier, E.~S., November 2017.
+\newblock Tree species distribution in temperate forests is more influenced by
+  soil than by climate.
+\newblock \emph{Ecology and Evolution}, 7\penalty0 (22):\penalty0 9473--9484.
+\newblock ISSN 20457758.
+\newblock \doi{10.1002/ece3.3436}.
+\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1002/ece3.3436}.
 
 \bibitem[Wermelinger(2004)]{wermelinger_ecology_2004}
 Wermelinger, B., December 2004.
