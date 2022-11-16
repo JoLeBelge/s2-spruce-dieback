@@ -12,6 +12,7 @@
 \usepackage{hyperref}
 \usepackage{subfig}
 \usepackage[export]{adjustbox}
+\usepackage{diagbox}
 
 \volume{00}
 \firstpage{1}
@@ -215,7 +216,7 @@ Eventually, this Random Forest classifier was applied on "spruce and fir" area o
 
 The maps were validated by two different methods on the Wallonia.
 The first method is global validation with annual orthophotoplan on random spruce stand on the 2018-2021 period. 
-For the second method, a stratified random sampling base on  the size, the altitude and the topography orientation of the spruce stand was used for 2018. 
+For the second method, a stratified random sampling base on  the siz of the spruce stand was used for 2018. 
 The selected stands were photo-interpreted with the annual orthophotoplan of the Wallonia.
 
 
@@ -297,23 +298,20 @@ The spruce area studied is 120,365 ha in Ardenne, 24,462 ha in the Vosges and 75
 
 
 
-\subsection{Evolution et importance}
+\subsection{Evolution of the dieback }
 
 The drought touched the western Europe since 2018.
 However, the outbreaks did not occur at the same time in the different region (Figure \ref{evol_gen}).
-
 The first major dieback took place in the Ardenne in 2018 but the peak is directly reached and a decrease of dieback ratio is observed in 2019. 
 A slight recovery in dieback occurs in 2020.
 %add reference crise 5 ans
 The area of Norway spruce killed in Ardenne during the five years of the study is 22.520 ha.
 The maximum of the ratio of area touched by bark beetles during crisis peak in 2018 is 8,4\%. 
 The climatic area of the Ardenne have lost 18,7 \% of his Norway spruce area.
-
 In the Vosges, there is 4.248 ha killed by bark beetle.
 However, the maximum ratio of area affected by this insect is 2,8 \% in 2020.
 The Norway spruce stand of the Vosges climatic has been reduced of 5,6 \% of his area. 
 At the peak of the crisis the Vosges are proportionally less affected than the Ardenne.
-
 The important damage of the Plains spruce stand have begun in 2018.  
 The Plains climatic area is  with the most area and proportion of area affected.
 This regions have three times more area touched by bark beetle than the Vosges.
@@ -363,7 +361,7 @@ Vosges   & 4.248 ha                                                             
     
 
 
-\subsection{ Altitude vs bark beetle presence}
+\subsection{ Influence of altitude on the Norway spruce dieback}
 The altitude is easily usable for the forest manager.
 The precipitation in western Europe depend of altitude. 
 The majority of spruce in the Plains is located in low altitude under 400m of altitude in contrast with the Ardenne and the Vosges where the majority of Norway spruce stand grow above 400 m. 
@@ -386,18 +384,15 @@ This gradient is confirmed over the 5 years of the study.
 Indeed, during 2018, there is a strong increase of the dieback ratio in the 100-200m and 200-300m altitude classes is observed. 
 These two altitude classes are more affected during the crisis.
 The stand located above 400m are weakly attacked with maximum 8,6\% in 2018.
-
 In Vosges group, all of the altitude classes are affected by dieback in a similar way.
 No trend seems to emerge.
 The low altitude are poorly represented. 
 There are no impact of altitude on the presence of bark beetle. 
 The dieback ratio is inferior of 5 \% during the study period.
-
 The Plains group are affected mainly in low altitude with a hight dieback ratio. 
 During the crisis the class of altitude 100 m-200 m et 200 m-300 m are strongly affected with a probability of presence exceeding 20\%.
 There is also like in the Ardenne group, a diminution the dieback along a altitudinal gradient.
 The low altitude stand are the more affected stand and are disappearing.
-
 During the five crisis year, the trend are similar for the two climatic areas that have the maximum elevation under 700 m, there dieback ratio the ratio is higher at lower altitudes. 
 The dieback of Norway spruce in the Vosges climatic area is not influenced by the variation of altitude.
 
@@ -424,7 +419,7 @@ The dieback of Norway spruce in the Vosges climatic area is not influenced by th
 % Wallonie + Vosges: Augmentation de la probabilité de présence de scolyte avec le temps quelque soit la classe d'altitude.
 
 
-\subsection{Topographic orientation vs bark beetle presence}
+\subsection{Influence of topographic orientations on the Norway spruce dieback.}
 
 Topographic orientation influence the presence of plant and tree species.
 The cumulative killed areas of Norways pruce area in function of the topographic orientation is present in the table \ref{tab_or_topo}
@@ -483,13 +478,21 @@ During 2020, there is 4\% of the total area of spruce stand of Grand-Est that ar
 \fi
  
   
-
-
-
-
+\subsection{Sanitary map validation}
+The result of photo-interpretation of spruce stand crossed with the sanitary map is present in the table \ref{tab_confu_matrix}. 
+  
+\begin{table}[htbp] 
+\caption{Confusion matrix of the result of the sanitary map validation for 274 spruce stands. The result is }
+\label{tab_confu_matrix}
+\begin{tabular}{|l|l|l|}
+\hline
+\diagbox{Sanitary map}{Orthophotoplan} & Dead trees & Healthy trees \\ \hline
+Dieback trees                    & 86,1 \%   & 13,9 \%      \\ \hline
+\end{tabular}
+\end{table}
 \section{Discussion}
 
-\subsection{Global trend}
+\subsection{Global trend of the dieback}
 
 In the current study, we found that the plains natural region is most sensible at the attack of bark beetles.
 
@@ -524,7 +527,7 @@ Besides the vosgian forest is generally mixed with beech (\textit{Fagus sylvatic
 The difference of proportion affected by bark beetle in Ardenne and Vosges can be explained by type of forest.
 In Ardenne, the even aged pure stand is predominantly whereas in the Vosges  the forest are more mixed. 
 
-\subsection{Altitude}
+\subsection{Influence of the altitude the dieback of Norway spruce}
 
 
 The Norway spruce is a tree species naturally present on the top of the Vosges mountain \citep{guinier_trois_1959}. 
@@ -564,7 +567,7 @@ However, the metabolism of bark beetle need energy from 5°C  \citep{kostal_phys
 	
 
 
-\subsection{Topographic orientation}
+\subsection{Influence of the topographic orientations on the dieback of Norway spruce.}
 
 %citer auteur versant sud + touché
 
@@ -648,7 +651,7 @@ Our data does not support the new plantation of Norway spruce in Plains.
 
 \section{Acknowledgements}
 
-This research has been funded thanks to the \textit{RegioWood II} project.
+This research has been funded thanks to the \textit{RegioWood II} project and to the \textit{Plan quinquennal de recherches forestières} of the Service Public de Wallonie (forest administration).
 
 %\bibliographystyle{elsarticle-num}
 \bibliographystyle{plainnatGL_v2}\biboptions{authoryear}
