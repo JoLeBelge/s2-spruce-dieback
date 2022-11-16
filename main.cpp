@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-         r.genReport("toto.txt");
+        r.genReport("reportTS_"+globSuffix+".txt");
         }
 
 

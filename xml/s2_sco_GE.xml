@@ -33,7 +33,7 @@
         
 <!-- colonne 1 UTM 31 : 3 tuiles -->
         <Tuile name="T31UFR">
-          <wd>/media/gef/Data2/S2Scolyte/</wd>
+          <wd>/media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/</wd>
               <doTuile>1</doTuile>
         </Tuile>
         
@@ -48,7 +48,7 @@
 <!-- colonne 2 UTM 31 : 3 tuiles -->        
         
          <Tuile name="T31UGR">
-          <wd>/media/gef/Data2/S2Scolyte/</wd>
+          <wd>/media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/</wd>
               <doTuile>1</doTuile>
         </Tuile>
         <Tuile name="T31UGQ">
