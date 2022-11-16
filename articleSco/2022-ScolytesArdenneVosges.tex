@@ -171,7 +171,7 @@ Topographic orientation maps for Wallonia and the Grand-Est have been computed w
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
 
 
-The detection of bark beetle infestation was realized by using dense time series of S2 imagery following the methodology developped by \cite{dutrieux_package_2021}.
+The detection of bark beetle infestation was realized by using dense time series of S2 imagery following the methodology developed by \cite{dutrieux_package_2021}.
 Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m.
 The three climatic areas studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
 Vegetation changes were tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} vegetation indice ($SWIR_{CR}$).
@@ -213,11 +213,12 @@ All S2 spectral bands were first summarized for each of the four trimesters of t
 Then, a Random Forest algorithm was trained on these synthetic intra-annual time serie to discriminate spruce from non-spruce pixels, based on a training set of observation from Belgium \citep{bolyn_forest_2018}.
 Eventually, this Random Forest classifier was applied on "spruce and fir" area of Vosges and bark beetle detection was carried on only for pixels detected as spruce. 
 
-validé pour la belgique vi ortho photo annuel 
-validé globalement via zone bonne et mauvaise
-effet de bord
-semble correct dans la globalité 
-Pas certains que tout le peuplement est touché 
+The maps were validated by two different methods on the Wallonia.
+The first method is global validation with annual orthophotoplan on random spruce stand on the 2018-2021 period. 
+For the second method, a stratified random sampling base on  the size, the altitude and the topography orientation of the spruce stand was used for 2018. 
+The selected stands were photo-interpreted with the annual orthophotoplan of the Wallonia.
+
+
 
 \subsection{Relation between bark beetle attack and environmental condition}
 
@@ -366,7 +367,7 @@ Vosges   & 4.248 ha                                                             
 The altitude is easily usable for the forest manager.
 The precipitation in western Europe depend of altitude. 
 The majority of spruce in the Plains is located in low altitude under 400m of altitude in contrast with the Ardenne and the Vosges where the majority of Norway spruce stand grow above 400 m. 
-The variation of the dieback ratio in the three groups climatic area for the period 2017-2021 is described in the Figure \ref{alti_sco}.
+The variation of the dieback ratio in the three climatic areas for the period 2017-2021 is described in the Figure \ref{alti_sco}.
 %The altitude has been subdivided into the same 12 elevation classes for both regions. 
 %The graphs corresponding to the variation of the probability of presence in Wallonia are in the upper part of the figure and those for the Grand-Est in the lower part.
 
@@ -382,15 +383,15 @@ The graphs corresponding to the variation of the dieback in Ardenne (blue) are i
 In Ardenne group, in the begin of the crisis, the low altitude classes are more affect than hight altitude classes.
 The dieback of Norway spruce occur along a altitudinal  gradient.
 This gradient is confirmed over the 5 years of the study.
-Indeed, during 2018, the a strong increase of the dieback ratio in the 100-200m and 200-300m altitude classes is observed. 
+Indeed, during 2018, there is a strong increase of the dieback ratio in the 100-200m and 200-300m altitude classes is observed. 
 These two altitude classes are more affected during the crisis.
 The stand located above 400m are weakly attacked with maximum 8,6\% in 2018.
 
-In Vosges group, the altitude classes are affected by dieback in a similar way.
+In Vosges group, all of the altitude classes are affected by dieback in a similar way.
 No trend seems to emerge.
 The low altitude are poorly represented. 
 There are no impact of altitude on the presence of bark beetle. 
-The diaback ratio is inferior of 5 \% during the study period.
+The dieback ratio is inferior of 5 \% during the study period.
 
 The Plains group are affected mainly in low altitude with a hight dieback ratio. 
 During the crisis the class of altitude 100 m-200 m et 200 m-300 m are strongly affected with a probability of presence exceeding 20\%.
@@ -426,24 +427,22 @@ The dieback of Norway spruce in the Vosges climatic area is not influenced by th
 \subsection{Topographic orientation vs bark beetle presence}
 
 Topographic orientation influence the presence of plant and tree species.
-The cumulative killed areas of Norways pruce area in function of the topographic orientation is present in the Figure \ref{tab_or_topo}
+The cumulative killed areas of Norways pruce area in function of the topographic orientation is present in the table \ref{tab_or_topo}
 In Ardenne, the north and south facing slope are similarly affected. 
 The plateau are less impacted than the north and south facing slope.
-
 The Plains group is the most affected. 
 The north-facing slope are more affected than the plateau or the south-facing slopes.
 The south facing-are the less impacted topographic orientation in the plains.
-
 In the Vosges climatic area, the plateau are more impacted than the north and south-facing slope.
 The north and south facing slope are similarly affected.
-
 The dieback in function the topographic orientation are different for the three climatic areas.
 The results are opposite for the Vosges and the Ardenne.
-For this two area, is not the orientation that influence the dieback but the topography.
+For this two areas is not the orientation of the slope that influence the dieback but the topography.
 
 
 
 \begin{table}[htbp] 
+\caption{Summary table of area impacted in function of topographic orientations}
 \label{tab_or_topo}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
@@ -607,8 +606,14 @@ However, in mixed forest, the Norway spruce mask is less accurate than in pure e
 In fact, our sanitary map resolution is 10m and if there some deciduous tree or others resinous in the Norway spruce mask, there is a risk of error.
 In Ardenne and in the Plains, there is principally pure even aged stand of Norway spruce but in the Vosges the stand are more mixed.
 In this region, there is more risk of presence of beech and silver fir in our Norway spruce mask.
-
 We overestimated probably the Norway spruce area in the Vosges region.
+
+
+validé pour la belgique vi ortho photo annuel 
+validé globalement via zone bonne et mauvaise
+effet de bord
+semble correct dans la globalité 
+Pas certains que tout le peuplement est touché 
 \section{Conclusion and perspective}
 
 In the context of global change, the forest manager need to adapt its silvicultural choices.
