@@ -5,16 +5,6 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[pie()]{piedallu_presentation_2014}
-Présentation du portail web {SILVAE}: système d'informations localisée sur
-  la végetation, les abres et leur environement., issn = {1951-6827,
-  0035-2829}, shorttitle = {{PRÉSENTATION} {DU} {PORTAIL} {WEB} {SILVAE}}, url
-  = {https://hal.archives-ouvertes.fr/hal-01598653}, doi =
-  {10.4267/2042/54051}, language = {fr}, number = {1}, urldate = {2022-08-01},
-  journal = {Revue Forestière Française}, author = {Piedallu, Christian and
-  Perez, Vincent and Seynave, Ingrid and Gasparotto, David and Gégout,
-  Jean-Claude}, year = {2014}, pages = {41},.
-
 \bibitem[Abdullah et~al.(2018)Abdullah, Darvishzadeh, Skidmore, Groen, and
   Heurich]{abdullah_european_2018}
 Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Groen, T.~A., and Heurich, M.,
@@ -386,6 +376,16 @@ Nystedt, B., Street, N.~R., and Wetterbom, May 2013.
 \newblock ISSN 0028-0836, 1476-4687.
 \newblock \doi{10.1038/nature12211}.
 \newblock URL \url{http://www.nature.com/articles/nature12211}.
+
+\bibitem[Piedallu et~al.(2014)Piedallu, Perez, Seynave, Gasparotto, and
+  Gégout]{piedallu_presentation_2014}
+Piedallu, C., Perez, V., Seynave, I., Gasparotto, D., and Gégout, J.-C., 2014.
+\newblock Présentation du portail web {SILVAE}: système d'informations
+  localisée sur la végetation, les abres et leur environement.
+\newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 41.
+\newblock ISSN 1951-6827, 0035-2829.
+\newblock \doi{10.4267/2042/54051}.
+\newblock URL \url{https://hal.archives-ouvertes.fr/hal-01598653}.
 
 \bibitem[Puhe(2003)]{puhe_roots_2003}
 Puhe, J., 2003.
