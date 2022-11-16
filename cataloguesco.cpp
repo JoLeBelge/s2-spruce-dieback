@@ -412,3 +412,12 @@ void catalogueSco::closeDS(){
 }
 // copier le fichier de style QML pour Etat Sanitaire
 void copyStyleES(std::string tifPath);
+
+
+std::vector<year_month_day> catalogueSco::getAllDates(){
+    std::vector<year_month_day> aRes;
+    for (tuileS2OneDateSco * t :  mVProdutsOK){
+        aRes.push_back(t->getymd());
+    }
+    return aRes;
+}

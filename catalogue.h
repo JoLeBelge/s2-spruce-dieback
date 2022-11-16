@@ -34,6 +34,8 @@ public:
 
     void init();
 
+    std::string getTuileName(){return mTuileName;}
+
 
 protected:
     // produit; tout les produits, mm si nuage, mm si pas téléchargé, et pas nécessairement ordonné par date
@@ -52,7 +54,7 @@ protected:
     float * scanLineR2;
     float * scanPix;
 
-
+    std::string mTuileName;
 
 };
 
