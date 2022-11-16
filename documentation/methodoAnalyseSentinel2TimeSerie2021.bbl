@@ -1,0 +1,42 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bolyn et~al.(2018)Bolyn, Michez, Gaucher, Lejeune, and
+  Bonnet]{bolyn_forest_2018}
+Bolyn, C., Michez, A., Gaucher, P., Lejeune, P., and Bonnet, S., 2018.
+\newblock Forest mapping and species composition using supervised per pixel
+  classification of {Sentinel}-2 imagery.
+\newblock \emph{Biotechnologie, Agronomie, Société et Environnement},
+  22\penalty0 (3):\penalty0 16.
+
+\bibitem[DUTRIEUX et~al.(2021{\natexlab{a}})DUTRIEUX, FERET, and
+  Ose]{dutrieux_mise_2021}
+DUTRIEUX, R., FERET, J.-B., and Ose, K., 2021{\natexlab{a}}.
+\newblock Mise au point d’une méthode pour le suivi généralisé des
+  dégâts de scolytes par télédétection satellitaire.
+\newblock \emph{RenDez-Vous techniques}, \penalty0 (69-70).
+
+\bibitem[DUTRIEUX et~al.(2021{\natexlab{b}})DUTRIEUX, FERET, OSE, and
+  DE~BOISSIEU]{dutrieux_package_2021}
+DUTRIEUX, R., FERET, J.-B., OSE, K., and DE~BOISSIEU, F., 2021{\natexlab{b}}.
+\newblock Package {Fordead}.
+\newblock URL \url{https://doi.org/10.15454/4TEO6H}.
+
+\bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
+  Ostapowicz]{grabska_forest_2019}
+Grabska, E., Hostert, P., Pflugmacher, D., and Ostapowicz, K., 2019.
+\newblock Forest stand species mapping using the {Sentinel}-2 time series.
+\newblock \emph{Remote Sensing}, 11\penalty0 (10):\penalty0 1197.
+
+\bibitem[Ma et~al.(2021)Ma, Liu, Liu, Zeng, and Li]{ma_tree_2021}
+Ma, M., Liu, J., Liu, M., Zeng, J., and Li, Y., 2021.
+\newblock Tree {Species} {Classification} {Based} on {Sentinel}-2 {Imagery} and
+  {Random} {Forest} {Classifier} in the {Eastern} {Regions} of the {Qilian}
+  {Mountains}.
+\newblock \emph{Forests}, 12\penalty0 (12):\penalty0 1736.
+
+\end{thebibliography}
