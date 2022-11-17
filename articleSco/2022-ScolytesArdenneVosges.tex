@@ -172,7 +172,7 @@ Topographic orientation maps for Wallonia and the Grand-Est have been computed w
 \subsection{Mapping of spruce dieback and mortality by analysis of sentinel-2 time-serie}
 
 
-The detection of bark beetle infestation was realized by using dense time series of S2 imagery following the methodology developed by \cite{dutrieux_package_2021}.
+The detection of Norway spruce dieback was realized by using dense time series of S2 imagery following the methodology developed by \cite{dutrieux_package_2021}.
 Sentinel-2 (S2) satellites carry multispectral sensor with a ground resolution up to 10 m.
 The three climatic areas studied are covered by 14 Sentinel-2 tiles (Figure \ref{fig:situ}).  
 Vegetation changes were tracked by means of a phenology metric, the \textit{SWIR Continuum Removal} vegetation indice ($SWIR_{CR}$).
@@ -191,7 +191,9 @@ Although \cite{dutrieux_package_2021} have published their methodology as a open
 We made use of OTB toolbox \citep{grizonnet_2017_OTB} for image processing and the health status was summarized by seasonnal annual health maps (in raster format).
 The annual health maps cover the vegetation period, starting from may and finishing in april of the next calendar year, because we made the assumption that Norway spruce dieback detected in april are related to bark beetle attack from the previous calendar year \citep{muller_features_2022}.
 For every years between 2018 and 2021, the heath state of every single pixel located in a spruce stand is summarized in one of the four following classes ; healthy, bark beetle attacked, cutted or sanitary thinning.
-The dense time-serie covers the 2016-2021 period and count a minimum of 180 acquisition dates. 
+The dense time-serie covers the 2017-2021 period and count a minimum of 126 and maximum 260 acquisition dates. 
+The annual time-serie enumerate a minimum of 10 and maximum of 51 acquisition dates. 
+ 
 
 
 \begin{figure}[htbp] 
@@ -215,8 +217,9 @@ Then, a Random Forest algorithm was trained on these synthetic intra-annual time
 Eventually, this Random Forest classifier was applied on "spruce and fir" area of Vosges and bark beetle detection was carried on only for pixels detected as spruce. 
 
 The maps were validated by two different methods on the Wallonia.
-The first method is global validation with annual orthophotoplan on random spruce stand on the 2018-2021 period. 
-For the second method, a stratified random sampling base on  the siz of the spruce stand was used for 2018. 
+The first method is global validation with annual orthophotoplan on random spruce stand on the 2018-2021 period. The sanitary level of the spruce stand in the sanitary map was compared with observed health status on the orthophotoplan.
+For the second method, a stratified random sampling base on the size of the dieback area on the sanitary map was used for 2018.
+The dieback area is a combination of bark beetle attacked area and sanitary cutting area. 
 The selected stands were photo-interpreted with the annual orthophotoplan of the Wallonia.
 
 
@@ -243,7 +246,7 @@ Sanitary map have been used to study the relation between the dieback and this t
 % basse altitude % Sous secteur chaud  + plus chaud - de pluies don cfavorable aux scolyte et defavorable àl'épicéa
 % Sous secteur chaud 
 The altitude has been broke down  by 100 m classes and kept the three topographic orientation classes.
-Then, in order to determine the classes of these factors most impacted by the bark beetle, we estimated the bark beetle areas for each class of each factor based on the health status maps for each year of the period 2017-2021.
+To determine which class of the two topographic variables was most affected, we estimated the dieback areas for each class of each factor based on the health status maps for each year of the period 2017-2021.
 The dieback ratio is  the dieback area of a class during one year divide by the total area of Norway spruce of this class at the beginning of the same year. 
 Dieback area is the surface of Norway spruce attacked by bark beetle and the area of sanitary cutting during the year. 
 The total area of spruce at the beginning of the years is composed of the area of healthy spruce area at the beginning of the year. 
@@ -302,7 +305,7 @@ The spruce area studied is 120,365 ha in Ardenne, 24,462 ha in the Vosges and 75
 
 The drought touched the western Europe since 2018.
 However, the outbreaks did not occur at the same time in the different region (Figure \ref{evol_gen}).
-The first major dieback took place in the Ardenne in 2018 but the peak is directly reached and a decrease of dieback ratio is observed in 2019. 
+The first major dieback took place in the Ardenne in 2018 but the peak is directly reached and a decrease of dieback ratio is observed from 2019. 
 A slight recovery in dieback occurs in 2020.
 %add reference crise 5 ans
 The area of Norway spruce killed in Ardenne during the five years of the study is 22.520 ha.
@@ -311,9 +314,9 @@ The climatic area of the Ardenne have lost 18,7 \% of his Norway spruce area.
 In the Vosges, there is 4.248 ha killed by bark beetle.
 However, the maximum ratio of area affected by this insect is 2,8 \% in 2020.
 The Norway spruce stand of the Vosges climatic has been reduced of 5,6 \% of his area. 
-At the peak of the crisis the Vosges are proportionally less affected than the Ardenne.
+At the peak of the crisis the Vosges are proportionally less affected than the Ardenne and the Plains.
 The important damage of the Plains spruce stand have begun in 2018.  
-The Plains climatic area is  with the most area and proportion of area affected.
+The Plains climatic area has the highest proportion of surface area affected by the crisis.
 This regions have three times more area touched by bark beetle than the Vosges.
 The Plains region reached the maximum of area affected by bark beetles in 2020. 
 The peak of proportion of area impacted is reached at 22 \%.
@@ -390,10 +393,10 @@ The low altitude are poorly represented.
 There are no impact of altitude on the presence of bark beetle. 
 The dieback ratio is inferior of 5 \% during the study period.
 The Plains group are affected mainly in low altitude with a hight dieback ratio. 
-During the crisis the class of altitude 100 m-200 m et 200 m-300 m are strongly affected with a probability of presence exceeding 20\%.
+During the crisis the class of altitude 100 m - 200 m et 200 m - 300 m are strongly affected with a probability of presence exceeding 20\%.
 There is also like in the Ardenne group, a diminution the dieback along a altitudinal gradient.
 The low altitude stand are the more affected stand and are disappearing.
-During the five crisis year, the trend are similar for the two climatic areas that have the maximum elevation under 700 m, there dieback ratio the ratio is higher at lower altitudes. 
+During the five crisis year, the trend are similar for Ardenne and the Plains, there dieback ratio the ratio is higher at lower altitudes. 
 The dieback of Norway spruce in the Vosges climatic area is not influenced by the variation of altitude.
 
 
@@ -422,14 +425,14 @@ The dieback of Norway spruce in the Vosges climatic area is not influenced by th
 \subsection{Influence of topographic orientations on the Norway spruce dieback.}
 
 Topographic orientation influence the presence of plant and tree species.
-The cumulative killed areas of Norways pruce area in function of the topographic orientation is present in the table \ref{tab_or_topo}
+The cumulative killed areas of Norways pruce area in function of the topographic orientation is present in the table \ref{tab_or_topo}.
 In Ardenne, the north and south facing slope are similarly affected. 
 The plateau are less impacted than the north and south facing slope.
 The Plains group is the most affected. 
 The north-facing slope are more affected than the plateau or the south-facing slopes.
-The south facing-are the less impacted topographic orientation in the plains.
+The south-facing are the less impacted topographic orientation in the plains.
 In the Vosges climatic area, the plateau are more impacted than the north and south-facing slope.
-The north and south facing slope are similarly affected.
+The north and south-facing slope are similarly affected.
 The dieback in function the topographic orientation are different for the three climatic areas.
 The results are opposite for the Vosges and the Ardenne.
 For this two areas is not the orientation of the slope that influence the dieback but the topography.
@@ -480,6 +483,8 @@ During 2020, there is 4\% of the total area of spruce stand of Grand-Est that ar
   
 \subsection{Sanitary map validation}
 The result of photo-interpretation of spruce stand crossed with the sanitary map is present in the table \ref{tab_confu_matrix}. 
+When the health map predicts a decline the dieback is confirmed by the orthophotoplan in 86,1 \% of the verified area.
+In 13,9 \% this a false positive and the trees are healthy.
   
 \begin{table}[htbp] 
 \caption{Confusion matrix of the result of the sanitary map validation for 274 spruce stands. The result is }
