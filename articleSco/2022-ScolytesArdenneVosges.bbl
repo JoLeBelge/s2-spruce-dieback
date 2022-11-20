@@ -1,4 +1,4 @@
-\begin{thebibliography}{50}
+\begin{thebibliography}{51}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -427,6 +427,14 @@ Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
   {Forests} after the 2018–2020 {Drought} {Years}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
 \newblock Publisher: MDPI.
+
+\bibitem[Van~der Perre et~al.(2015)Van~der Perre, Bythell, Bogaert, Claessens,
+  Ridremont, Tricot, Vincke, and Ponette]{van_der_perre_carte_2015}
+Van~der Perre, R., Bythell, S., Bogaert, P., Claessens, H., Ridremont, F.,
+  Tricot, C., Vincke, C., and Ponette, Q., 2015.
+\newblock La carte bioclimatique de {Wallonie}: un nouveau découpage
+  écologique du territoire pour le choix des essences forestières.
+\newblock \emph{Forêt. Nature}, \penalty0 (135):\penalty0 47--58.
 
 \bibitem[Walthert and Meier(2017)]{walthert_tree_2017}
 Walthert, L. and Meier, E.~S., November 2017.
