@@ -160,13 +160,6 @@ Hlásny, T., König, L., Krokene, P., Lindner, M., Montagné-Huck, C., Müller,
 \newblock \doi{10.1007/s40725-021-00142-x}.
 \newblock URL \url{https://link.springer.com/10.1007/s40725-021-00142-x}.
 
-\bibitem[Horgan et~al.(2003)Horgan, Keane, McCarthy, Lally, and
-  Thompson]{horgan_guide_2003}
-Horgan, T., Keane, M., McCarthy, R., Lally, M., and Thompson, D., 2003.
-\newblock A {Guide} to {Forest} {Tree} {Species} {Selection} and {Silviculture}
-  in {Ireland}.
-\newblock \penalty0 (3).
-
 \bibitem[{Institut National de l’Information Géographique et
   Forestière}(2018)]{IGN_bd_2018}
 {Institut National de l’Information Géographique et Forestière}, 2018.
@@ -250,6 +243,15 @@ Kuhn, A., Hautier, L., and San~Martin, G., September 2022.
 \newblock ISSN 2167-8359.
 \newblock \doi{10.7717/peerj.14093}.
 \newblock URL \url{https://peerj.com/articles/14093}.
+
+\bibitem[Köstler et~al.(1968)Köstler, Brückner, and
+  Bibelriether]{kostler_1968}
+Köstler, J.~N., Brückner, E., and Bibelriether, H., 1968.
+\newblock Die wurzeln der waldbäume.
+\newblock \emph{Zeitschrift für Pflanzenernährung und Bodenkunde}, 120.
+\newblock \doi{https://doi.org/10.1002/jpln.19681200210}.
+\newblock URL
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/jpln.19681200210}.
 
 \bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
   Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and

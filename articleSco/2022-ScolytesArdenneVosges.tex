@@ -134,11 +134,14 @@ The Grand-Est and Wallonia are included in the temperate oceanic bioclimatic zon
 The 24 ecoregions of Wallonia and Grand-Est are mainly defined by the climate and therefore influence the tree species distribution \citep{walthert_tree_2017}.
 Some ecoregions have analogous climate and allow presence of the same tree species.
 %The Norway spruce of central Europe need a moutain climate.
-To better understand the dieback of Norway spruce, the French and Walloon ecoregions have been grouped by average temperature and precipitation during the growing season in three homogeneous climatic areas: Ardenne, Plains and Vosges (Figure \ref{fig:clim}).
-The Plains is characterized by a temperature between 15.5°C and 18°C and by precipitations between 300 mm and 400 mm.
-Natural regions with a temperature between 14°C and 15.5°C and a average precipitation between 400 mm and 450 mm correspond to climatic area of Ardenne.
-Vosges are natural regions with temperature varies between 15.5°C and 17 °C and the precipitation between 425 mm and 600 mm.
-The Figure \ref{fig:situ} shows localisation of the three climatic areas. 
+To better understand the dieback of Norway spruce, the French and Walloon ecoregions have been grouped by average temperature and precipitation during the growing season of the 1990-2020 period in three homogeneous bioclimatic areas: Ardenne, Plains and Vosges (Figure \ref{fig:clim}).
+Plains are characterized by low rainfall inferior at 400 mm et temperature superior at 15 °C.
+Ecoregions with rainfall between 400 mm and 450 mm and temperature inferior at 15 °C correspond to bioclimatic area of the Ardenne.
+Vosges are ecoregions with rainfall superior at 400 mm and temperature between 15.5 °C and 17°C
+%The Plains is characterized by a temperature between 15.5°C and 18°C and by precipitations between 300 mm and 400 mm.
+%Ecoregions with a temperature between 14°C and 15.5°C and a average precipitation between 400 mm and 450 mm correspond to climatic area of Ardenne.
+%Vosges are natural regions with temperature varies between 15.5°C and 17 °C and the precipitation between 425 mm and 600 mm.
+The Figure \ref{fig:situ} shows localisation of the three bioclimatic areas. 
 The climate variables for Wallonia have been provided by the Institut Royal Météorologique and come from the climate map Digitalis \citep{piedallu_presentation_2014} for the Grand-Est.
 The spruce area studied is 120,365 ha in Ardenne, 24,462 ha in the Vosges and 75.067 ha in the Plains in the Grand-Est region.
 \begin{figure}[htbp] 
@@ -151,12 +154,12 @@ The spruce area studied is 120,365 ha in Ardenne, 24,462 ha in the Vosges and 75
 Forest microclimate contrast with the climate.
 The micro-climate is influenced including by topography \citep{de_frenne_forest_2021}.
 The digital surface model data from the Copernicus Land Monitoring Service \citep{DEM_copernicus} at a resolution of 25 m have been used for altitude data's and slope calculations.
-The topographic orientations have been determined using the \cite{Delvaux_galoux} definition of three topographic orientations.
+The topographic exposures have been determined using the \cite{Delvaux_galoux} definition of three topographic  exposures.
 Plateau are neutral topographic conditions that does not create a particular micro-climate. 
 North-facing orientations are slopes greater than  20\% facing north (285 to 125°) with cold and shady conditions.
 South-facing orientations are slope greater than  20\% facing south (125 to 285°) with a hot micro-climate.
 In this orientation, the air is warmer and drier and the temperature difference between day and night is greater.
-Topographic orientation maps for Wallonia and the Grand-Est have been computed with the DEM. 
+Topographic exposures maps for Wallonia and the Grand-Est have been computed with the DEM. 
 
 
 \begin{figure} [htbp] 
@@ -214,11 +217,14 @@ All S2 spectral bands were first summarized for each of the four trimesters of t
 Then, a Random Forest algorithm was trained on these synthetic intra-annual time serie to discriminate spruce from non-spruce pixels, based on a training set of observation from Belgium \citep{bolyn_forest_2018}.
 Eventually, this Random Forest classifier was applied on "spruce and fir" area of Vosges and bark beetle detection was carried on only for pixels detected as spruce. 
 
-The maps were validated by two different methods on the Wallonia.
+The maps were validated by three different methods.
 The first method is global validation with annual orthophotoplan on random spruce stand on the 2018-2021 period. The sanitary level of the spruce stand in the sanitary map was compared with observed health status on the orthophotoplan.
 For the second method, a stratified random sampling base on the size of the dieback area on the sanitary map was used for 2018.
 The dieback area is a combination of bark beetle attacked area and sanitary cutting area. 
 The selected stands were photo-interpreted with the annual orthophotoplan of the Wallonia.
+A field validation on the Vosges massif have been realized on 127 stands in winter 2020-2021.
+Each stand have been inspected for the presence of bark beetles or dead trees. 
+The result of this field inspection have been compared with sanitary map. 
 
 
 
@@ -243,7 +249,7 @@ Sanitary map have been used to study the relation between the dieback and this t
 %Microclimat ss 
 % basse altitude % Sous secteur chaud  + plus chaud - de pluies don cfavorable aux scolyte et defavorable àl'épicéa
 % Sous secteur chaud 
-The altitude has been broke down  by 100 m classes and kept the three topographic orientation classes.
+The altitude has been broke down  by 100 m classes and kept the three topographic exposures classes.
 To determine which class of the two topographic variables was most affected, we estimated the dieback areas for each class of each factor based on the health status maps for each year of the period 2017-2021.
 The  new dieback ratio is  the dieback area of a class during one year divided by the total area of Norway spruce of this class at the beginning of the same year. 
 Dieback area is the surface of Norway spruce attacked by bark beetle and the area of sanitary cutting during the year. 
@@ -294,11 +300,11 @@ The total area of spruce at the beginning of the years is composed of the area o
 \section{Results}
 
 %\subsection{Choice of environmental variable}
-%The altitude and the topographic orientation were selected as explanatory variable by the random forest algorithm.
+%The altitude and the topographic exposures were selected as explanatory variable by the random forest algorithm.
 %We study the dieback of the Norway spruce in function of this two variables.
 \subsection{Sanitary map validation}
 The result of photo-interpretation of spruce stand crossed with the sanitary map is present in the table \ref{tab_confu_matrix}. 
-When the health map predicts a decline the dieback is confirmed by the orthophotoplan in 86,1 \% of the verified area.
+When the sanitary map predicts a decline the dieback is confirmed by the orthophotoplan in 86,1 \% of the verified area.
 In 13,9 \% this a false positive and the trees are healthy.
   
 \begin{table}[htbp] 
@@ -310,6 +316,24 @@ In 13,9 \% this a false positive and the trees are healthy.
 Dieback trees                    & 86,1 \%   & 13,9 \%      \\ \hline
 \end{tabular}
 \end{table}
+
+
+The field validation confirm the result of the photo-interpretation method.
+Dead trees is identified correctly in 84.7 \%.
+The healthy tree on the sanitary map are valided in 100 \% of the stand  in the field (Table \ref{field_confu_matrix}).
+\begin{table}[htbp] 
+\caption{Confusion matrix of the result of the field validation for 127 spruce stands.}
+\label{field_confu_matrix}
+\begin{tabular}{|l|l|l|}
+\hline
+\diagbox{Sanitary map}{Field} & Dead trees & Healthy trees \\ \hline
+Dieback trees                    & 74.7 \%  & 15.3\%      \\ \hline
+Healthy trees                    & 0 \%      & 100 \%
+\\ \hline
+
+\end{tabular}
+\end{table}
+
 
 
 \subsection{Evolution of the crisis }
@@ -433,38 +457,33 @@ The dieback of Norway spruce in the Vosges climatic area is not influenced by th
 % Wallonie + Vosges: Augmentation de la probabilité de présence de scolyte avec le temps quelque soit la classe d'altitude.
 
 
-\subsection{Influence of topographic orientations on the Norway spruce dieback.}
+\subsection{Influence of topographic exposures on the Norway spruce dieback.}
 
-The cumulative killed areas of Norway spruce during five years of crisis varies with the topographic orientation (table \ref{tab_or_topo}).
+The cumulative killed areas of Norway spruce during five years of crisis varies with the topographic exposures (table \ref{tab_or_topo}).
 In Ardenne, the north and south facing slope are similarly affected. 
 The plateau are less impacted than the north and south facing slope.
 The Plains group is the most affected. 
 The north-facing slope are more affected than the plateau or the south-facing slopes.
-The south-facing are the less impacted topographic orientation in the plains.
+The south-facing are the less impacted topographic exposure in the plains.
 In the Vosges climatic area, the plateau are more impacted than the north and south-facing slope.
 The north and south-facing slope are similarly affected.
-The dieback in function the topographic orientation are different for the three climatic areas.
+The dieback in function the topographic exposure are different for the three climatic areas.
 The results are opposite for the Vosges and the Ardenne.
 For this two areas is not the orientation of the slope that influence the dieback but the topography.
 
 
 
 \begin{table}[htbp] 
-\caption{Summary table of area impacted in function of topographic orientations}
+\caption{Summary table of area impacted in function of topographic exposures}
 \label{tab_or_topo}
-\begin{tabular}{|l|l|l|l|l|}
+
+\begin{tabular}{|l|lll|}
 \hline
-Climatic area  & Thermal sector     & \begin{tabular}[c]{@{}l@{}}Cumulative area affected \\ by bark beetle (ha).\end{tabular} & \begin{tabular}[c]{@{}l@{}}Norway spruce area\\ before crisis (ha).\end{tabular} & Dieback ratio (\%) \\ \hline
-Plains  & North-facing slope & 1.582                                                                                     & 2.561                                                                             & 57,8                         \\ \hline
-Plains  & Plateau            & 10.572                                                                                    & 20.527                                                                           & 51,5                         \\ \hline
-Plains  & South-facing slope & 670                                                                                      & 1373                                                                             & 48,7                         \\ \hline
-Ardenne & North-facing slope & 3.000
- & 14.190                                                                            & 21,1                         \\ \hline
-Ardenne & Plateau            & 17.325                                                                                     & 96.511                                                                            & 17,9                         \\ \hline
-Ardenne & South-facing slope & 2.198 & 9.665 & 22.7                        \\ \hline
-Vosges  & North-facing slope & 1791                                                                                     & 36314                                                                           & 4,9                         \\ \hline
-Vosges  & Plateau            & 1770                                                                                    & 25553                                                                            & 6,9                          \\ \hline
-Vosges  & South-facing slope & 688                                                                                      & 13220                                                                           & 5,2                         \\ \hline
+\multirow{2}{*}{}  & \multicolumn{3}{l|}{Dieback ratio (\%)}                             \\ \cline{2-4} 
+                   & \multicolumn{1}{l|}{Plains} & \multicolumn{1}{l|}{Ardenne} & Vosges \\ \hline
+Plateau            & \multicolumn{1}{l|}{56}   & \multicolumn{1}{l|}{16}    & 7.2    \\ \hline
+South-facing slope & \multicolumn{1}{l|}{55}   & \multicolumn{1}{l|}{23.6}    & 5.4    \\ \hline
+North-facing slope & \multicolumn{1}{l|}{59}   & \multicolumn{1}{l|}{22}    & 5.1   \\ \hline
 \end{tabular}
 \end{table}
 
@@ -580,7 +599,7 @@ Warm winter is also negative in altitude for the bark beetles population and can
 	
 
 
-\subsection{Influence of the topographic orientations on the dieback of Norway spruce.}
+\subsection{Influence of the topographic exposures on the dieback of Norway spruce.}
 
 %citer auteur versant sud + touché
 
