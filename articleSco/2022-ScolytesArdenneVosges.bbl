@@ -1,4 +1,4 @@
-\begin{thebibliography}{51}
+\begin{thebibliography}{53}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -115,6 +115,13 @@ Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
 \newblock Copernicus land monitoring service.
 \newblock URL
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
+
+\bibitem[Gauquelin(2010)]{gauquelin_guide_2010}
+Gauquelin, X., editor, 2010.
+\newblock \emph{Guide de gestion des forêts en crise sanitaire}.
+\newblock Office National des Forêts, Institut pour le Développement
+  Forestier, Paris.
+\newblock ISBN 978-2-84207-344-2.
 
 \bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
   Ostapowicz]{grabska_forest_2019}
@@ -414,6 +421,24 @@ Stadelmann, G., Bugmann, H., Meier, F., Wermelinger, B., and Bigler, C.,
 \newblock \doi{10.1016/j.foreco.2013.06.003}.
 \newblock URL
   \url{https://linkinghub.elsevier.com/retrieve/pii/S037811271300371X}.
+
+\bibitem[Sénécal et~al.(2020)Sénécal, Brice, Sauban, Duvauchelle, Morin,
+  Rombaut, Bouan, Couette, Blondet, Lenglet, and
+  Wernsdörfer]{senecal_crise_2020}
+Sénécal, S., Brice, K., Sauban, F., Duvauchelle, M., Morin, A., Rombaut, G.,
+  Bouan, G., Couette, A., Blondet, M., Lenglet, J., and Wernsdörfer, H.,
+  October 2020.
+\newblock La crise des scolytes ({Ips} typographus) ravageurs de l’Épicéa
+  commun ({Picea} abies) vue de l’intérieur {Retours} sur une enquête
+  qualitative auprès d’acteurs du nord-est de la {France} et sa zone
+  transfrontalière ({Allemagne}, {Belgique}) réalisée fin 2019 – début
+  2020.
+\newblock \emph{Revue forestière française}, 72\penalty0 (5):\penalty0
+  425--441.
+\newblock ISSN 1951-6827, 0035-2829.
+\newblock \doi{10.20870/revforfr.2020.5337}.
+\newblock URL
+  \url{https://revueforestierefrancaise.agroparistech.fr/article/view/5337}.
 
 \bibitem[{Theia Team}(2022)]{theia_team}
 {Theia Team}, 2022.
