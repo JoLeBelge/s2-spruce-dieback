@@ -1,4 +1,4 @@
-\begin{thebibliography}{53}
+\begin{thebibliography}{54}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -116,12 +116,33 @@ Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
 \newblock URL
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
 
+\bibitem[Faccoli and Bernardinelli(2014)]{faccoli_composition_2014}
+Faccoli, M. and Bernardinelli, I., January 2014.
+\newblock Composition and {Elevation} of {Spruce} {Forests} {Affect}
+  {Susceptibility} to {Bark} {Beetle} {Attacks}: {Implications} for {Forest}
+  {Management}.
+\newblock \emph{Forests}, 5\penalty0 (1):\penalty0 88--102.
+\newblock ISSN 1999-4907.
+\newblock \doi{10.3390/f5010088}.
+\newblock URL \url{http://www.mdpi.com/1999-4907/5/1/88}.
+
 \bibitem[Gauquelin(2010)]{gauquelin_guide_2010}
 Gauquelin, X., editor, 2010.
 \newblock \emph{Guide de gestion des forêts en crise sanitaire}.
 \newblock Office National des Forêts, Institut pour le Développement
   Forestier, Paris.
 \newblock ISBN 978-2-84207-344-2.
+
+\bibitem[Gazol et~al.(2017)Gazol, Camarero, Anderegg, and
+  Vicente-Serrano]{gazol_2017}
+Gazol, A., Camarero, J.~J., Anderegg, W. R.~L., and Vicente-Serrano, S.~M.,
+  2017.
+\newblock Impacts of droughts on the growth resilience of northern hemisphere
+  forests.
+\newblock \emph{Global Ecology and Biogeography}, 26\penalty0 (2):\penalty0
+  166--176.
+\newblock \doi{https://doi.org/10.1111/geb.12526}.
+\newblock URL \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/geb.12526}.
 
 \bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
   Ostapowicz]{grabska_forest_2019}
@@ -187,6 +208,16 @@ Jactel, H., Moreira, X., and Castagneyrol, B., 2021.
 \newblock URL \url{https://doi.org/10.1146/annurev-ento-041720-075234}.
 \newblock PMID: 32903046.
 
+\bibitem[Jakuš(1995)]{jakus_1995}
+Jakuš, R., 1995.
+\newblock Bark beetle (col., scolytidae) communities and host and site factors
+  on tree level in norway spruce primeval natural forest.
+\newblock \emph{Journal of Applied Entomology}, 119\penalty0 (1-5):\penalty0
+  643--651.
+\newblock \doi{https://doi.org/10.1111/j.1439-0418.1995.tb01352.x}.
+\newblock URL
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1439-0418.1995.tb01352.x}.
+
 \bibitem[Jönsson et~al.(2009)Jönsson, Appelberg, Harding, and
   Bârring]{jonsson_2009}
 Jönsson, A.~M., Appelberg, G., Harding, S., and Bârring, L., 2009.
@@ -196,17 +227,6 @@ Jönsson, A.~M., Appelberg, G., Harding, S., and Bârring, L., 2009.
 \newblock \doi{https://doi.org/10.1111/j.1365-2486.2008.01742.x}.
 \newblock URL
   \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2486.2008.01742.x}.
-
-\bibitem[Kasumović et~al.(2019)Kasumović, Lindelöw, and
-  Hrašovec]{kasumovic_overwintering_2019}
-Kasumović, L., Lindelöw, A., and Hrašovec, B., February 2019.
-\newblock Overwintering strategy of \textit{{Ips} typographus} {L}.
-  ({Coleoptera}, {Curculionidae}, {Scolytinae}) in {Croatian} spruce forests on
-  lowest elevation.
-\newblock \emph{Šumarski list}, 143\penalty0 (1-2):\penalty0 19--24.
-\newblock ISSN 18469140, 03731332.
-\newblock \doi{10.31298/sl.143.1-2.2}.
-\newblock URL \url{https://hrcak.srce.hr/217770}.
 
 \bibitem[Kautz et~al.(2014)Kautz, Schopf, and Imron]{kautz_individual_2014}
 Kautz, M., Schopf, R., and Imron, M.~A., February 2014.
@@ -227,20 +247,6 @@ Kotlarski, S., Bosshard, T., Lüthi, D., Pall, P., and Schär, C., May 2012.
 \newblock ISSN 0165-0009, 1573-1480.
 \newblock \doi{10.1007/s10584-011-0195-5}.
 \newblock URL \url{http://link.springer.com/10.1007/s10584-011-0195-5}.
-
-\bibitem[Koštál et~al.(2011)Koštál, Doležal, Rozsypal, Moravcová,
-  Zahradníčková, and Šimek]{kostal_physiological_2011}
-Koštál, V., Doležal, P., Rozsypal, J., Moravcová, M., Zahradníčková, H.,
-  and Šimek, P., August 2011.
-\newblock Physiological and biochemical analysis of overwintering and cold
-  tolerance in two {Central} {European} populations of the spruce bark beetle,
-  {Ips} typographus.
-\newblock \emph{Journal of Insect Physiology}, 57\penalty0 (8):\penalty0
-  1136--1146.
-\newblock ISSN 00221910.
-\newblock \doi{10.1016/j.jinsphys.2011.03.011}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S0022191011000795}.
 
 \bibitem[Kuhn et~al.(2022)Kuhn, Hautier, and San~Martin]{kuhn_pheromone_2022}
 Kuhn, A., Hautier, L., and San~Martin, G., September 2022.
@@ -281,17 +287,6 @@ Lisein, J., Michez, A., Claessens, H., and Lejeune, P., 2015.
 \newblock Discrimination of deciduous tree species from time series of unmanned
   aerial system imagery.
 \newblock \emph{PLoS One}, 10\penalty0 (11):\penalty0 e0141006.
-
-\bibitem[Lombardero et~al.(2000)Lombardero, Ayres, Ayres, and
-  Reeve]{lombardero_cold_2000}
-Lombardero, M.~J., Ayres, M.~P., Ayres, B.~D., and Reeve, J.~D., June 2000.
-\newblock Cold {Tolerance} of {Four} {Species} of {Bark} {Beetle}
-  ({Coleoptera}: {Scolytidae}) in {North} {America}.
-\newblock \emph{Environmental Entomology}, 29\penalty0 (3):\penalty0 421--432.
-\newblock ISSN 0046-225X, 1938-2936.
-\newblock \doi{10.1603/0046-225X-29.3.421}.
-\newblock URL
-  \url{https://academic.oup.com/ee/article-lookup/doi/10.1603/0046-225X-29.3.421}.
 
 \bibitem[Löw and Koukal(2020)]{low_phenology_2020}
 Löw, M. and Koukal, T., 2020.
@@ -409,6 +404,15 @@ Roe, G.~H., 2005.
   (1):\penalty0 645--671.
 \newblock \doi{10.1146/annurev.earth.33.092203.122541}.
 \newblock URL \url{https://doi.org/10.1146/annurev.earth.33.092203.122541}.
+
+\bibitem[Rouse and Wilson(1969)]{Rouse_1969}
+Rouse, W.~R. and Wilson, R.~G., 1969.
+\newblock Time and space variations in the radiant energy fluxes over sloping
+  forested terrain and their influence on seasonal heat and water balances at a
+  middle latitude site.
+\newblock \emph{Geografiska Annaler: Series A, Physical Geography}, 51\penalty0
+  (3):\penalty0 160--175.
+\newblock \doi{10.1080/04353676.1969.11879800}.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
