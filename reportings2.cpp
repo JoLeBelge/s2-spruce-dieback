@@ -18,7 +18,7 @@ void reportingS2::genReport(std::string aOut){
     std::ofstream out;
     out.open(aOut);
     out <<"#1=utilise la prise de vue. 0=n'utilise pas (ennuagement)\n" ;
-    out <<"annee;date;" ;
+    out <<"saisonVege;date;" ;
     std::vector<year_month_day> allD;
     for (auto kv : mMTuileAndDates){
         for (year_month_day ymd: kv.second){
@@ -36,6 +36,8 @@ void reportingS2::genReport(std::string aOut){
 
     // maintenant on est prêt à faire notre tableau récapitulatif
     year curY(0);
+    month mai{5}, avril{4};
+
       for (year_month_day ymd : allD){
           //std::cout <<ymd ;
           out <<ymd.year() <<";" << ymd;
@@ -51,12 +53,21 @@ void reportingS2::genReport(std::string aOut){
                           e=1;
                           mMTuileNbDates.at(std::make_pair(tuile,1000))+=1;
 
-                          std::pair<std::string,int> p(tuile,curY);
+
+                          int season(curY);
+                          if (ymd.month()<mai ){
+                              season-=1;
+                          }
+
+                          std::pair<std::string,int> p(tuile,season);
+
+
                           if (mMTuileNbDates.find(p)==mMTuileNbDates.end()){
                                mMTuileNbDates.emplace(p,1);
                           }else{
                           mMTuileNbDates.at(p)+=1;
                           }
+
                       }
               }
               //std::cout <<";"<< e ;
@@ -73,7 +84,7 @@ void reportingS2::genReport(std::string aOut){
            int nb=kv.second;
            std::string year("total");
            if (y!=1000){year=std::to_string(y);}
-           out <<tuile << ";"<< year << ";" << nb << "\n";
+           out <<tuile << ";Season"<< year << ";" << nb << "\n";
 
       }
     out.close();

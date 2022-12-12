@@ -314,6 +314,7 @@ std::vector<pts> readPtsFile(std::string aFilePath){
     bool firstL(1);// dégager les headers
     for (std::vector<std::string> l : aVV){
         if (!firstL){
+            if (l.size()!=3){std::cout << "Fichier avec position à tester ne semble pas avoir les 3 colonnes nécessaires ... " << std::endl;}
             //std::cout << " l at 2 = " << l.at(2) << " , l.at(3) " << l.at(3) << std::endl;
             int aId=std::stoi(l.at(0));
             double aX=std::stod(l.at(1));
@@ -321,6 +322,7 @@ std::vector<pts> readPtsFile(std::string aFilePath){
             aRes.push_back(pts(aId,aX,aY));
         } else { firstL=0;}
     }
+    std::cout << " done " << std::endl;
     return aRes;
 }
 

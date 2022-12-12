@@ -58,7 +58,7 @@ void TS1Pos::analyse(){
                 // sol nu plusieurs fois d'affilé et ou sur longue période
                 if (aVPosEtatFin.at(pos).size()>2 | aVDuree.at(pos)>40){
                     // si stressé avant sol nu, code 4. Sinon ; code 3 pour toutes les dates ultérieur
-                    if (pos>0 && aVE.at(pos-1)==2){res=4;} else {res=3;}
+                    if (pos>0 && aVE.at(pos-1)==2 && aVDuree.at(pos-1)>20 ){res=4;} else {res=3;}
                     // change toutes les dates d'après
                     for (int i(aVPosEtatFin.at(pos).at(0)); i < mVEtatFin.size(); i++){
                         mVEtatFin.at(i)=res;
@@ -99,7 +99,7 @@ void TS1Pos::analyse(){
             if (p != aVE.end()) {
                 int pos= p - aVE.begin();
                 // stressé plusieurs fois d'affilé et ou sur longue période
-                if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>30){
+                if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>20){
                     // on change les valeurs d'après
                     for (int po(pos+1); po<aVE.size();po++){
                         int res(2);
@@ -117,7 +117,7 @@ void TS1Pos::analyse(){
         }
     }
 
-    /*std::cout << "après 2ieme it de stress" << std::endl;
+   /* std::cout << "après 2ieme it de stress" << std::endl;
     for (int e : mVEtatFin){
         std::cout << e << std::endl;
     }*/

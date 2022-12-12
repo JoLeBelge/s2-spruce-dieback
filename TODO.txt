@@ -1,20 +1,10 @@
 TO DO s2_timeSerie;
 
--exporter un rapport de synthèse lors de l'analyse de la TS ; avec les dates utilisées pour chaque tuile. Le mieux serait d'avoir un grand tableau unique pour toute les tuiles de la RW? certainement, mais il faudrait alors le mettre à jours d'une tuile à l'autre.
-
--utiliser s2_postProcess pour faire une carte de surveillance, càd mettre les nouveaux scolytes en évidence à une autre échelle spatiale (résolution de 5km? ça me semble bien)
+-correction bug mis en évidence 2022 11 28 : un pixel est scolyté 2 dates a 3 jours d'intervalles, puis coupé --> prise de vue pendant l'exploitation? ajouter une limite de temps minimum pour que le pixel soit considéré scolyté. fait.
 
 -option catalogue "clean" pour effacer tout les résultats intermédiaires pour un suffix donné
 
 -sauver résultats intermédiaire (état i, état f) --> j'ai testé, mais en fait c'est très très long à sauver! forcément, il y a des centaines de cartes.
 
--ouvrir résultats intermédiaires (comment choisir quand les ouvrir?) en suspens
--mettre à jours résultats intermédiaires (en effectuant l'analyse uniquement sur les dernières dates ?? oui ça serait bien évidemment)
-
---> en modifiant le calcul en //, j'ai diminué le temps de calcul. peut-être alors que je ne devrais pas me fatiguer avec les résultats intermédiaires?
-
-
 SURVEILLANCE
 -développement d'un outil de monitoring pour les coupes de sauvetage = detection de nouveau foyer pour l'année en cours: c'est très bien, mais pour cela à nouveau il faut sauver les résultats intermédiaires (état final pour chaque date, ou au moins pour la date finale!)
-
-
