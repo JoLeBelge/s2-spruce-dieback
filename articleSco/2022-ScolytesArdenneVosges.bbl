@@ -1,15 +1,9 @@
-\begin{thebibliography}{50}
+\begin{thebibliography}{51}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[gau(2010)]{gauquelin_guide_2010}
-2010.
-\newblock \emph{Guide de gestion des forêts en crise sanitaire}.
-\newblock Office National des Forêts, Institut pour le Développement
-  Forestier, Paris.
 
 \bibitem[Abdullah et~al.(2018)Abdullah, Darvishzadeh, Skidmore, Groen, and
   Heurich]{abdullah_european_2018}
@@ -65,7 +59,12 @@ Bolyn, C., Lejeune, P., Michez, A., and Latte, N., 2022.
 \newblock Mapping tree species proportions from satellite imagery using
   spectral–spatial deep learning.
 \newblock \emph{Remote Sensing of Environment}, 280:\penalty0 113205.
-\newblock ISSN 0034-4257.
+
+\bibitem[Brunier et~al.(2020)Brunier, Delport, and
+  Gauquelin]{brunier_guide_2020}
+Brunier, L., Delport, F., and Gauquelin, X., 2020.
+\newblock Guide de gestion des crises sanitaires en forêt.
+\newblock page 188.
 
 \bibitem[Bárta et~al.(2021)Bárta, Lukeš, and Homolová]{barta_early_2021}
 Bárta, V., Lukeš, P., and Homolová, L., 2021.
@@ -324,6 +323,14 @@ Rouse, W.~R. and Wilson, R.~G., 1969.
   middle latitude site.
 \newblock \emph{Geografiska Annaler: Series A, Physical Geography}, 51\penalty0
   (3):\penalty0 160--175.
+
+\bibitem[Rousi et~al.(2022)Rousi, Kornhuber, Beobide-Arsuaga, Luo, and
+  Coumou]{rousi_accelerated_2022}
+Rousi, E., Kornhuber, K., Beobide-Arsuaga, G., Luo, F., and Coumou, D., July
+  2022.
+\newblock Accelerated western {European} heatwave trends linked to
+  more-persistent double jets over {Eurasia}.
+\newblock \emph{Nature Communications}, 13\penalty0 (1):\penalty0 3851.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
