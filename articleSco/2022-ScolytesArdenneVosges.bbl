@@ -14,12 +14,6 @@ Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Groen, T.~A., and Heurich, M.,
 \newblock \emph{International journal of applied earth observation and
   geoinformation}, 64:\penalty0 199--209.
 
-\bibitem[Alderweireld et~al.(2015)Alderweireld, Burnay, Pitchugin, and
-  Lecomte]{Alderweireld_2015}
-Alderweireld, M., Burnay, F., Pitchugin, M., and Lecomte, H., 2015.
-\newblock \emph{Inventaire Forestier Wallon - Résultats 1994 - 2012}.
-\newblock Bilans et perspectives - Ressources naturelles. SPW.
-
 \bibitem[Ali et~al.(2021)Ali, Abdullah, Darvishzadeh, Skidmore, Heurich,
   Roeoesli, Paganini, Heiden, and Marshall]{ali_canopy_2021}
 Ali, A.~M., Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Heurich, M.,
@@ -213,6 +207,13 @@ Köstler, J.~N., Brückner, E., and Bibelriether, H., 1968.
 \newblock Die wurzeln der waldbäume.
 \newblock \emph{Zeitschrift für Pflanzenernährung und Bodenkunde}, 120.
 
+\bibitem[Lejeune et~al.(2022)Lejeune, Michez, Perin, Gilles, Latte, Ligot,
+  Lisein, and Claessens]{lejeune_ep_2022}
+Lejeune, P., Michez, A., Perin, J., Gilles, A., Latte, N., Ligot, G., Lisein,
+  J., and Claessens, H., 2022.
+\newblock L'épicéa wallon: état de la ressource en 2021.
+\newblock \emph{Silva Belgica}, 2:\penalty0 7.
+
 \bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
   Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and
   Marchetti]{lindner_climate_2010}
@@ -326,11 +327,10 @@ Rouse, W.~R. and Wilson, R.~G., 1969.
 
 \bibitem[Rousi et~al.(2022)Rousi, Kornhuber, Beobide-Arsuaga, Luo, and
   Coumou]{rousi_accelerated_2022}
-Rousi, E., Kornhuber, K., Beobide-Arsuaga, G., Luo, F., and Coumou, D., July
-  2022.
+Rousi, E., Kornhuber, K., Beobide-Arsuaga, G., Luo, F., and Coumou, D., 2022.
 \newblock Accelerated western {European} heatwave trends linked to
   more-persistent double jets over {Eurasia}.
-\newblock \emph{Nature Communications}, 13\penalty0 (1):\penalty0 3851.
+\newblock \emph{Nature Communications}, 13:\penalty0 3851.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
