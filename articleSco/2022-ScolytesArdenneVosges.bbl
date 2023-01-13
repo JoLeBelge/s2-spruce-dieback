@@ -1,4 +1,4 @@
-\begin{thebibliography}{51}
+\begin{thebibliography}{52}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -310,6 +310,14 @@ Piedallu, C., Perez, V., Seynave, I., Gasparotto, D., and Gégout, J.-C., 2014.
 \newblock Présentation du portail web {SILVAE}: système d'informations
   localisée sur la végetation, les abres et leur environement.
 \newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 41.
+
+\bibitem[Piedallu et~al.(2022)Piedallu, Dallery, Bresson, Legay, Gégout, and
+  Pierrat]{piedallu_spatial_2022}
+Piedallu, C., Dallery, D., Bresson, C., Legay, M., Gégout, J.-C., and Pierrat,
+  R., 2022.
+\newblock Spatial vulnerability assessment of silver fir and {Norway} spruce
+  dieback driven by climate warming.
+\newblock \emph{Landscape Ecology}.
 
 \bibitem[Puhe(2003)]{puhe_roots_2003}
 Puhe, J., 2003.
