@@ -13,9 +13,10 @@
 
 # les résultats finaux sont donc ave _co à la fin
 mkdir /media/gef/Data2/S2Scolyte/merge/ES_GE
+rm /media/gef/Data2/S2Scolyte/merge/ES_GE/*
 mv -f /media/gef/Data2/S2Scolyte/merge/*_co.tif /media/gef/Data2/S2Scolyte/merge/ES_GE/
 
 # suppression des résultats intermédiaires
 #rm /media/gef/Data2/S2Scolyte/merge/*.tif
-rm /media/gef/Data2/S2Scolyte/tmp/*.tif
+#rm /media/gef/Data2/S2Scolyte/tmp/*.tif
 rm /media/gef/Data2/S2Scolyte/merge/merge_*.txt

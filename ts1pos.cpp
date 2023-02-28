@@ -2,12 +2,13 @@
 
 bool debugDetail(1); // affiche l'ensemble des valeurs de bandes en plus des codes état/ redondant avec mDebug
 int nbDaysStress(90);
-
+int mPrintDetail(0);
 std::string globResXYTest("toto");
+month mai{5}, avril{4};
 
 void TS1Pos::analyse(){
 
-    //printDetail();
+    if (mPrintDetail){printDetail();}
     // filtre  pour retirer les valeurs abbérantes de la série temporelle.
     for (int i(0);i<mVDates.size();i++){
         //std::cout << "date " << mVDates.at(i) << ", état " << mVEtat.at(i) << std::endl;
@@ -77,15 +78,14 @@ void TS1Pos::analyse(){
     }
 
     // etat des lieux après ce filtre ;
-   // std::cout << "après filtre sol nu" << std::endl;
-    //printDetail();
+
+   if (mPrintDetail){std::cout << "après filtre sol nu" << std::endl; printDetail();}
 
     // pour la détection des pixels stressé, on le fait en 2 itérations ; une première avec retour à la normale possible, une deuxième sans retour possible. Sinon ça peux yoyoter.
     detectStresseEtRetour();
-    /*std::cout << "après retour normale" << std::endl;
-    for (int e : mVEtatFin){
-        std::cout << e << std::endl;
-    }*/
+
+    if (mPrintDetail){ std::cout << "après retour normale" << std::endl; printDetail();}
+
     p =std::find(mVEtatFin.begin(), mVEtatFin.end(), 2);
     if (p != mVEtatFin.end()){
         std::vector<year_month_day> aVD;
@@ -99,7 +99,7 @@ void TS1Pos::analyse(){
             if (p != aVE.end()) {
                 int pos= p - aVE.begin();
                 // stressé plusieurs fois d'affilé et ou sur longue période
-                if (aVPosEtatFin.at(pos).size()>2 && aVDuree.at(pos)>20){
+                if (aVPosEtatFin.at(pos).size()>2-1 && aVDuree.at(pos)>20){
                     // on change les valeurs d'après
                     for (int po(pos+1); po<aVE.size();po++){
                         int res(2);
@@ -117,10 +117,8 @@ void TS1Pos::analyse(){
         }
     }
 
-   /* std::cout << "après 2ieme it de stress" << std::endl;
-    for (int e : mVEtatFin){
-        std::cout << e << std::endl;
-    }*/
+     if (mPrintDetail){std::cout << "après 2ieme it de stress" << std::endl;printDetail();}
+
     // avec les filtres ci-dessus, on peut avoir un arbre avec un stress passager en 2019 et un stress scolyte puis coupé en 2020; manque de cohérence. je refait un test
     // oui mais attention car si stress passagé un an, puis sain 2 an, puis scolyte 3 an ; yoyote sans cohérence non plus!
     /* if(std::find(mVEtatFin.begin(), mVEtatFin.end(), 5)!=mVEtatFin.end() && std::find(mVEtatFin.begin(), mVEtatFin.end(), 2)!=mVEtatFin.end()){
@@ -446,7 +444,7 @@ int TS1Pos::getEtatPourAnnee(int y){
     int aRes(1);
     // récupère un vecteur de code d'état qui correspond à cette année
     year ay{y}, ayP1{y+1};
-    month mai{5}, avril{4};
+
       if (mDebug){std::cout << " get Etat pour Année " << y << std::endl;}
 
     std::vector<int> etat;
@@ -760,7 +758,8 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
     //if (mDebug){std::cout << "TS1Pos::getDelaisCoupe " << y << std::endl;}
 
     int aRes(0);
-    year ay{y};
+
+    year ay{y}, ayP1{y+1};
 
     if (mVRes.at(y)==4 | (mVRes.at(y)==2 && firstDate)){ // quand j'ai deux dates scolyté en fin d'année, il me met dans les résultats que c'est pas scolyté vu qu'il en faut 3 d'affilé Grr
 
@@ -774,7 +773,9 @@ int TS1Pos::getDelaisCoupe(int y, bool firstDate){
             int i(0);
             //for (const year_month_day * ymd : mVDates){
             for (year_month_day * ymd : mVDates){
-                if (ymd->year()==ay){
+
+                if ( (ymd->year()==ay && ymd->month()>avril ) | (ymd->year()==ayP1 && ymd->month()<mai) ){
+                //if (ymd->year()==ay){
                     dates.push_back(ymd);
                     etat.push_back(mVEtatFin.at(i));
                     // à priori la méthode fonctionne pas si le changement de ES 1 vers ES 2 ou de ES2 vers ES 4 à lieu précisément entre deux années. Par exemple un scolyte coupé en décembre.  Faudrai y remédier. en prenant une date de l'année d'après?

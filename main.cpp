@@ -59,14 +59,14 @@ int main(int argc, char *argv[])
     if (s=="lisein"){
 
     } else {
-        wdRacine="/media/gef/Data2/S2Scolyte/";
+        wdRacine="/media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/";
         path_otb="/home/gef/Documents/OTB-7.2.0-Linux64/bin/";
         EP_mask_path="/home/gef/Documents/input/";
     }
 
     GDALAllRegister();
 
-    system("ulimit -n 65536");
+    system("ulimit -n 65536");// marche pas
     // Declare the supported options.
     po::options_description desc("Allowed options");
     desc.add_options()
