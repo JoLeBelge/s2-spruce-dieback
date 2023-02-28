@@ -1,4 +1,4 @@
-\begin{thebibliography}{54}
+\begin{thebibliography}{52}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -13,13 +13,6 @@ Abdullah, H., Darvishzadeh, R., Skidmore, A.~K., Groen, T.~A., and Heurich, M.,
   affects foliar reflectance and biochemical properties.
 \newblock \emph{International journal of applied earth observation and
   geoinformation}, 64:\penalty0 199--209.
-
-\bibitem[Alderweireld et~al.(2015)Alderweireld, Burnay, Pitchugin, and
-  Lecomte]{Alderweireld_2015}
-Alderweireld, M., Burnay, F., Pitchugin, M., and Lecomte, H., 2015.
-\newblock \emph{Inventaire Forestier Wallon - Résultats 1994 - 2012}.
-\newblock Bilans et perspectives - Ressources naturelles. SPW.
-\newblock ISBN 978-2-8056-0171-2.
 
 \bibitem[Ali et~al.(2021)Ali, Abdullah, Darvishzadeh, Skidmore, Heurich,
   Roeoesli, Paganini, Heiden, and Marshall]{ali_canopy_2021}
@@ -45,9 +38,6 @@ Baier, P., Pennerstorfer, J., and Schopf, A., September 2007.
 \newblock \emph{Forest Ecology and Management}, 249\penalty0 (3):\penalty0
   171--186.
 \newblock ISSN 03781127.
-\newblock \doi{10.1016/j.foreco.2007.05.020}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S0378112707004057}.
 
 \bibitem[Bolyn et~al.(2018)Bolyn, Michez, Gaucher, Lejeune, and
   Bonnet]{bolyn_forest_2018}
@@ -63,10 +53,12 @@ Bolyn, C., Lejeune, P., Michez, A., and Latte, N., 2022.
 \newblock Mapping tree species proportions from satellite imagery using
   spectral–spatial deep learning.
 \newblock \emph{Remote Sensing of Environment}, 280:\penalty0 113205.
-\newblock ISSN 0034-4257.
-\newblock \doi{https://doi.org/10.1016/j.rse.2022.113205}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S0034425722003145}.
+
+\bibitem[Brunier et~al.(2020)Brunier, Delport, and
+  Gauquelin]{brunier_guide_2020}
+Brunier, L., Delport, F., and Gauquelin, X., 2020.
+\newblock Guide de gestion des crises sanitaires en forêt.
+\newblock page 188.
 
 \bibitem[Bárta et~al.(2021)Bárta, Lukeš, and Homolová]{barta_early_2021}
 Bárta, V., Lukeš, P., and Homolová, L., 2021.
@@ -95,9 +87,6 @@ De~Frenne, P., Lenoir, J., Luoto, M., Scheffers, B.~R., Zellweger, F., Aalto,
 \newblock Forest microclimates and climate change: Importance drivers and
   future research agenda.
 \newblock \emph{Global Change Biology}, 27\penalty0 (11):\penalty0 2279--2297.
-\newblock ISSN 1354-1013, 1365-2486.
-\newblock \doi{10.1111/gcb.15569}.
-\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/gcb.15569}.
 
 \bibitem[Delvaux and Galoux(1962)]{Delvaux_galoux}
 Delvaux, J. and Galoux, A., 1962.
@@ -117,21 +106,11 @@ Dutrieux, R., Feret, J.-B., Ose, K., and De~Boissieu, F., 2021.
   \url{https://land.copernicus.eu/imagery-in-situ/eu-dem/eu-dem-v1.1}.
 
 \bibitem[Faccoli and Bernardinelli(2014)]{faccoli_composition_2014}
-Faccoli, M. and Bernardinelli, I., January 2014.
+Faccoli, M. and Bernardinelli, I., 2014.
 \newblock Composition and {Elevation} of {Spruce} {Forests} {Affect}
   {Susceptibility} to {Bark} {Beetle} {Attacks}: {Implications} for {Forest}
   {Management}.
 \newblock \emph{Forests}, 5\penalty0 (1):\penalty0 88--102.
-\newblock ISSN 1999-4907.
-\newblock \doi{10.3390/f5010088}.
-\newblock URL \url{http://www.mdpi.com/1999-4907/5/1/88}.
-
-\bibitem[Gauquelin(2010)]{gauquelin_guide_2010}
-Gauquelin, X., editor, 2010.
-\newblock \emph{Guide de gestion des forêts en crise sanitaire}.
-\newblock Office National des Forêts, Institut pour le Développement
-  Forestier, Paris.
-\newblock ISBN 978-2-84207-344-2.
 
 \bibitem[Gazol et~al.(2017)Gazol, Camarero, Anderegg, and
   Vicente-Serrano]{gazol_2017}
@@ -141,8 +120,6 @@ Gazol, A., Camarero, J.~J., Anderegg, W. R.~L., and Vicente-Serrano, S.~M.,
   forests.
 \newblock \emph{Global Ecology and Biogeography}, 26\penalty0 (2):\penalty0
   166--176.
-\newblock \doi{https://doi.org/10.1111/geb.12526}.
-\newblock URL \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/geb.12526}.
 
 \bibitem[Grabska et~al.(2019)Grabska, Hostert, Pflugmacher, and
   Ostapowicz]{grabska_forest_2019}
@@ -163,10 +140,6 @@ Guinier, P., January 1959.
 \newblock Trois {Conifères} de la flore vosgienne.
 \newblock \emph{Bulletin de la Société Botanique de France}, 106\penalty0
   (sup2):\penalty0 168--183.
-\newblock ISSN 0037-8941.
-\newblock \doi{10.1080/00378941.1959.10835321}.
-\newblock URL
-  \url{http://www.tandfonline.com/doi/abs/10.1080/00378941.1959.10835321}.
 
 \bibitem[Hanewinkel et~al.(2013)Hanewinkel, Cullmann, Schelhaas, Nabuurs, and
   Zimmermann]{hanewinkel2013climate}
@@ -180,13 +153,10 @@ Hanewinkel, M., Cullmann, D.~A., Schelhaas, M.-J., Nabuurs, G.-J., and
   Müller, Qin, Raffa, Schelhaas, Svoboda, Viiri, and Seidl]{hlasny_bark_2021}
 Hlásny, T., König, L., Krokene, P., Lindner, M., Montagné-Huck, C., Müller,
   J., Qin, H., Raffa, K.~F., Schelhaas, M.-J., Svoboda, M., Viiri, H., and
-  Seidl, R., September 2021.
+  Seidl, R., 2021.
 \newblock Bark {Beetle} {Outbreaks} in {Europe}: {State} of {Knowledge} and
   {Ways} {Forward} for {Management}.
 \newblock \emph{Current Forestry Reports}, 7\penalty0 (3):\penalty0 138--165.
-\newblock ISSN 2198-6436.
-\newblock \doi{10.1007/s40725-021-00142-x}.
-\newblock URL \url{https://link.springer.com/10.1007/s40725-021-00142-x}.
 
 \bibitem[{Institut National de l’Information Géographique et
   Forestière}(2018)]{IGN_bd_2018}
@@ -204,9 +174,6 @@ Jactel, H., Moreira, X., and Castagneyrol, B., 2021.
   mechanisms, and prospects.
 \newblock \emph{Annual Review of Entomology}, 66\penalty0 (1):\penalty0
   277--296.
-\newblock \doi{10.1146/annurev-ento-041720-075234}.
-\newblock URL \url{https://doi.org/10.1146/annurev-ento-041720-075234}.
-\newblock PMID: 32903046.
 
 \bibitem[Jakuš(1995)]{jakus_1995}
 Jakuš, R., 1995.
@@ -214,9 +181,6 @@ Jakuš, R., 1995.
   on tree level in norway spruce primeval natural forest.
 \newblock \emph{Journal of Applied Entomology}, 119\penalty0 (1-5):\penalty0
   643--651.
-\newblock \doi{https://doi.org/10.1111/j.1439-0418.1995.tb01352.x}.
-\newblock URL
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1439-0418.1995.tb01352.x}.
 
 \bibitem[Jönsson et~al.(2009)Jönsson, Appelberg, Harding, and
   Bârring]{jonsson_2009}
@@ -224,47 +188,31 @@ Jönsson, A.~M., Appelberg, G., Harding, S., and Bârring, L., 2009.
 \newblock Spatio-temporal impact of climate change on the activity and
   voltinism of the spruce bark beetle, ips typographus.
 \newblock \emph{Global Change Biology}, 15\penalty0 (2):\penalty0 486--499.
-\newblock \doi{https://doi.org/10.1111/j.1365-2486.2008.01742.x}.
-\newblock URL
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2486.2008.01742.x}.
 
 \bibitem[Kautz et~al.(2014)Kautz, Schopf, and Imron]{kautz_individual_2014}
 Kautz, M., Schopf, R., and Imron, M.~A., February 2014.
 \newblock Individual traits as drivers of spatial dispersal and infestation
   patterns in a host–bark beetle system.
 \newblock \emph{Ecological Modelling}, 273:\penalty0 264--276.
-\newblock ISSN 03043800.
-\newblock \doi{10.1016/j.ecolmodel.2013.11.022}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S030438001300570X}.
-
-\bibitem[Kotlarski et~al.(2012)Kotlarski, Bosshard, Lüthi, Pall, and
-  Schär]{kotlarski_elevation_2012}
-Kotlarski, S., Bosshard, T., Lüthi, D., Pall, P., and Schär, C., May 2012.
-\newblock Elevation gradients of {European} climate change in the regional
-  climate model {COSMO}-{CLM}.
-\newblock \emph{Climatic Change}, 112\penalty0 (2):\penalty0 189--215.
-\newblock ISSN 0165-0009, 1573-1480.
-\newblock \doi{10.1007/s10584-011-0195-5}.
-\newblock URL \url{http://link.springer.com/10.1007/s10584-011-0195-5}.
 
 \bibitem[Kuhn et~al.(2022)Kuhn, Hautier, and San~Martin]{kuhn_pheromone_2022}
 Kuhn, A., Hautier, L., and San~Martin, G., September 2022.
 \newblock Do pheromone traps help to reduce new attacks of \textit{{Ips}
   typographus} at the local scale after a sanitary cut?
 \newblock \emph{PeerJ}, 10:\penalty0 e14093.
-\newblock ISSN 2167-8359.
-\newblock \doi{10.7717/peerj.14093}.
-\newblock URL \url{https://peerj.com/articles/14093}.
 
 \bibitem[Köstler et~al.(1968)Köstler, Brückner, and
   Bibelriether]{kostler_1968}
 Köstler, J.~N., Brückner, E., and Bibelriether, H., 1968.
 \newblock Die wurzeln der waldbäume.
 \newblock \emph{Zeitschrift für Pflanzenernährung und Bodenkunde}, 120.
-\newblock \doi{https://doi.org/10.1002/jpln.19681200210}.
-\newblock URL
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/jpln.19681200210}.
+
+\bibitem[Lejeune et~al.(2022)Lejeune, Michez, Perin, Gilles, Latte, Ligot,
+  Lisein, and Claessens]{lejeune_ep_2022}
+Lejeune, P., Michez, A., Perin, J., Gilles, A., Latte, N., Ligot, G., Lisein,
+  J., and Claessens, H., 2022.
+\newblock L'épicéa wallon: état de la ressource en 2021.
+\newblock \emph{Silva Belgica}, 2:\penalty0 7.
 
 \bibitem[Lindner et~al.(2010)Lindner, Maroschek, Netherer, Kremer, Barbati,
   Garcia-Gonzalo, Seidl, Delzon, Corona, Kolström, Lexer, and
@@ -276,10 +224,6 @@ Lindner, M., Maroschek, M., Netherer, S., Kremer, A., Barbati, A.,
   {European} forest ecosystems.
 \newblock \emph{Forest Ecology and Management}, 259\penalty0 (4):\penalty0
   698--709.
-\newblock ISSN 0378-1127.
-\newblock \doi{https://doi.org/10.1016/j.foreco.2009.09.023}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S0378112709006604}.
 
 \bibitem[Lisein et~al.(2015)Lisein, Michez, Claessens, and
   Lejeune]{lisein_discrimination_2015}
@@ -307,19 +251,13 @@ Marini, L., Ayres, M.~P., Battisti, A., and Faccoli, M., November 2012.
 \newblock Climate affects severity and altitudinal distribution of outbreaks in
   an eruptive bark beetle.
 \newblock \emph{Climatic Change}, 115\penalty0 (2):\penalty0 327--341.
-\newblock ISSN 0165-0009, 1573-1480.
-\newblock \doi{10.1007/s10584-012-0463-z}.
-\newblock URL \url{http://link.springer.com/10.1007/s10584-012-0463-z}.
 
 \bibitem[Modrzyński(2007)]{tjoelker_outline_2007}
 Modrzyński, J., 2007.
 \newblock Outline of {Ecology}.
 \newblock In Tjoelker, M.~G., Boratyński, A., and Bugała, W., editors,
   \emph{Biology and {Ecology} of {Norway} {Spruce}}, volume~78, pages 195--253.
-  Springer Netherlands, Dordrecht.
-\newblock ISBN 978-1-4020-4840-1.
-\newblock \doi{10.1007/978-1-4020-4841-8_11}.
-\newblock URL \url{http://link.springer.com/10.1007/978-1-4020-4841-8_11}.
+  Dordrecht.
 \newblock Series Title: Forestry Sciences.
 
 \bibitem[Müller et~al.(2022)Müller, Olsson, Eklundh, Jamali, and
@@ -328,17 +266,13 @@ Müller, M., Olsson, P.-O., Eklundh, L., Jamali, S., and Ardö, J., 2022.
 \newblock Features predisposing forest to bark beetle outbreaks and their
   dynamics during drought.
 \newblock \emph{Forest Ecology and Management}, 523:\penalty0 120480.
-\newblock Publisher: Elsevier.
 
 \bibitem[Nardi et~al.(2022)Nardi, Jactel, Pagot, Samalens, and
   Marini]{nardi_drought_2022}
 Nardi, D., Jactel, H., Pagot, E., Samalens, J., and Marini, L., September 2022.
 \newblock Drought and stand susceptibility to attacks by the {European} spruce
   bark beetle: {A} remote sensing approach.
-\newblock \emph{Agricultural and Forest Entomology}, page afe.12536.
-\newblock ISSN 1461-9555, 1461-9563.
-\newblock \doi{10.1111/afe.12536}.
-\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/afe.12536}.
+\newblock \emph{Agricultural and Forest Entomology}.
 
 \bibitem[Netherer et~al.(2015)Netherer, Matthews, Katzensteiner, Blackwell,
   Henschke, Hietz, Pennerstorfer, Rosner, Kikuta, Schume, and
@@ -346,14 +280,9 @@ Nardi, D., Jactel, H., Pagot, E., Samalens, J., and Marini, L., September 2022.
 Netherer, S., Matthews, B., Katzensteiner, K., Blackwell, E., Henschke, P.,
   Hietz, P., Pennerstorfer, J., Rosner, S., Kikuta, S., Schume, H., and Schopf,
   A., February 2015.
-\newblock Do water‐limiting conditions predispose
-  {\textbackslash}textlessspan
-  style="font-variant:small-caps;"{\textbackslash}{textgreaterN}{\textbackslash}textless/span{\textbackslash}textgreater
-  orway spruce to bark beetle attack?
+\newblock Do water‐limiting conditions predispose norway spruce to bark
+  beetle attack?
 \newblock \emph{New Phytologist}, 205\penalty0 (3):\penalty0 1128--1141.
-\newblock ISSN 0028-646X, 1469-8137.
-\newblock \doi{10.1111/nph.13166}.
-\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1111/nph.13166}.
 
 \bibitem[Netherer et~al.(2021)Netherer, Kandasamy, Jirosová, Kalinová,
   Schebeck, and Schlyter]{netherer_interactions_2021}
@@ -362,9 +291,6 @@ Netherer, S., Kandasamy, D., Jirosová, A., Kalinová, B., Schebeck, M., and
 \newblock Interactions among {Norway} spruce, the bark beetle {Ips} typographus
   and its fungal symbionts in times of drought.
 \newblock \emph{Journal of Pest Science}, 94\penalty0 (3):\penalty0 591--614.
-\newblock ISSN 1612-4758, 1612-4766.
-\newblock \doi{10.1007/s10340-021-01341-y}.
-\newblock URL \url{https://link.springer.com/10.1007/s10340-021-01341-y}.
 
 \bibitem[Noirfalise and Thill(1975)]{Noirfalise_1975}
 Noirfalise, A. and Thill, A., 1975.
@@ -374,12 +300,9 @@ Noirfalise, A. and Thill, A., 1975.
 
 \bibitem[Nystedt et~al.(2013)Nystedt, Street, and
   Wetterbom]{nystedt_norway_2013}
-Nystedt, B., Street, N.~R., and Wetterbom, May 2013.
+Nystedt, B., Street, N.~R., and Wetterbom, 2013.
 \newblock The {Norway} spruce genome sequence and conifer genome evolution.
 \newblock \emph{Nature}, 497\penalty0 (7451):\penalty0 579--584.
-\newblock ISSN 0028-0836, 1476-4687.
-\newblock \doi{10.1038/nature12211}.
-\newblock URL \url{http://www.nature.com/articles/nature12211}.
 
 \bibitem[Piedallu et~al.(2014)Piedallu, Perez, Seynave, Gasparotto, and
   Gégout]{piedallu_presentation_2014}
@@ -387,23 +310,20 @@ Piedallu, C., Perez, V., Seynave, I., Gasparotto, D., and Gégout, J.-C., 2014.
 \newblock Présentation du portail web {SILVAE}: système d'informations
   localisée sur la végetation, les abres et leur environement.
 \newblock \emph{Revue Forestière Française}, \penalty0 (1):\penalty0 41.
-\newblock ISSN 1951-6827, 0035-2829.
-\newblock \doi{10.4267/2042/54051}.
-\newblock URL \url{https://hal.archives-ouvertes.fr/hal-01598653}.
+
+\bibitem[Piedallu et~al.(2022)Piedallu, Dallery, Bresson, Legay, Gégout, and
+  Pierrat]{piedallu_spatial_2022}
+Piedallu, C., Dallery, D., Bresson, C., Legay, M., Gégout, J.-C., and Pierrat,
+  R., 2022.
+\newblock Spatial vulnerability assessment of silver fir and {Norway} spruce
+  dieback driven by climate warming.
+\newblock \emph{Landscape Ecology}.
 
 \bibitem[Puhe(2003)]{puhe_roots_2003}
 Puhe, J., 2003.
 \newblock Growth and development of the root systern of {Norway} spruce
   ({Picea} abies) in forest stands-a review.
 \newblock \emph{Forest Ecoiogy and Management}, 175:\penalty0 253--273.
-
-\bibitem[Roe(2005)]{Roe_orographic_preicpitation_2005}
-Roe, G.~H., 2005.
-\newblock Orographic precipitation.
-\newblock \emph{Annual Review of Earth and Planetary Sciences}, 33\penalty0
-  (1):\penalty0 645--671.
-\newblock \doi{10.1146/annurev.earth.33.092203.122541}.
-\newblock URL \url{https://doi.org/10.1146/annurev.earth.33.092203.122541}.
 
 \bibitem[Rouse and Wilson(1969)]{Rouse_1969}
 Rouse, W.~R. and Wilson, R.~G., 1969.
@@ -412,7 +332,13 @@ Rouse, W.~R. and Wilson, R.~G., 1969.
   middle latitude site.
 \newblock \emph{Geografiska Annaler: Series A, Physical Geography}, 51\penalty0
   (3):\penalty0 160--175.
-\newblock \doi{10.1080/04353676.1969.11879800}.
+
+\bibitem[Rousi et~al.(2022)Rousi, Kornhuber, Beobide-Arsuaga, Luo, and
+  Coumou]{rousi_accelerated_2022}
+Rousi, E., Kornhuber, K., Beobide-Arsuaga, G., Luo, F., and Coumou, D., 2022.
+\newblock Accelerated western {European} heatwave trends linked to
+  more-persistent double jets over {Eurasia}.
+\newblock \emph{Nature Communications}, 13:\penalty0 3851.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
@@ -421,28 +347,6 @@ Stadelmann, G., Bugmann, H., Meier, F., Wermelinger, B., and Bigler, C.,
 \newblock Effects of salvage logging and sanitation felling on bark beetle
   ({Ips} typographus {L}.) infestations.
 \newblock \emph{Forest Ecology and Management}, 305:\penalty0 273--281.
-\newblock ISSN 03781127.
-\newblock \doi{10.1016/j.foreco.2013.06.003}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S037811271300371X}.
-
-\bibitem[Sénécal et~al.(2020)Sénécal, Brice, Sauban, Duvauchelle, Morin,
-  Rombaut, Bouan, Couette, Blondet, Lenglet, and
-  Wernsdörfer]{senecal_crise_2020}
-Sénécal, S., Brice, K., Sauban, F., Duvauchelle, M., Morin, A., Rombaut, G.,
-  Bouan, G., Couette, A., Blondet, M., Lenglet, J., and Wernsdörfer, H.,
-  October 2020.
-\newblock La crise des scolytes ({Ips} typographus) ravageurs de l’Épicéa
-  commun ({Picea} abies) vue de l’intérieur {Retours} sur une enquête
-  qualitative auprès d’acteurs du nord-est de la {France} et sa zone
-  transfrontalière ({Allemagne}, {Belgique}) réalisée fin 2019 – début
-  2020.
-\newblock \emph{Revue forestière française}, 72\penalty0 (5):\penalty0
-  425--441.
-\newblock ISSN 1951-6827, 0035-2829.
-\newblock \doi{10.20870/revforfr.2020.5337}.
-\newblock URL
-  \url{https://revueforestierefrancaise.agroparistech.fr/article/view/5337}.
 
 \bibitem[{Theia Team}(2022)]{theia_team}
 {Theia Team}, 2022.
@@ -457,35 +361,19 @@ Thonfeld, F., Gessner, U., Holzwarth, S., Kriese, J., Da~Ponte, E., Huth, J.,
 \newblock A {First} {Assessment} of {Canopy} {Cover} {Loss} in {Germany}’s
   {Forests} after the 2018–2020 {Drought} {Years}.
 \newblock \emph{Remote Sensing}, 14\penalty0 (3):\penalty0 562.
-\newblock Publisher: MDPI.
-
-\bibitem[Van~der Perre et~al.(2015)Van~der Perre, Bythell, Bogaert, Claessens,
-  Ridremont, Tricot, Vincke, and Ponette]{van_der_perre_carte_2015}
-Van~der Perre, R., Bythell, S., Bogaert, P., Claessens, H., Ridremont, F.,
-  Tricot, C., Vincke, C., and Ponette, Q., 2015.
-\newblock La carte bioclimatique de {Wallonie}: un nouveau découpage
-  écologique du territoire pour le choix des essences forestières.
-\newblock \emph{Forêt. Nature}, \penalty0 (135):\penalty0 47--58.
 
 \bibitem[Walthert and Meier(2017)]{walthert_tree_2017}
 Walthert, L. and Meier, E.~S., November 2017.
 \newblock Tree species distribution in temperate forests is more influenced by
   soil than by climate.
 \newblock \emph{Ecology and Evolution}, 7\penalty0 (22):\penalty0 9473--9484.
-\newblock ISSN 20457758.
-\newblock \doi{10.1002/ece3.3436}.
-\newblock URL \url{https://onlinelibrary.wiley.com/doi/10.1002/ece3.3436}.
 
 \bibitem[Wermelinger(2004)]{wermelinger_ecology_2004}
-Wermelinger, B., December 2004.
+Wermelinger, B., 2004.
 \newblock Ecology and management of the spruce bark beetle {Ips}
   typographus—a review of recent research.
 \newblock \emph{Forest Ecology and Management}, 202\penalty0 (1-3):\penalty0
   67--82.
-\newblock ISSN 03781127.
-\newblock \doi{10.1016/j.foreco.2004.07.018}.
-\newblock URL
-  \url{https://linkinghub.elsevier.com/retrieve/pii/S0378112704005353}.
 
 \bibitem[Zolubas and Byers(1995)]{zolubas_1995}
 Zolubas, P. and Byers, J.~A., 1995.
@@ -493,8 +381,5 @@ Zolubas, P. and Byers, J.~A., 1995.
   scolytidae) in pheromone-baited traps: regression models.
 \newblock \emph{Journal of Applied Entomology}, 119\penalty0 (1-5):\penalty0
   285--289.
-\newblock \doi{https://doi.org/10.1111/j.1439-0418.1995.tb01287.x}.
-\newblock URL
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1439-0418.1995.tb01287.x}.
 
 \end{thebibliography}
