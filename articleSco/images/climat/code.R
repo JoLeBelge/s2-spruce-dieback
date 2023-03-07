@@ -22,12 +22,12 @@ pl <-ggplot(d, aes(P,Tmean, shape=as.factor(y)))+
   theme_classic()
 ###################################################################"
 
-setwd("/home/jo/app/s2/articleSco/images/climat")
+setwd("C:/Users/Arthur Gilles/OneDrive - Universite de Liege/Documents/GitHub/s2-spruce-dieback/articleSco/images/climat")
 d <- read.table("growing_seasing_r_t_30.csv", sep=";", header=T)
 d <- d[order(d$num),]
 
 pStyle <- rep(16,nrow(d))
-pStyle[d$region=="Wallonie"]<-18
+pStyle[d$region=="Wallonie"]<-4
 
 pdf("climat.pdf",width=5,height=6,colormodel='cmyk')
 plot(d$P,d$Tmean, xlim=c(270,580),ylim=c(14,18), pch=pStyle,
