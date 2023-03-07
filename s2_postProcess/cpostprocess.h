@@ -23,12 +23,6 @@ class cPostProcess
 public:
     cPostProcess(std::vector<std::pair<int, string> > aMRaster, int mode=1);
 
-    // copie des fonctions que j'ai développée pour nettoyer la carte d'apport en eau pour FEELU en
-
-    void cleanVoisinage(Im2D_U_INT1 * aIn,int Val2Clean, int ValConflict1, int seuilVois);
-    void cleanIsolatedPix(Im2D_U_INT1 * aIn,int Val2Clean, int Val2Replace, int seuilVois);
-    // fillHole
-    void fillHole(Im2D_U_INT1 * aIn, int Val2Clean, int ValConflict1, int ValCopain,int seuilVois, int aSz1, int aSz2);
     void decompressRaster(std::string aIn, std::string aOut);
     // compresser les résultats
     void compress();
