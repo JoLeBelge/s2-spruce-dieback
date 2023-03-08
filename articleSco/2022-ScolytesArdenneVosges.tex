@@ -137,7 +137,7 @@ Vosges are ecoregions with the highest rainfall ($>$ 400 mm) and temperature bet
 The climate variables for Wallonia have been provided by the Institut Royal Météorologique and come from the climate map Digitalis for the Grand-Est \citep{piedallu_presentation_2014}.
 These three regions differ in their altitude which can be considered as an imperfect proxy for climate (Figure \ref{fig:situ}). 
 The majority of spruce in the Plains is located in low altitude under 300 m in contrast with the Ardenne and the Vosges where the majority of Norway spruce stand grow above 400 m. 
-The studied spruce area covers 107,926 ha in Ardenne,75,067 ha in the Vosges and  24,462 ha in the Plains in the Grand-Est region.
+The studied spruce area covers 107,926 ha in Ardenne, 75,067 ha in the Vosges and  24,462 ha in the Plains in the Grand-Est region.
 
 \begin{figure}[htbp] 
 	\centering
@@ -147,7 +147,7 @@ The studied spruce area covers 107,926 ha in Ardenne,75,067 ha in the Vosges and
 \end{figure}
 
 The regional climate is locally influenced by topography \citep{de_frenne_forest_2021}.
-South-facing slopes are warmer and drier and their temperature difference between day and night are greater than the north-facing ones.
+South-facing slopes are warmer and drier and their temperature difference between day and night are greater than the North-facing ones.
 Three topographic exposures have been determined using the \cite{Delvaux_galoux} definition.
 Plateaus and plains are neutral topographic conditions and valley floor that does not create a particular local climate.
 Comparatively to flat areas, north-facing orientations are slopes greater than  20\% facing north (285° to 125°) with colder and more shades conditions.
@@ -192,7 +192,7 @@ Bark beetle attack was detected if the $SWIR_{CR}$ observations deviate from the
 Preliminary investigations have led us to consider a multiplier ratio of 1.7 applied to the $SWIR_{CR}$ for determining the threshold separating healthy to stressed situation.
 Figure \ref{fig:harmo} illustrates a time-serie of $SWIR_{CR}$ observations (grey dots) for one single pixel. 
 When the observations went beyond the threshold represented by the purple-dashed line (in 2018 in Figure \ref{fig:harmo}), the spruce stand is most likely suffering from a serious stress.
-As soon as $SWIR_{CR}$ vegetation index shows a stress for at least two consecutive times separated by at least 20 days, we assumed that the stress is caused by a bark beetle attack and we ensured the fact that this pixel can not return to a state of healthy stand.
+As soon as $SWIR_{CR}$ vegetation index shows a stress for at least two consecutive times separated by at least 20 days, we assumed that the stress is caused by a bark beetle attack and we ensured the fact that this pixel can not return to a state of healthy stand in the following observations.
 In addition to the detection of bark beetle stress, stand cutting and thinning were subject of particular attention: 
 bare soil was detected by using a combination of thresholds for red, green, blue and shortwave infrared reflectance values (Band 8A $\geq$ 12\% reflectance and Band 2 $\leq$ 6 \% reflectance and Band 3 + Band 4 $\geq$ 8 \% reflectance).
 Cutting are thus taken into account and were classified either as normal harvest cutting or as sanitary thinning based on the health status determined by the $SWIR_{CR}$ vegetation index prior to the cutting.
@@ -204,6 +204,7 @@ The annual health maps cover the period starting from may and finishing in april
 The bark beetle detection was performed on S2 observations between first may 2017 and 28 february 2023 and the health status of every single pixel located in a spruce stand is summarized in one of the four following classes ; healthy, bark beetle attacked, cutted or sanitary thinning.
 This dense time-serie count a minimum of 126 and maximum 260 acquisition dates according to the location. 
 The annual time-serie enumerate a minimum of 10 and maximum of 51 acquisition dates with a cloud cover smaller than 35 \%.
+
 
 \begin{figure}[htbp] 
 	\centering
@@ -230,11 +231,16 @@ According to them, the south-facing slopes and low altitude favor the spruce die
 This hypothesis match with autecology of spruce, that is known to suffer from heatwaves and low water availability.
 Indeed, in the study area, precipitation increase with altitude, temperatures decrease the higher the altitude at least within the tree main ecoregions.
 In addition, the warmer climate of south-facing slopes favours the development of bark beetle population \citep{annila_influence_1969, baier_phenipscomprehensive_2007, jonsson_2009, marini_climate_2012} and increase the susceptibility of Norway spruce to the attack of bark beetle \citep{wermelinger_ecology_2004, netherer_waterlimiting_2015}.
-Following this theory, there should be more attacked Norway spruce in low altitude and in south-facing slope in the three climatic areas.
+Following this theory, there should be more attacked Norway spruce in low altitude and in south-facing slope in the three climatic areas.  
 Sanitary map has been used to study the relation between the dieback and these two topographic variables.
-The altitude has been broke down  by 100 m classes and kept the three topographic exposures classes.
+%climat proxi altitude 
+%altitude facile à avoir sur deux pays à haute resolution
+%Microclimat ss 
+% basse altitude % Sous secteur chaud  + plus chaud - de pluies don cfavorable aux scolyte et defavorable àl'épicéa
+% Sous secteur chaud 
+The altitude has been broken down  by 100 m classes and kept the three topographic exposures classes.
 To determine which class of the two topographic variables was most affected, we estimated the dieback areas for each class of each factor based on the health status maps for each year of the period 2017-2021.
-The  new dieback rate is  the dieback area of a class during one year divided by the total area of Norway spruce of this class at the beginning of the same year. 
+The  annual dieback rate is  the dieback area of a class during one year divided by the total area of Norway spruce of this class at the beginning of the same year. 
 Dieback area is the surface of Norway spruce attacked by bark beetle and the area of sanitary cutting during the year. 
 The total area of spruce at the beginning of the years is composed of the area of healthy spruce area at the beginning of the year. 
 
@@ -284,12 +290,11 @@ The total area of spruce at the beginning of the years is composed of the area o
 
 
 \subsection{Sanitary map validation}
-The result of photo-interpretation of spruce stand crossed with the sanitary map is present in the table \ref{tab_confu_matrix}. 
-When the sanitary map predicts a decline, the dieback is confirmed by the orthophotoplan in 86.1 \% of the verified spots.
+The photo-interpretation of spruce stand crossed with the sanitary map shows when the sanitary map predicts a decline, the dieback is confirmed by the orthophotoplan in 86.1 \% (table \ref{tab_confu_matrix}) of the verified spots.
 In 13.9 \% this is a false positive because the trees are still healthy.
   
 \begin{table}[htbp] 
-\caption{Confusion matrix of the result of the sanitary map validation for 274 spruce stands.}
+\caption{Sanitary map validation using aerial photographs for 274 spruce stands.}
 \label{tab_confu_matrix}
 \begin{tabular}{|l|l|l|}
 \hline
@@ -299,10 +304,10 @@ Attacked trees                    & 86.1 \%   & 13.9 \%      \\ \hline
 \end{table}
 
 The field validation in the Vosges confirms the result of the photo-interpretation method.
-Dead trees is identified correctly in 84.7 \%.
-The healthy tree on the sanitary map are valided in 100 \% of the stand  in the field (Table \ref{field_confu_matrix}).
+Dead stand are identified correctly in 84.7 \%.
+The healthy stands on the sanitary map are valided in 100 \% of the stand  in the field (Table \ref{field_confu_matrix}).
 \begin{table}[htbp] 
-\caption{Confusion matrix of the result of the field validation for 95 spruce stands.}
+\caption{Sanitary map validation for 95 spruce stands using field survey in the Vosges mountains.}
 \label{field_confu_matrix}
 \begin{tabular}{|l|l|l|}
 \hline
@@ -318,14 +323,14 @@ Healthy trees (n=56)                    & 0 \%      & 100 \%
 
 \subsection{Evolution of the crisis}
 
-After a slight increase of bark beetle attacks in 2017, the health crisis of spruce really began in 2018 especially in the Plains and in Ardenne.
+After a low spruce mortality rate in 2017, the health crisis of spruce really began in 2018 especially in the Plains and in Ardenne (Figure \ref{evol_gen}.
 A high level of new damages has been observed each year during four years with a maximum of 2.5 \% of the spruces in the Vosges, 5\% in Ardenne and 22 \% in the Plains after three critical years (2018-2020).
 Spruce stands seems recover a normal health status in 2022 with respectively 0, 1 and 3\% of new attacked trees for Vosges, Ardenne and Plains.
-During the period 2017-2022, on the study area 29,000 ha of spruce have been destroyed, then 14\%  of the total spruce area of 2017 (table \ref{tab_recap}).
-The three bioclimatic region were not equally touched by spruce mortalities.
-In terms of impact, the Plains were the most affected by spruce mortality with 52 \% of the trees,  nearby 10 times more than the Vosges (5.7 \%) and four times more than the Ardenne (12.4\%).
-The course of the crisis also differed from region to region (  Figure \ref{evol_gen}).
-Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but was more progressive in Vosges, where the maximum impact was later observed, in 2020.
+During the period 2017-2022, on the study area 29,000 ha of spruce have been destroyed, then representing 14\%  of the total spruce area of 2017 (table \ref{tab_recap}).
+The three bioclimatic region were not equally impacted by spruce mortalities : 
+plains were the most affected with 52 \% of the trees stands,  nearby 10 times more than the Vosges (5.7 \%) and four times more than the Ardenne (12.4\%).
+The evolution of the crisis also differed by region (Figure \ref{evol_gen}).
+Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but was more progressive in the Vosges, where the maximum impact was later observed, in 2020.
 % add syrface
 
 
@@ -335,10 +340,10 @@ Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but 
 \begin{tabular}{|c|c|c|c|}
 \hline
 Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
-Plains  & 11,298                                                                                     & 21,720                                                                          & 52,0                                                                       \\ \hline
-Ardenne & 13,397                                                                                     & 107,926                                                                         & 12,2                                                                       \\ \hline
-Vosges  & 4,305                                                                                      & 75,067                                                                          & 5,7                                                                        \\ \hline
-Total   & 29,000                                                                                     & 204,763                                                                         & 14,2                                                                       \\ \hline
+Plains  & 11,298                                                                                     & 21,720                                                                          & 52.0                                                                       \\ \hline
+Ardenne & 13,397                                                                                     & 107,926                                                                         & 12.2                                                                       \\ \hline
+Vosges  & 4,305                                                                                      & 75,067                                                                          & 5.7                                                                        \\ \hline
+Total   & 29,000                                                                                     & 204,763                                                                         & 14.2                                                                       \\ \hline
 \end{tabular}
 \end{table}
 
@@ -361,14 +366,14 @@ Total   & 29,000                                                                
 \begin{figure}[htbp] 
    \centering
    \includegraphics[width=0.6 \textwidth]{Annual_evol_Ardennes_vosges_plaines.png}
-    \caption{Proportion of Norway spruce area affected by bark beetle. Plains region in red, Ardenne in blue and Vosges in orange. }
+    \caption{Proportion of Norway spruce area affected each year  by bark beetle.
     \label{evol_gen}
 \end{figure}
 
     
 \subsection{ Influence of altitude on the Norway spruce mortality}
-In Western Europe, the altitude is considered as a proxy of the the climate \citep{faccoli_composition_2014} and is commonly used by the forest managers. 
-The variation of the dieback rate according to altitude during the period 2017-2021 is described in the figure \ref{alti_sco} for the three bioclimatic regions.
+Because spruce was planted outside its distribution range in low altitude and according to studies showing a shift of species distribution along the altitudinal gradient \citep{lenoir_significant_2008}, more mortality was expected at lower altitude. 
+The variation of the dieback rate during 2017-2021  for the three bioclimatic regions.
 \begin{figure}[htbp] 
 \centering
 	\includegraphics[width=\textwidth]{synthese_color_11_2022.png}
@@ -376,10 +381,10 @@ The variation of the dieback rate according to altitude during the period 2017-2
 }
 	\label{alti_sco}
 \end{figure}
-The Plains were globally hardly affected, especially in low altitude. At the height of the crisis, the probability of new dieback exceeded 20\% each year in the altitude class under 300 m.
+shows an important effect of altitude but with some difference accordinf to the region. More dieback was observed at low altitude :  at the height of the crisis, the probability of new dieback exceeded 20\% each year in the altitude class under 300 m.
 In Ardenne, since the beginning of the crisis, the dieback rate is gradually decreasing when altitude is increasing.
 Except during 2018, at the peak of the crisis, spruce forest above 500 m were not severely affected.
-In the Vosges, the dieback rate is globally low during the crisis, except for 2020.
+In the Vosges, the dieback rate is globally low during the crisis comparatively to the other regions, except for 2020.
 No clear trend seems to emerge according to the altitude except in the beginning of the crisis in 2018 in the lower stands below 400 m altitude.
 However,Vosgian spruces are rare below 400 m.
 
@@ -407,16 +412,15 @@ However,Vosgian spruces are rare below 400 m.
 % Wallonie + Vosges: Augmentation de la probabilité de présence de scolyte avec le temps quelque soit la classe d'altitude.
 
 
-\subsection{Influence of topographical exposures on the Norway spruce mortality.}
-The cumulative killed areas of Norway spruce during five years of crisis according to the topographical exposures is presented in the table \ref{tab_or_topo}.
-The Plains is the most affected bioclimatic area. 
-The north-facing slopes are significantly but slightly more  affected than the plateaus or the south-facing slopes.
+\subsection{Influence of  exposures on the Norway spruce mortality.}
+The cumulative killed areas of Norway spruce during five years of crisis according to the exposures is presented in the table \ref{tab_or_topo} and shows contrasted results according to the region. 
+For plains, the north-facing slopes are significantly but slightly more  affected than the plateaus or the south-facing slopes.
 In Ardenne, the plateaus are significantly less impacted than the north and south facing slopes. 
 In this region, the south-facing slopes are significantly more affected. 
 As opposed to the Ardenne, in the Vosges, the plateaus are significantly more impacted than the north and south-facing slopes.
 \begin{table}[htbp]
-\caption{Summary table of area killed by bark beetle in function of topographical exposures during the 2017-2022 period.
-The same letters (a, b, c) identify homogenous groups with no significant differences for each topographical exposures  (based on  Pearson's chi-squared test statistic, p-value $< 0.05$)}
+\caption{Par of the studied area killed by bark beetle according to the exposures during the 2017-2022 period.
+The same letters (a, b, c) identify homogenous groups with no significant differences for each exposures  (based on  Pearson's chi-squared test statistic, p-value $< 0.05$)}
 \label{tab_or_topo}
 
 \begin{tabular}{|l|lll|}
@@ -429,30 +433,29 @@ North-facing slopes & \multicolumn{1}{l|}{$54^b$}   & \multicolumn{1}{l|}{$14.4^
 \end{tabular}
 \end{table}
 
-   
+  %rajouter les effectif des pentes et des plateau 
 
 \section{Discussion}
 
 \subsection{Potential methodological limitations}
-The detection of bark beetle attack is based on dense time serie of Sentinel 2 satellite imagery. \\
+The detection of dieback is based on dense time serie of Sentinel 2 satellite imagery. \\
 The sanitary map uses a species composition map that depend of the spectral response of the vegetation.
-This methodology allows to decouple dieback from phenology and other stressors.
-In pure even-aged Norway spruce stand, the spectral response is stable but at edge of this stand and in mixed stand, this response varies with season due to the deciduous tree or herbaceous species.
+In pure even-aged Norway spruce stand, the spectral response is stable in absence of mortality but at edge of this stand and in mixed stand, this response can vary with season due to the deciduous tree or herbaceous species.
 In mixed forest and in the border of the stands, the species composition map is less accurate than in pure even aged stand.
 In Ardenne and in the Plains, Norway spruce occurs principally in pure even-aged stands of  but in the Vosges forests are more finely mixed.
-The new dieback rate is influenced by Norway spruce area of the composition map.
+The annual dieback rate is influenced by Norway spruce area of the composition map.
 In Ardenne and in the Plains, the area is correctly estimated.
 However, in the mixed stands of the  Vosges, the area is more difficult to evaluate.
 An underestimation of dieback rate is not excluded.
 Another limitation of the methodology is linked to the felled trees.
 To limit the damage of bark beetles, it is recommended to quickly remove the attacked trees from the forest.
-However, if the trees are felled before three correct images are taken by the satellite, the area will be considered as cutted for normal harvesting  rather than for a sanitary thinning.
+However, if the trees are felled before three images are taken by the satellite, the area will be considered as cutted for normal harvesting  rather than for a sanitary thinning.
 On the contrary, some felled trees of sanitary thinnings can be healthy but considered as attacked.   
  
 \subsection{Dynamic of the dieback}
 In forest, sanitary crisis lasts on average between three and ten years \citep{brunier_guide_2020}.
-In our study, the spruce dieback have begun in 2018 and seems to finish in 2022 in all the regions.
-The new dieback rate has recover the same level than in 2017.
+In our study, the spruce dieback have begun in 2018 and decrease in 2022 in all the regions.
+The annual dieback rate has recover in the 2022 the same level than in 2017.
 The Plains bioclimatic region is the most impacted region.
 Since the first year of the study, the new dieback rate has increased until it reached its peak in 2020.
 In the Ardenne, the peak were reached directly in 2018 during the first drought period.
@@ -465,47 +468,47 @@ During the five years of the crisis, the new dieback rate remained below 3 \%.
 
 \subsection{Regional impact of the bark beetle attacks}
 The  impact of the bark beetle attacks is different between the three main regions.
-It could be explain through three parameters which differentiate them : the climate, de stand structure and composition, and the current spruce forest management.
-Warm and dry climate, as in the Plains, does not meet the autecological requirements of the spruce species, especially during extreme dry or warm events as in the period 2018-2020 \citep{rousi_accelerated_2022} which stressed the spruce. Moreover during warm seasons, the bark beetle produce multiple generations in a year \citep{annila_influence_1969,baier_phenipscomprehensive_2007} and can easily attack these stressed trees.
-At the other hand, pure even-aged spruce stands of the Plains and Ardenne are significantly more sensible to pests attacks \citep{faccoli_composition_2014,jactel_2021} then the spruce trees beneficing from continuous cover forestry in mixed stands of the native forest in the Vosges mountains.
+It could be explained through three parameters which differentiate them : the climate, the stand structure and composition, and the current spruce forest management.
+Warm and dry climate, as in the Plains, does not meet the autecological requirements of the spruce species, especially during extreme dry or warm events as in the period 2018-2020 \citep{rousi_accelerated_2022} which stressed the spruce. Moreover during warm seasons, the bark beetle produce multiple generations in a year \citep{annila_influence_1969,baier_phenipscomprehensive_2007} that can easily attack these stressed trees.
+At the other hand, pure even-aged spruce stands of the Plains and Ardenne are significantly more sensible to pests attacks \citep{faccoli_composition_2014,jactel_2021} than the spruce trees beneficing from continuous cover forestry in mixed stands of the native forest in the Vosges mountains.
 Rapid harvesting of trees attacked by bark beetles protects stands from severe outbreaks \citep{stadelmann_effects_2013} but this operation is not systematic in region such as Plains where softwood forestry is not part of the tradition and is not supported by local industry.
 Faced with these three parameters, the three main regions are not equal.
-In the Vosges, all parameters are favourable, which could explain the limited outbreak during the crisis ( 5.7\% of initial area).
+In the Vosges, all parameters are favourable, which could explain the limited outbreak during the crisis (5.7\% of initial area).
 Indeed, on the opposite, in the Plains all parameters are unfavourable : the warm and dry climate stressed the trees and favoured the beetles which produced large outbreaks in even-aged pure stands, probably less concerned by sanitary thinning. 
 These conditions explain that the outbreak was not controlled and reached 52 \% of the spruce area.
 The Ardenne spruce forest is an intermediate situation.
 The climate is the coldest of the three bioclimatic areas, but less humid then the Vosges.
 The forest manager generally make the necessary sanitary felling which is part of the silvicultural tradition.
-However, spruce grows in pure evend-aged stands.
+However, spruce grows in pure even-aged stands.
 These conditions could explain an intermediate situation with damages on 12.2 \% of the spruce initial area.
 
 
 \subsection{Influence of the topographical exposures on the dieback of Norway spruce.}
 
 %citer auteur versant sud + touché
-The exposure of slopes influences received radiation.
-South facing slopes are warmer than north facing ones.
+The exposure  influences received radiation and water balance.
+South facing slopes are warmer than north facing ones. %reference
 As the life cycle of the bark beetle is influenced by temperature \citep{baier_phenipscomprehensive_2007},
 this insect should produce more generations in south-facing slopes and thus cause  more damage in this exposure \citep{jakus_1995}.
 Moreover, there is 50 \% less water reserve in south-facing slopes than in north-facing slopes in spring \citep{Rouse_1969}.
 Thus, Norway spruces that growth in this orientation should be more often in a situation of water stress and should be more attacked than the north-facing slopes.
-However, our results fits not clearly with this hypothesis. In the Plains bioclimatic area, the south-facing slopes and the plateaus are more or less attacked at the same way than the north-facing slopes. In Europe and in north America, Gazol \citep{gazol_2017} observed that species that grow in drier condition area are more resilient to drought.
+However, our results do not  clearly fit with this hypothesis. In the Plains, the south-facing slopes and the plateaus are more or less attacked at the same way than the north-facing slopes. In Europe and in north America, Gazol \citep{gazol_2017} observed that species that grow in drier condition area are more resilient to drought.
 Piedallu \citep{piedallu_spatial_2022} confirmed this observation in the Vosges during the last outbreak.
-Moreover in France, a recent study of \cite{nardi_drought_2022} show that Norway spruce stand on the steep slopes and soils with low water availability are less attacked.
-In this region, spruce trees growing on the southern slopes and plains have suffered of drier conditions throughout their lives and therefore have been less stressed than spruce trees growing on the north-facing slopes.
+Moreover in France, a recent study of \cite{nardi_drought_2022} showed that Norway spruce stand on the steep slopes and soils with low water availability are less attacked.
+In this Vosges, spruce trees growing on the southern slopes and plains have suffered of drier conditions throughout their lives and therefore have been less stressed than spruce trees growing on the north-facing slopes.
 In Ardenne, the south-facing slopes are more affected by bark beetle than other position.
 Norway spruce that growth in south-facing slopes should be more often in a situation of water stress and should be more attacked than the north facing-slopes.
 However the north-facing slopes are not the less attacked. 
 The shallow soil depth on the slopes could explain the dieback rate difference between de slope and the plateaus. 
 In the Ardenne and in the Vosges, the result are opposed for the plateaus.
-The damage caused in the Vosges plateaus could be explain by the more important presence of pure even-aged stand in this topographical orientation than in the slope.
+The damage caused in the Vosges plateaus could be explained by the more important presence of pure even-aged stand in this topographical orientation than in the slope.
 This stand structure is more sensible to bark beetles.
 
 The trend of bark beetle attacks following the topographical exposures need further investigations.
 In view of these results, it seems difficult to give global advice for forest managers.
 \section{Conclusion and perspectives}
-Our study aimed to assess the evolution of the bark beetle crisis in the spruce forest with remote sensing approach.
-The methodology used to identify bark beetle damages stands is robust and effective as far as reliable composition maps are available.
+Our study aimed to assess the evolution of the bark beetle crisis in the spruce forest with a remote sensing approach.
+The methodology used to identify the damaged stands is robust and effective as far as reliable species composition maps are available.
 Indeed, to improve the result in the Vosges, a new Norway spruce map is necessary to better distinguish spruce from fir.
 Taking this limitation into account, remote sensing could be the basis for monitoring bark beetle attacks in spruce forest.
 This crisis triggered by the dry and warm events from 2018 to 2020 lasted five years and destroyed 14 \% (29.000 ha) of the spruce area in Wallonia and Grand-Est of France.
@@ -515,7 +518,7 @@ The devastated area by this pest is estimated around 11,000 ha.
 The Ardenne is the second region that has lost the most spruce area with  12,4 \% of his spruce area attacked or around 13,400 ha. 
 The Vosges is the less attacked region with 5.7 \% of his spruce area killed. The total area impacted in this mountain region is around 4,300 ha.
 This situation could be linked to the climate, the structure and the composition of the stands, and the current forest monitoring and management which differ between the three regions.
-Taking account to climate change, which will favour warm and dry events in the near future, our results does not support new plantations of Norway spruce in Plains.
+Taking into account the climate change, which will favour warm and dry events in the near future, our results does not support new plantations of Norway spruce in Plains.
 In Ardenne, we advise not to plant any more Norway spruce at lower altitude then 400 m except in specific micro-climate.
 In the Vosges, the trend differs of the two others regions.
 More investigation specially dedicated to this region is necessary to draw conclusions.
