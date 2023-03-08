@@ -145,3 +145,24 @@ The work illustrates that root palameters are good indicators of the sustainabil
 
 Drought stress would direct roots to deeper, moister soil layers.
 ----
+
+Krejza 2021----------
+
+The finding that trees
+at 400 m a.s.l. had lower TWD compared to 600 m a.s.l. has
+a few potential explanations. Spruce at low elevations grow
+in sub-optimal conditions for a longer period of time and
+their SDV is thus weaker compared to neighbouring sites at
+600 m a.s.l. They could also have developed a more efficient
+xylem structure and tree allometry (root to shoot ratio) to
+be acclimated to those growth conditions. Additionally, the
+thickness of the bark can strongly affect the elasticity and,
+consequently, the amplitude of TWD. We observed signifi-
+cantly thicker bark on ES600 than ES900 (data not shown).
+It seems that the bark protection from high temperature is
+more important than from low temperature, i.e., the function
+of the bark is to avoid overheating of the cambium (Nicolai
+1986). The amplitude of TWD within an altitude range can
+be explained by several factors, but this finding needs to be
+validated by further studies.
+
