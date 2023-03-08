@@ -1,3 +1,6 @@
+conversion latex to docx
+
+pandoc --bibliography=s2/articleSco/Scolyte.bib -o foo.docx s2/articleSco/2022-ScolytesArdenneVosges.tex -citeproc
 
 p20 CHARARAS 1959 climatScolytes
 
