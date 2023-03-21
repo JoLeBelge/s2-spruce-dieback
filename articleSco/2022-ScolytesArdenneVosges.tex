@@ -160,21 +160,19 @@ The digital elevation model (DEM) data from the Copernicus Land Monitoring Servi
 	\label{fig:situ}
 \end{figure}
 
-\subsection{Mapping the alive and dieback spruce stands.}
-The first prerequisite to assess spruce dieback was to map the species distribution at a fine scale, especially in mixed stands where management maps consider mixed stands as undifferentiated entities.
-For the south of Belgium, we used existing reliable composition maps from \cite{bolyn_mapping_2022}, computed from remote sensing data, in order to restrict our analysis to Norway spruces. 
+\subsection{Mapping of healthy and dieback spruce stands}
+The first prerequisite to assess spruce dieback was to map the species distribution at a fine scale.
+For the south of Belgium, we used reliable composition maps from \cite{bolyn_mapping_2022}, computed from remote sensing data, in order to restrict our analysis to Norway spruces. 
 These composition maps consist in presence probabilities for eight major species, from which we discriminated Norway spruce stands by selecting areas with equals or greater than 80\% of probability of presence for this species.  
-In the Grand-Est, the composition map came from the French national geographic agency \citep{IGN_bd_2018}. 
-Composition of forest stand was determined by photointerpretation and forest stands identified as \textit{spruce or fir} were first selected to restrict the dieback analysis. 
+In the Grand-Est, the composition map came from the French national geographic agency \citep{IGN_bd_2018} and forest stand composition was determined by photointerpretation.
+We first selected forest stands identified as \textit{spruce or fir} in order to restrict the dieback analysis. 
 Phenology courses are highly suitable for forest tree species discrimination \citep{lisein_discrimination_2015,grabska_forest_2019,ma_tree_2021}.
 Sentinel-2 (S2) spectral bands courses along the vegetation season were used to refine the determination of species present in the area interpreted as \textit{spruce or fir} in the Grand-Est. 
 S2 satellites carry multispectral sensor with a ground resolution up to 10 m. 
-The study area was covered by 14 S2 tiles of 100km x 100km (Figure \ref{fig:situ}).
-Bottom of Atmosphere reflectance images (L2A product) were downloaded from the Theia data cluster \citep{theia_team} for all the 14 tiles, provided that the cloud cover does not exceed 35 percent.
-The first objective was to identify and remove every pixel that did not correspond to spruce stand in the Grand-Est.
-All S2 spectral bands of 10 and 20 meters ground sample distance were first summarized for each of the four quarters of the year, by averaging all cloud-free observations occurring during the trimester.
+Bottom of Atmosphere reflectance images (L2A product) were downloaded from the Theia data cluster \citep{theia_team} for all the 14 tiles of 100km x 100km covering our study area (Figure \ref{fig:situ}), provided that the cloud cover does not exceed 35 percent.
+In order to identify and remove every pixel that did not correspond to spruce stand in the Grand-Est, all S2 spectral bands of 10 and 20 meters ground sample distance were first summarized for each of the four quarters of the year, by averaging all cloud-free observations occurring during the quarter.
 We used the satellite observations from the two years prior to the bark beetle crisis for computing these multi-year quarterly averages, i.e. 2016 and 2017.
-A Random Forest algorithm was then trained on these synthetic intra-annual time serie to discriminate spruce from non-spruce pixels, based on a training set of observations from Belgium consisting in 1000 sampled pixels (20mx20m) for each of the eight major species \citep{bolyn_forest_2018}.
+A Random Forest algorithm was then trained on this synthetic time serie to discriminate spruce from non-spruce pixels, based on a training set of observations from Belgium consisting in 1000 sampled pixels (20mx20m) for each of the eight major species \citep{bolyn_forest_2018}.
 This forest species classifier was applied on \textit{spruce or fir} area of Grand-Est. 
 The proportion of pixel detected as spruce in the \textit{spruce or fir} stands of the Vosges was 67 \% and correspond to the level of mixture expected for this bioclimatic area.  
 Following bark beetle detection was carried on only for 10x10 m pixels detected as spruce.
@@ -189,9 +187,9 @@ SWIR_{CR}(t) =   a_{1} + b_{1} \sin(\dfrac{2\pi}{365.25}t)+ b_{2} \cos(\dfrac{2\
 \end{equation} 
 For fitting this equation on the 300 healthy spruce pixels, we used all cloud-free S2 observations from the two years preceding the onset of the bark beetle crisis, i.e. 2016 and 2017.
 Then, bark beetle attack was detected if the $SWIR_{CR}$ observations deviate from the healthy phenology trajectory. 
-Preliminary investigations have led us to consider a multiplier ratio of 1.7 applied to the $SWIR_{CR}$ for determining the threshold separating healthy to stressed situation.
+Preliminary investigations have led us to consider a multiplying factor of 1.7 applied to the $SWIR_{CR}$ for determining the threshold separating healthy to stressed situation.
 Figure \ref{fig:harmo} illustrates a time serie of $SWIR_{CR}$ observations (grey dots) for one single pixel. 
-When the observations exceed the threshold represented by the purple-dashed line (in 2018 in Figure \ref{fig:harmo}), the spruce stand is probably under severe stress.
+When the observations exceed the threshold represented by the purple-dashed line (in 2019 in Figure \ref{fig:harmo}), the spruce stand is probably under severe stress.
 As soon as $SWIR_{CR}$ vegetation index showed a stress for two consecutive times separated by at least 20 days, we assumed that the stress is permanent and made sure that this pixel cannot return to a healthy situation in the following observations.
 In parrallel to the detection of bark beetle stress, stand cutting and thinning were subject of particular attention: 
 bare soil was detected by using a combination of thresholds for red, green, blue and shortwave infrared reflectance values (Band 8A $\geq$ 12\% reflectance and Band 2 $\leq$ 6 \% reflectance and Band 3 + Band 4 $\geq$ 8 \% reflectance).
@@ -201,24 +199,27 @@ Our code is online on github repository (\url{https://github.com/JoLeBelge/s2-sp
 We made use of OTB toolbox \citep{grizonnet_2017_OTB} for image processing and the health status was summarized by annual health maps in raster format.
 The annual health maps cover the period starting from may and finishing in april of the next calendar year, because we made the assumption that Norway spruce dieback detected in april are related to bark beetle attack from the previous calendar year \citep{muller_features_2022}.
 This analysis of image time serie was performed on S2 observations between first may 2017 and 28 february 2023 and the health status of every single pixel (10 meters resolution) located in a spruce stand was classified in one of the four following classes ; healthy, bark beetle attacked, cutted or sanitary thinning.
-This comprehensive time serie of almost six years counted a minimum of 126 and maximum 260 acquisition dates according to the location. 
-For every single vegetation year, we enumerated a minimum of 10 and maximum of 51 acquisition dates, always with a cloud cover smaller than 35 \%.
-A post-processing of the spruce health maps was finally carried out in order to take into account certain neighborhood relationships: small area of cutted spruce surrounded by areas classified as sanitary cutting where detected and were considered also beeing part of the sanitation felling.
+This comprehensive time serie of almost six years counted a minimum of 134 and maximum 275 acquisition dates according to the location and totalized a volume of 5.0 Tbit with intermediate results.
+For every single vegetation year, we enumerated a minimum of 10 and maximum of 65 acquisition dates (median = 30), always with a cloud cover smaller than 35 \%.
+A post-processing of the spruce health maps was finally carried out in order to take into account certain neighborhood relationships. 
+Area of cutted spruce directly surrounded by areas classified as sanitary cutting where detected and were considered also beeing part of the sanitation felling if the number of neighbouring dieback pixels (8-neighbours relationship) exceed 50 \% of the number of pixel composing the cutted spruce area.
 
 \begin{figure}[htbp] 
 	\centering
 	\includegraphics[width=0.8\textwidth]{fctHarmo.png}
-	\caption{Bark beetle infestation map were computed by detecting change in the $SWIR_{CR}$ phenology metric. The \textit{SWIR Continuum Removal} was computed using three bands from Sentinel-2 imagery for every single acquisition date and its value was compared to a threshold (purple dashed line, which correspond to the healthy situation in green multiplied by 1.7) in order to detect vegetation stress. If a stress was detected two consecutive times with a minimum of 20 days between the observations, we assumed that the dieback occurred.}
+	\caption{Bark beetle health maps were computed by detecting change in the $SWIR_{CR}$ phenology metric. The \textit{SWIR Continuum Removal} was computed using three bands from Sentinel-2 imagery for every single acquisition date and its value was compared to a threshold (purple dashed line, which correspond to the healthy situation in green multiplied by 1.7) in order to detect vegetation stress. If a stress was detected two consecutive times with a minimum of 20 days between the observations, we assumed that the dieback occurred.}
 	\label{fig:harmo}
 \end{figure}
 
 The spruce health maps were validated by two different methods.
 On the one hand, a stratified random sampling based on the size of the dieback area on the spruce health map was used for the 2018 vegetation season.
-The dieback area is a combination of bark beetle attacked area and sanitary cutting area. 
-We selected stands only in Belgium and we performed a photointerpretation with the annual orthophotoplans of the Wallonia. 
-The sanitary status of the spruce stand in the health map was compared with observed health status on the orthophotoplan. 
-This validation focused only on dieback observations and did not take into account healthy observations as its objective is to quantify the proportion of false detection, i.e. areas falsely detected as dieback by the time series analysis.
-On the other hand, a field validation in the Vosges massif was carried out on 95 stands during the winter of 2020-2021.
+The dieback area is a combination of bark beetle attacked area and sanitary cutting area.
+Adjacent pixels of dieback were first gathered, polygonized and categorized into six surface categories ; $\leq$ 200 m²,  200 $<$ and $\leq$ 400 m², 400 $<$ and $\leq$ 600 m², 600 $<$ and $\leq$ 1000 m², 1000 $<$ and $\leq$ 2000 m² and eventually $\geq$ 2000 m².
+We selected 48 dieback polygons for each surface categorie (total of 288) located exclusively in Belgian Ardenne and we performed a photointerpretation with the annual orthophotoplans of the Wallonia. 
+The sanitary status from the health map was compared with health status deduced from the orthophotoplan and false detection were expressed as the proportion of surface wrongly detected as dieback.
+This validation focused only on dieback observations and did not take into account healthy observations as its objective was to quantify the proportion of false detection, i.e. areas falsely detected as dieback by the time series analysis.
+On the other hand, a field validation in the Vosges massif was carried out on 95 stands between february and april 2021.
+The selection of the circular field plots (diameter of 30 meters) was made on the basis of the photo-interpretation of the annual orthophotoplan in order to balance the number of healthy and dieback plots. 
 Each stand have been inspected for the presence of bark beetles or dead trees and this health status have been compared with the spruce health map. 
 
 \subsection{Relation between bark beetle attack and topographical conditions}
@@ -329,19 +330,21 @@ The evolution of the crisis also differed by region (Figure \ref{evol_gen}).
 Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but was more progressive in the Vosges, where the maximum impact was later observed, in 2020.
 % add syrface
 
+
+\iffalse
 \begin{table}[htbp]
 	\caption{Spruce area affected by bark beetles outbreak during the crisis (2017-2022). Data including bark beetle attacks and sanitary felling.}
 	\label{tab_recap}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
+		%Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
 		Plains  & 11,298                                                                                     & 21,720                                                                          & 52.0                                                                       \\ \hline
 		Ardenne & 13,397                                                                                     & 107,926                                                                         & 12.2                                                                       \\ \hline
 		Vosges  & 4,305                                                                                      & 75,067                                                                          & 5.7                                                                        \\ \hline
 		Total   & 29,000                                                                                     & 204,763                                                                         & 14.2                                                                       \\ \hline
 	\end{tabular}
 \end{table}
-
+\fi
 
 
 %The evolution of the crisis differs between these two neighbouring regions.

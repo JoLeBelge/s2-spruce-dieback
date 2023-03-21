@@ -1,6 +1,7 @@
 conversion latex to docx
 
-pandoc --bibliography=s2/articleSco/Scolyte.bib -o foo.docx s2/articleSco/2022-ScolytesArdenneVosges.tex -citeproc
+pandoc --bibliography=s2/articleSco/Scolyte.bib -o 20230321-ScolytesArdenneVosges.docx s2/articleSco/2022-ScolytesArdenneVosges.tex -citeproc --resource-path /home/jo/app/s2/articleSco/images/
+
 
 p20 CHARARAS 1959 climatScolytes
 
