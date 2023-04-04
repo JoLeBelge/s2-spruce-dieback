@@ -1,4 +1,4 @@
-\begin{thebibliography}{53}
+\begin{thebibliography}{55}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -66,6 +66,15 @@ Bárta, V., Lukeš, P., and Homolová, L., 2021.
   of {Central} {Europe} using {Sentinel}-2.
 \newblock \emph{International Journal of Applied Earth Observation and
   Geoinformation}, 100:\penalty0 102335.
+
+\bibitem[Cornes et~al.(2018)Cornes, van~der Schrier, van~den Besselaar, and
+  Jones]{ecad}
+Cornes, R.~C., van~der Schrier, G., van~den Besselaar, E. J.~M., and Jones,
+  P.~D., 2018.
+\newblock An ensemble version of the e-obs temperature and precipitation data
+  sets.
+\newblock \emph{Journal of Geophysical Research: Atmospheres}, 123\penalty0
+  (17):\penalty0 9391--9409.
 
 \bibitem[Dalponte et~al.(2022)Dalponte, Solano-Correa, Frizzera, and
   Gianelle]{dalponte_mapping_2022}
@@ -348,6 +357,16 @@ Rousi, E., Kornhuber, K., Beobide-Arsuaga, G., Luo, F., and Coumou, D., 2022.
 \newblock Accelerated western {European} heatwave trends linked to
   more-persistent double jets over {Eurasia}.
 \newblock \emph{Nature Communications}, 13:\penalty0 3851.
+
+\bibitem[Saintonge et~al.(2022)Saintonge, Gillette, Blaser, Queloz, and
+  Leroy]{saintonge_situation_2022}
+Saintonge, F.-X., Gillette, M., Blaser, S., Queloz, V., and Leroy, Q., October
+  2022.
+\newblock Situation et gestion de la crise liée aux scolytes de l'Épicéa
+  commun fin 2021 dans l’est de la {France}, en {Suisse} et en {Wallonie}.
+\newblock \emph{Revue forestière française}, 73\penalty0 (6):\penalty0
+  619--641.
+\newblock ISSN 1951-6827, 0035-2829.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
