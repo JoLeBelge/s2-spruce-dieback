@@ -24,6 +24,8 @@
 
 \DeclareUnicodeCharacter{00E4}{\"a}% pour -niittyla
 
+\def\surfEPVosges{77,715 }
+
 \begin{document}
 
 \begin{frontmatter}
@@ -136,7 +138,7 @@ The climate variables for Wallonia have been provided by the Royal Meteorologica
 These three regions differ in their altitude which can be considered as an imperfect proxy for climate (Figure \ref{fig:situ}). 
 The altitude varies between 100 m and 500 m for the Plains, between 200 m and 700 m for the Ardenne and between 300 m and 1500 m for the Vosges.
 The majority of spruce in the Plains is located in low altitude under 300 m in contrast with the Ardenne and the Vosges where the majority of Norway spruce stand grow above 400 m. 
-The studied spruce area covers 107,926 ha in Ardenne, 75,067 ha in the Vosges and  24,462 ha in the Plains.
+The studied spruce area covers 107,926 ha in Ardenne, \surfEPVosges ha in the Vosges and  24,462 ha in the Plains.
 
 \begin{figure}[htbp] 
 	\centering
@@ -165,16 +167,16 @@ The first prerequisite to assess spruce dieback was to map the species distribut
 For the south of Belgium, we used reliable composition maps from \cite{bolyn_mapping_2022}, computed from remote sensing data, in order to restrict our analysis to Norway spruces. 
 These composition maps consist in presence probabilities for eight major species, from which we discriminated Norway spruce stands by selecting areas with equals or greater than 80\% of probability of presence for this species.  
 In the Grand-Est, the composition map came from the French national geographic agency \citep{IGN_bd_2018} and forest stand composition was determined by photointerpretation.
-We first selected forest stands identified as \textit{spruce or fir} in order to restrict the dieback analysis. 
+We first selected forest stands identified as \textit{spruce or fir} or as \textit{mixed conifers} in order to restrict the dieback analysis. 
 Phenology courses are highly suitable for forest tree species discrimination \citep{lisein_discrimination_2015,grabska_forest_2019,ma_tree_2021}.
-Sentinel-2 (S2) spectral bands courses along the vegetation season were used to refine the determination of species present in the area interpreted as \textit{spruce or fir} in the Grand-Est. 
+Sentinel-2 (S2) spectral bands courses along the vegetation season were used to refine the determination of species present in the area interpreted as \textit{spruce or fir} or as \textit{mixed conifers} in the Grand-Est. 
 S2 satellites carry multispectral sensor with a ground resolution up to 10 m. 
 Bottom of Atmosphere reflectance images (L2A product) were downloaded from the Theia data cluster \citep{theia_team} for all the 14 tiles of 100km x 100km covering our study area (Figure \ref{fig:situ}), provided that the cloud cover does not exceed 35 percent.
 In order to identify and remove every pixel that did not correspond to spruce stand in the Grand-Est, all S2 spectral bands of 10 and 20 meters ground sample distance were first summarized for each of the four quarters of the year, by averaging all cloud-free observations occurring during the quarter.
 We used the satellite observations from the two years prior to the bark beetle crisis for computing these multi-year quarterly averages, i.e. 2016 and 2017.
 A Random Forest algorithm was then trained on this synthetic time serie to discriminate spruce from non-spruce pixels, based on a training set of observations from Belgium consisting in 1000 sampled pixels (20mx20m) for each of the eight major species \citep{bolyn_forest_2018}.
-This forest species classifier was applied on \textit{spruce or fir} area of Grand-Est. 
-The proportion of pixel detected as spruce in the \textit{spruce or fir} stands of the Vosges was 67 \% and correspond to the level of mixture expected for this bioclimatic area.  
+This forest species classifier was applied on \textit{spruce or fir} or \textit{mixed conifers} area of Grand-Est. 
+The proportion of pixel detected as spruce in the Vosges was 43 \% and corresponds to the level of mixture expected for this bioclimatic area (52 \% according to photo-interpreted plots from \cite{piedallu_spatial_2022}) and total spruce surface reached \surfEPVosges ha which is in accordance with french National Forest Inventory data (68,000 +- 12,000 ha).
 Following bark beetle detection was carried on only for 10x10 m pixels detected as spruce.
 
 The detection of Norway spruce dieback was realized by using dense time series of S2 imagery following the methodology developed by \cite{dutrieux_package_2021}.
@@ -194,8 +196,8 @@ As soon as $SWIR_{CR}$ vegetation index showed a stress for two consecutive time
 Simultaneously  to the detection of bark beetle stress, stand cutting and thinning were subject of particular attention: 
 bare soil was detected by using a combination of thresholds for red, green, blue and shortwave infrared reflectance values (Band 8A $\geq$ 12\% reflectance and Band 2 $\leq$ 6 \% reflectance and Band 3 + Band 4 $\geq$ 8 \% reflectance).
 Cutting were thus taken into account and were classified either as normal harvest cutting or as sanitary thinning based on the health status determined by the $SWIR_{CR}$ vegetation index prior to the cutting.
-Although \cite{dutrieux_package_2021} have published their methodology as a open-source python package, named \textit{FORDEAD}, we have adapted the pipeline in C++ in order to comply with our specific requirements.
-Our code is on-line on github repository (\url{https://github.com/JoLeBelge/s2-spruce-dieback/}). 
+Although \cite{dutrieux_package_2021} have published their methodology as a open-source python package, named \textit{FORDEAD}, we have adapted the pipeline in C++ in order to comply with our specific requirements (input and output in raster instead of vector format and result in the form of annual health maps).
+Our code is on-line on github repository (\url{https://github.com/JoLeBelge/s2-spruce-dieback/}).
 We made use of OTB toolbox \citep{grizonnet_2017_OTB} for image processing and the health status was summarized by annual health maps in raster format.
 The annual health maps cover the period starting from may and finishing in april of the next calendar year, because we made the assumption that Norway spruce dieback detected in april are related to bark beetle attack from the previous calendar year \citep{muller_features_2022}.
 This analysis of image time serie was performed on S2 observations between first may 2017 and 28 february 2023 and the health status of every single pixel (10 meters resolution) located in a spruce stand was classified in one of the four following classes ; healthy, bark beetle attacked, cutted or sanitary thinning.
@@ -220,7 +222,7 @@ The sanitary status from the health map was compared with health status deduced 
 This validation focused only on dieback observations and did not take into account healthy observations as its objective was to quantify the proportion of false detection, i.e. areas falsely detected as dieback by the time series analysis.
 On the other hand, a field validation in the Vosges massif was carried out on 95 stands between february and april 2021.
 The selection of the circular field plots (diameter of 30 meters) was made on the basis of the photo-interpretation of the annual orthophotoplan in order to balance the number of healthy and dieback plots. 
-Each stand have been inspected for the presence of bark beetles or dead trees and this health status have been compared with the spruce health map. 
+Each stand was inspected on site for the presence of bark beetles or dead trees and this health status was compared with the spruce health map. 
 
 \subsection{Relation between bark beetle attack and topographical conditions}
 
@@ -301,7 +303,7 @@ During the study period, only one NCDD peak occurred in the vosges in 2020.
 		Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
 		Plains  & 11,298                                                                                     & 21,720                                                                          & 52.0                                                                       \\ \hline
 		Ardenne & 13,397                                                                                     & 107,926                                                                         & 12.2                                                                       \\ \hline
-		Vosges  & 4,305                                                                                      & 75,067                                                                          & 5.7                                                                        \\ \hline
+		Vosges  & 4,305    &\surfEPVosges                                                                          & 5.7                                                                        \\ \hline
 		Total   & 29,000                                                                                     & 204,763                                                                         & 14.2                                                                       \\ \hline
 	\end{tabular}
 \end{table}

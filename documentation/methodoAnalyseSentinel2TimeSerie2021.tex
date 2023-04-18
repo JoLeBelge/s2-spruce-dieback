@@ -473,7 +473,7 @@ Les cartes de délais de coupe et de première apparition des scolytes peuvent �
 L'information ne sera pertinente que pour la première année d'attaque de scolyte. 
 Si un peuplement est attaqué en 2017, la carte de délais de coupe et de première date d'attaque pour l'année  2018 contiendra une valeur nulle.
 Ces cartes sont de format 8bits, avec des valeurs comprises entre 0 et 255.
-Afin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours, additionné de 100.
+Afin d'éviter un dépassement de valeurs de nombre de jours qui peuvent en théorie atteindre le maximum de 365 jours (une année), le délais de coupe et la date de première attaque sont exprimées en nombre de semaines. Pour la date de première attaque, il s'agit du nombre de semaine depuis le début de l'année en cours, additionné de 100. Attention, les années sont des périodes de végétation qui commence en mai pour terminer en avril de l'année civile suivantes.
 
 %Par ailleurs, la valeur spéciale 255 signifie que le pixel a été attaqué et/ou coupé l'année précédente. La valeur de 0, elle, est utilisée si le pixel n'est pas dans le masque forestier ou si aucune attaque de scolyte n'est à constater.
 
@@ -605,7 +605,7 @@ C'est la classe qui effectue l'analyse de la série temporelle (\textbf{TS} pour
 Les traitements illustrés jusqu'à présent sont des calculs qui s'effectuent sur base de la série temporelle, mais sans prendre en compte les effets de voisinage. On peut dire que la dimension spatiale n'est pas prise en compte. Pour assurer une certaine cohérence dans les classes d'état sanitaire assignées à chaque pixel dans les cartes annuelles, un certain nombre de post traitement sont effectués et développés dans une seconde application. Cette application est assez polyvalente, avec un nombre d'outils assez élevés. Les outils permettent les actions suivantes ;
 \begin{enumerate}\addtocounter{enumi}{-1}
 	
-	\item masquer les cartes d'états sanitaires avec la carte de pourcentage de GHA de l'épicéa (travaux de \citep{bolyn_forest_2018}), en utilisant un seuil de présence spécifié. Pour rappel, l'analyse de la série temporelle est effectué sur une zone définie sur base d'un pourcentage de GHA de l'épicéa de plus de 50\%. On peut donc avec cet outil se montrer plus restrictif en augmentant ce seuil, par exemple avec un seuil de 70\%.
+	\item masquer les cartes d'états sanitaires avec la carte de pourcentage de GHA de l'épicéa (travaux de \citep{bolyn_forest_2018}), en utilisant un seuil de présence spécifié. Pour rappel, l'analyse de la série temporelle est effectué sur une zone définie sur base d'un pourcentage de GHA de l'épicéa de plus de 50\%. On peut donc avec cet outil se montrer plus restrictif en augmentant ce seuil, par exemple avec un seuil de 80\%.
 	\item nettoyage des cartes d'état sanitaire. Pour le moment, il s'agit uniquement de localiser les zones de coupe non-sanitaire de petites dimensions qui sont entourées d'une coupe sanitaire. On met l'hypothèse que ces épicéas ont également été attaqués par le scolyte avant d'être abattu, comme leurs voisins directs, et on change la classe pour les mettre en coupe sanitaire.
 	\item calcul des cartes d'évolutions de l'état sanitaire. Chaque carte d'état sanitaire est comparée avec celle de l'année précédente afin de classer les zones de scolyte en nouveau scolyte ou ancien scolyte, et les zones de coupe sanitaire en nouvelle ou ancienne coupe sanitaire. On distingue les nouvelles coupes sanitaires pour les peuplements scolytés durant l'année en cours des nouvelles coupes sanitaires pour les peuplement qui étaient déjà scolyté l'année précédente.
 	\item  compression des cartes geotiff
@@ -675,7 +675,7 @@ Enfin, la matrice de confusion met en lumière le fait qu'une proportion consid�
 
 Il est évident que la méthodologie de détection des scolytes fonctionne exclusivement pour des peuplements d'épicéa. 
 Un prérequis indispensable est donc de disposer de cartes des pessières, permettant ainsi de restreindre l'analyse sur cette zone. 
-En Wallonie, les travaux de \citep{bolyn_forest_2018} ont abouti à la création de cartes de composition qui ont été judicieusement utilisées pour la création d'une couche de masque "pessière".
+En Wallonie, les travaux de \cite{bolyn_forest_2018} ont abouti à la création de cartes de composition qui ont été judicieusement utilisées pour la création d'une couche de masque "pessière".
 Dans la région du Grand-Est de France, nous avons utilisé la BD Forêt V2 pour sélectionner les peuplements photo-interprétés comme "sapin ou épicéa" et "mélange de conifères".
 Cependant, les parcelles sélectionnées contiennent une proportion importante d'essences qui ne sont pas de l'épicéa, et pour lesquelles la méthode de détection de scolytes abouti forcément à une réponse erronée. 
 Les séries temporelles nous permettent un suivi des changements de phénologie au cours de l'année.
@@ -696,17 +696,28 @@ Ces valeurs sont donc une synthèse standardisée qui représente la variations 
 Sur base de cette synthèse trimestrielle, un classification par Random Forest (foret aléatoire) est entraînée sur des pixels en Région wallonne pour discriminer 9 essences forestières. 
 La carte de composition de la Région wallonne est utilisée pour la sélection des observations d'entraînement. 
 Ce modèle est ensuite appliqué à chacun des pixels des tuiles Sentinel-2 du Grand-Est qui sont situés dans les classes "sapin ou épicéa" et "mélange de conifère".
-De nombreux pixels dans les Vosges sont classés comme étant du douglas, car la réponse spectrale du douglas est proche de celle de l'épicéa. C'est pourquoi nous avons choisi d'effectuer un regroupement et de considéré les classes "Douglas" et "Epicéa" comme étant tout deux de la pessière. 
-Les autres essences (4 essences feuillues, pins et mélèze) sont considérées comme n'étant pas de l'épicéa.
+De nombreux pixels dans les Vosges sont classés comme étant du douglas, car la réponse spectrale du douglas est proche de celle de l'épicéa. 
+C'est pourquoi nous avons choisi dans un premier temps d'effectuer un regroupement et de considéré les classes "Douglas" et "Epicéa" comme étant tout deux de la pessière. 
+Néanmoins, la comparaison des surfaces totale de pessière estimées par l'IFN pour les Vosges nous ont montré qu'il était plus cohérent de ne considérer que les surfaces classées comme étant de l'épicéa (Figure \ref{fig:IFN}).
+Les autres essences (4 essences feuillues, pins, doublas et mélèze) sont considérées comme n'étant pas de l'épicéa.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{chiffreIFN.png}
+	\caption{Les chiffres de l'IFN nous permettent d'appréhender la surface de pessière que l'on devrais obtenir après détermination de la composition sur les peuplements de la BD Forêt V2 "sapin ou épicéa" et "mélange de conifères".}
+	\label{fig:IFN}
+\end{figure}
+
 Les résultats, présenté pour la tuile T32ULU (Vosges), ont montré une forte disparité entre les peuplements "sapin ou épicéa" et les "mélanges de conifères". 
-Pour les sapin ou épicéa, 67\% de la surface est détectée comme de la pessière. Donc 33\% des pixels sont considérés comme n'étant pas de la pessière et sont donc retranchés du masque épicéa final du Grand-Est.
-Pour les mélange de conifères, seulement 40\% de la surface est détectée comme étant de la pessière avec cette méthode. Sur base de ce chiffre assez bas, nous avons décidé de ne plus considérer ces peuplements pour la détection de dégats de typographe.
+Pour les sapin ou épicéa, 50\% de la surface est détectée comme de la pessière.
+Pour les mélange de conifères, seulement 24\% de la surface est détectée comme étant de la pessière avec cette méthode. Les surfaces totale de pessière s'élèvent à 77,700 ha, ce qui nous semble conforme aux chiffres de l'IFN.
+%Sur base de ce chiffre assez bas, nous avons décidé de ne plus considérer ces peuplements pour la détection de dégats de typographe.--> jamais fait en pratique..
 La figure \ref{fig:reclasEP} illustre les surfaces détectées comme de la pessière par classe d'altitude. La courbe surimposée avec des chiffres indique la proportion de surface en pessière pour cette classe d'altitude.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.49\linewidth]{compoEPorS.pdf}
-	\includegraphics[width=0.49\linewidth]{compoResineux.pdf}
+	\includegraphics[width=0.49\linewidth]{compoEPorS_sansDO.pdf}
+	\includegraphics[width=0.49\linewidth]{compoResineux_sansDO.pdf}
 	\caption{Une classification basée sur la synthèse trimestrielle permet d'affiner le masque épicéa du Grand-Est en retirant tous les pixels qui ne semblent pas être de la pessière (couleur rose). Les surfaces détectées comme étant de la pessière (vert) sont présentées pour chaque classe d'altitude dans les Vosges, séparément pour la classe "sapin ou épicéa" (gauche) et pour la classe "mélange de conifères" (droite).}
 	\label{fig:reclasEP}
 \end{figure}
