@@ -1,4 +1,4 @@
-\begin{thebibliography}{55}
+\begin{thebibliography}{56}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -367,6 +367,12 @@ Saintonge, F.-X., Gillette, M., Blaser, S., Queloz, V., and Leroy, Q., October
 \newblock \emph{Revue forestière française}, 73\penalty0 (6):\penalty0
   619--641.
 \newblock ISSN 1951-6827, 0035-2829.
+
+\bibitem[Schulzweida and Quast(2015)]{schulzweida_2015}
+Schulzweida, U. and Quast, R., 2015.
+\newblock Climate indices with cdo.
+\newblock URL
+  \url{https://earth.bsc.es/gitlab/ces/cdo/raw/b4f0edf2d5c87630ed4c5ddee5a4992e3e08b06a/doc/cdo_eca.pdf}.
 
 \bibitem[Stadelmann et~al.(2013)Stadelmann, Bugmann, Meier, Wermelinger, and
   Bigler]{stadelmann_effects_2013}
