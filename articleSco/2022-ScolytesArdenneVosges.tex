@@ -24,7 +24,7 @@
 
 \DeclareUnicodeCharacter{00E4}{\"a}% pour -niittyla
 
-\def\surfEPVosges{76,230 }
+%\def\surfEPVosges{76,230 }
 
 \begin{document}
 
@@ -138,7 +138,7 @@ The climate variables for Wallonia have been provided by the Royal Meteorologica
 These three regions differ in their altitude which can be considered as an imperfect proxy for climate (Figure \ref{fig:situ}). 
 The altitude varies between 100 m and 500 m for the Plains, between 200 m and 700 m for the Ardenne and between 300 m and 1500 m for the Vosges.
 The majority of spruce in the Plains is located in low altitude under 300 m in contrast with the Ardenne and the Vosges where the majority of Norway spruce stand grow above 400 m. 
-The studied spruce area covers 107,926 ha in Ardenne, \surfEPVosges ha in the Vosges and  24,462 ha in the Plains.
+The studied spruce area covers 104,723 ha in Ardenne,  75,068 ha in the Vosges and  15,028 ha in the Plains.
 
 \begin{figure}[htbp] 
 	\centering
@@ -191,7 +191,7 @@ In order to identify and remove every pixel that did not correspond to spruce st
 We used the satellite observations from the two years prior to the bark beetle crisis for computing these multi-year quarterly averages, i.e. 2016 and 2017.
 A Random Forest algorithm was then trained on this synthetic time serie to discriminate spruce from non-spruce pixels, based on a training set of observations from Belgium consisting in 1000 sampled pixels (20mx20m) for each of the eight major species \citep{bolyn_forest_2018}.
 This forest species classifier was applied on \textit{spruce or fir} or \textit{mixed conifers} area of Grand-Est. 
-The proportion of pixel detected as spruce in the Vosges was 43 \% and corresponds to the level of mixture expected for this bioclimatic area (52 \% according to photo-interpreted plots from \cite{piedallu_spatial_2022}) and total spruce surface reached \surfEPVosges ha which is in accordance with french National Forest Inventory data (68,000 +- 12,000 ha).
+The proportion of pixel detected as spruce in the Vosges was 43 \% and corresponds to the level of mixture expected for this bioclimatic area (52 \% according to photo-interpreted plots from \cite{piedallu_spatial_2022}) and total spruce surface reached 75,068 ha which is in accordance with french National Forest Inventory data (68,000 +- 12,000 ha).
 Following bark beetle detection was carried on only for 10x10 m pixels detected as spruce.
 
 The detection of Norway spruce dieback was realized by using dense time series of S2 imagery following the methodology developed by \cite{dutrieux_package_2021}.
@@ -296,9 +296,9 @@ Healthy stands (n=56)                    & 0 \%      & 100 \%
 After a low spruce mortality rate in 2017, the sanitary crisis of spruce really began in 2018 especially in the Plains and in Ardenne (Figure \ref{evol_gen}).
 A high level of annual mortality rate  has been observed each year during four years with a maximum of 2.5 \% of the spruces in the Vosges, 5\% in Ardenne and 22 \% in the Plains after three critical years (2018-2020).
 Spruce mortality rates decreased in 2022 and returned to a similar situtation as in 2017 with respectively 0, 1 and 3\% of new attacked stands for Vosges, Ardenne and Plains.
-During the period 2017-2022, on the study area 29,000 ha of spruce have been destroyed, then representing 14\%  of the total spruce area of 2017 (table \ref{tab_recap}).
+During the period 2017-2022, on the study area 23,674 ha of spruce have been destroyed, then representing 12.1\%  of the total spruce area of 2017 (table \ref{tab_recap}).
 The three bioclimatic regions were not equally impacted by spruce mortality : 
-Plains were the most affected with 52 \% of the trees stands, nearby 10 times more than the Vosges (5.7 \%) and four times more than the Ardenne (12.4\%).
+Plains were the most affected with 50.1 \% of the trees stands, nearby 10 times more than the Vosges (5.6 \%) and four times more than the Ardenne (11.3\%).
 The evolution of the crisis also differed by region (Figure \ref{evol_gen}).
 Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but was more progressive in the Vosges, where the maximum impact was later observed, in 2020.
 
@@ -308,12 +308,12 @@ Bark beetles attacks began hardly in 2018 in the Plains and in the Ardenne, but 
 	\label{tab_recap}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-	%	Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
+		Region  & \begin{tabular}[c]{@{}c@{}}Total spruce dieback\\ area during the crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Total spruce area \\ before crisis (ha)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage of area\\  with dieback\end{tabular} \\ \hline
 
-		Plains  & 7,451 & 14,305 & 52.0 \\ \hline
-		Ardenne & 11,822 & 104,716                                                                         & 11.3 \\ \hline
-		Vosges  & 4,110    &\surfEPVosges                                                                          & 5.4 \\ \hline
-		Total   & 23,383 & 195,252 & 12.0 \\ \hline
+		Plains  & 7,634 & 15,028 & 50.1 \\ \hline
+		Ardenne & 11,822 & 104,723                                                                         & 11.3 \\ \hline
+		Vosges  & 4,218    & 75,068 & 5.6 \\ \hline
+		Total   & 23,674 & 194,819 & 12.2 \\ \hline
 
 	\end{tabular}
 \end{table}
@@ -381,7 +381,7 @@ North-facing slopes & \multicolumn{1}{l|}{$54^b$}   & \multicolumn{1}{l|}{$14.4^
 In forest, sanitary crisis lasts on average between three and ten years \citep{brunier_guide_2020}.
 In our study, the spruce dieback have begun in 2018 and decrease in 2022 in all the regions.
 The annual dieback rate has recovered in the 2022 the same level than in 2017.
-We found that the Vosges lost 5.4\% of their spruce area. 
+We found that the Vosges lost 5.6\% of their spruce area. 
 According to \citeauthor{piedallu_spatial_2022} \citep{piedallu_spatial_2022}, 33\% of spruce stands are located in areas at high risk of dieback.
 It is therefore likely that new stands will dieback in the years to come.
 Even if all results show a decrease in mortality, the forestry community should remain vigilant for a new explosion of mortality.
@@ -414,9 +414,9 @@ Warm and dry climate, as in the Plains, does not meet the autecological requirem
 In contrast, pure even-aged spruce stands of the Plains and Ardenne are significantly more susceptible to pests attacks \citep{faccoli_composition_2014,jactel_2021} than the spruces growing in the mixed forests of the Vosges.
 Rapid harvesting of trees attacked by bark beetles protects stands from severe outbreaks \citep{stadelmann_effects_2013} but this operation is not systematic in region such as Plains where the softwood industry is not as developed as in the Ardennes and in the Vosges.
 Faced with these three parameters, the three main regions are not equal.
-In the Vosges, the condition are more favourable, which could explain the limited outbreak during the crisis (5.4\% of initial area).
+In the Vosges, the condition are more favourable, which could explain the limited outbreak during the crisis (5.6\% of initial area).
 Indeed, on the opposite, in the Plains all parameters are unfavourable : the warm and dry climate stressed the trees and favoured the beetles which produced large outbreaks in even-aged pure stands, probably less concerned by sanitary thinning. 
-These conditions explain that the outbreak was not controlled and reached 52 \% of the spruce area.
+These conditions explain that the outbreak was not controlled and reached 50.1 \% of the spruce area.
 The Ardenne spruce forest is an intermediate situation.
 The climate is the coldest of the three bioclimatic areas, but less humid than the Vosges.
 The forest manager generally make the necessary sanitary felling which is part of the silvicultural tradition.
@@ -482,12 +482,12 @@ To our knowledge, no similar research deals with such comprehensive time series 
 The methodology used to identify the damaged stands is robust and effective as far as reliable species composition maps are available.
 Indeed, to improve the result in the Vosges, a new Norway spruce map is necessary to better distinguish spruce from fir.
 Taking this limitation into account, remote sensing could be the basis for monitoring bark beetle attacks in spruce forest.
-This crisis triggered by the dry and warm events from 2018 to 2020 lasted five years and destroyed 14 \% (29.000 ha) of the spruce area in Wallonia and Grand-Est of France.
+This crisis triggered by the dry and warm events from 2018 to 2020 lasted five years and destroyed 12.2 \% (23,674 ha) of the spruce area in Wallonia and Grand-Est of France.
 After a rainy year in 2021, new bark beetle attacks in 2022 return to their 2017 level. The crisis seems to be over. However, foresters must remain vigilant in the face of a resurgence of attacks in the years to come.   
 The damages were not equally distributed on the territory : the Plains are the most impacted regions with more than 50\% of the spruce area impacted by bark beetles.
-The devastated area by this pest is estimated around 11,000 ha.
-The Ardenne is the second region that has lost the most spruce area with  12,4 \% of his spruce area attacked or around 13,400 ha. 
-The Vosges is the less attacked region with 5.7 \% of his spruce area killed. The total area impacted in this mountain region is around 4,300 ha.
+The devastated area by this pest is estimated around 7,500 ha.
+The Ardenne is the second region that has lost the most spruce area with  11.3 \% of his spruce area attacked or around 11,800 ha. 
+The Vosges is the less attacked region with 5.6 \% of his spruce area killed. The total area impacted in this mountain region is around 4,200 ha.
 This situation could be linked to the climate, the structure and the composition of the stands, and the current forest management which differ between the three regions.
 Taking into account the climate change, which will favour warm and dry events in the near future, our results does not support new plantations of Norway spruce in Plains.
 In Ardenne, we advise not to plant any more Norway spruce at lower altitude then 400 m except in specific micro-climate.
