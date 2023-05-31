@@ -1,4 +1,4 @@
-\begin{thebibliography}{56}
+\begin{thebibliography}{57}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -342,6 +342,14 @@ Puhe, J., 2003.
 \newblock Growth and development of the root systern of {Norway} spruce
   ({Picea} abies) in forest stands-a review.
 \newblock \emph{Forest Ecoiogy and Management}, 175:\penalty0 253--273.
+
+\bibitem[Pureswaran et~al.(2022)Pureswaran, Meurisse, Rassati, Liebhold, and
+  Faccoli]{pureswaran_climate_2022}
+Pureswaran, D.~S., Meurisse, N., Rassati, D., Liebhold, A.~M., and Faccoli, M.,
+  2022.
+\newblock Climate change and invasions by nonnative bark and ambrosia beetles.
+\newblock In \emph{Bark {Beetle} {Management}, {Ecology}, and {Climate}
+  {Change}}, pages 3--30. Elsevier.
 
 \bibitem[Rouse and Wilson(1969)]{Rouse_1969}
 Rouse, W.~R. and Wilson, R.~G., 1969.
