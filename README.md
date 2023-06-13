@@ -5,14 +5,14 @@
 The ongoing thesis of Arthur Gilles related to the future of forest tree species Picea Abies in Wallonia (Belgium) have required to analyse the trend and extend to the bark beetle crisis that occured between 2018 and 2022.
 We have choosen to works with the Sentinel-2 spatial imagery with a methodology for detection of spruce dieback similar to the one developped by Dutrieux et al. (see the [FORDEAD python package](https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.15454/4TEO6H)).
 
-This repository will likely substitute for the supplementary information of the scientific paper of Gilles A.
+This repository will likely substitute for the supplementary information of the scientific paper of Gilles A. (2023) [submitted]
 
 ## Documentation
 
 There is two main document that serve as documentation for our work:
 1. a french document that describe how is arranged the source code and how it works : /documentation/methodoAnalyseSentinel2TimeSerie2021.pdf
 This document was primarilly written for an internal use.
-2. an english draft for a scientific paper that describes how we have use the resulting spruce dieback maps to describe the bark beetle outbreak and to determined which forest site are the most sensitive: /articleSco/2022-ScolytesArdenneVosges.tex or associated pdf
+2. an english draft for a scientific paper that have been submitted in june 2023 - we hope it will be published soon.
 
 Plus, the spruce dieback maps generated for Wallonia are available in the geoportal [Forestimator](https://forestimator.gembloux.ulg.ac.be/). 
 Users can either view or download such annual health maps.
