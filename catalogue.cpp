@@ -105,7 +105,7 @@ void catalogue::init(){
      in2 >> date::parse("%F", dlast);
 
 
-    for(auto & p : boost::filesystem::directory_iterator(wd+"intermediate/")){
+    for(auto & p : boost::filesystem::fil_iterator(wd+"intermediate/")){
         std::string aDecompressDirName= p.path().filename().string();
         // création d'une tuile
         tuileS2OneDate * t=new tuileS2OneDate();
