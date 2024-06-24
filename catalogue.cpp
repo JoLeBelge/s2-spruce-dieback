@@ -112,7 +112,6 @@ void catalogue::init(){
         t->decompressDirName =aDecompressDirName;
         t->readXML();
         t->mSuffix = globSuffix;
-
         if (t->getymd() > dfirst && t->getymd() < dlast){
         mVProduts.push_back(t);
         } else if (mDebug){ std::cout << "prise de vue " << t->getDate() << " pas prise en compte , date1  " << dfirst <<" , date 2 " << dlast<< std::endl;}

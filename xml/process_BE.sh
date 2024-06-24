@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn /home/gef/app/s2/xml/s2_sco.xml --mode 1
+/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn /home/gef/app/s2/xml/s2_sco.xml --mode 1
 #/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn /home/gef/app/s2/xml/s2_sco.xml --mode 2
 /home/gef/app/build-s2_ts/s2_timeSerie --xmlIn /home/gef/app/s2/xml/s2_sco.xml --mergeES 1 --anaTS 0
 
@@ -19,7 +19,7 @@
 # compresse les résultats
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 3 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/etatSanitaire_ANNEE_BL72_masq_evol.tif
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 3 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/FirstDateSco_ANNEE_BL72.tif
-/home/gef/app/build-s2_postProcess/s2_postProcess --outils 3 --rasterIn /mediagef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/delaisCoupe_ANNEE_BL72.tif
+/home/gef/app/build-s2_postProcess/s2_postProcess --outils 3 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/delaisCoupe_ANNEE_BL72.tif
 
 # les résultats finaux sont donc ave _co à la fin, ou avec surv
 mkdir /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/ES

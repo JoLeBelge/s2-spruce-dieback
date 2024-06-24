@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
             ("testClean", po::value<bool>(), "pour le test sur une position, nettoyage ou pas, def true")
             ("mergeES", po::value<bool>(), "fusionne les cartes d'état sanitaire des différentes tuiles")
             ("anaTS", po::value<bool>(), "effectue l'analyse sur la série temporelle, defaut true mais si on veux faire un merge des cartes Etat san sans tout recalculer -->mettre à false")
-            ("mode", po::value<int>(), "mode 1= pas de téléchargement de nouvelle tuile. Mode 2 = téléchargement")
+            ("mode", po::value<int>(), "mode 1= téléchargement de nouvelle tuile. Mode 2 = pas de téléchargement")
             ("debug", po::value<bool>(), "si true, le logiciel est plus bavard, ça aide pour débugger")
             ;
 
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        r.genReport("reportTS_"+globSuffix+".txt");
+        r.genReport("/home/gef/Documents/reportTS_"+globSuffix+".txt");
         }
 
 

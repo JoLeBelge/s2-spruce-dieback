@@ -237,18 +237,18 @@ void tuileS2OneDateSco::masqueSpecifique(){
     //std::string out=interDirName+"mask_R1_solnu.tif";
     // check que le fichier n'existe pas
     if  (boost::filesystem::exists(m) && boost::filesystem::exists(SWIR1) && boost::filesystem::exists(r)&& boost::filesystem::exists(v)){
-       bool test(0);
+       //bool test(0);
        if (boost::filesystem::exists(out)){
              std::time_t t = boost::filesystem::last_write_time(out) ;
 
-             tm local_tm = *gmtime(&t);
+             /*tm local_tm = *gmtime(&t);
              year_month_day ymd(year{local_tm.tm_year+1900},month{local_tm.tm_mon+1}, day{local_tm.tm_mday});
              if (ymd.year() != year{2022} | ymd.month() < month{10}){test=1;
              std::cout << " last_write_time " << t << ", " << ymd.year() << " -" << ymd.month() << std::endl;
-             }
+             }*/
        }
 
-        if ((test | !boost::filesystem::exists(out) | overw) ){
+        if (!boost::filesystem::exists(out) | overw) {
             //im 1 = masque général
             //im 2 = swir1
             //im 3 = r

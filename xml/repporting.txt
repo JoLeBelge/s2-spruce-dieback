@@ -1,7 +1,0 @@
-génération de rapport descriptif des catalogues utilisés pour l'analyse de la série temporelle
-
-/home/gef/app/build-s2_ts/s2_timeSerie --xmlIn /home/gef/app/s2/xml/s2_sco.xml --anaTS 0 --dates 2016-05-01 2022-04-30
-
-Je change les dates pour avoir la période que l'on présente dans le papier
-
-

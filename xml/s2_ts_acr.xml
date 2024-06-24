@@ -1,0 +1,29 @@
+<params>
+
+ <path_otb>/home/gef/app/OTB-8.1.0-Linux64/bin/</path_otb>
+ <EP_mask_path>/home/gef/Documents/input/masque_EP.tif</EP_mask_path>
+ <suffix></suffix>
+ <catalogueMode> 2 </catalogueMode> <!-- 1 ; téléchargement. 2 : pas de téléchargement -->
+ <doAnaTS> 1 </doAnaTS>
+ <debugDetail>0</debugDetail>
+ 
+ <doDelaisCoupe>1</doDelaisCoupe>
+ <doFirstDateSco>1</doFirstDateSco>
+ 
+ <nbDaysStress>150</nbDaysStress>
+ 
+ <mergeEPSG>32631</mergeEPSG>
+ <mergeEtatSan>0</mergeEtatSan>
+ 
+  <date1>2023-06-01</date1>
+  <date2>2023-12-31</date2>
+ 
+ <Tuiles>
+
+ <Tuile name="T31UFR">
+          <wd>/media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/</wd>
+              <doTuile>1</doTuile>
+        </Tuile>  
+ </Tuiles>
+
+</params>

@@ -281,6 +281,7 @@ void tuileS2OneDate::resample(){
 }*/
 
 std::string tuileS2OneDate::getDate(){
+
     return mAcqDate.substr(0,4)+mAcqDate.substr(5,2)+mAcqDate.substr(8,2);
 }
 

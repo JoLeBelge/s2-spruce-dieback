@@ -208,10 +208,10 @@ void esOney::clean(){
                             Im2.out() | (sigma(nb_pts)<< 1)
                             );
 
-                double r=((double) nb_pts)/((double) cc.card());
+                double r=((double) nb_pts)/((double) cc.card()); // cc = coupe normale. nb_pts = coupe sanitaire
                 //Pt2di cdg;
                 //ELISE_COPY (cc.all_pts(),Virgule(FX,FY),cdg.sigma());
-                if (r>0.4){
+                if (r>0.5){
                     //std::cout << "composante connexe " << cdg.x  << " , " <<  cdg.y <<" va être remplacée par coupe sanitaire car r= " << r << " , nombre de pixel " << cc.card() << std::endl;
                     // on change de classe
                     ELISE_COPY (cc.all_pts(),cs,mIm->out());
