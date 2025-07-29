@@ -14,7 +14,6 @@ using namespace std;
 
 //./dc_tool --param_hl /home/jo/Documents/S2/param/dc_tool_param.prm --dirOut /home/jo/Documents/S2/dc_tool_out/sits/ --mode 2
 
-
 int main(int argc, char *argv[])
 {
     po::options_description desc("Allowed options");
