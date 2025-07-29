@@ -9,7 +9,7 @@
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 5 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/delaisCoupe_ANNEE.tif
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 5 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/FirstDateSco_ANNEE.tif
 # masque
-/home/gef/app/build-s2_postProcess/s2_postProcess --outils 0 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/etatSanitaire_ANNEE_BL72.tif --seuilPP 80 --probPres /home/gef/Documents/input/compo/compo_5_EP10m.tif
+/home/gef/app/build-s2_postProcess/s2_postProcess --outils 0 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/etatSanitaire_ANNEE_BL72.tif --seuilPP 80 --probPres /home/gef/Documents/input/compo/compo_5EP10_withNDasZero.tif
 # nettoyage
 /home/gef/app/build-s2_postProcess/s2_postProcess --outils 1 --rasterIn /media/gef/598c5e48-4601-4dbf-ae86-d15388a3dffa/S2Scolyte/merge/etatSanitaire_ANNEE_BL72_masq.tif
 # evolution
