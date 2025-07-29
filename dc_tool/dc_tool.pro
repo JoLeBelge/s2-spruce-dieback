@@ -13,9 +13,16 @@ DEPENDPATH += /usr/include/gdal/
 
 INCLUDEPATH += /usr/include/x86_64-linux-gnu/curl/
 
-!defined(USER, var) {
-     USER = "jo"
+#qmake pl=scotty
+!contains( pl, scotty ) {
+    # drivers contains 'network'
+    message( "Configuring for  jo build..." )
+   USER = "jo"
+} else {
+ USER = "grf"
 }
+
+
 
 INCLUDEPATH += /home/$$USER/app/force/src/modules/higher-level/
 DEPENDPATH += /home/$$USER/app/force/src/modules/higher-level/
