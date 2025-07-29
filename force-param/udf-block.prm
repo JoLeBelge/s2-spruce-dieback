@@ -1,0 +1,73 @@
+++PARAM_UDF_START++
+
+# INPUT/OUTPUT DIRECTORIES
+# ------------------------------------------------------------------------
+DIR_LOWER = /home/jo/Documents/S2/level3-5km
+DIR_HIGHER = /home/jo/Documents/S2/level4
+DIR_PROVENANCE = /home/jo/Documents/S2/temp
+
+DIR_MASK = /home/jo/Documents/S2/mask-5km
+#BASE_MASK = compo_CH_buf.tif
+BASE_MASK = maskTest.tif
+
+# OUTPUT OPTIONS
+# ------------------------------------------------------------------------
+OUTPUT_FORMAT = GTiff
+FILE_OUTPUT_OPTIONS = NULL
+OUTPUT_EXPLODE = FALSE
+OUTPUT_SUBFOLDERS = FALSE
+
+# PARALLEL PROCESSING
+# ------------------------------------------------------------------------
+NTHREAD_READ = 8
+NTHREAD_COMPUTE = 8 #22#
+NTHREAD_WRITE = 4
+STREAMING = TRUE
+PRETTY_PROGRESS = TRUE
+
+# PROCESSING EXTENT AND RESOLUTION
+# ------------------------------------------------------------------------
+X_TILE_RANGE = 1 1000
+Y_TILE_RANGE = 1 1000
+FILE_TILE = /home/jo/Documents/S2/param/allowedTile-5km.txt
+BLOCK_SIZE = 2500
+RESOLUTION = 10
+REDUCE_PSF = FALSE
+USE_L2_IMPROPHE = FALSE
+
+# SENSOR ALLOW-LIST
+# ------------------------------------------------------------------------
+SENSORS = LND08 LND09 SEN2A SEN2B SEN2C
+PRODUCT_TYPE_MAIN = BOA
+PRODUCT_TYPE_QUALITY = QAI
+SPECTRAL_ADJUST = FALSE
+
+# QAI SCREENING
+# ------------------------------------------------------------------------
+#SCREEN_QAI = NODATA CLOUD_OPAQUE CLOUD_BUFFER CLOUD_CIRRUS CLOUD_SHADOW SNOW SUBZERO SATURATION
+SCREEN_QAI = NODATA
+ABOVE_NOISE = 0
+BELOW_NOISE = 0
+
+# PROCESSING TIMEFRAME
+# ------------------------------------------------------------------------
+DATE_RANGE =  2017-01-01 2025-06-15
+DOY_RANGE = 1 365
+
+
+# PYTHON UDF PARAMETERS
+# ------------------------------------------------------------------------
+FILE_PYTHON = NULL
+PYTHON_TYPE = PIXEL
+OUTPUT_PYP = FALSE
+
+# R UDF PARAMETERS
+# ------------------------------------------------------------------------
+# Note: due to OpenMP threading conflicts, the usage of R UDFs will trigger
+# the internal disabling of the streaming functionality (STREAMING = FALSE)
+# ------------------------------------------------------------------------
+FILE_RSTATS = /home/jo/Documents/S2/param/udf-block-predictTempcnn.r
+RSTATS_TYPE = BLOCK
+OUTPUT_RSP = TRUE
+
+++PARAM_UDF_END++

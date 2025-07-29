@@ -18,7 +18,7 @@ SOURCES += main.cpp \
     tuiles2OneDate.cpp \
     tuiles2onedatesco.cpp
 
-LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb -fopenmp
+LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -ltbb -fopenmp -lcurl
 
 LIBS += -L$$PWD/../../../usr/include/ -lsqlite3
 LIBS += -L$$PWD/usr/include/gdal/ -lgdal
