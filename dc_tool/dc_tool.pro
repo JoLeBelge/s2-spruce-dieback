@@ -6,7 +6,7 @@ TARGET = dc_tool
 QMAKE_LFLAGS+=-fopenmp
 QMAKE_CXXFLAGS+=-fopenmp
 
-LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lzip -fopenmp  -lcurl -lgdal
+LIBS = -lboost_system -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_program_options -lgdal -lcurl#-fopenmp
 
 INCLUDEPATH += /usr/include/gdal/
 DEPENDPATH += /usr/include/gdal/

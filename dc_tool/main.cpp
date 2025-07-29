@@ -12,6 +12,8 @@ using namespace std;
 // ./dc_tool --param_hl /home/jo/Documents/S2/param/dc_tool_param.prm --dirOut /home/jo/Documents/S2/dc_tool_out/ --input_gpkg /home/jo/Documents/OGF/deperissementCH/houppier/dead_trees_from_ortho_v2.gpkg --input_zone_gpkg /home/jo/Documents/OGF/deperissementCH/houppier/grille_1ha_chenaie_selected.gpkg
 
 
+
+
 //./dc_tool --param_hl /home/jo/Documents/S2/param/dc_tool_param.prm --dirOut /home/jo/Documents/S2/dc_tool_out/sits/ --mode 2
 
 int main(int argc, char *argv[])
