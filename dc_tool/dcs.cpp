@@ -44,7 +44,7 @@ dcs::dcs(par_hl_t *param):phl(param)
 
 }
 
-void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone){
+void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone, std::string aOut){
     // lecture du geopackage
     std::cout << " gen Class Raster" << std::endl;
     GDALDataset * DShouppier =  (GDALDataset*) GDALOpenEx( inputShpHouppier.c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
@@ -52,7 +52,7 @@ void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone)
     if( DShouppier != NULL & DSzone !=0 )
     {
         for (dc datacube : alldc){
-            datacube.genClassRaster(DShouppier, DSzone);
+            datacube.genClassRaster(DShouppier, DSzone, aOut);
         }
 
         GDALClose(DShouppier);

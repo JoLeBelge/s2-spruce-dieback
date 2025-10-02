@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
             ("input_gpkg", po::value< std::string>(), "gpkg avec houppiers dépérissant")
             ("input_zone_gpkg", po::value< std::string>(), "gpkg avec les zones photointerprétées. les parties sans houppiers dépérissants correspondent au arbres sains")
             ("mode", po::value<int>(), "switch between different tools. 1: genClassRaster (label). 2:")
+            ("outName", po::value< std::string>(), "name for class raster mask")
             ;
 
     po::variables_map vm;
@@ -51,8 +52,12 @@ int main(int argc, char *argv[])
     switch (mode) {
 
     case 1:{
-        if (vm.count("input_gpkg") && vm.count("input_zone_gpkg")) {
-            allcube.genClassRaster(vm["input_gpkg"].as<std::string>(),vm["input_zone_gpkg"].as<std::string>());
+        if (vm.count("input_gpkg") && vm.count("input_zone_gpkg") ) {
+            if(vm.count("outName")){
+            allcube.genClassRaster(vm["input_gpkg"].as<std::string>(),vm["input_zone_gpkg"].as<std::string>(), vm["outName"].as<std::string>());
+            } else {
+                  allcube.genClassRaster(vm["input_gpkg"].as<std::string>(),vm["input_zone_gpkg"].as<std::string>());
+            }
         } else {
             std::cout << "require input_gpkg and input_zone_gpkg" << std::endl;
         }

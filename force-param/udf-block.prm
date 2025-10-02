@@ -66,7 +66,7 @@ OUTPUT_PYP = FALSE
 # Note: due to OpenMP threading conflicts, the usage of R UDFs will trigger
 # the internal disabling of the streaming functionality (STREAMING = FALSE)
 # ------------------------------------------------------------------------
-FILE_RSTATS = /home/jo/Documents/S2/param/udf-block-predictTempcnn.r
+FILE_RSTATS = /home/jo/app/s2/force-param/udf-block-predictTempcnn.r
 RSTATS_TYPE = BLOCK
 OUTPUT_RSP = TRUE
 

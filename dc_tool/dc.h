@@ -18,7 +18,7 @@ public:
 
     //int nx, ny;
     bool exist();
-    void genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone);
+    void genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::string aOut);
     // exporte les valeurs des indices pour chaque pixel en classe 1, 2 ou 3. Quel format? Une ligne par pixel x indice? -> ça c'est le bon plan oui
 
     // index = vocable force = une bande spectral ou un indice spectral

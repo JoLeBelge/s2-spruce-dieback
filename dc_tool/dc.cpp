@@ -41,11 +41,11 @@ void dc::getTransform(double * tr){
 }
 
 
-void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone){
+void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::string aOut){
     std::cout << "genClassRaster for tile " << dirName << std::endl;
     char out[NPOW_10], mask[NPOW_10], reclassFile[NPOW_10];
     snprintf(out, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepePI");
-    snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepe");
+    snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, aOut.c_str());
     snprintf(mask, NPOW_10, "%s/X%04d_Y%04d/%s", phl->d_mask, tileX, tileY, phl->b_mask);
 
     GDALDriver *pDriver;
@@ -157,6 +157,9 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone){
 
     //std::string exp("(im1b6+im1b7)>35 ? 2 : (im1b2+im1b3+im1b4+im1b5+im1b6+im1b7)>5 ? 3 : im1b1 ==1 ? 1 : 0");
     std::string exp("(im1b3+im1b4+im1b5+im1b6+im1b7)>40 ? 2 : (im1b2+im1b3+im1b4+im1b5+im1b6+im1b7)>5 ? 3 : im1b1 ==1 ? 1 : 0");
+
+    // je souhaite cartographier les arbres morts sur pied pour le projet OGF. test d'utilisation mon dataset dépé chêne, qui est quand même assez conséquent.
+     exp="(im1b5+im1b6)>35 ? 2 : (im1b2+im1b3+im1b4+im1b5+im1b6+im1b7)>10 ? 3 : im1b1 ==1 ? 1 : 0";
 
     std::string aCommand(path_otb+"otbcli_BandMathX -il "+out+" "+ " -out '"+ reclassFile + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
     std::cout << aCommand << std::endl;
@@ -556,7 +559,9 @@ void dc::l3tol2(std::string dirOut){
                  name.c_str(),
                  dateDesc);
         aCommand+= outname;
-        //std::cout << aCommand   << std::endl;
+        if (t==ni-1){
+        std::cout << aCommand   << std::endl;
+        }
         system(aCommand.c_str());
 
         /* USELESS

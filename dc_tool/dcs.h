@@ -14,7 +14,7 @@ public:
     dcs(par_hl_t * param);
     par_hl_t * phl;
 
-    void genClassRaster(std::string inputShpHouppier, std::string inputShpZone);
+    void genClassRaster(std::string inputShpHouppier, std::string inputShpZone, std::string aOut="classDepe");
     void exportTS2txt(std::string dirOut);
     void exportSample2txt(std::string dirOut);
 

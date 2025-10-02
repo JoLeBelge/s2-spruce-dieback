@@ -17,7 +17,7 @@ force_rstats_init <- function(dates, sensors, bandnames){
 # nproc:     number of CPUs the UDF may use. Always 1 for pixel functions (class: Integer)
 force_rstats_block <- function(inarray, dates, sensors, bandnames, nproc){
   
-  #saveRDS(inarray,"/home/jo/Documents/S2/dc_tool_out/inarrayC.rds")
+  #saveRDS(inarray,"/home/jo/Documents/S2/dc_tool_out/inarray.rds")
   # return array 3D
   #number of output bands (as initialized)
   #number of rows
@@ -31,6 +31,7 @@ force_rstats_block <- function(inarray, dates, sensors, bandnames, nproc){
   # px1 <- 158*500+249
   # test <- reshaped[px1,]
   o <- sits::impute_linear(reshaped)
+  # est-ce que le impute_linear change en fonction du block d'observation que l'on traite? si oui c'est foireux
   predBlock <- mod_tempcnn(o)
   out <- 100*LDATS::softmax(predBlock)
   return (  array( aperm(out, c(2,1)) , dim =c(2, 250,500) ))
