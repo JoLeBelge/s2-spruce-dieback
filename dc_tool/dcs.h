@@ -27,7 +27,7 @@ public:
 
     // ça ca crée un datacube au format sits mais qui est la compilation de toute mes tuiles forces, donc le géoref est bidon ainsi que la position respective des pixels.
     // C'est uniquement pour pouvoir avoir la classe sits tibble dans R qui ne peux pas être créé à partir de csv
-    void exportallDC2OneSits_local(std::string dirOut);
+    void exportallDC2OneSits_local(std::string dirOut, std::string aOut="sample_depe.csv");
     std::vector<dc> alldc;
 };
 

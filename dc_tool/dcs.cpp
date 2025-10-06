@@ -157,7 +157,7 @@ void dcs::exportDC2Sits_local(std::string dirOut){
 
 }
 
-void dcs::exportallDC2OneSits_local(std::string dirOut){
+void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     std::cout << "export all DC 2 one decoy DC sits-compatible" << std::endl;
     std::cout << "for a total of " << alldc.size() << " datacubes"<< std::endl;
 
@@ -186,7 +186,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut){
     p.transformTo(&target);
 
 
-    std::string fileOut(dirOut+"/sample_depe.csv");
+    std::string fileOut(dirOut+"/"+aOut);
     std::ofstream ofs (fileOut, std::ofstream::out);
     ofs.precision(7);
     // il faut augmenter le nombre de chiffre après la virgule qui sont écrit dans le fichier txt

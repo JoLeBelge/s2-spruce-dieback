@@ -64,7 +64,9 @@ int main(int argc, char *argv[])
         break;
     }
     case 2:{
-        allcube.exportallDC2OneSits_local(vm["dirOut"].as<std::string>());
+         if(vm.count("outName")){
+        allcube.exportallDC2OneSits_local(vm["dirOut"].as<std::string>(),vm["outName"].as<std::string>() );
+         } else { allcube.exportallDC2OneSits_local(vm["dirOut"].as<std::string>());}
         break;
     }
     case 3:{
