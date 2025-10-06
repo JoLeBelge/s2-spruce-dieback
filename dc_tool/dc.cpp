@@ -1,6 +1,6 @@
 #include "dc.h"
-std::string path_otb("");
-std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
+//std::string path_otb("");
+//std::string compr_otb="?&gdal:co:INTERLEAVE=BAND&gdal:co:TILED=YES&gdal:co:BIGTIFF=YES&gdal:co:COMPRESS=DEFLATE&gdal:co:ZLEVEL=9";
 /* from table-ll.c de FORCE
 +++ Sentinel-2A MSI:
 +++    30: AEROSOL, 31: BLUE, 32: GREEN, 33: RED,
@@ -159,9 +159,12 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
     std::string exp("(im1b3+im1b4+im1b5+im1b6+im1b7)>40 ? 2 : (im1b2+im1b3+im1b4+im1b5+im1b6+im1b7)>5 ? 3 : im1b1 ==1 ? 1 : 0");
 
     // je souhaite cartographier les arbres morts sur pied pour le projet OGF. test d'utilisation mon dataset dépé chêne, qui est quand même assez conséquent.
-     exp="(im1b5+im1b6)>35 ? 2 : (im1b2+im1b3+im1b4+im1b5+im1b6+im1b7)>10 ? 3 : im1b1 ==1 ? 1 : 0";
+     exp="(A[5]+A[6])>35 ? 2 : (A[2]+A[3]+A[4]+A[5]+A[6]+A[7])>10 ? 3 : A[1] ==1 ? 1 : 0";
 
-    std::string aCommand(path_otb+"otbcli_BandMathX -il "+out+" "+ " -out '"+ reclassFile + compr_otb+"' int16 -exp '"+exp+"' -ram 4000 -progress 0");
+    std::string aCommand(std::string("gdal raster calc -i ")+out+" --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' --overwrite -o "+ reclassFile);
+  // il faut définir le type, int16
+    //gdal raster calc -i "A=classDepePI.tif" --calc "(A[5]+A[6])>35 ? 2 : (A[2]+A[3]+A[4]+A[5]+A[6]+A[7])>10 ? 3 : A[1] ==1 ? 1 : 0" -o test.tif
+
     std::cout << aCommand << std::endl;
     system(aCommand.c_str());
 }
@@ -308,69 +311,6 @@ void dc::exportIndex2Sits_cube(std::string dirOut,int idx){
     }
 
 }
-
-/* non force le fait juste tellement mieux que moi ou OTB
- *
- *
-void dc::exportComputedVI2Sits_cube(std::string dirOut, int vi_num){
-    std::cout<< "exportComputedVI2Sits_cube " << vi_num <<" to directory " << dirOut << std::endl;
-
-    char mask[NPOW_10];
-    snprintf(mask, NPOW_10, "%s/X%04d_Y%04d/%s", phl->d_mask, tileX, tileY, phl->b_mask);
-
-    int ni = std::ceil((phl->date_range[_MAX_].ce-phl->date_range[_MIN_].ce+1)/phl->tsa.tsi.step);
-    for (int t=0; t<ni; t++){
-        //date ce : current era
-        date_t date;
-        set_date_ce(&date, phl->date_range[_MIN_].ce + t*phl->tsa.tsi.step);
-        char outName[NPOW_10];
-
-        char in1[NPOW_10];
-        char in2[NPOW_10];
-        char in3[NPOW_10];
-         char in4[NPOW_10];
-          char exp[NPOW_10];
-        std::string  viName(""), il("");
-        // la commande otb dépend de vi_num
-        switch (vi_num) {
-        case 1:{
-            // ndvi
-            viName="NDVI";
-           // exp="im2b"1-"im1b"B08-B04/(B08+B04)
-        snprintf(exp, NPOW_10,"(im3b%01d-im2b%01d)/(im3b%01d+im2b%01d)", t,t,t,t);
-
-        snprintf(in1, NPOW_10, "%s/%04d%02d%02d-%04d%02d%02d_%03d-%03d_HL_TSA_%s_%s_TSI.tif",
-                     dirName.c_str(),
-                     phl->date_range[_MIN_].year, phl->date_range[_MIN_].month, phl->date_range[_MIN_].day,
-                     phl->date_range[_MAX_].year, phl->date_range[_MAX_].month, phl->date_range[_MAX_].day,
-                     phl->doy_range[_MIN_], phl->doy_range[_MAX_],
-                     phl->sen.target, "RED");
-        snprintf(in2, NPOW_10, "%s/%04d%02d%02d-%04d%02d%02d_%03d-%03d_HL_TSA_%s_%s_TSI.tif",
-                     dirName.c_str(),
-                     phl->date_range[_MIN_].year, phl->date_range[_MIN_].month, phl->date_range[_MIN_].day,
-                     phl->date_range[_MAX_].year, phl->date_range[_MAX_].month, phl->date_range[_MAX_].day,
-                     phl->doy_range[_MIN_], phl->doy_range[_MAX_],
-                     phl->sen.target, "NIR");
-        il=std::string(mask)+" "+std::string(in1)+" "+std::string(in2);
-            break;
-        }
-        default:
-            break;
-        }
-
-
-        snprintf(outName, NPOW_10, "%s/SEN2L_FORCETSI_T1_%s_%04d-%02d-%02d.tif",dirOut.c_str(),viName.c_str(),date.year, date.month, date.day);
-
-        std::string aCommand(path_otb+"otbcli_BandMathX -il "+il+" -out '"+ outName + compr_otb+"' int16 -exp 'im1b1==1?"+exp+":-32768' -ram 5000 -progress 0");
-        std::cout << aCommand << std::endl;
-        system(aCommand.c_str());
-        aCommand ="gdal_edit.py -a_nodata -32768 " +std::string(outName); // -scale <value>
-        system(aCommand.c_str());
-    }
-
-}
-*/
-
 
 // ajoute la série temporelle dans un DC sits de raster existant en commancant à la position posPix0
 int dc::writeIndexInSits_cube(int idx, std::string outDir, int posPix0){
