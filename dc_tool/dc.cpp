@@ -189,7 +189,7 @@ std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx,
         GDALDataset * ts_index = (GDALDataset *) GDALOpen( fname, GA_ReadOnly );
         char reclassFile[NPOW_10];
         //snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepe");
-        snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, phl->b_mask);
+        snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s", phl->d_mask, tileX, tileY, phl->b_mask);
         GDALDataset * segLab = (GDALDataset *) GDALOpen( reclassFile, GA_ReadOnly );
 
         float *lineSegLab = (float *) CPLMalloc( sizeof( float ) * segLab->GetRasterXSize() );
@@ -332,7 +332,7 @@ int dc::writeIndexInSits_cube(int idx, std::string outDir, int posPix0){
         // ouvre raster série tempo et raster de masque/classe en //
         GDALDataset * ts_index = (GDALDataset *) GDALOpen( fname, GA_ReadOnly );
         char reclassFile[NPOW_10];
-        snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, phl->b_mask);
+        snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s", phl->d_mask, tileX, tileY, phl->b_mask);
         GDALDataset * segLab = (GDALDataset *) GDALOpen( reclassFile, GA_ReadOnly );
 
         float *lineSegLab = (float *) CPLMalloc( sizeof( float ) * segLab->GetRasterXSize() );
