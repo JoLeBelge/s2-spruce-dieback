@@ -171,11 +171,14 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
 
 
 std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx, bool inverseUV){
-    std::cout<< "export TS for index " << phl->tsa.index_name[idx] << std::endl;
+
+
     // conteneur pour la TS, seulement les pixels qui m'intéressent
     std::map<std::tuple<int, int>, std::vector<double>> mTS;
     char fname[NPOW_10];
     if (idx>-1){
+           std::cout<< "export TS for index " << phl->tsa.index_name[idx] << std::endl;
+
     snprintf(fname, NPOW_10, "%s/%04d%02d%02d-%04d%02d%02d_%03d-%03d_HL_TSA_%s_%s_TSI.tif",
              dirHighLev.c_str(),
              phl->date_range[_MIN_].year, phl->date_range[_MIN_].month, phl->date_range[_MIN_].day,
@@ -183,7 +186,8 @@ std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx,
              phl->doy_range[_MIN_], phl->doy_range[_MAX_],
              phl->sen.target, phl->tsa.index_name[idx]);
     } else {
-        char fname[NPOW_10];
+
+         std::cout<< "export TS for classDepePI " << std::endl;
         snprintf(fname, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepePI");
     }
 
