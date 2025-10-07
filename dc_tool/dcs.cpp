@@ -187,10 +187,16 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
 
 
     std::string fileOut(dirOut+"/"+aOut);
+     std::string fileOut2(dirOut+"/"+aOut+"_classDepePI.csv");
     std::ofstream ofs (fileOut, std::ofstream::out);
     ofs.precision(7);
     // il faut augmenter le nombre de chiffre après la virgule qui sont écrit dans le fichier txt
     ofs << "longitude,latitude,start_date,end_date,label\n" ;
+
+    std::ofstream ofs2 (fileOut2, std::ofstream::out);
+    ofs2.precision(7);
+    // il faut augmenter le nombre de chiffre après la virgule qui sont écrit dans le fichier txt
+    ofs2 << "b1,b2,b3,b4,b5,b6,b7\n" ;
 
     char startD[NPOW_10],endD[NPOW_10];
     snprintf(startD, NPOW_10, "%04d-%02d-%02d",phl->date_range[_MIN_].year, phl->date_range[_MIN_].month, phl->date_range[_MIN_].day);
@@ -204,6 +210,10 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             std::cout << "pixels pour datacube " << datacube.tileX << ", " << datacube.tileY << ": " << mTS.size() << "." << std::endl;
             nb=nb+mTS.size();
     }
+    // exporte les données de photointerprétation
+    for (dc datacube : alldc){
+
+    }
     // taille en pixels du decoy DC
     int c=std::sqrt(nb)+1;
     std::cout << "nombre de pixel de mon DC : " << nb << ", soit un raster de " << c << " pixels de large" << std::endl;
@@ -212,7 +222,8 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     std::cout << "\nexport Csv sample" << std::endl;
     int i(0);
     for (dc datacube : alldc){
-        std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(0,true);
+       // std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(0,true);
+        std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(-1,true);
         for (auto & kv: mTS){
             // il ne sont pas géoréférencé comme je veux, c'est pas cohérent avec les valeurs foireux :-)
             // j'ai trouvé ; c'est parce que la map des tupples trie les pixels par u, v alors que la lecture ce fait dans l'autre sens
@@ -227,6 +238,11 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             int depe= kv.second.at(0);
             ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  depe << "\n";
             // ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  i << "\n";
+             ofs2 << p.getY() << "," << p.getX() << ","  << ",label"<<  depe ;
+             for (int j(1);j<kv.second.size();j++){
+                  ofs2 << "," << kv.second.at(j);
+             }
+              ofs2 <<  "\n";
 
             i++;
         }
