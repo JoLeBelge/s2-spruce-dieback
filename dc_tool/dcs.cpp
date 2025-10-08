@@ -38,6 +38,8 @@ dcs::dcs(par_hl_t *param):phl(param)
             dc datacube(phl, allow_x[i],allow_y[i]);
             if (datacube.exist()){
                 alldc.push_back(datacube);
+            } else {
+                std::cout << "datacube " << datacube.dirName << "n'existe pas!" << std::endl;
             }
         }
     }

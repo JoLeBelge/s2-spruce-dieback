@@ -28,7 +28,8 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
 }
 
 bool dc::exist(){
-    return fs::exists(dirHighLev);
+    //return fs::exists(dirHighLev);
+     return fs::exists(dirName);
 
 }
 
