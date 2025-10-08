@@ -28,8 +28,6 @@ public:
 
     void exportIndex2Sits_cube(std::string dirOut, int idx);
 
-    std::map<std::tuple<int, int>, std::vector<double> > exportClassPI2txt(bool inverseUV=false);
-
     void exportComputedVI2Sits_cube(std::string dirOut, int vi_num);
     void getTransform(double * tr);
 

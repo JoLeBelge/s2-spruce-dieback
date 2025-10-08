@@ -196,7 +196,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     std::ofstream ofs2 (fileOut2, std::ofstream::out);
     ofs2.precision(7);
     // il faut augmenter le nombre de chiffre après la virgule qui sont écrit dans le fichier txt
-    ofs2 << "b1,b2,b3,b4,b5,b6,b7\n" ;
+    ofs2 << "x,y,label,b1,b2,b3,b4,b5,b6,b7\n" ;
 
     char startD[NPOW_10],endD[NPOW_10];
     snprintf(startD, NPOW_10, "%04d-%02d-%02d",phl->date_range[_MIN_].year, phl->date_range[_MIN_].month, phl->date_range[_MIN_].day);
@@ -238,7 +238,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             int depe= kv.second.at(0);
             ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  depe << "\n";
             // ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  i << "\n";
-             ofs2 << p.getY() << "," << p.getX() << ","  << ",label"<<  depe ;
+             ofs2 << p.getY() << "," << p.getX()  << ",label"<<  depe ;
              for (int j(1);j<kv.second.size();j++){
                   ofs2 << "," << kv.second.at(j);
              }
@@ -326,6 +326,7 @@ void dcs::maskStat(){
 void dcs::l3tol2(std::string dirOut){
     std::cout <<" l3 to l2 " << std::endl;
     for (dc datacube : alldc){
+         std::cout <<"one dc " << std::endl;
         //if (!datacube.phl->explode){
             datacube.l3tol2(dirOut);
         //}

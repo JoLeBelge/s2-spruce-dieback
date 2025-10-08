@@ -172,7 +172,6 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
 
 std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx, bool inverseUV){
 
-
     // conteneur pour la TS, seulement les pixels qui m'intéressent
     std::map<std::tuple<int, int>, std::vector<double>> mTS;
     char fname[NPOW_10];
@@ -252,77 +251,6 @@ std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx,
     }
     return mTS;
 }
-
-// j'aurai mieux fait d'utiliser
-std::map<std::tuple<int, int>, std::vector<double>> dc::exportClassPI2txt(bool inverseUV){
-    std::cout<< "export classPI to csv aggregated datacube " << std::endl;
-    std::map<std::tuple<int, int>, std::vector<double>> mTS;
-
-    char fname[NPOW_10];
-    snprintf(fname, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepePI");
-
-    int step(100);
-
-    if (fs::exists(fname)){
-        // ouvre raster série tempo et raster de masque/classe en //
-        GDALDataset * classPI_DS = (GDALDataset *) GDALOpen( fname, GA_ReadOnly );
-        char reclassFile[NPOW_10];
-        snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s", phl->d_mask, tileX, tileY, phl->b_mask);
-        GDALDataset * segLab = (GDALDataset *) GDALOpen( reclassFile, GA_ReadOnly );
-
-        float *lineSegLab = (float *) CPLMalloc( sizeof( float ) * segLab->GetRasterXSize() );
-        float *lineIndex = (float *) CPLMalloc( sizeof( float ) * segLab->GetRasterXSize() );
-
-
-        for ( int row = 0; row < segLab->GetRasterYSize(); row++ ){
-            if (row%step==0){
-                std::cout << row << "n rows" << std::endl;
-            }
-
-            segLab->GetRasterBand(1)->RasterIO( GF_Read, 0, row, segLab->GetRasterXSize(), 1, lineSegLab, segLab->GetRasterXSize(),1, GDT_Float32, 0, 0 );
-
-            // test pour voir si au moins un pixel d'intérêt dans la ligne
-            bool test(0);
-            for (int col = 0; col < segLab->GetRasterYSize(); col++)
-            { if(lineSegLab[col]>0){test=1; break;}}
-
-
-            if (test){
-                        // il y a 7 bandes si tout vas bien
-                for (int band(1);band < classPI_DS->GetBands().size()+1 ; band++ ){
-                    classPI_DS->GetRasterBand(band)->RasterIO( GF_Read, 0, row, segLab->GetRasterXSize(), 1, lineIndex, segLab->GetRasterXSize(),1, GDT_Float32, 0, 0 );
-
-                    for (int col = 0; col < segLab->GetRasterXSize(); col++)
-                    {
-                        if (lineSegLab[col]>0){
-
-                            std::tuple<int, int> pixId=std::make_tuple(col,row);
-                            if (inverseUV){
-                                pixId=std::make_tuple(row,col);
-                            }
-                            if (mTS.find(pixId)!=mTS.end()){
-                                mTS.at(pixId).push_back(lineIndex[col]);
-                            } else {
-                                mTS.emplace(std::make_pair(pixId, std::vector<double>{lineSegLab[col],lineIndex[col]}));
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
-        CPLFree(lineIndex);
-        CPLFree(lineSegLab);
-        GDALClose(segLab);
-        GDALClose(classPI_DS);
-
-    } else {
-        std::cout<< "file " << fname << " do not exist" <<std::endl;
-    }
-    return mTS;
-}
-
 
 void dc::exportIndex2Sits_cube(std::string dirOut,int idx){
     std::cout<< "exportIndex2Sits_cube " << phl->tsa.index_name[idx] << " to directory " << dirOut << std::endl;
