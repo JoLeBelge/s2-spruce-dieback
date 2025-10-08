@@ -444,7 +444,7 @@ void dc::l3tol2(std::string dirOut){
     char templateQAI[NPOW_10];
     std::string aCommand("");
 
-    boost::filesystem::create_directory(dirOut);
+    boost::filesystem::create_directory(dirOut+"/"+getName());
 
     // loop on time, then on index
 

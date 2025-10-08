@@ -330,7 +330,7 @@ void dcs::l3tol2(std::string dirOut){
     for (dc datacube : alldc){
          std::cout <<"one dc " << std::endl;
         //if (!datacube.phl->explode){
-            datacube.l3tol2(dirOut+"/"+datacube.getName());
+            datacube.l3tol2(dirOut);
         //}
     }
 }
