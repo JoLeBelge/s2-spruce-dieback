@@ -28,9 +28,7 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
 }
 
 bool dc::exist(){
-    //return fs::exists(dirHighLev);
-     return fs::exists(dirName);
-
+    return fs::exists(dirHighLev);
 }
 
 void dc::getTransform(double * tr){
@@ -445,6 +443,8 @@ void dc::l3tol2(std::string dirOut){
     char dateDesc[NPOW_10];
     char templateQAI[NPOW_10];
     std::string aCommand("");
+
+    boost::filesystem::create_directory(dirOut);
 
     // loop on time, then on index
 

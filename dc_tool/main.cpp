@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
     case 5:{
         // micmic level2-force from level3-TSI for using udf entry point in force but with tsa output. See discussion on github forum
         std::cout << " micmic level2-force from level3-TSI " << std::endl;
-        //allcube.l3tol2(vm["dirOut"].as<std::string>());
-        allcube.l3tol2(phl->d_higher);
+        allcube.l3tol2(vm["dirOut"].as<std::string>());
+        //allcube.l3tol2(phl->d_higher);
         break;
     }
 
