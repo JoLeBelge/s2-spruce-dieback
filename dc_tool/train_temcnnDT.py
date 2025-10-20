@@ -28,7 +28,7 @@ class ts_s2(Dataset):
                  sample_file="train.csv",
                  train=True
                 ):
-        self.root = "/home/jo/Documents/S2/deadTree-obAgr"
+        self.root = root
         #self.obs= pd.read_csv(root+"/"+sample_file, index_col=0)
         self.obs= pd.read_csv(root+"/"+sample_file, index_col=False)
         # determiner la position uv de chaque observation
