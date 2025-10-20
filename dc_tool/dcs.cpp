@@ -183,9 +183,10 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     target.importFromEPSG(4326);
     source.importFromEPSG(31370);
 
-    OGRPoint p;
+   /* OGRPoint p;
     p.assignSpatialReference(&source);
     p.transformTo(&target);
+    */
 
 
     std::string fileOut(dirOut+"/"+aOut);
@@ -212,10 +213,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             std::cout << "pixels pour datacube " << datacube.tileX << ", " << datacube.tileY << ": " << mTS.size() << "." << std::endl;
             nb=nb+mTS.size();
     }
-    // exporte les données de photointerprétation
-    for (dc datacube : alldc){
 
-    }
     // taille en pixels du decoy DC
     int c=std::sqrt(nb)+1;
     std::cout << "nombre de pixel de mon DC : " << nb << ", soit un raster de " << c << " pixels de large" << std::endl;
@@ -255,7 +253,6 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     // 2 initialise des rasters vides pour toutes les bandesxdates
     const char *pszFormat = "GTiff";
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-
 
 
     for (int idx=0; idx<phl->tsa.n; idx++){
@@ -329,9 +326,7 @@ void dcs::l3tol2(std::string dirOut){
     std::cout <<" l3 to l2 " << std::endl;
     for (dc datacube : alldc){
          std::cout <<"one dc " << std::endl;
-        //if (!datacube.phl->explode){
             datacube.l3tol2(dirOut);
-        //}
     }
 }
 
