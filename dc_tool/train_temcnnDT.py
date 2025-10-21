@@ -21,6 +21,7 @@ import re
 from osgeo import gdal,osr,ogr
 from datetime import datetime, timedelta
 
+
 class ts_s2(Dataset):
 
     def __init__(self,
@@ -59,7 +60,7 @@ class ts_s2(Dataset):
         first_date_str ="2017-01-01"
         date1 = datetime.strptime(first_date_str, "%Y-%m-%d")
         lp=0
-        for i in range(0,191):
+        for i in range(0,192):
             print("time "+str(i))
             if (i==73 or i==164):lp+=1
                 
@@ -67,13 +68,22 @@ class ts_s2(Dataset):
             cur_date = date1 + timedelta(days=(16*i)+lp)
             file1=self.root+"/SEN2L_FORCETSI_T1_NDV_"+cur_date.strftime("%Y-%m-%d")+".tif"
             file2=self.root+"/SEN2L_FORCETSI_T1_CSW_"+cur_date.strftime("%Y-%m-%d")+".tif"
+            if (os.path.exists(file1)==False or os.path.exists(file2)==False):
+                print("file not found: "+file1+" or "+file2)
+                continue
+
             raster1 = gdal.Open(file1)
             bandval1 = raster1.ReadAsArray()
             raster2 = gdal.Open(file2)
             bandval2 = raster2.ReadAsArray()
-            for j in range(0,len(self.obs)):
-                self.ts_ndv[j,i] = bandval1[self.obs["u"].loc[j],self.obs["v"].loc[j]]
-                self.ts_csw[j,i] = bandval2[self.obs["u"].loc[j],self.obs["v"].loc[j]]
+            u_arr = self.obs["u"].astype(int).to_numpy()
+            v_arr = self.obs["v"].astype(int).to_numpy()
+            for j in range(len(self.obs)):
+                v = v_arr[j]  # ligne
+                u = u_arr[j]  # colonne
+                # numpy arrays use [row, col]
+                self.ts_ndv[j, i] = bandval1[v, u]
+                self.ts_csw[j, i] = bandval2[v, u]
         print("datacube loaded")
 
 #number of observations
@@ -82,21 +92,18 @@ class ts_s2(Dataset):
 
     def __getitem__(self, idx):
      
-        #label = self.labels.iloc[idx, 1]
+
         label = self.labels.iloc[idx]
         y=0 if label=="label1" else 1
 
         #combined = np.concatenate((self.ts_csw[idx], self.ts_ndv[idx]), axis=0)
         #ts = combined.reshape((2, 192)) * 1e-4  # scale reflectances to 0-1
         #ts = combined.reshape((192, 2)) * 1e-4 
-
         ts = np.vstack((self.ts_csw[idx], self.ts_ndv[idx])) * 1e-4 
-
         ts= np.transpose(ts, (1, 0))
 
        # ts.reshape((192, 2)) * 1e-4 
         #combined.reshape((192, 2)) * 1e-4 
-    
         return torch.from_numpy(ts).type(torch.FloatTensor), y, idx
 
 def train(args):
@@ -231,6 +238,7 @@ def train_epoch(model, optimizer, criterion, dataloader, device):
         for idx, batch in iterator:
             optimizer.zero_grad()
             x, y_true, _ = batch
+            print(x.shape)
             #x, y_true = batch
             #print("test done")
             loss = criterion(model.forward(x.to(device)), y_true.to(device))
