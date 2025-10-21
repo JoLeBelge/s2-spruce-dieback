@@ -238,9 +238,9 @@ def train_epoch(model, optimizer, criterion, dataloader, device):
         for idx, batch in iterator:
             optimizer.zero_grad()
             x, y_true, _ = batch
-            print(x.shape)
+            #print(x.shape)
             #x, y_true = batch
-            #print("test done")
+
             loss = criterion(model.forward(x.to(device)), y_true.to(device))
             loss.backward()
             optimizer.step()
