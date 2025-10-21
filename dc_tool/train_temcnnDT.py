@@ -112,7 +112,7 @@ def train(args):
     model.modelname += f"_learning-rate={args.learning_rate}_weight-decay={args.weight_decay}"
     print(f"Initialized {model.modelname}")
 
-    logdir = os.path.join(args.logdir, model.modelname)
+    logdir = os.path.join(args.datapath, model.modelname)
     os.makedirs(logdir, exist_ok=True)
     print(f"Logging results to {logdir}")
 
@@ -135,6 +135,8 @@ def train(args):
 
         log_df = pd.DataFrame(log).set_index("epoch")
         log_df.to_csv(os.path.join(logdir, "trainlog.csv"))
+
+    torch.save(model, os.path.join(logdir, f"{model.modelname}_finalmodel.pt"));
 
 def get_dataloader(datapath, batchsize, workers):
     print(f"Setting up datasets from {os.path.abspath(datapath)}")
