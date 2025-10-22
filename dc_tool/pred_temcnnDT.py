@@ -54,19 +54,69 @@ def readDatacubeBloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
         else:
             # concaténer le long de l'axe 0 (temps) : si valuesAllTime shape (t,2,r,c)
             valuesAllTime = np.concatenate((valuesAllTime, valuesOneTime[np.newaxis, ...]), axis=0)
-    print("datacube loaded")
+    print("datacube from aggregated observation loaded")
     return valuesAllTime
 
-path="/home/jo/Documents/S2/deadTree-obAgr"
-path="/mnt/wildAIssd/RS/deadTree-obAgr"
+def read_band_raster(band, x_block_size, y_block_size, x, y):
+    xsize = band.XSize
+    ysize = band.YSize
+    if y + y_block_size < ysize:
+        rows = y_block_size
+    else:
+        rows = ysize - y
+    if x + x_block_size < xsize:
+        cols = x_block_size
+    else:
+        cols = xsize - x
+    array = band.ReadAsArray(x, y, cols, rows)
+    band = None
+    ds = None
+    return array
+
+def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
+    print("start datacube loading")
+    file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
+    file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
+    valuesAllTime = None
+
+    if not (os.path.exists(file1) and os.path.exists(file2)):
+        print(f"warning: missing files : {file1} / {file2}")
+
+    ds1 = gdal.Open(file1)
+    ds2 = gdal.Open(file2)
+
+    for i in range(0,ds1.RasterCount):
+        bandR1 = ds1.GetRasterBand(i+1)
+        bandR2 = ds2.GetRasterBand(i+1)
+        
+        blocval1 = read_band_raster(bandR1, xBlockSize,yBlockSize, xoffset, yoffset)
+        blocval2 = read_band_raster(bandR2, xBlockSize, yBlockSize, xoffset, yoffset)   
+       
+      
+        valuesOneTime = np.stack((blocval2, blocval1), axis=0)
+        if valuesAllTime is None:
+            valuesAllTime = valuesOneTime[np.newaxis, ...]
+        else:
+            # concaténer le long de l'axe 0 (temps) : si valuesAllTime shape (t,2,r,c)
+            valuesAllTime = np.concatenate((valuesAllTime, valuesOneTime[np.newaxis, ...]), axis=0)
+    print("datacube l3 loaded")
+    ds1 = None
+    ds2 = None
+    return valuesAllTime
+
+pathModel="/home/jo/Documents/S2/deadTree-obAgr"
+pathModel="/mnt/wildAIssd/RS/deadTree-obAgr"
+path="/mnt/wildAIssd/RS/level3-5km/X0036_Y0019"
+templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
+templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
 device="cuda" if torch.cuda.is_available() else "cpu"
 #print(ts.shape) --- (192, 2, 500, 50)
-modelPath=os.path.join(path, "TempCNN.pt")
+modelPath=os.path.join(pathModel, "TempCNN.pt")
 model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
 
 driver = gdal.GetDriverByName( 'GTiff' )
 dst_filename = os.path.join(path, "prediction.tif")
-template_filename = os.path.join(path, "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif")
+template_filename = os.path.join(path, templ_name)
 if not (os.path.exists(template_filename) ):
     raise FileNotFoundError(f"missing raster template: {template_filename}")
 ds = gdal.Open(template_filename)
@@ -85,7 +135,8 @@ for y in range(0, rows, y_block_size):
         print("bloc x", x, "y", y)
 # pred shape attendu : (n_pixels, 2) -> on remet en (2, rows, cols)
 # adapter l'opération de mise à l'échelle selon vos besoins
-        ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
+        #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
+        ts=readDCl3Bloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
         reshaped=ts.reshape((192,2,ts.shape[2]*ts.shape[3]))
         obs=np.moveaxis(reshaped, [0, 1], [-2, -1])/10000  # shape (192,2,25000) -> (25000,2,192)
         t = torch.from_numpy(obs).type(torch.FloatTensor).to(device)
