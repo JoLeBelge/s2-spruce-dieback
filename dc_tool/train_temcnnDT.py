@@ -85,7 +85,7 @@ class ts_s2(Dataset):
                 # numpy arrays use [row, col]
                 self.ts_ndv[j, i] = bandval1[v, u]
                 self.ts_csw[j, i] = bandval2[v, u]
-                print("date "+cur_date.strftime("%Y-%m-%d") +" ndv: "+str(self.ts_ndv[j, i])+" csw: "+ str(self.ts_csw[j, i])+" (u: "+str(u)+" v: "+ str(v)+")")
+                #print("date "+cur_date.strftime("%Y-%m-%d") +" ndv: "+str(self.ts_ndv[j, i])+" csw: "+ str(self.ts_csw[j, i])+" (u: "+str(u)+" v: "+ str(v)+")")
 
         print("datacube loaded")
 
