@@ -35,7 +35,7 @@ def readDatacubeBloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
     lp = 0
     valuesAllTime = None
     for i in range(192):
-        print("time " + str(i))
+        #print("time " + str(i))
         if (i == 73 or i == 164):
             lp += 1
         # A partir de 73 ça bugg à cause de la leap year, Force n'as pas compter le 29 fevrier...
@@ -92,6 +92,7 @@ for y in range(0, rows, y_block_size):
         predLogSoftMax = model(t)
         pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
         arr = (pred * 100).astype(np.uint8)        # scale + cast
+       
         arr = arr.T.reshape((bands, ts.shape[2], ts.shape[3]))   
 
 # écrire chaque bande (GDAL bands are 1-indexed)
@@ -99,6 +100,10 @@ for y in range(0, rows, y_block_size):
             dst_ds.GetRasterBand(b + 1).WriteArray(arr[b, :, :], xoff=x, yoff=y)
 
         dst_ds.FlushCache()
+        del t
+        del predLogSoftMax
+        del pred
+        torch.cuda.empty_cache()
 # fermer les datasets
 dst_ds = None
 ds = None
