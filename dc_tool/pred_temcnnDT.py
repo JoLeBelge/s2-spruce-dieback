@@ -100,7 +100,7 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
 
 pathModel="/home/jo/Documents/S2/deadTree-obAgr"
 pathModel="/mnt/wildAIssd/RS/deadTree-obAgr"
-path="/mnt/wildAIssd/RS/level3-5km/X0036_Y0019"
+path="/mnt/wildAIssd/RS/level3-5km/X0032_Y0022"
 templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
 templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
 device="cuda" if torch.cuda.is_available() else "cpu"
