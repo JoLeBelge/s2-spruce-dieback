@@ -78,21 +78,15 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
     file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
     file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
     valuesAllTime = None
-
     if not (os.path.exists(file1) and os.path.exists(file2)):
         print(f"warning: missing files : {file1} / {file2}")
-
     ds1 = gdal.Open(file1)
     ds2 = gdal.Open(file2)
-
     for i in range(0,ds1.RasterCount):
         bandR1 = ds1.GetRasterBand(i+1)
         bandR2 = ds2.GetRasterBand(i+1)
-        
         blocval1 = read_band_raster(bandR1, xBlockSize,yBlockSize, xoffset, yoffset)
         blocval2 = read_band_raster(bandR2, xBlockSize, yBlockSize, xoffset, yoffset)   
-       
-      
         valuesOneTime = np.stack((blocval2, blocval1), axis=0)
         if valuesAllTime is None:
             valuesAllTime = valuesOneTime[np.newaxis, ...]
@@ -113,23 +107,22 @@ device="cuda" if torch.cuda.is_available() else "cpu"
 #print(ts.shape) --- (192, 2, 500, 50)
 modelPath=os.path.join(pathModel, "TempCNN.pt")
 model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
-
+# création du raster de sortie
 driver = gdal.GetDriverByName( 'GTiff' )
 dst_filename = os.path.join(path, "prediction.tif")
 template_filename = os.path.join(path, templ_name)
 if not (os.path.exists(template_filename) ):
-    raise FileNotFoundError(f"missing raster template: {template_filename}")
+    raise FileNotFoundError("missing raster template: {template_filename}")
 ds = gdal.Open(template_filename)
 cols = ds.GetRasterBand(1).XSize
 rows = ds.GetRasterBand(1).YSize
 bands = 2
-
 dst_ds = driver.Create(dst_filename, cols, rows, bands, gdal.GDT_Byte, options=["INTERLEAVE=PIXEL"])
 dst_ds.SetGeoTransform(ds.GetGeoTransform())
 dst_ds.SetProjection(ds.GetProjection())
-
 y_block_size=500
-x_block_size=100
+x_block_size=50# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
+
 for y in range(0, rows, y_block_size):
     for x in range(0, cols, x_block_size):
         print("bloc x", x, "y", y)
