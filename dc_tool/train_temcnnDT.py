@@ -46,7 +46,8 @@ class ts_s2(Dataset):
             point = ogr.CreateGeometryFromWkt("POINT ("+str(self.obs["latitude"][j])+" "+ str(self.obs["longitude"][j])+")")
             t = point.Transform(transform)
             self.obs.at[j,"u"] = round((point.GetX()-200000-50)/100)
-            self.obs.at[j,"v"] = -round((point.GetY()-100000-50)/100)
+            self.obs.at[j,"v"] = -round((point.GetY()-100000+50)/100)
+            #print("u: "+str(self.obs["u"][j])+" v: "+ str(self.obs["v"][j]))
         
         self.labels = self.obs["label"]
         # il faut stoquer les valeur des deux indices spectraux
@@ -84,6 +85,8 @@ class ts_s2(Dataset):
                 # numpy arrays use [row, col]
                 self.ts_ndv[j, i] = bandval1[v, u]
                 self.ts_csw[j, i] = bandval2[v, u]
+                print("date "+cur_date.strftime("%Y-%m-%d") +" ndv: "+str(self.ts_ndv[j, i])+" csw: "+ str(self.ts_csw[j, i])+" (u: "+str(u)+" v: "+ str(v)+")")
+
         print("datacube loaded")
 
 #number of observations
