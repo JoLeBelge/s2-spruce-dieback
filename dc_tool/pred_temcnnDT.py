@@ -104,25 +104,41 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
 def prediction(paramFile):
     config = configparser.ConfigParser()
     config.read(paramFile)
-
     #templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
     #templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
-
     templ_name = config['DIR']['TEMPLATENAME']
     device="cuda" if torch.cuda.is_available() else "cpu"
-
     modelPath=config['DEFAULT']['MODELPATH']
     outputName= config['DEFAULT']['OUTPUTNAME']
     dir_lower= config['DIR']['DIR_LOWER']
     dir_higher= config['DIR']['DIR_HIGHER']
     fileListTile=config['TILE']['FILE_TILE']
+    x_block_size=int(config['TILE']['X_BLOCK_SIZE'])
     y_block_size=int(config['TILE']['Y_BLOCK_SIZE'])
-    x_block_size= int(config['TILE']['X_BLOCK_SIZE'])# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
+    x_tile_range_0=int(config['TILE']['X_TILE_RANGE_0'])
+    x_tile_range_1=int(config['TILE']['X_TILE_RANGE_1'])
+    y_tile_range_0=int(config['TILE']['Y_TILE_RANGE_0'])
+    y_tile_range_1=int(config['TILE']['Y_TILE_RANGE_1'])
+    # 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
     debug=config['DEFAULT'].getboolean('DEBUG')
-    tileList = pd.read_csv(fileListTile)
+    if not (os.path.exists(fileListTile)):
+        print("list of tiles from range")
+        tile_rows = []
+        for x in range(x_tile_range_0, x_tile_range_1 + 1):
+            for y in range(y_tile_range_0, y_tile_range_1 + 1):
+                tileName = f"X{x:04d}_Y{y:04d}"
+                tilePath = os.path.join(dir_lower, tileName)
+                if os.path.exists(tilePath):
+                    tile_rows.append([tileName])
+                else:
+                    print(f"warning: missing tile directory: {tilePath}")
+        tileList = pd.DataFrame(tile_rows, columns=[0])
+    else:   
+        print(f"reading tile list from {fileListTile}") 
+        tileList = pd.read_csv(fileListTile)
+    print("total of ",len(tileList)," tiles")
 
     model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
-
     driver = gdal.GetDriverByName( 'GTiff' )
 
     for tile_idx in range(tileList.shape[0]):
@@ -157,11 +173,14 @@ def prediction(paramFile):
                 # pred shape attendu : (n_pixels, 2) -> on remet en (2, rows, cols)
                 pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
                 arr = (pred * 100).astype(np.uint8)        # scale + cast
-                arr = arr.T.reshape((bands, ts.shape[2], ts.shape[3]))   
+                arr = arr.T.reshape((bands, ts.shape[2], ts.shape[3]))  
+                #noter là ou les inputs étaient des no-data (-9999)  
+                m =np.max(ts,axis=0)
+                arr2 = np.where(m==-9999,255,arr)
 
                 # écrire chaque bande de résultat
                 for b in range(bands):
-                    dst_ds.GetRasterBand(b + 1).WriteArray(arr[b, :, :], xoff=x, yoff=y)
+                    dst_ds.GetRasterBand(b + 1).WriteArray(arr2[b, :, :], xoff=x, yoff=y)
 
                 dst_ds.FlushCache()
                 del t
