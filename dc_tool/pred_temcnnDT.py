@@ -7,6 +7,9 @@ import numpy as np
 import re
 from osgeo import gdal,osr
 from datetime import datetime, timedelta
+import configparser
+import argparse
+import pandas as pd
 
 def read_raster(raster, x_block_size, y_block_size, x, y):
     ds = gdal.Open(raster)
@@ -98,58 +101,85 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
     ds2 = None
     return valuesAllTime
 
-pathModel="/home/jo/Documents/S2/deadTree-obAgr"
-pathModel="/mnt/wildAIssd/RS/deadTree-obAgr"
-path="/mnt/wildAIssd/RS/level3-5km/X0039_Y0016"
-templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
-templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
-device="cuda" if torch.cuda.is_available() else "cpu"
-#print(ts.shape) --- (192, 2, 500, 50)
-modelPath=os.path.join(pathModel, "TempCNN.pt")
-model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
-# création du raster de sortie
-driver = gdal.GetDriverByName( 'GTiff' )
-dst_filename = os.path.join(path, "prediction.tif")
-template_filename = os.path.join(path, templ_name)
-if not (os.path.exists(template_filename) ):
-    raise FileNotFoundError("missing raster template: {template_filename}")
-ds = gdal.Open(template_filename)
-cols = ds.GetRasterBand(1).XSize
-rows = ds.GetRasterBand(1).YSize
-bands = 2
-dst_ds = driver.Create(dst_filename, cols, rows, bands, gdal.GDT_Byte, options=["INTERLEAVE=PIXEL"])
-dst_ds.SetGeoTransform(ds.GetGeoTransform())
-dst_ds.SetProjection(ds.GetProjection())
-y_block_size=500
-x_block_size=50# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
+def prediction(paramFile):
+    config = configparser.ConfigParser()
+    config.read(paramFile)
 
-for y in range(0, rows, y_block_size):
-    for x in range(0, cols, x_block_size):
-        print("bloc x", x, "y", y)
-# pred shape attendu : (n_pixels, 2) -> on remet en (2, rows, cols)
-# adapter l'opération de mise à l'échelle selon vos besoins
-        #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
-        ts=readDCl3Bloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
-        reshaped=ts.reshape((192,2,ts.shape[2]*ts.shape[3]))
-        obs=np.moveaxis(reshaped, [0, 1], [-2, -1])/10000  # shape (192,2,25000) -> (25000,2,192)
-        t = torch.from_numpy(obs).type(torch.FloatTensor).to(device)
-        predLogSoftMax = model(t)
-        pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
-        arr = (pred * 100).astype(np.uint8)        # scale + cast
-       
-        arr = arr.T.reshape((bands, ts.shape[2], ts.shape[3]))   
+    #templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
+    #templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
 
-# écrire chaque bande (GDAL bands are 1-indexed)
-        for b in range(bands):
-            dst_ds.GetRasterBand(b + 1).WriteArray(arr[b, :, :], xoff=x, yoff=y)
+    templ_name = config['DIR']['TEMPLATENAME']
+    device="cuda" if torch.cuda.is_available() else "cpu"
 
-        dst_ds.FlushCache()
-        del t
-        del predLogSoftMax
-        del pred
-        torch.cuda.empty_cache()
-# fermer les datasets
-dst_ds = None
-ds = None
+    modelPath=config['DEFAULT']['MODELPATH']
+    outputName= config['DEFAULT']['OUTPUTNAME']
+    dir_lower= config['DIR']['DIR_LOWER']
+    dir_higher= config['DIR']['DIR_HIGHER']
+    fileListTile=config['TILE']['FILE_TILE']
+    y_block_size=config['TILE']['Y_BLOCK_SIZE']
+    x_block_size= config['TILE']['X_BLOCK_SIZE']# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
 
-print("Prediction raster saved to:", dst_filename)
+    tileList = pd.read_csv(fileListTile)
+
+    model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
+
+    driver = gdal.GetDriverByName( 'GTiff' )
+
+    for tile_idx in range(tileList.shape[0]):
+        tile=tileList.iloc[tile_idx,0]
+        print("Processing tile:", tile)
+        tilePath=os.path.join(dir_lower, tile)
+        dst_filename= os.path.join(dir_higher, outputName)
+        template_filename = os.path.join(tilePath, templ_name)
+        if not (os.path.exists(template_filename) ):
+            raise FileNotFoundError(f"missing raster template: {template_filename}")
+        ds_template = gdal.Open(template_filename)
+        cols = ds_template.GetRasterBand(1).XSize
+        rows = ds_template.GetRasterBand(1).YSize
+        bands = 2
+        dst_ds = driver.Create(dst_filename, cols, rows, bands, gdal.GDT_Byte, options=["INTERLEAVE=PIXEL"])
+        dst_ds.SetGeoTransform(ds_template.GetGeoTransform())
+        dst_ds.SetProjection(ds_template.GetProjection())
+
+        for y in range(0, rows, y_block_size):
+            for x in range(0, cols, x_block_size):
+                print("bloc x", x, "y", y)
+            
+                #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
+                ts=readDCl3Bloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
+                reshaped=ts.reshape((192,2,ts.shape[2]*ts.shape[3]))
+                obs=np.moveaxis(reshaped, [0, 1], [-2, -1])/10000  # shape (192,2,25000) -> (25000,2,192)
+                t = torch.from_numpy(obs).type(torch.FloatTensor).to(device)
+                predLogSoftMax = model(t)
+                # pred shape attendu : (n_pixels, 2) -> on remet en (2, rows, cols)
+                pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
+                arr = (pred * 100).astype(np.uint8)        # scale + cast
+                arr = arr.T.reshape((bands, ts.shape[2], ts.shape[3]))   
+
+                # écrire chaque bande de résultat
+                for b in range(bands):
+                    dst_ds.GetRasterBand(b + 1).WriteArray(arr[b, :, :], xoff=x, yoff=y)
+
+                dst_ds.FlushCache()
+                del t
+                del predLogSoftMax
+                del pred
+                torch.cuda.empty_cache()
+        # fermer les datasets
+        dst_ds = None
+        ds_template = None
+        print("Prediction raster saved to:", dst_filename)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Prediction of dead tree from FORCE level-3 datacube with NDVI and CRSWIR Time Serie Interpolation')
+    parser.add_argument(
+        '-P', '--param', type=str, default="param_pred.ini", help='file with parameters for prediction')
+    
+    args = parser.parse_args()
+    return args
+
+
+if __name__ == "__main__":
+    args = parse_args()
+
+    prediction(args.param)
