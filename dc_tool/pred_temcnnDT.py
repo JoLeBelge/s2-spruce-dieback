@@ -145,6 +145,9 @@ def prediction(paramFile):
         tile=tileList.iloc[tile_idx,0]
         print("Processing tile:", tile)
         tilePath=os.path.join(dir_lower, tile)
+        dirOut =os.path.join(dir_higher,tile)
+        if not os.path.exists(dirOut):
+            os.makedirs(dirOut)
         dst_filename= os.path.join(dir_higher,tile, outputName)
         template_filename = os.path.join(tilePath, templ_name)
         if not (os.path.exists(template_filename) ):
