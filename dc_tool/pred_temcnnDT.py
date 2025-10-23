@@ -118,7 +118,7 @@ def prediction(paramFile):
     fileListTile=config['TILE']['FILE_TILE']
     y_block_size=int(config['TILE']['Y_BLOCK_SIZE'])
     x_block_size= int(config['TILE']['X_BLOCK_SIZE'])# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
-    debug=config['DEFAULT'].getboolean(['DEBUG'])
+    debug=config['DEFAULT'].getboolean('DEBUG')
     tileList = pd.read_csv(fileListTile)
 
     model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
