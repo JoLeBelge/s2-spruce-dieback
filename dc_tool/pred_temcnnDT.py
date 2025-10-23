@@ -118,7 +118,7 @@ def prediction(paramFile):
     fileListTile=config['TILE']['FILE_TILE']
     y_block_size=int(config['TILE']['Y_BLOCK_SIZE'])
     x_block_size= int(config['TILE']['X_BLOCK_SIZE'])# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
-
+    debug=config['DEFAULT'].getboolean(['DEBUG'])
     tileList = pd.read_csv(fileListTile)
 
     model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
@@ -140,10 +140,13 @@ def prediction(paramFile):
         dst_ds = driver.Create(dst_filename, cols, rows, bands, gdal.GDT_Byte, options=["INTERLEAVE=PIXEL"])
         dst_ds.SetGeoTransform(ds_template.GetGeoTransform())
         dst_ds.SetProjection(ds_template.GetProjection())
+        dst_ds.GetRasterBand(1).SetNoDataValue(255)
+        dst_ds.GetRasterBand(2).SetNoDataValue(255)
 
         for y in range(0, rows, y_block_size):
             for x in range(0, cols, x_block_size):
-                print("bloc x", x, "y", y)
+                if debug:
+                    print("bloc x", x, "y", y)
             
                 #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
                 ts=readDCl3Bloc(tilePath,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
@@ -168,7 +171,8 @@ def prediction(paramFile):
         # fermer les datasets
         dst_ds = None
         ds_template = None
-        print("Prediction raster saved to:", dst_filename)
+        if debug:
+            print("Prediction raster saved to:", dst_filename)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Prediction of dead tree from FORCE level-3 datacube with NDVI and CRSWIR Time Serie Interpolation')
