@@ -146,7 +146,7 @@ def prediction(paramFile):
                 print("bloc x", x, "y", y)
             
                 #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
-                ts=readDCl3Bloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
+                ts=readDCl3Bloc(tilePath,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
                 reshaped=ts.reshape((192,2,ts.shape[2]*ts.shape[3]))
                 obs=np.moveaxis(reshaped, [0, 1], [-2, -1])/10000  # shape (192,2,25000) -> (25000,2,192)
                 t = torch.from_numpy(obs).type(torch.FloatTensor).to(device)
