@@ -116,8 +116,8 @@ def prediction(paramFile):
     dir_lower= config['DIR']['DIR_LOWER']
     dir_higher= config['DIR']['DIR_HIGHER']
     fileListTile=config['TILE']['FILE_TILE']
-    y_block_size=config['TILE']['Y_BLOCK_SIZE']
-    x_block_size= config['TILE']['X_BLOCK_SIZE']# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
+    y_block_size=int(config['TILE']['Y_BLOCK_SIZE'])
+    x_block_size= int(config['TILE']['X_BLOCK_SIZE'])# 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
 
     tileList = pd.read_csv(fileListTile)
 
