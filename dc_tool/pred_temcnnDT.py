@@ -77,7 +77,7 @@ def read_band_raster(band, x_block_size, y_block_size, x, y):
     return array
 
 def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
-    print("start datacube loading")
+    #print("start datacube loading")
     file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
     file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
     valuesAllTime = None
@@ -96,7 +96,7 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
         else:
             # concaténer le long de l'axe 0 (temps) : si valuesAllTime shape (t,2,r,c)
             valuesAllTime = np.concatenate((valuesAllTime, valuesOneTime[np.newaxis, ...]), axis=0)
-    print("datacube l3 loaded")
+    #print("datacube l3 loaded")
     ds1 = None
     ds2 = None
     return valuesAllTime
@@ -129,7 +129,7 @@ def prediction(paramFile):
         tile=tileList.iloc[tile_idx,0]
         print("Processing tile:", tile)
         tilePath=os.path.join(dir_lower, tile)
-        dst_filename= os.path.join(dir_higher, outputName)
+        dst_filename= os.path.join(dir_higher,tile, outputName)
         template_filename = os.path.join(tilePath, templ_name)
         if not (os.path.exists(template_filename) ):
             raise FileNotFoundError(f"missing raster template: {template_filename}")
