@@ -322,13 +322,18 @@ void dcs::maskStat(){
     }
 }
 
+
 void dcs::level3ToDo(){
     std::vector<std::string> allowedList;
+
     for (dc datacube : alldc){
+        int nbPix=datacube.maskStat();
+        if (nbPix>0){
         std::string f1=datacube.getHL()+"/20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif";
         std::string f2=datacube.getHL()+"/20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif";
         if (!fs::exists(f1) | !fs::exists(f2)){
             allowedList.push_back(datacube.getName());
+        }
         }
     }
     std::cout << "allowed list with " << allowedList.size() << " elements " << std::endl;
