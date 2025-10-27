@@ -5,8 +5,6 @@ dcs::dcs(par_hl_t *param):phl(param)
 {
     int *allow_x = NULL, *allow_y = NULL, allow_k;
 
-
-
     // read tile allow-list
     if (tile_readlist(phl->f_tile, &allow_x, &allow_y, &allow_k) != SUCCESS){
         printf("Reading tile file failed!");
@@ -25,8 +23,11 @@ dcs::dcs(par_hl_t *param):phl(param)
         {
             int x=poFeature->GetFieldAsInteger("Tile_X");
             int y=poFeature->GetFieldAsInteger("Tile_Y");
+            if (phl->tx[0] < x+1 & phl->tx[1] > x-1 & phl->ty[0] < y+1 & phl->ty[1] > y-1){
+
             dc datacube(phl,x,y);
             alldc.push_back(datacube);
+            }
         }
         GDALClose(DS);
 
