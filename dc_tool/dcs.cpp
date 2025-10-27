@@ -19,6 +19,8 @@ dcs::dcs(par_hl_t *param):phl(param)
         GDALDataset * DS =  (GDALDataset*) GDALOpenEx( grid.c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
         OGRFeature *poFeature;
         std::cout << "looping "<< std::endl;
+        std::cout << " tile X range :"  <<phl->tx[0] << " to "<<phl->tx[1] << std::endl;
+        std::cout << " tile Y range :"  <<phl->ty[0] << " to "<<phl->ty[1] << std::endl;
         while( (poFeature = DS->GetLayer(0)->GetNextFeature()) != NULL )
         {
             int x=poFeature->GetFieldAsInteger("Tile_X");
@@ -27,6 +29,8 @@ dcs::dcs(par_hl_t *param):phl(param)
 
             dc datacube(phl,x,y);
             alldc.push_back(datacube);
+            } else {
+                std::cout << " tuile " << x << ", " << y << " n'est pas dans tile_range" << std::endl;
             }
         }
         GDALClose(DS);
