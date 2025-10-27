@@ -33,15 +33,21 @@ dcs::dcs(par_hl_t *param):phl(param)
 
     } else  {
         //phl->tsa.index
+        //std::cout <<  phl->tx[0] << ", "<<phl->tx[1] << " tile X range " << std::endl;
         for (int i(0); i<allow_k;i++){
+
+            if (phl->tx[0] < allow_x[i]+1 & phl->tx[1] > allow_x[i]-1 & phl->ty[0] < allow_y[i]+1 & phl->ty[1] > allow_y[i]-1){
             std::cout << "allow_x " << allow_x[i] << ", allow_y " << allow_y[i]<< std::endl;
+
             dc datacube(phl, allow_x[i],allow_y[i]);
             if (datacube.exist()){
                 alldc.push_back(datacube);
             } else {
                 std::cout << "datacube " << datacube.dirName << "n'existe pas!" << std::endl;
             }
+            }
         }
+
     }
 
 }
