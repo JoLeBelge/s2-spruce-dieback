@@ -48,6 +48,7 @@ dcs::dcs(par_hl_t *param):phl(param)
             }
             }
         }
+        std::cout << "Inititalisation des datacubes ; " << alldc.size() << " tuiles" << std::endl;
 
     }
 
