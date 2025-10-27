@@ -121,6 +121,7 @@ def prediction(paramFile):
     y_tile_range_1=int(config['TILE']['Y_TILE_RANGE_1'])
     # 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
     debug=config['DEFAULT'].getboolean('DEBUG')
+    overwrite=config['DEFAULT'].getboolean('OVERWRITE')
     if not (os.path.exists(fileListTile)):
         print("list of tiles from range")
         tile_rows = []
@@ -129,7 +130,8 @@ def prediction(paramFile):
                 tileName = f"X{x:04d}_Y{y:04d}"
                 tilePath = os.path.join(dir_lower, tileName)
                 if os.path.exists(tilePath):
-                    tile_rows.append([tileName])
+                    if overwrite or not os.path.exists(os.path.join(dir_higher,tileName, outputName)):
+                        tile_rows.append([tileName])
                 else:
                     print(f"warning: missing tile directory: {tilePath}")
         tileList = pd.DataFrame(tile_rows, columns=[0])
