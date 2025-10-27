@@ -21,7 +21,7 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
     //std::cout << fname << std::endl;
 
     name=tilename;
-    std::cout << tilename << std::endl;
+    //std::cout << tilename << std::endl;
     dirName=fname;
     snprintf(fname, NPOW_10, "%s/X%04d_Y%04d", phl->d_higher, tileX, tileY);
     dirHighLev=fname;

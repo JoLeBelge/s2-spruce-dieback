@@ -33,7 +33,8 @@ dcs::dcs(par_hl_t *param):phl(param)
 
     } else  {
         //phl->tsa.index
-        //std::cout <<  phl->tx[0] << ", "<<phl->tx[1] << " tile X range " << std::endl;
+        std::cout << " tile X range :"  <<phl->tx[0] << " to "<<phl->tx[1] << std::endl;
+        std::cout << " tile Y range :"  <<phl->ty[0] << " to "<<phl->ty[1] << std::endl;
         for (int i(0); i<allow_k;i++){
 
             if (phl->tx[0] < allow_x[i]+1 & phl->tx[1] > allow_x[i]-1 & phl->ty[0] < allow_y[i]+1 & phl->ty[1] > allow_y[i]-1){
