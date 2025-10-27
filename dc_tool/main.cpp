@@ -95,6 +95,13 @@ int main(int argc, char *argv[])
         break;
     }
 
+    case 6:{
+        // checkpointing que Force n'as pas...
+        std::cout << " generate tile allowed list for tile requiring to compute level 3 (time serie interpolation" << std::endl;
+        allcube.level3ToDo();
+        break;
+    }
+
         //allcube.exportTS2txt(vm["dirOut"].as<std::string>());
         //allcube.exportDC2Sits_local(vm["dirOut"].as<std::string>());
         //allcube.exportSample2txt(vm["dirOut"].as<std::string>());

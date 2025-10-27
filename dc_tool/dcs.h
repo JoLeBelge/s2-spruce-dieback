@@ -19,6 +19,7 @@ public:
     void exportSample2txt(std::string dirOut);
 
     void maskStat();
+    void level3ToDo();
     void l3tol2(std::string dirOut);
 
     // test si je sais changer le format de la TSI de FORCE pour avoir un format lisible par SITS

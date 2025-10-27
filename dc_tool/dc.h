@@ -35,6 +35,7 @@ public:
     int maskStat();
 
     std::string getName(){return name;}
+    std::string getHL(){return dirHighLev;}
 
     dc(par_hl_t * param, int& x, int& y);
     par_hl_t *phl;

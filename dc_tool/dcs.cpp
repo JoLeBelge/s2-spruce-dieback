@@ -183,14 +183,14 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     target.importFromEPSG(4326);
     source.importFromEPSG(31370);
 
-   /* OGRPoint p;
+    OGRPoint p;/*
     p.assignSpatialReference(&source);
     p.transformTo(&target);
     */
 
 
     std::string fileOut(dirOut+"/"+aOut);
-     std::string fileOut2(dirOut+"/"+aOut+"_classDepePI.csv");
+    std::string fileOut2(dirOut+"/"+aOut+"_classDepePI.csv");
     std::ofstream ofs (fileOut, std::ofstream::out);
     ofs.precision(7);
     // il faut augmenter le nombre de chiffre après la virgule qui sont écrit dans le fichier txt
@@ -208,10 +208,10 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     // 1 déterminer le nombre de pixels au total et exporte le fichier csv
     int nb(0);
     for (dc datacube : alldc){
-            int idx=0;
-            std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(idx);
-            std::cout << "pixels pour datacube " << datacube.tileX << ", " << datacube.tileY << ": " << mTS.size() << "." << std::endl;
-            nb=nb+mTS.size();
+        int idx=0;
+        std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(idx);
+        std::cout << "pixels pour datacube " << datacube.tileX << ", " << datacube.tileY << ": " << mTS.size() << "." << std::endl;
+        nb=nb+mTS.size();
     }
 
     // taille en pixels du decoy DC
@@ -222,7 +222,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     std::cout << "\nexport Csv sample" << std::endl;
     int i(0);
     for (dc datacube : alldc){
-       // std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(0,true);
+        // std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(0,true);
         std::map<std::tuple<int, int>, std::vector<double>> mTS=datacube.exportIndex2txt(-1,true);
         for (auto & kv: mTS){
             // il ne sont pas géoréférencé comme je veux, c'est pas cohérent avec les valeurs foireux :-)
@@ -238,11 +238,11 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             int depe= kv.second.at(0);
             ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  depe << "\n";
             // ofs << p.getY() << "," << p.getX() << "," << startD << "," << endD << ",label"<<  i << "\n";
-             ofs2 << p.getY() << "," << p.getX()  << ",label"<<  depe ;
-             for (int j(1);j<kv.second.size();j++){
-                  ofs2 << "," << kv.second.at(j);
-             }
-              ofs2 <<  "\n";
+            ofs2 << p.getY() << "," << p.getX()  << ",label"<<  depe ;
+            for (int j(1);j<kv.second.size();j++){
+                ofs2 << "," << kv.second.at(j);
+            }
+            ofs2 <<  "\n";
 
             i++;
         }
@@ -259,7 +259,7 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
         std::cout << "init band " << phl->tsa.index_name[idx] << std::endl;
         std::string bandName= phl->tsa.index_name[idx];
         if (mIndexName2Band.find(phl->tsa.index_name[idx])!=mIndexName2Band.end()){
-        bandName=mIndexName2Band.at(phl->tsa.index_name[idx]);
+            bandName=mIndexName2Band.at(phl->tsa.index_name[idx]);
         }
         char fname[NPOW_10];
         char dateDesc[NPOW_10];
@@ -322,11 +322,28 @@ void dcs::maskStat(){
     }
 }
 
+void dcs::level3ToDo(){
+    std::vector<std::string> allowedList;
+    for (dc datacube : alldc){
+        std::string f1=datacube.getHL()+"/20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif";
+        std::string f2=datacube.getHL()+"/20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif";
+        if (!fs::exists(f1) | !fs::exists(f2)){
+            allowedList.push_back(datacube.getName());
+        }
+    }
+    std::cout << "allowed list with " << allowedList.size() << " elements " << std::endl;
+    std::ofstream ofs (phl->f_tile, std::ofstream::out);
+    ofs << allowedList.size() << "\n" ;
+    for (std::string & s : allowedList){
+        ofs << s << "\n";
+    }
+}
+
 void dcs::l3tol2(std::string dirOut){
     std::cout <<" l3 to l2 " << std::endl;
     for (dc datacube : alldc){
-         std::cout <<"one dc " << std::endl;
-            datacube.l3tol2(dirOut);
+        std::cout <<"one dc " << std::endl;
+        datacube.l3tol2(dirOut);
     }
 }
 
