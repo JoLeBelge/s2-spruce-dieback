@@ -50,7 +50,7 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
     {
         //std::cout << " surface is " << OGR_G_Area(poFeature->GetGeometryRef()) << std::endl;
         if (OGR_G_Area(poFeature->GetGeometryRef())<35){
-            std::cout << "positive buffer applied" << std::endl;
+            //std::cout << "positive buffer applied" << std::endl;
             poFeature->SetGeometry(poFeature->GetGeometryRef()->Buffer(0.5));
         }
     }

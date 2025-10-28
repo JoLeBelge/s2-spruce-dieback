@@ -62,7 +62,9 @@ dcs::dcs(par_hl_t *param):phl(param)
 void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone, std::string aOut){
     // lecture du geopackage
     std::cout << " gen Class Raster" << std::endl;
-    GDALDataset * DShouppier =  (GDALDataset*) GDALOpenEx( inputShpHouppier.c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
+    //GDALDataset * DShouppier =  (GDALDataset*) GDALOpenEx( inputShpHouppier.c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
+    // si je souhaite faire une buffer positif, il faut ouvrir en mode édition. copier en premier lieu la couche.
+    GDALDataset * DShouppier =  (GDALDataset*) GDALOpenEx( inputShpHouppier.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL );
     GDALDataset * DSzone =  (GDALDataset*) GDALOpenEx( inputShpZone.c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL );
     if( DShouppier != NULL & DSzone !=0 )
     {
