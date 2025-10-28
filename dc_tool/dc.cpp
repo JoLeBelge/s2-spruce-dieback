@@ -9,7 +9,7 @@
 FROM
 */
 //std::map<char, char> mIndexName2Band = {{'BLU', 'B02'}, {'GRN', 'B03'}, {'RED', 'B04'},  {'RE1', 'B05'}, {'RE2', 'B06'}, {'RE3', 'B07'}, {'NIR', 'B08'}, {'N1N', 'B8A'}, {'SWIR1', 'B11'}, {'SWIR2', 'B12'}};
-std::map<std::string, std::string> mIndexName2Band = {{"BLU", "B02"}, {"GRN", "B03"}, {"RED", "B04"},  {"RE1", "B05"}, {"RE2", "B06"}, {"RE3", "B07"}, {"NIR", "B08"}, {"N1N", "B8A"}, {"SW1", "B11"}, {"SW2", "B12"}, {"NDV", "NDV"}, {"CSW", "CSW"}};
+std::map<std::string, std::string> mIndexName2Band = {{"BLU", "B02"}, {"GRN", "B03"}, {"RED", "B04"},  {"RE1", "B05"}, {"RE2", "B06"}, {"RE3", "B07"}, {"NIR", "B08"}, {"BNR", "B8A"}, {"SW1", "B11"}, {"SW2", "B12"}, {"NDV", "NDV"}, {"CSW", "CSW"}};
 std::vector bandsName{"BLUE","GREEN","RED","REDEDGE1","REDEDGE2","REDEDGE3","BROADNIR","NIR","SWIR1","SWIR2"};
 
 dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)

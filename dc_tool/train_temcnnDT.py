@@ -21,6 +21,8 @@ import re
 from osgeo import gdal,osr,ogr
 from datetime import datetime, timedelta
 
+idxCode=['BLU', 'GRN', 'RED', 'BNR', 'NDV', 'CSW']
+
 
 class ts_s2(Dataset):
 
@@ -51,8 +53,10 @@ class ts_s2(Dataset):
         
         self.labels = self.obs["label"]
         # il faut stoquer les valeur des deux indices spectraux
-        self.ts_csw = np.zeros((len(self.labels), 192))
-        self.ts_ndv = np.zeros((len(self.labels), 192))
+        #self.ts_csw = np.zeros((len(self.labels), 192))
+        #self.ts_ndv = np.zeros((len(self.labels), 192))
+
+        self.ts_data = np.zeros((len(self.labels), 192,len(idxCode)))
 
         self.readDatacube()
 
@@ -67,24 +71,31 @@ class ts_s2(Dataset):
                 
             # A partir de 73 ça bugg à cause de la leap year, Force n'as pas compter le 29 fevrier...
             cur_date = date1 + timedelta(days=(16*i)+lp)
-            file1=self.root+"/SEN2L_FORCETSI_T1_NDV_"+cur_date.strftime("%Y-%m-%d")+".tif"
-            file2=self.root+"/SEN2L_FORCETSI_T1_CSW_"+cur_date.strftime("%Y-%m-%d")+".tif"
-            if (os.path.exists(file1)==False or os.path.exists(file2)==False):
-                print("file not found: "+file1+" or "+file2)
-                continue
-
-            raster1 = gdal.Open(file1)
-            bandval1 = raster1.ReadAsArray()
-            raster2 = gdal.Open(file2)
-            bandval2 = raster2.ReadAsArray()
+            file=[]
+            rasters=[]
+            bandval=[]
+            
+            for nidx in range(len(idxCode)):
+                file.append(self.root+"/SEN2L_FORCETSI_T1_"+idxCode[nidx]+"_"+cur_date.strftime("%Y-%m-%d")+".tif")
+                if (os.path.exists(file)==False):
+                    print("file not found: "+file[nidx])
+                    continue
+                rasters.append(gdal.Open(file[nidx]))
+                bandval.append(rasters[nidx].ReadAsArray())
+            
+            #raster1 = gdal.Open(file1)
+            #bandval1 = raster1.ReadAsArray()
+            #raster2 = gdal.Open(file2)
+            #bandval2 = raster2.ReadAsArray()
             u_arr = self.obs["u"].astype(int).to_numpy()
             v_arr = self.obs["v"].astype(int).to_numpy()
             for j in range(len(self.obs)):
                 v = v_arr[j]  # ligne
                 u = u_arr[j]  # colonne
                 # numpy arrays use [row, col]
-                self.ts_ndv[j, i] = bandval1[v, u]
-                self.ts_csw[j, i] = bandval2[v, u]
+                for nidx in range(len(idxCode)):
+                    self.ts_data[j, i,nidx] = bandval[nidx][v, u]
+                #self.ts_csw[j, i] = bandval2[v, u]
                 #print("date "+cur_date.strftime("%Y-%m-%d") +" ndv: "+str(self.ts_ndv[j, i])+" csw: "+ str(self.ts_csw[j, i])+" (u: "+str(u)+" v: "+ str(v)+")")
 
         print("datacube loaded")
@@ -102,7 +113,9 @@ class ts_s2(Dataset):
         #combined = np.concatenate((self.ts_csw[idx], self.ts_ndv[idx]), axis=0)
         #ts = combined.reshape((2, 192)) * 1e-4  # scale reflectances to 0-1
         #ts = combined.reshape((192, 2)) * 1e-4 
-        ts = np.vstack((self.ts_csw[idx], self.ts_ndv[idx])) * 1e-4 
+        #ts = np.vstack((self.ts_csw[idx], self.ts_ndv[idx])) * 1e-4 
+                
+        ts = self.ts_data * 1e-4 
         ts= np.transpose(ts, (1, 0))
 
        # ts.reshape((192, 2)) * 1e-4 
@@ -163,7 +176,7 @@ def get_dataloader(datapath, batchsize, workers):
     testdataloader = DataLoader(testdataset, batch_size=batchsize, shuffle=False, num_workers=workers)
 
     meta = dict(
-        ndims=2 ,
+        ndims=len(idxCode),
         num_classes=2,
         sequencelength=192
     )
