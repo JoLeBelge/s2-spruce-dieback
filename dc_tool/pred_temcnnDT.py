@@ -196,7 +196,7 @@ def prediction(paramFile):
                 # pred shape attendu : (n_pixels, 2) -> on remet en (2, rows, cols)
                 pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
                 arr = (pred * 100).astype(np.uint8)        # scale + cast
-                arr = arr.T.reshape((len(idxCode), ts.shape[2], ts.shape[3]))  
+                arr = arr.T.reshape(bands, ts.shape[2], ts.shape[3])  
                 #noter là ou les inputs étaient des no-data (-9999)  
                 m =np.max(ts,axis=0)
                 arr2 = np.where(m==-9999,255,arr)
