@@ -160,7 +160,7 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
     // je souhaite cartographier les arbres morts sur pied pour le projet OGF. test d'utilisation mon dataset dépé chêne, qui est quand même assez conséquent.
      exp="(A[5]+A[6])>35 ? 2 : (A[2]+A[3]+A[4]+A[5]+A[6]+A[7])>10 ? 3 : A[1] ==1 ? 1 : 0";
 
-    std::string aCommand(std::string("gdal raster calc -i 'A=")+out+"' --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' a_nodata 255 --overwrite -o "+ reclassFile);
+    std::string aCommand(std::string("gdal raster calc -i 'A=")+out+"' --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' --overwrite -o "+ reclassFile);
   // il faut définir le type, int16
     //gdal raster calc -i "A=classDepePI.tif" --calc "(A[5]+A[6])>35 ? 2 : (A[2]+A[3]+A[4]+A[5]+A[6]+A[7])>10 ? 3 : A[1] ==1 ? 1 : 0" -o test.tif
 
@@ -176,7 +176,7 @@ void dc::modifyClassRaster(std::string aOut, std::string exp){
 
     if (fs::exists(in)){
 
-    std::string aCommand(std::string("gdal raster calc -i 'A=")+in+"' --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' --overwrite -o "+ out);
+    std::string aCommand(std::string("gdal raster calc -i 'A=")+in+"' --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' --nodata 255 --overwrite -o "+ out);
     std::cout << aCommand << std::endl;
     system(aCommand.c_str());
     } else{
