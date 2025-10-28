@@ -113,8 +113,6 @@ int main(int argc, char *argv[])
         break;
     }
 
-
-
         //allcube.exportTS2txt(vm["dirOut"].as<std::string>());
         //allcube.exportDC2Sits_local(vm["dirOut"].as<std::string>());
         //allcube.exportSample2txt(vm["dirOut"].as<std::string>());

@@ -73,7 +73,7 @@ void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone,
         GDALClose(DShouppier);
         GDALClose(DSzone);
     } else {
-        std::cout << "Nope, ficher n'existe pas" << std::endl;
+        std::cout << "Nope, fichier n'existe pas" << std::endl;
     }
 
 }
