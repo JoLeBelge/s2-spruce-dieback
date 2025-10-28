@@ -78,6 +78,15 @@ void dcs::genClassRaster(std::string inputShpHouppier, std::string inputShpZone,
 
 }
 
+void dcs::modifyClassRaster(std::string aOut, std::string aExp){
+
+        for (dc datacube : alldc){
+            datacube.modifyClassRaster(aOut, aExp);
+        }
+
+
+}
+
 void dcs::exportTS2txt(std::string dirOut){
     std::string fileOut(dirOut+"/datacube_depe.csv");
     std::ofstream ofs (fileOut, std::ofstream::out);
@@ -200,7 +209,6 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
     p.assignSpatialReference(&source);
     p.transformTo(&target);
     */
-
 
     std::string fileOut(dirOut+"/"+aOut);
     std::string fileOut2(dirOut+"/"+aOut+"_classDepePI.csv");

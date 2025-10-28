@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
             ("input_zone_gpkg", po::value< std::string>(), "gpkg avec les zones photointerprétées. les parties sans houppiers dépérissants correspondent au arbres sains")
             ("mode", po::value<int>(), "switch between different tools. 1: genClassRaster (label). 2:")
             ("outName", po::value< std::string>(), "name for class raster mask")
+            ("exp", po::value< std::string>(), "expression pour passage classDepePI vers label, ex '(A[5]+A[6])>40 ? 1 : A[1] ==1 ? 0 : 255'")
             ;
 
     po::variables_map vm;
@@ -101,6 +102,18 @@ int main(int argc, char *argv[])
         allcube.level3ToDo();
         break;
     }
+
+    case 7:{
+        // checkpointing que Force n'as pas... je crois
+        if(vm.count("outName") & vm.count("exp")){
+        allcube.modifyClassRaster(vm["outName"].as<std::string>(), vm["exp"].as<std::string>());
+        } else {
+            std::cout << " remplir les paramètres outName et exp" << std::endl;
+        }
+        break;
+    }
+
+
 
         //allcube.exportTS2txt(vm["dirOut"].as<std::string>());
         //allcube.exportDC2Sits_local(vm["dirOut"].as<std::string>());

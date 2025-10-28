@@ -15,6 +15,7 @@ public:
     par_hl_t * phl;
 
     void genClassRaster(std::string inputShpHouppier, std::string inputShpZone, std::string aOut="classDepe");
+    void modifyClassRaster(std::string aOut, std::string aExp);
     void exportTS2txt(std::string dirOut);
     void exportSample2txt(std::string dirOut);
 

@@ -168,6 +168,21 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
     system(aCommand.c_str());
 }
 
+void dc::modifyClassRaster(std::string aOut, std::string exp){
+    std::cout << "modify Class Raster for tile " << dirName << std::endl;
+    char in[NPOW_10], out[NPOW_10];
+    snprintf(in, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepePI");
+    snprintf(out, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, aOut);
+
+    if (fs::exists(in)){
+
+    std::string aCommand(std::string("gdal raster calc -i 'A=")+in+"' --calc '"+exp+"' --ot Int16 --co 'COMPRESS=DEFLATE' --overwrite -o "+ out);
+    std::cout << aCommand << std::endl;
+    system(aCommand.c_str());
+    } else{
+        std::cout << " input " << in << " not found" << std::endl;
+    }
+}
 
 std::map<std::tuple<int, int>, std::vector<double>> dc::exportIndex2txt(int idx, bool inverseUV){
 
