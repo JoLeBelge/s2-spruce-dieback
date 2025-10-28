@@ -48,7 +48,7 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
     DSzone->GetLayer(0)->ResetReading();
     while( (poFeature = DSzone->GetLayer(0)->GetNextFeature()) != NULL )
     {
-        if (OGR_G_Area(poFeature)<35){
+        if (OGR_G_Area(poFeature->GetGeometryRef())<35){
             poFeature->SetGeometry(poFeature->GetGeometryRef()->Buffer(0.5));
         }
     }
