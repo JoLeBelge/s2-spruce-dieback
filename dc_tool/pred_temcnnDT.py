@@ -198,7 +198,7 @@ def prediction(paramFile):
                 arr = (pred * 100).astype(np.uint8)        # scale + cast
                 arr = arr.T.reshape(bands, ts.shape[2], ts.shape[3])  
                 #noter là ou les inputs étaient des no-data (-9999)  en se basant sur les deux premirès bandes
-                m =np.max(ts[0:1,:,:],axis=0)
+                m =np.max(ts,axis=0)[0:1,:,:]
 
                 arr2 = np.where(m==-9999,255,arr)
 
