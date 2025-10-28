@@ -42,6 +42,17 @@ void dc::getTransform(double * tr){
 
 void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::string aOut){
     std::cout << "genClassRaster for tile " << dirName << std::endl;
+
+    // appliquer un buffer sur les petits houppiers - surtout pertinent pour les fortement dégradé, qui ont moins de place qu'auparavent
+    OGRFeature *poFeature;
+    DSzone->GetLayer(0)->ResetReading();
+    while( (poFeature = DSzone->GetLayer(0)->GetNextFeature()) != NULL )
+    {
+        if (OGR_G_Area(poFeature)<35){
+            poFeature->SetGeometry(poFeature->GetGeometryRef()->Buffer(0.5));
+        }
+    }
+
     char out[NPOW_10], mask[NPOW_10], reclassFile[NPOW_10];
     snprintf(out, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, "classDepePI");
     snprintf(reclassFile, NPOW_10, "%s/X%04d_Y%04d/%s.tif", phl->d_mask, tileX, tileY, aOut.c_str());
