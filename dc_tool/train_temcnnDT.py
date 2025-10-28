@@ -21,7 +21,8 @@ import re
 from osgeo import gdal,osr,ogr
 from datetime import datetime, timedelta
 
-idxCode=['BLU', 'GRN', 'RED', 'BNR', 'NDV', 'CSW']
+#idxCode=['BLU', 'GRN', 'RED', 'BNR', 'NDV', 'CSW']
+idxCode=['B02', 'B03', 'B04', 'B8A', 'NDV', 'CSW']
 
 
 class ts_s2(Dataset):
@@ -77,7 +78,7 @@ class ts_s2(Dataset):
             
             for nidx in range(len(idxCode)):
                 file.append(self.root+"/SEN2L_FORCETSI_T1_"+idxCode[nidx]+"_"+cur_date.strftime("%Y-%m-%d")+".tif")
-                if (os.path.exists(file)==False):
+                if (os.path.exists(file[nidx])==False):
                     print("file not found: "+file[nidx])
                     continue
                 rasters.append(gdal.Open(file[nidx]))
@@ -115,9 +116,10 @@ class ts_s2(Dataset):
         #ts = combined.reshape((192, 2)) * 1e-4 
         #ts = np.vstack((self.ts_csw[idx], self.ts_ndv[idx])) * 1e-4 
                 
-        ts = self.ts_data * 1e-4 
-        ts= np.transpose(ts, (1, 0))
-
+        ts = self.ts_data[idx] * 1e-4 
+        #print("ts shape is ",ts.shape)
+        #ts= np.transpose(ts, (1, 0))
+        #print("now ts shape is ",ts.shape)
        # ts.reshape((192, 2)) * 1e-4 
         #combined.reshape((192, 2)) * 1e-4 
         return torch.from_numpy(ts).type(torch.FloatTensor), y, idx
@@ -255,6 +257,7 @@ def train_epoch(model, optimizer, criterion, dataloader, device):
             optimizer.zero_grad()
             x, y_true, _ = batch
             #print(x.shape)
+            #print(x)
             #x, y_true = batch
 
             loss = criterion(model.forward(x.to(device)), y_true.to(device))
