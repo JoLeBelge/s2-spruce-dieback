@@ -45,10 +45,10 @@ void dc::genClassRaster(GDALDataset *DShouppiers, GDALDataset *DSzone, std::stri
 
     // appliquer un buffer sur les petits houppiers - surtout pertinent pour les fortement dégradé, qui ont moins de place qu'auparavent
     OGRFeature *poFeature;
-    DSzone->GetLayer(0)->ResetReading();
-    while( (poFeature = DSzone->GetLayer(0)->GetNextFeature()) != NULL )
+    DShouppiers->GetLayer(0)->ResetReading();
+    while( (poFeature = DShouppiers->GetLayer(0)->GetNextFeature()) != NULL )
     {
-        std::cout << " surface is " << OGR_G_Area(poFeature->GetGeometryRef()) << std::endl;
+        //std::cout << " surface is " << OGR_G_Area(poFeature->GetGeometryRef()) << std::endl;
         if (OGR_G_Area(poFeature->GetGeometryRef())<35){
             std::cout << "positive buffer applied" << std::endl;
             poFeature->SetGeometry(poFeature->GetGeometryRef()->Buffer(0.5));
