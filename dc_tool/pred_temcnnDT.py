@@ -11,6 +11,8 @@ import configparser
 import argparse
 import pandas as pd
 
+idxCode=['BLU', 'GRN', 'RED', 'BNR', 'NDV', 'CSW']
+
 def read_raster(raster, x_block_size, y_block_size, x, y):
     ds = gdal.Open(raster)
     if ds is None:
@@ -78,27 +80,43 @@ def read_band_raster(band, x_block_size, y_block_size, x, y):
 
 def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
     #print("start datacube loading")
-    file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
-    file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
+    file=[]
+    ds=[]
+   
+    for nidx in range(len(idxCode)):
+            file.append(root+"/20170101-20250615_001-365_HL_TSA_SEN2L_"+idxCode[nidx]+"_TSI.tif")
+            if (os.path.exists(file[nidx])==False):
+                print("file not found: "+file[nidx])
+                continue
+            ds.append(gdal.Open(file[nidx]))
+    
+    #file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
+    #file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
     valuesAllTime = None
-    if not (os.path.exists(file1) and os.path.exists(file2)):
-        print(f"warning: missing files : {file1} / {file2}")
-    ds1 = gdal.Open(file1)
-    ds2 = gdal.Open(file2)
-    for i in range(0,ds1.RasterCount):
-        bandR1 = ds1.GetRasterBand(i+1)
-        bandR2 = ds2.GetRasterBand(i+1)
-        blocval1 = read_band_raster(bandR1, xBlockSize,yBlockSize, xoffset, yoffset)
-        blocval2 = read_band_raster(bandR2, xBlockSize, yBlockSize, xoffset, yoffset)   
-        valuesOneTime = np.stack((blocval2, blocval1), axis=0)
+
+    #ds1 = gdal.Open(file1)
+    #ds2 = gdal.Open(file2)
+    for i in range(0,ds[0].RasterCount):
+        #bandval=[]
+        blocval=[]
+        for nidx in range(len(idxCode)):
+            #bandval.append(ds[nidx].GetRasterBand(i+1))
+            blocval.append(read_band_raster(ds[nidx].GetRasterBand(i+1), xBlockSize,yBlockSize, xoffset, yoffset))
+        #bandR2 = ds2.GetRasterBand(i+1)
+        #blocval1 = read_band_raster(bandR1, xBlockSize,yBlockSize, xoffset, yoffset)
+        #blocval2 = read_band_raster(bandR2, xBlockSize, yBlockSize, xoffset, yoffset)   
+        #valuesOneTime = np.stack((blocval2, blocval1), axis=0)
+        valuesOneTime = np.stack(blocval, axis=0)
         if valuesAllTime is None:
             valuesAllTime = valuesOneTime[np.newaxis, ...]
         else:
             # concaténer le long de l'axe 0 (temps) : si valuesAllTime shape (t,2,r,c)
             valuesAllTime = np.concatenate((valuesAllTime, valuesOneTime[np.newaxis, ...]), axis=0)
     #print("datacube l3 loaded")
-    ds1 = None
-    ds2 = None
+    for nidx in range(len(idxCode)):
+        ds[nidx]=None
+    #ds1 = None
+    #ds2 = None
     return valuesAllTime
 
 def prediction(paramFile):
@@ -171,7 +189,7 @@ def prediction(paramFile):
             
                 #ts=readDatacubeBloc(path,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
                 ts=readDCl3Bloc(tilePath,xBlockSize=x_block_size,yBlockSize=y_block_size,xoffset=x,yoffset=y)
-                reshaped=ts.reshape((192,2,ts.shape[2]*ts.shape[3]))
+                reshaped=ts.reshape((192,len(idxCode),ts.shape[2]*ts.shape[3]))
                 obs=np.moveaxis(reshaped, [0, 1], [-2, -1])/10000  # shape (192,2,25000) -> (25000,2,192)
                 t = torch.from_numpy(obs).type(torch.FloatTensor).to(device)
                 predLogSoftMax = model(t)
