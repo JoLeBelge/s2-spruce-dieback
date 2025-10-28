@@ -197,8 +197,9 @@ def prediction(paramFile):
                 pred = torch.exp(predLogSoftMax).to("cpu").detach().numpy()
                 arr = (pred * 100).astype(np.uint8)        # scale + cast
                 arr = arr.T.reshape(bands, ts.shape[2], ts.shape[3])  
-                #noter là ou les inputs étaient des no-data (-9999)  
-                m =np.max(ts,axis=0)
+                #noter là ou les inputs étaient des no-data (-9999)  en se basant sur les deux premirès bandes
+                m =np.max(ts,axis=0)[0:1,:,:]
+
                 arr2 = np.where(m==-9999,255,arr)
 
                 # écrire chaque bande de résultat
