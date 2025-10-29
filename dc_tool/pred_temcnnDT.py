@@ -119,7 +119,7 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
     #ds2 = None
     return valuesAllTime
 
-def prediction(paramFile):
+def prediction(paramFile, tileX=None, tileY=None):
     config = configparser.ConfigParser()
     config.read(paramFile)
     #templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
@@ -137,6 +137,14 @@ def prediction(paramFile):
     x_tile_range_1=int(config['TILE']['X_TILE_RANGE_1'])
     y_tile_range_0=int(config['TILE']['Y_TILE_RANGE_0'])
     y_tile_range_1=int(config['TILE']['Y_TILE_RANGE_1'])
+
+    if tileX is not None and tileY is not None:
+        x_tile_range_0=tileX
+        x_tile_range_1=tileX
+        y_tile_range_0=tileY
+        y_tile_range_1=tileY
+        fileListTile=""
+
     # 500 x 100 c'est déjà trop pour la mémoire GPU (20 Go sur scotty)
     debug=config['DEFAULT'].getboolean('DEBUG')
     overwrite=config['DEFAULT'].getboolean('OVERWRITE')
@@ -221,6 +229,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Prediction of dead tree from FORCE level-3 datacube with NDVI and CRSWIR Time Serie Interpolation')
     parser.add_argument(
         '-P', '--param', type=str, default="param_pred.ini", help='file with parameters for prediction')
+    parser.add_argument(
+        '-x', '--tileX', type=int, help='tile number')
+    parser.add_argument(
+        '-y', '--tileY', type=int, help='tile number)')
     
     args = parser.parse_args()
     return args
@@ -229,4 +241,4 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
 
-    prediction(args.param)
+    prediction(args.param, args.tileX, args.tileY)
