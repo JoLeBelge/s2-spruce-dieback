@@ -52,7 +52,7 @@ class ts_s2(Dataset):
             #print("u: "+str(self.obs["u"][j])+" v: "+ str(self.obs["v"][j]))
         
         self.labels = self.obs["label"]
-        self.labelList = self.labels.unique().sort()
+        self.labelList = self.labels.unique()
         self.nClasses = len(self.labelList)
         self.ts_data = np.zeros((len(self.labels), 192,len(idxCode)))
 
