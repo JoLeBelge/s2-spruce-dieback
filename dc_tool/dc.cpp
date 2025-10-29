@@ -35,6 +35,7 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
     origin.assignSpatialReference(&source);
     origin.transformTo(&target);
     int tile_size=5000;
+    std::cout << "origin of datacubes is " << origin.getX() << ", " << origin.getY() << std::endl;
     tulx= origin.getX() + tile_size*x;
     tuly= origin.getY() - tile_size*y;
 
