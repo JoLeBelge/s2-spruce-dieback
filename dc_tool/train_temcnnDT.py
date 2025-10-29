@@ -33,7 +33,6 @@ class ts_s2(Dataset):
                  train=True
                 ):
         self.root = root
-        #self.obs= pd.read_csv(root+"/"+sample_file, index_col=0)
         self.obs= pd.read_csv(root+"/"+sample_file, index_col=False)
         # determiner la position uv de chaque observation
         self.obs["v"] = 0
@@ -53,10 +52,8 @@ class ts_s2(Dataset):
             #print("u: "+str(self.obs["u"][j])+" v: "+ str(self.obs["v"][j]))
         
         self.labels = self.obs["label"]
-        # il faut stoquer les valeur des deux indices spectraux
-        #self.ts_csw = np.zeros((len(self.labels), 192))
-        #self.ts_ndv = np.zeros((len(self.labels), 192))
-
+        self.labelList = self.labels.unique().sort()
+        self.nClasses = len(self.labelList)
         self.ts_data = np.zeros((len(self.labels), 192,len(idxCode)))
 
         self.readDatacube()
@@ -84,10 +81,6 @@ class ts_s2(Dataset):
                 rasters.append(gdal.Open(file[nidx]))
                 bandval.append(rasters[nidx].ReadAsArray())
             
-            #raster1 = gdal.Open(file1)
-            #bandval1 = raster1.ReadAsArray()
-            #raster2 = gdal.Open(file2)
-            #bandval2 = raster2.ReadAsArray()
             u_arr = self.obs["u"].astype(int).to_numpy()
             v_arr = self.obs["v"].astype(int).to_numpy()
             for j in range(len(self.obs)):
@@ -109,7 +102,8 @@ class ts_s2(Dataset):
      
 
         label = self.labels.iloc[idx]
-        y=0 if label=="label1" else 1
+        #y=0 if label=="label1" else 1
+        y = self.labelList.index(label)
 
         #combined = np.concatenate((self.ts_csw[idx], self.ts_ndv[idx]), axis=0)
         #ts = combined.reshape((2, 192)) * 1e-4  # scale reflectances to 0-1
@@ -118,10 +112,7 @@ class ts_s2(Dataset):
                 
         ts = self.ts_data[idx] * 1e-4 
         #print("ts shape is ",ts.shape)
-        #ts= np.transpose(ts, (1, 0))
-        #print("now ts shape is ",ts.shape)
-       # ts.reshape((192, 2)) * 1e-4 
-        #combined.reshape((192, 2)) * 1e-4 
+        
         return torch.from_numpy(ts).type(torch.FloatTensor), y, idx
 
 def train(args):
@@ -179,7 +170,7 @@ def get_dataloader(datapath, batchsize, workers):
 
     meta = dict(
         ndims=len(idxCode),
-        num_classes=2,
+        num_classes=traindatasets.nClasses,
         sequencelength=192
     )
 

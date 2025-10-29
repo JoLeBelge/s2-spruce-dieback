@@ -25,6 +25,19 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
     dirName=fname;
     snprintf(fname, NPOW_10, "%s/X%04d_Y%04d", phl->d_higher, tileX, tileY);
     dirHighLev=fname;
+
+
+    OGRSpatialReference source, target;
+    source.importFromEPSG(4326);
+    target.importFromEPSG(31370);
+
+    OGRPoint origin(2.5,51.0);
+    origin.assignSpatialReference(&source);
+    origin.transformTo(&target);
+    int tile_size=5000;
+    tulx= origin.getX() + tile_size*x;
+    tuly= origin.getY() - tile_size*y;
+
 }
 
 bool dc::exist(){
