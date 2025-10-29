@@ -141,8 +141,8 @@ void dcs::exportSample2txt(std::string dirOut){
     source.importFromEPSG(31370);
 
     OGRPoint p;
-    p.assignSpatialReference(&source);
-    p.transformTo(&target);
+    //p.assignSpatialReference(&source);
+    //p.transformTo(&target);
     for (dc datacube : alldc){
 
         double tr[6];

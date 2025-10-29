@@ -16,7 +16,7 @@ public:
     int tileX, tileY;
     std::string dirName, dirHighLev, name;
 
-    int tulx, tuly; // tile upper left, BL72
+    double tulx, tuly; // tile upper left, BL72
 
     //int nx, ny;
     bool exist();

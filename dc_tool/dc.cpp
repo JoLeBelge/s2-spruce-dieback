@@ -31,13 +31,22 @@ dc::dc(par_hl_t *param, int &x, int &y):phl(param), tileX(x), tileY(y)
     source.importFromEPSG(4326);
     target.importFromEPSG(31370);
 
-    OGRPoint origin(2.5,51.0);
+    OGRCoordinateTransformation * poCT = OGRCreateCoordinateTransformation( &source,
+                                              &target );
+
+    //double x_=2.5;
+    //double y_=51.0;
+    //poCT->Transform( 1, &y_,&x_ );
+
+    //std::cout << "x " << x_ << ", " << y_ << std::endl;
+    OGRPoint origin(51.0,2.5);
     origin.assignSpatialReference(&source);
+    //std::cout << "origin of datacubes WGS84 is " << origin.getX() << ", " << origin.getY() << std::endl;
     origin.transformTo(&target);
     int tile_size=5000;
-    std::cout << "origin of datacubes is " << origin.getX() << ", " << origin.getY() << std::endl;
     tulx= origin.getX() + tile_size*x;
     tuly= origin.getY() - tile_size*y;
+    //std::cout << "tulx " << tulx << ", tuly " << tuly << std::endl;
 
 }
 
