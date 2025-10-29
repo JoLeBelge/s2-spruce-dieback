@@ -265,8 +265,8 @@ void dcs::exportallDC2OneSits_local(std::string dirOut, std::string aOut){
             int uIni=std::get<1>(kv.first);
             int vIni=std::get<0>(kv.first);
             // calculer position réelle
-            double x=datacube.tulx + uIni*10;
-            double y=datacube.tuly - vIni*10;
+            double x=datacube.tulx + uIni*10+10/2;
+            double y=datacube.tuly - vIni*10-10/2;
             ofs2 << p.getY() << "," << p.getX()  << ",label"<< depe << "," << x << "," << y ;
 
             for (int j(1);j<kv.second.size();j++){
