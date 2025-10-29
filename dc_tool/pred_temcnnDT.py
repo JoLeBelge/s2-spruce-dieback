@@ -90,19 +90,14 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
                 continue
             ds.append(gdal.Open(file[nidx]))
     
-    #file1 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_NDV_TSI.tif")
-    #file2 = os.path.join(root, "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif")
     valuesAllTime = None
 
-    #ds1 = gdal.Open(file1)
-    #ds2 = gdal.Open(file2)
     for i in range(0,ds[0].RasterCount):
-        #bandval=[]
+
         blocval=[]
         for nidx in range(len(idxCode)):
-            #bandval.append(ds[nidx].GetRasterBand(i+1))
             blocval.append(read_band_raster(ds[nidx].GetRasterBand(i+1), xBlockSize,yBlockSize, xoffset, yoffset))
-        #bandR2 = ds2.GetRasterBand(i+1)
+
         #blocval1 = read_band_raster(bandR1, xBlockSize,yBlockSize, xoffset, yoffset)
         #blocval2 = read_band_raster(bandR2, xBlockSize, yBlockSize, xoffset, yoffset)   
         #valuesOneTime = np.stack((blocval2, blocval1), axis=0)
@@ -112,20 +107,19 @@ def readDCl3Bloc(root, xBlockSize=100,yBlockSize=500,xoffset=0,yoffset=0):
         else:
             # concaténer le long de l'axe 0 (temps) : si valuesAllTime shape (t,2,r,c)
             valuesAllTime = np.concatenate((valuesAllTime, valuesOneTime[np.newaxis, ...]), axis=0)
-    #print("datacube l3 loaded")
+
     for nidx in range(len(idxCode)):
         ds[nidx]=None
-    #ds1 = None
-    #ds2 = None
+
     return valuesAllTime
 
 def prediction(paramFile, tileX=None, tileY=None):
+
+    device="cuda" if torch.cuda.is_available() else "cpu"
+
     config = configparser.ConfigParser()
     config.read(paramFile)
-    #templ_name = "SEN2L_FORCETSI_T1_NDV_2017-01-01.tif"
-    #templ_name = "20170101-20250615_001-365_HL_TSA_SEN2L_CSW_TSI.tif"
     templ_name = config['DIR']['TEMPLATENAME']
-    device="cuda" if torch.cuda.is_available() else "cpu"
     modelPath=config['DEFAULT']['MODELPATH']
     outputName= config['DEFAULT']['OUTPUTNAME']
     dir_lower= config['DIR']['DIR_LOWER']
@@ -167,6 +161,8 @@ def prediction(paramFile, tileX=None, tileY=None):
     print("total of ",len(tileList)," tiles")
 
     model=torch.load(modelPath, map_location=torch.device(device),weights_only=False)
+    bands = int(model.modelname.split("_")[2].split("=")[1])
+
     driver = gdal.GetDriverByName( 'GTiff' )
 
     for tile_idx in range(tileList.shape[0]):
@@ -183,7 +179,7 @@ def prediction(paramFile, tileX=None, tileY=None):
         ds_template = gdal.Open(template_filename)
         cols = ds_template.GetRasterBand(1).XSize
         rows = ds_template.GetRasterBand(1).YSize
-        bands = 2
+
         dst_ds = driver.Create(dst_filename, cols, rows, bands, gdal.GDT_Byte, options=["INTERLEAVE=PIXEL"])
         dst_ds.SetGeoTransform(ds_template.GetGeoTransform())
         dst_ds.SetProjection(ds_template.GetProjection())
@@ -206,7 +202,7 @@ def prediction(paramFile, tileX=None, tileY=None):
                 arr = (pred * 100).astype(np.uint8)        # scale + cast
                 arr = arr.T.reshape(bands, ts.shape[2], ts.shape[3])  
                 #noter là ou les inputs étaient des no-data (-9999)  en se basant sur les deux premirès bandes
-                m =np.max(ts,axis=0)[0:1,:,:]
+                m =np.max(ts,axis=0)[range(bands),:,:]
 
                 arr2 = np.where(m==-9999,255,arr)
 
